@@ -1,0 +1,50 @@
+﻿@model ApplicationCore.Helpers.PaginatedList<ApplicationCore.Entities.Category>
+@using WebUI.Models.ComponentModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var breadcrumbs = new List<Breadcrumb>
+{
+        new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" },
+        new Breadcrumb { Id = 2, Name = "Danh mục", Url = "/category", Icon ="fas fa-folder" }
+    };
+}
+<partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
+
+<div class="md:flex md:flex-wrap md:-mx-1">
+    @foreach (var item in Model)
+    {
+        <div class="md:w-1/4 md:px-1 mb-4">
+            <div class="bg-gray-800 text-white relative">
+                @if (string.IsNullOrEmpty(item.Thumbnail))
+                {
+                    <img src="https://placehold.jp/1b1b28/1f1f29/350x200.png?text=No%20Image" class="w-full object-fit-cover h-48" alt="no image" />
+                }
+                else
+                {
+                    <img src="@item.Thumbnail" class="w-full object-fit-cover h-48" alt="@item.Name">
+                }
+                <div class="absolute p-4 top-0">
+                    <h5 class="font-bold">
+                        <a href="/category/details/@item.Id" class="text-white text-shadow hover:text-white">
+                            @item.Name
+                        </a>
+                    </h5>
+                    <p class="text-gray-400">@item.Description</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="mt-4 flex justify-between">
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+
+    <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" class="px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white hover:text-white @prevDisabled shadow rounded flex items-center">
+        <i class="fa fa-angle-double-left mr-2"></i> Trang trước
+    </a>
+    <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" class="px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white hover:text-white @nextDisabled shadow rounded flex items-center">
+        Trang sau <i class="fa fa-angle-double-right ml-2"></i>
+    </a>
+</div>

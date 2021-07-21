@@ -1,0 +1,40 @@
+﻿:root {
+    --primary: #727cf5;
+    --danger: #fa5c7c;
+    --dark: #0A142F;
+}
+
+.main-menu {
+    background-color: var(--dark);
+}
+
+.footer {
+    background-color: var(--dark);
+    color: #fff;
+    padding: 3rem 0;
+}
+
+.footer-divide {
+    border-top: 1px solid #979797;
+    opacity: 0.2;
+}
+
+.footer-bottom {
+    padding: 1rem 0;
+}
+
+.footer-bottom-link {
+    padding-top: 1rem;
+    text-transform: uppercase;
+}
+
+.footer-bottom-link a {
+    padding: 0 1rem;
+    text-decoration: none;
+    color: #fff;
+}
+
+.footer-copyright {
+    padding-top: 1rem;
+    opacity: 0.7;
+}

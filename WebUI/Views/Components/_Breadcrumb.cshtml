@@ -1,0 +1,26 @@
+﻿@model List<WebUI.Models.ComponentModel.Breadcrumb>
+
+@if (Model != null)
+{
+    <nav class="mb-3">
+        <ol class="flex bg-gray-100 px-4 list-none m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+            @foreach (var item in Model)
+            {
+                <li class="pr-4 py-1" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a itemprop="item" href="@item.Url" class="@(item.IsActive ? "pointer-events-none text-gray-600" : "")">
+                        @if (!string.IsNullOrEmpty(item.Icon))
+                        {
+                            <i class="@item.Icon mr-1 text-sm"></i>
+                        }
+                        <span itemprop="name">@item.Name</span>
+                    </a>
+                    @if (!item.IsActive && item.Id < Model.Count())
+                    {
+                        <i class="fas fa-angle-right ml-1 text-sm"></i>
+                    }
+                    <meta itemprop="position" content="@item.Id" />
+                </li>
+            }
+        </ol>
+    </nav>
+}

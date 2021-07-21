@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="fb:admins" content="100003781068360" />
+    <meta property="fb:pages" content="252222348234511" />
+    <meta name="description" content="@Html.Raw(ViewData["Description"])" />
+    <meta name="robots" content="index,follow" />
+    <title>@Html.Raw(ViewData["Title"]) - Đại Học Hải Phòng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+</head>
+<body>
+
+    <nav class="py-2 bg-light border-bottom">
+        <div class="container d-flex flex-wrap">
+            <ul class="nav me-auto">
+                <li class="nav-item"><a href="#" class="nav-link link-dark px-2 active" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Features</a></li>
+                <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Pricing</a></li>
+                <li class="nav-item"><a href="#" class="nav-link link-dark px-2">FAQs</a></li>
+                <li class="nav-item"><a href="#" class="nav-link link-dark px-2">About</a></li>
+            </ul>
+            <ul class="nav">
+                <li class="nav-item"><a href="/admin" class="nav-link link-dark px-2">Login</a></li>
+                <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Sign up</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="col-md-6">
+            <div class="logo"><img src="~/img/banner.png" /></div>
+        </div>
+    </div>
+    <header class="p-3 text-white mb-4 main-menu">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 me-4 text-white text-decoration-none">
+                    <i class="fas fa-home me-2"></i>Trang chủ
+                </a>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="#" class="nav-link text-white">Features</a></li>
+                    <li><a href="#" class="nav-link text-white">Pricing</a></li>
+                    <li><a href="#" class="nav-link text-white">FAQs</a></li>
+                    <li><a href="#" class="nav-link text-white">About</a></li>
+                </ul>
+
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                    <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+                </form>
+
+                <div class="text-end">
+                    <button type="button" class="btn btn-outline-light me-2">Login</button>
+                    <button type="button" class="btn btn-warning">Sign-up</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <partial name="_CookieConsentPartial" />
+    <main role="main" class="main">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="https://placehold.jp/ffffff/0d2d4d/360x80.png" class="mb-4" />
+                </div>
+                <div class="col-md-6">
+                    <div class="pb-2">
+                        <i class="fas fa-map-marker-alt me-2"></i>Số 171 Phan Đăng Lưu - Kiến An - Hải Phòng
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <i class="fas fa-phone me-2"></i>(84-225) 3876 338
+                        </div>
+                        <div class="col-md-6">
+                            <i class="fas fa-print me-2"></i>(84-225) 3876 893
+                        </div>
+                    </div>
+                    <div class="footer-social">
+                        <i class="p-2 fab fa-facebook-square"></i>
+                        <i class="p-2 fab fa-twitter-square"></i>
+                        <i class="p-2 fab fa-linkedin"></i>
+                        <i class="p-2 fab fa-instagram"></i>
+                        <i class="p-2 fab fa-pinterest-square"></i>
+                        <i class="p-2 fa fa-rss"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-divide"></div>
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div class="footer-bottom-link">
+                        <a href="#" class="ps-0">About us</a>
+                        <a href="#">Contact us</a>
+                        <a href="#">Help</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Disclaimer</a>
+                    </div>
+                    <div class="footer-copyright">© Copyright @DateTime.Now.Year Trường Đại học Hải Phòng</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,13 @@
+@model WebUI.Models.ComponentModel.Dropdown
+
+<div class="relative">
+    <button class="text-gray-700 px-4 py-3 w-full flex items-center justify-between font-medium" type="button" data-toggle="dropdown">
+        <div><i class="@Model.Icon mr-2"></i>@Model.Name</div><i class="fas fa-angle-down ml-2"></i>
+    </button>
+    <div class="@Model.MenuClassName" style="top: 58px">
+        @foreach (var item in Model.DropdownItems)
+        {
+            <a class="@item.ClassName" href="@item.Url" title="@item.Name">@item.Name</a>
+        }
+    </div>
+</div>

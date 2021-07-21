@@ -1,0 +1,69 @@
+@model ApplicationCore.Helpers.PaginatedList<ApplicationCore.Models.Posts.PostView>
+@using WebUI.Models.ComponentModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var breadcrumbs = new List<Breadcrumb>
+{
+        new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" },
+        new Breadcrumb { Id = 2, Name = ViewData["Title"].ToString(), Icon ="fas fa-tag", IsActive = true }
+    };
+}
+<partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
+<div class="md:flex md:-mx-1">
+    <div class="md:w-8/12 md:mx-1">
+        <div class="mb-2 flex items-center justify-between">
+            <form class="w-3/5 mr-2" action="/post/tag" method="get">
+                <input type="hidden" name="name" value="@ViewData["Title"]" />
+                <div class="relative">
+                    <input type="search" name="searchTerm" placeholder="Tìm kiếm..."
+                           class="pl-10 border pr-5 appearance-none h-10 w-full rounded-full text-sm focus:outline-none"
+                           autocomplete="off" value="@ViewBag.SearchTerm" />
+                    <button type="submit" class="absolute top-0 left-0 py-2 px-3">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+            <div class="relative">
+                <button class="text-purple-600 font-medium" data-toggle="dropdown">
+                    <i class="fas fa-sort-amount-up"></i> Sắp xếp
+                </button>
+                <div class="absolute w-32 shadow bg-white z-10 mt-2 hidden rounded">
+                    <div class="p-2 cursor-pointer hover:bg-gray-100">Lượt xem</div>
+                    <div class="p-2 cursor-pointer hover:bg-gray-100">Ngày cập nhật</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="px-4 py-2 bg-gray-800 font-bold text-white mb-21 flex justify-between items-center rounded-t mb-1">
+            @ViewData["Title"]
+        </h1>
+
+        @if (Model != null)
+        {
+            <partial name="/Views/Post/_Posts.cshtml" model="Model" />
+            <div class="mb-3">
+                @{
+                    var prevDisabled = !Model.HasPreviousPage ? "pointer-events-none bg-gray-500" : "";
+                    var nextDisabled = !Model.HasNextPage ? "pointer-events-none bg-gray-500" : "";
+                }
+
+                <a asp-action="tag" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
+                   asp-route-pageIndex="@(Model.PageIndex - 1)" class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white hover:text-white @prevDisabled shadow">
+                    <i class="fa fa-angle-double-left"></i> Trang trước
+                </a>
+                <a asp-action="tag" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
+                   asp-route-pageIndex="@(Model.PageIndex + 1)"
+                   class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 hover:text-white text-white float-right @nextDisabled shadow">
+                    Trang sau <i class="fa fa-angle-double-right"></i>
+                </a>
+            </div>
+        }
+        else
+        {
+            <partial name="/Views/Components/_Empty.cshtml" />
+        }
+    </div>
+    <div class="md:w-4/12 md:mx-1">
+        <partial name="/Views/Shared/_RandomPost.cshtml" model="ViewBag.RandomPosts" />
+    </div>
+</div>

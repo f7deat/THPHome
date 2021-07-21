@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ApplicationCore.Entities.Post>
+
+@if (Model != null && Model.Count() > 0)
+{
+    <div class="px-4 py-2 bg-gray-800 mt-2 text-white rounded-t mb-1"><i class="fab fa-buffer"></i> <b>Bài viết liên quan</b></div>
+    <div class="md:flex md:flex-wrap md:-mx-1">
+        @foreach (var item in Model)
+        {
+            <div class="md:w-4/12 md:px-1 mb-4">
+                <div class="h-full shadow flex flex-col rounded">
+                    <a href="/post/@($"{item.Url}-{item.Id}.html")" title="@item.Title">
+                        <div class="bg-black">
+                            <img src="@item.Thumbnail" class="w-full transition-opacity duration-700 ease-in-out hover:opacity-50 object-fit-cover" style="height: 200px" />
+                        </div>
+                    </a>
+                    <div class="flex-1 p-2">
+                        <a href="/post/@($"{item.Url}-{item.Id}.html")" title="@item.Title"><b>@item.Title</b></a>
+                        <div class="text-gray-600">
+                            @if (item.Description?.Length > 155)
+                            {
+                                @string.Format("{0}{1}", item.Description?.Substring(0, 155), "...")
+                            }
+                            else
+                            {
+                                @item.Description
+                            }
+                        </div>
+                    </div>
+                    <div class="bg-gray-100 rounded-b text-gray-600 flex justify-between py-1 px-2 items-center">
+                        <div class="post-info">
+                            <small class="mr-2">
+                                <i class="fas fa-clock"></i>
+                                @item.ModifiedDate
+                            </small>
+                            <small>
+                                <i class="fa fa-eye"></i> @(item.View.ToString("N0"))
+                            </small>
+                        </div>
+                        <div class="relative">
+                            <button type="button" class="bg-white w-10 h-10 flex justify-center items-center rounded-full border hover:bg-gray-900 hover:text-white transition duration-300" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-share-alt"></i></button>
+                            <ul class="hidden top-10 bg-transparent absolute z-10 p-0 m-0">
+                                <li class="w-10 h-10 flex bg-blue-300 items-center justify-center rounded-full cursor-pointer hover:bg-blue-400"><a data-title="Twitter" href="http://twitter.com/share?url=http://defzone.net/post/@($"{item.Url}-{item.Id}.html")" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-twitter"></i></a></li>
+                                <li class="w-10 h-10 flex bg-blue-500 items-center justify-center rounded-full cursor-pointer hover:bg-blue-600"><a data-title="Facebook" href="http://www.facebook.com/sharer.php?u=http://defzone.net/post/@($"{item.Url}-{item.Id}.html")" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-facebook"></i></a></li>
+                                <li class="w-10 h-10 flex bg-red-500 items-center justify-center rounded-full cursor-pointer hover:bg-red-600"><a data-title="Pinterest" href="http://pinterest.com/pin/create/button/?url=http://defzone.net/post/@($"{item.Url}-{item.Id}.html")" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-pinterest"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

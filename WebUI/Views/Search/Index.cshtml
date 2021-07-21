@@ -1,0 +1,79 @@
+﻿@model ApplicationCore.Helpers.PaginatedList<ApplicationCore.Models.Posts.PostView>
+@using WebUI.Models.ComponentModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var breadcrumbs = new List<Breadcrumb>
+    {
+        new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" },
+        new Breadcrumb { Id = 2, Name = "Tìm kiếm", Url = "/search", Icon ="fas fa-search" },
+        new Breadcrumb { Id = 3, Name = (ViewData["Title"] ?? "").ToString(), Url = $"/search?searchTerm={ViewData["Title"]}",
+        Icon ="fas fa-tag", IsActive = true }
+    };
+}
+
+<partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
+
+<div class="md:flex md:-px-1">
+    <div class="md:w-8/12 px-1">
+        <form class="flex mb-2" action="/search/index" method="get">
+            <div class="flex mr-2">
+                <div class="px-4 py-2 bg-gray-100 rounded-l border border-r-0"><i class="fa fa-tag"></i></div>
+                <input type="text" name="searchTerm" class="border rounded-r px-4 py-2" placeholder="Từ khóa"
+                       value="@ViewData["Title"]" required>
+            </div>
+
+            <select name="Id" asp-items="ViewBag.Id" class="border rounded px-4 py-2 mr-2">
+                <option value="">- Danh mục -</option>
+            </select>
+
+            <button type="submit"
+                    class="py-2 px-4 rounded bg-blue-500 hover:bg-blue-600 text-white hover:text-white mr-1">
+                <i class="fa fa-search"></i>
+            </button>
+            <button type="reset" class="py-2 px-4 rounded bg-gray-800 hover:bg-gray-900 text-white hover:text-white">
+                <i class="fa fa-ban"></i>
+            </button>
+        </form>
+        <h1 class="px-4 py-2 bg-gray-800 mt-2 text-white mb-0 font-bold rounded-t"><i class="fas fa-bar mr-2"></i>@ViewData["Title"]</h1>
+        <div class="p-1 bg-blue-200 text-white mb-1">
+            <i class="fa fa-chart-area"></i>
+            <a href="#" class="text-white">Lượt xem <i class="fa fa-arrow-alt-circle-up"></i></a> |
+            <a href="#" class="text-white">Thời gian <i class="fa fa-arrow-alt-circle-up"></i></a>
+        </div>
+
+        <div class="mb-3">
+            @if (Model == null || Model.Count == 0)
+            {
+                <partial name="/Views/Components/_Empty.cshtml" />
+            }
+            else
+            {
+                <partial name="/Views/Post/_Posts.cshtml" model="Model" />
+
+                <div class="flex justify-between">
+                    @{
+                        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    }
+                    <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-keyword="@ViewData["Title"]"
+                       class="px-4 py-1 bg-gray-800 text-white hover:bg-gray-900 hover:text-white rounded @prevDisabled shadow">
+                        <i class="fa fa-angle-double-left"></i> Trang trước
+                    </a>
+                    <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-keyword="@ViewData["Title"]"
+                       class="px-4 py-1 bg-gray-800 text-white hover:bg-gray-900 hover:text-white rounded @nextDisabled shadow">
+                        Trang sau <i class="fa fa-angle-double-right"></i>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <script async src="https://cse.google.com/cse.js?cx=002240945347869652427:rx5lfjljzba"></script>
+        <div class="px-4 py-2 bg-gray-800 text-white font-bold rounded-t"><i class="fas fa-search mr-2"></i>Tìm kiếm bằng google</div>
+        <div class="border shadow-sm">
+            <div class="gcse-search"></div>
+        </div>
+    </div>
+    <div class="md:w-4/12 px-1">
+        <partial name="/Views/Shared/_RandomPost.cshtml" model="ViewBag.RandomPosts" />
+    </div>
+</div>
