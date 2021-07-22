@@ -28,7 +28,7 @@ namespace ApplicationCore.Interfaces.IService
         Task<Post> FindAsync(long id);
         Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0);
         Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int pageIndex, int pageSize);
-        Task<List<IGrouping<string, PostView>>> GetListByAllCategoryAsync();
+        Dictionary<string, IEnumerable<PostView>> GetListByAllCategoryAsync();
         Task<dynamic> EditAsync(Post post);
         Task<int> IncreaseViewAsync(Post post);
         Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int pageIndex);

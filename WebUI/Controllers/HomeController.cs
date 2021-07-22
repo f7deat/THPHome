@@ -23,31 +23,19 @@ namespace WebUI.Controllers
     {
         private readonly IPostService _postService;
         private readonly IBannerService _bannerService;
-        private readonly ITelegramService _telegramService;
-        public HomeController(IPostService postService, IBannerService bannerService, ITelegramService telegramService)
+        public HomeController(IPostService postService, IBannerService bannerService)
         {
             _postService = postService;
             _bannerService = bannerService;
-            _telegramService = telegramService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _postService.GetListByAllCategoryAsync());
+            return View();
         }
 
         public IActionResult Privacy() => View();
         public IActionResult Feedback() => View();
-        [HttpPost]
-        public async Task<JsonResult> Feedback(Feedback feedback)
-        {
-            if (feedback.Name == null || feedback.Message == null)
-            {
-                return Json(false);
-            }
-            var message = await JsonHelper.SerializeAsync(feedback);
-            return Json(await _telegramService.SendMessageAsync(message));
-        }
 
         public IActionResult SiteMap() => View();
 

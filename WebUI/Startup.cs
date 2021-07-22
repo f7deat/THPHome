@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.Net.Http.Headers;
 using ExternalAPI.Interfaces;
-using ExternalAPI.Telegram;
 using ApplicationCore.Interfaces;
 
 namespace WebUI
@@ -45,8 +44,6 @@ namespace WebUI
             services.AddScoped<IBannerService, BannerService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ICommentRepository, CommentRepository>();
-
-            services.AddHttpClient<ITelegramService, TelegramService>();
 
             services.AddControllersWithViews();
             services.AddSession();
