@@ -31,10 +31,9 @@ namespace WebUI.Controllers
             _telegramService = telegramService;
         }
 
-        public async Task<IActionResult> Index(int? pageIndex)
+        public async Task<IActionResult> Index()
         {
-            ViewBag.RandomPosts = await _postService.GetRandomPostsAsync();
-            return View(await _postService.GetListAsync(pageIndex ?? 1));
+            return View(await _postService.GetListByAllCategoryAsync());
         }
 
         public IActionResult Privacy() => View();

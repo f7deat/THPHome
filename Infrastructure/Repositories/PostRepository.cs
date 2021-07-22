@@ -247,5 +247,27 @@ namespace Infrastructure.Repositories
                         };
             return await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
         }
+
+        public async Task<List<IGrouping<string, PostView>>> GetListByAllCategoryAsync()
+        {
+            var query = from a in _context.Posts
+                        join b in _context.PostCategories on a.Id equals b.PostId
+                        join c in _context.Categories on b.CategoryId equals c.Id
+                        orderby a.ModifiedDate descending
+                        select new PostView
+                        {
+                            Id = a.Id,
+                            CategoryId = b.CategoryId,
+                            CategoryName = c.Name,
+                            Description = a.Description,
+                            ModifiedDate = a.ModifiedDate,
+                            Thumbnail = a.Thumbnail,
+                            Title = a.Title,
+                            View = a.View
+                        };
+            return await query.Take(5).GroupBy(x => x.CategoryName).ToListAsync();
+                        
+
+        }
     }
 }

@@ -7,6 +7,7 @@ using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApplicationCore.Services
@@ -120,5 +121,10 @@ namespace ApplicationCore.Services
         public Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int pageIndex, int pageSize) => _postRepository.SearchAsync(searchTerm, categoryId, pageIndex, pageSize);
 
         public Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int pageIndex, int pageSize) => _postRepository.GetListByCategoryAsync(normalizeName, pageIndex, pageSize);
+
+        public Task<List<IGrouping<string, PostView>>> GetListByAllCategoryAsync()
+        {
+            return _postRepository.GetListByAllCategoryAsync();
+        }
     }
 }
