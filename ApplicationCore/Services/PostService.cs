@@ -122,7 +122,7 @@ namespace ApplicationCore.Services
 
         public Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int pageIndex, int pageSize) => _postRepository.GetListByCategoryAsync(normalizeName, pageIndex, pageSize);
 
-        public Dictionary<string, IEnumerable<PostView>> GetListByAllCategoryAsync()
+        public Task<List<CategoryWithPost>> GetListByAllCategoryAsync()
         {
             return _postRepository.GetListByAllCategoryAsync();
         }

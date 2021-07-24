@@ -16,6 +16,8 @@ namespace ApplicationCore.Entities
         [StringLength(300)]
         public string Thumbnail { get; set; }
         public int? Status { get; set; }
+        public int Index { get; set; }
+        public bool IsDisplayOnHome { get; set; }
 
     }
     public enum CategoryType

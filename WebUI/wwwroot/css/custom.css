@@ -4,6 +4,11 @@
     --dark: #0A142F;
 }
 
+a {
+    text-decoration: none;
+    color: var(--primary);
+}
+
 .main-menu {
     background-color: var(--dark);
 }
@@ -37,4 +42,34 @@
 .footer-copyright {
     padding-top: 1rem;
     opacity: 0.7;
+}
+
+.title {
+    padding: 0.5rem 1rem;
+    background-color: var(--dark);
+    color: #fff;
+    font-weight: bold;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.title a {
+    text-decoration: none;
+}
+
+.box {
+    border: 1px solid #e1e1e1;
+    border-radius: 0.25rem;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+.box:hover {
+    background-color: #fafafa;
+}
+
+.box .icon {
+    font-size: 1.125rem;
 }

@@ -1,4 +1,4 @@
-import { Menu } from "antd"
+﻿import { Menu } from "antd"
 import React from "react"
 import {
     DashboardOutlined,
@@ -7,7 +7,8 @@ import {
     ApartmentOutlined,
     FileImageOutlined,
     AlertOutlined,
-    CommentOutlined
+    CommentOutlined,
+    SettingOutlined
 } from '@ant-design/icons';
 import { Link } from "react-router-dom";
 
@@ -47,9 +48,9 @@ export const MenuList = () => {
             <Menu.Item key="11" icon={<CommentOutlined />}>
                 <Link to="/admin/comment/list">Comment</Link>
             </Menu.Item>
-            <SubMenu key="sub3" icon={<UserOutlined />} title="Game">
+            <SubMenu key="sub3" icon={<SettingOutlined />} title="Cài đặt">
                 <Menu.Item key="12">
-                    <Link to="/admin/game/list">List Game</Link>
+                    <Link to="/admin/setting/menu">Menu</Link>
                 </Menu.Item>
             </SubMenu>
         </Menu>

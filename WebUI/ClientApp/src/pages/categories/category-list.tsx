@@ -1,4 +1,4 @@
-import { Button, Col, Drawer, Empty, Input, message, Modal, Popconfirm, Row, Select, Space, Switch, Table, } from "antd";
+import { Button, Checkbox, Col, Drawer, Empty, Input, message, Modal, Popconfirm, Row, Select, Space, Switch, Table, } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -20,6 +20,7 @@ export const CategoryList = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [id, setId] = useState(0);
     const [category, setCategory] = useState<any>();
+    const [displayOnHome, setDisplayOnHome] = useState<boolean>(false);
 
     const getList = (id: number) => {
         axios.get(`/api/category/get-list/${id}`).then((response) => {
@@ -50,6 +51,7 @@ export const CategoryList = () => {
     }
 
     const handleOk = () => {
+        category.isDisplayOnHome = displayOnHome;
         if (category.id) {
             update(category);
         } else {
@@ -66,11 +68,13 @@ export const CategoryList = () => {
     };
 
     const handleAdd = () => {
+        setDisplayOnHome(false)
         setIsModalVisible(true);
         setCategory({})
     };
 
     const handleEdit = (category: any) => {
+        setDisplayOnHome(category.isDisplayOnHome)
         setCategory(category);
         setIsModalVisible(true);
     };
@@ -267,7 +271,11 @@ export const CategoryList = () => {
                             />
                         ) : (
                             <Empty />
-                        )}
+                            )}
+                        <div>
+                            <Checkbox onChange={(e) => setDisplayOnHome(e.target.checked)} value={displayOnHome}>Hiển thị trên trang chủ</Checkbox>
+                        </div>
+                        
                     </Col>
                 </Row>
             </Modal>

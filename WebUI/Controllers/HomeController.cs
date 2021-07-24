@@ -29,9 +29,11 @@ namespace WebUI.Controllers
             _bannerService = bannerService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            ViewBag.Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
+            ViewBag.LastedList = await _postService.GetLastedListAsync(5);
+            return View(await _postService.GetListByAllCategoryAsync());
         }
 
         public IActionResult Privacy() => View();

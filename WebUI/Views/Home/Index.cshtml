@@ -1,5 +1,9 @@
-﻿@{
+﻿@model List<ApplicationCore.Models.Posts.CategoryWithPost>
+
+@{
     ViewData["Title"] = "Trang chủ";
+    var slides = ViewBag.Slides as IEnumerable<ApplicationCore.Entities.Banner>;
+    int i = 0;
 }
 
 <div class="row mb-4">
@@ -11,15 +15,13 @@
                 <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
             <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="https://placehold.jp/3d4070/ffffff/1000x350.png" class="d-block w-100" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://placehold.jp/3d4070/ffffff/1000x350.png" class="d-block w-100" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://placehold.jp/3d4070/ffffff/1000x350.png" class="d-block w-100" alt="...">
-                </div>
+                @foreach (var item in slides)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <img src="@item.Image" class="d-block w-100" alt="...">
+                    </div>
+                    @(i++)
+                }
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -35,58 +37,102 @@
         <div class="title">ĐIỀU HÀNH HP-eUniversity</div>
         <div class="row">
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="http://lich.dhhp.edu.vn/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="name text-truncate" data-bs-toggle="tooltip" data-bs-placement="top" title="Lịch tuần">Lịch tuần</div>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="http://qlvb.hpnet.vn/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="name text-truncate">HP-eOffice</div>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="http://mail.dhhp.edu.vn/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="name text-truncate">HP-Email</div>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="http://sv.dhhp.vn/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="name text-truncate">HP-Sinh viên</div>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="http://dhhp.vn/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="name text-truncate">HP-Giáo viên</div>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="http://lib.dhhp.edu.vn/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <div class="name text-truncate">HP-TTTV</div>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="http://tckh.dhhp.vn/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-pen-square"></i>
+                        </div>
+                        <div class="name text-truncate">Tạp chí khoa học</div>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="https://dhhp.edu.vn/vi/trang-chu/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-passport"></i>
+                        </div>
+                        <div class="name text-truncate">Văn bản</div>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-4">
-                <div class="icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="name">Lịch tuần</div>
+                <a href="http://tttn.myo-web.com/" target="_blank">
+                    <div class="box">
+                        <div class="icon">
+                            <i class="fas fa-id-card-alt"></i>
+                        </div>
+                        <div class="name text-truncate">Văn bằng</div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
@@ -94,20 +140,24 @@
 
 <div class="row">
     <div class="col-md-8">
-        @*@foreach (var item in Model)
-        {
-            <div class="wrapper">
-                <div class="title">@item.Key</div>
-                <div class="content">
-                    @foreach (var post in item)
-                    {
-                        <div class="item">@post.Title</div>
-                    }
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6">
+                    <div class="title"><a href="/category/@item.CategoryId" class="text-white">@item.CategoryName</a></div>
+                    <div class="content">
+                        @foreach (var post in item.ListPosts)
+                        {
+                            <div class="list-group border-top-0">
+                                <a href="@post.Url" class="list-group-item list-group-item-action">@post.Title</a>
+                            </div>
+                        }
+                    </div>
                 </div>
-            </div>
-        }*@
+            }
+        </div>
     </div>
     <div class="col-md-4">
-        <div class="title"></div>
+        <partial name="/Views/Shared/_RandomPost.cshtml" model="ViewBag.LastedList" />
     </div>
 </div>

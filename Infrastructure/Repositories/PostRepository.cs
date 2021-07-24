@@ -107,18 +107,19 @@ namespace Infrastructure.Repositories
         }
 
         public IQueryable<PostView> GetListInCategory(int categoryId, string searchTerm) => from a in _context.PostCategories.Where(x => x.CategoryId == categoryId)
-                                                                                        join b in _context.Posts on a.PostId equals b.Id
-                                                                                        where string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)
-                                                                                        orderby b.ModifiedDate descending
-                                                                                        select new PostView { 
-                                                                                            Id = b.Id,
-                                                                                            Description = b.Description,
-                                                                                            ModifiedDate = b.ModifiedDate,
-                                                                                            Thumbnail = b.Thumbnail,
-                                                                                            Title = b.Title,
-                                                                                            Url = b.Url,
-                                                                                            View = b.View
-                                                                                        };
+                                                                                            join b in _context.Posts on a.PostId equals b.Id
+                                                                                            where string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)
+                                                                                            orderby b.ModifiedDate descending
+                                                                                            select new PostView
+                                                                                            {
+                                                                                                Id = b.Id,
+                                                                                                Description = b.Description,
+                                                                                                ModifiedDate = b.ModifiedDate,
+                                                                                                Thumbnail = b.Thumbnail,
+                                                                                                Title = b.Title,
+                                                                                                Url = b.Url,
+                                                                                                View = b.View
+                                                                                            };
 
         public async Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0)
         {
@@ -248,26 +249,34 @@ namespace Infrastructure.Repositories
             return await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
-        public Dictionary<string, IEnumerable<PostView>> GetListByAllCategoryAsync()
+        public async Task<List<CategoryWithPost>> GetListByAllCategoryAsync()
         {
-            var query = from a in _context.Posts
-                        join b in _context.PostCategories on a.Id equals b.PostId
-                        join c in _context.Categories on b.CategoryId equals c.Id
-                        orderby a.ModifiedDate descending
-                        select new PostView
-                        {
-                            Id = a.Id,
-                            CategoryId = b.CategoryId,
-                            CategoryName = c.Name,
-                            Description = a.Description,
-                            ModifiedDate = a.ModifiedDate,
-                            Thumbnail = a.Thumbnail,
-                            Title = a.Title,
-                            View = a.View
-                        };
-            return query.GroupBy(x => x.CategoryName).ToDictionary(x => x.Key, x => x.Select(x => x).Take(5));
-                        
-
+            var returnValue = new List<CategoryWithPost>();
+            var categories = await _context.Categories.OrderBy(x => x.Index).Where(x => x.IsDisplayOnHome == true).ToListAsync();
+            foreach (var item in categories)
+            {
+                var posts = from a in _context.PostCategories
+                            join b in _context.Posts on a.PostId equals b.Id
+                            where a.CategoryId == item.Id
+                            orderby b.ModifiedDate
+                            select new PostView
+                            {
+                                Id = b.Id,
+                                Description = b.Description,
+                                ModifiedDate = b.ModifiedDate,
+                                Thumbnail = b.Thumbnail,
+                                Title = b.Title,
+                                View = b.View,
+                                Url = b.Url
+                            };
+                returnValue.Add(new CategoryWithPost
+                {
+                    CategoryId = item.Id,
+                    CategoryName = item.Name,
+                    ListPosts = posts.ToList()
+                });
+            }
+            return returnValue;
         }
     }
 }

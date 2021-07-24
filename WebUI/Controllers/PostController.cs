@@ -19,15 +19,13 @@ namespace WebUI.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IBannerService _bannerService;
         private readonly ICommentService _commentService;
-        private readonly ITelegramService _telegramService;
-        public PostController(ApplicationDbContext context, IPostService postService, ICategoryService categoryService, IBannerService bannerService, ICommentService commentService, ITelegramService telegramService)
+        public PostController(ApplicationDbContext context, IPostService postService, ICategoryService categoryService, IBannerService bannerService, ICommentService commentService)
         {
             _context = context;
             _postService = postService;
             _categoryService = categoryService;
             _bannerService = bannerService;
             _commentService = commentService;
-            _telegramService = telegramService;
         }
 
         [Route("post/{url}-{id}.html")]
@@ -62,12 +60,6 @@ namespace WebUI.Controllers
             ViewBag.ListComment = await _commentService.GetListInPostAsync(id ?? 0);
 
             return View(post);
-        }
-        [HttpPost]
-        public async Task<JsonResult> SendReport(int id, string message)
-        {
-            var post = await _postService.FindAsync(id);
-            return Json(await _telegramService.SendMessageAsync($"Post: {post.Title} - {post.Id} \n Message: {message}"));
         }
 
         [Route("post/tag")]

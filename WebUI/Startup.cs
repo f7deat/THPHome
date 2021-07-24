@@ -44,6 +44,8 @@ namespace WebUI
             services.AddScoped<IBannerService, BannerService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IMenuRepository, MenuRepository>();
 
             services.AddControllersWithViews();
             services.AddSession();

@@ -6,11 +6,10 @@ import BannerList from "./pages/banners/banner-list"
 import { CategoryList } from "./pages/categories/category-list"
 import CommentList from "./pages/comments/comment-list"
 import { Dashboard } from "./pages/dashboard"
-import GameList from "./pages/games/game-list"
-import GameItemList from "./pages/games/items/game-item-list"
 import { PostList } from "./pages/posts/post-list"
 import PostSetting from "./pages/posts/post-setting"
 import RoleList from "./pages/roles/role-list"
+import MenuSetting from "./pages/settings/menus/menu-setting"
 import Profile from "./pages/users/profile"
 import { UserEdit, UserList } from "./pages/users/user-type"
 
@@ -66,12 +65,8 @@ const routes = [
       main: () => <CategoryList />
     },
     {
-        path: `${_preFix}/game/list`,
-        main: () => <GameList />
-    },
-    {
-        path: `${_preFix}/game/item/:id`,
-        main: () => <GameItemList />
+        path: `${_preFix}/setting/menu`,
+        main: () => <MenuSetting />
     }
   ];
 
@@ -79,7 +74,7 @@ export const AppRouter = () => {
     return (
         <Switch>
             {routes.map((route, index) => (
-              <Route key={index} path={route.path} exact={route.exact} children={<route.main />} />
+                <Route key={index} path={route.path} exact={route.exact || true} children={<route.main />} />
             ))}
         </Switch>
     )

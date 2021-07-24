@@ -22,5 +22,6 @@ namespace Infrastructure
         public virtual DbSet<Banner> Banners { get; set; }
         public virtual DbSet<PostCategory> PostCategories { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Menu> Menus { get; set; }
     }
 }
