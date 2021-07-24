@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.Net.Http.Headers;
-using ExternalAPI.Interfaces;
 using ApplicationCore.Interfaces;
 
 namespace WebUI
@@ -46,6 +45,8 @@ namespace WebUI
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IPartnerService, PartnerService>();
+            services.AddScoped<IPartnerRepository, PartnerRepository>();
 
             services.AddControllersWithViews();
             services.AddSession();

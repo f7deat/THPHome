@@ -1,9 +1,11 @@
-﻿@model List<ApplicationCore.Models.Posts.CategoryWithPost>
+﻿@using ApplicationCore.Entities; 
+@model List<ApplicationCore.Models.Posts.CategoryWithPost>
 
 @{
     ViewData["Title"] = "Trang chủ";
-    var slides = ViewBag.Slides as IEnumerable<ApplicationCore.Entities.Banner>;
+    var slides = ViewBag.Slides as IEnumerable<Banner>;
     int i = 0;
+    var boxMenu = ViewBag.BoxMenu as IEnumerable<Menu>;
 }
 
 <div class="row mb-4">
@@ -36,104 +38,19 @@
     <div class="col-md-4">
         <div class="title">ĐIỀU HÀNH HP-eUniversity</div>
         <div class="row">
-            <div class="col-md-4">
-                <a href="http://lich.dhhp.edu.vn/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-calendar"></i>
+            @foreach (var item in boxMenu)
+            {
+                <div class="col-md-4">
+                    <a href="@item.Url" target="_blank">
+                        <div class="box">
+                            <div class="icon">
+                                @Html.Raw(item.Icon)
+                            </div>
+                            <div class="name text-truncate" data-bs-toggle="tooltip" title="@item.Name">@item.Name</div>
                         </div>
-                        <div class="name text-truncate" data-bs-toggle="tooltip" data-bs-placement="top" title="Lịch tuần">Lịch tuần</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="http://qlvb.hpnet.vn/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="name text-truncate">HP-eOffice</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="http://mail.dhhp.edu.vn/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="name text-truncate">HP-Email</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="http://sv.dhhp.vn/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="name text-truncate">HP-Sinh viên</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="http://dhhp.vn/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="name text-truncate">HP-Giáo viên</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="http://lib.dhhp.edu.vn/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-door-open"></i>
-                        </div>
-                        <div class="name text-truncate">HP-TTTV</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="http://tckh.dhhp.vn/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-pen-square"></i>
-                        </div>
-                        <div class="name text-truncate">Tạp chí khoa học</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="https://dhhp.edu.vn/vi/trang-chu/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-passport"></i>
-                        </div>
-                        <div class="name text-truncate">Văn bản</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="http://tttn.myo-web.com/" target="_blank">
-                    <div class="box">
-                        <div class="icon">
-                            <i class="fas fa-id-card-alt"></i>
-                        </div>
-                        <div class="name text-truncate">Văn bằng</div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+            }
         </div>
     </div>
 </div>

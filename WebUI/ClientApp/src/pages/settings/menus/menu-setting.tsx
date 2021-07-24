@@ -83,6 +83,10 @@ const MenuSetting = () => {
             {
                 name: ['index'],
                 value: record.index
+            },
+            {
+                name: ['icon'],
+                value: record.icon
             }
         ])
         setVisible(true)
@@ -118,6 +122,10 @@ const MenuSetting = () => {
             render: (record: any) => (
                 <Link to={`/admin/game/item/${record.id}`}>{record.name}</Link>
             )
+        },
+        {
+            title: 'Type',
+            dataIndex: 'type'
         },
         {
             title: '',
@@ -175,12 +183,18 @@ const MenuSetting = () => {
 
                     <Form.Item name="type" label="Loại" rules={[{ required: true }]}>
                         <Select>
-                            <Option value="0">Menu chính</Option>
-                            <Option value="1">Menu Trên</Option>
+                            <Option value="0">Default</Option>
+                            <Option value="1">Top Menu</Option>
+                            <Option value="2">Main Menu</Option>
+                            <Option value="3">Box Menu</Option>
                         </Select>
                     </Form.Item>
 
                     <Form.Item label="Thứ tự" name="index">
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item label="Icon" name="icon">
                         <Input />
                     </Form.Item>
 

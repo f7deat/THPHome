@@ -1,0 +1,23 @@
+﻿@using ApplicationCore.Entities
+@model IEnumerable<Menu>
+
+@{
+    Layout = null;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    <nav class="py-2 bg-light border-bottom">
+        <div class="container d-flex flex-wrap">
+            <ul class="nav me-auto">
+                @foreach (var item in Model)
+                {
+                    <li class="nav-item"><a href="@item.Url" class="nav-link link-dark px-2">@item.Name</a></li>
+                }
+            </ul>
+            <ul class="nav">
+                <li class="nav-item"><a href="/admin" class="nav-link link-dark px-2">Đăng nhập/Đăng ký</a></li>
+            </ul>
+        </div>
+    </nav>
+}

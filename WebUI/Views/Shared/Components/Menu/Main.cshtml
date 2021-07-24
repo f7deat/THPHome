@@ -1,0 +1,16 @@
+﻿@using ApplicationCore.Entities
+@model IEnumerable<Menu>
+
+@{
+    Layout = null;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        @foreach (var item in Model)
+        {
+            <li><a href="@item.Url" class="nav-link text-white">@item.Name</a></li>
+        }
+    </ul>
+}

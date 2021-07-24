@@ -8,7 +8,6 @@ using WebUI.Models;
 using System.Diagnostics;
 using System.Collections.Generic;
 using ApplicationCore.Interfaces.IService;
-using ExternalAPI.Interfaces;
 
 namespace WebUI.Controllers
 {

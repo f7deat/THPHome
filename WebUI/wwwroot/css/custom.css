@@ -73,3 +73,8 @@ a {
 .box .icon {
     font-size: 1.125rem;
 }
+
+.carousel-item img {
+    height: 444px;
+    object-fit: cover;
+}

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using ApplicationCore.Entities
+
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -15,11 +17,14 @@
 </head>
 <body>
 
-    <partial name="/Views/Component/TopMenu.cshtml" />
+    @await Component.InvokeAsync("Menu", new { type = MenuType.TOP })
 
     <div class="container">
-        <div class="col-md-6">
+        <div class="flex items-center justify-between">
             <div class="logo"><img src="~/img/banner.png" /></div>
+            <div>
+                <img src="~/img/logo-right.png" />
+            </div>
         </div>
     </div>
     <header class="p-3 text-white mb-4 main-menu">
@@ -29,20 +34,14 @@
                     <i class="fas fa-home me-2"></i>Trang chủ
                 </a>
 
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="#" class="nav-link text-white">Features</a></li>
-                    <li><a href="#" class="nav-link text-white">Pricing</a></li>
-                    <li><a href="#" class="nav-link text-white">FAQs</a></li>
-                    <li><a href="#" class="nav-link text-white">About</a></li>
-                </ul>
+                @await Component.InvokeAsync("Menu", new { type = MenuType.MAIN })
 
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                    <input type="search" class="form-control form-control-dark" placeholder="Nhập từ khóa..." aria-label="Search">
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 flex items-center" action="/search">
+                    <input type="search" class="form-control form-control-dark mr-2" placeholder="Nhập từ khóa..." aria-label="Search" name="searchTerm">
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-outline-light"><i class="fas fa-search"></i></button>
+                    </div>
                 </form>
-
-                <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2"><i class="fas fa-search"></i></button>
-                </div>
             </div>
         </div>
     </header>

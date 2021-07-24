@@ -10,7 +10,6 @@ using ApplicationCore.Entities;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
-using ExternalAPI.Interfaces;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,16 +22,19 @@ namespace WebUI.Controllers
     {
         private readonly IPostService _postService;
         private readonly IBannerService _bannerService;
-        public HomeController(IPostService postService, IBannerService bannerService)
+        private readonly IMenuService _menuService;
+        public HomeController(IPostService postService, IBannerService bannerService, IMenuService menuService)
         {
             _postService = postService;
             _bannerService = bannerService;
+            _menuService = menuService;
         }
 
         public async Task<IActionResult> Index()
         {
             ViewBag.Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
             ViewBag.LastedList = await _postService.GetLastedListAsync(5);
+            ViewBag.BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
             return View(await _postService.GetListByAllCategoryAsync());
         }
 

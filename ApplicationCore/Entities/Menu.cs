@@ -22,6 +22,7 @@ namespace ApplicationCore.Entities
     {
         DEFAULT,
         TOP,
-        MAIN
+        MAIN,
+        BOX
     }
 }
