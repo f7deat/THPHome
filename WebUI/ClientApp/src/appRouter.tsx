@@ -6,6 +6,7 @@ import BannerList from "./pages/banners/banner-list"
 import { CategoryList } from "./pages/categories/category-list"
 import CommentList from "./pages/comments/comment-list"
 import { Dashboard } from "./pages/dashboard"
+import PartnerSetting from "./pages/partners/partner-setting"
 import { PostList } from "./pages/posts/post-list"
 import PostSetting from "./pages/posts/post-setting"
 import RoleList from "./pages/roles/role-list"
@@ -67,6 +68,10 @@ const routes = [
     {
         path: `${_preFix}/setting/menu`,
         main: () => <MenuSetting />
+    },
+    {
+        path: `${_preFix}/partner`,
+        main: () => <PartnerSetting />
     }
   ];
 

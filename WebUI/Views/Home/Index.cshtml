@@ -1,4 +1,4 @@
-﻿@using ApplicationCore.Entities; 
+﻿@using ApplicationCore.Entities;
 @model List<ApplicationCore.Models.Posts.CategoryWithPost>
 
 @{
@@ -6,7 +6,10 @@
     var slides = ViewBag.Slides as IEnumerable<Banner>;
     int i = 0;
     var boxMenu = ViewBag.BoxMenu as IEnumerable<Menu>;
+    var partners = ViewBag.Partner as IEnumerable<Partner>;
 }
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/tiny-slider.css">
 
 <div class="row mb-4">
     <div class="col-md-8">
@@ -78,3 +81,27 @@
         <partial name="/Views/Shared/_RandomPost.cshtml" model="ViewBag.LastedList" />
     </div>
 </div>
+
+<div class="partner border-t border-b border-gray-700 py-2">
+    <div class="my-slider">
+        @foreach (var item in partners)
+        {
+            <img src="@item.Logo" alt="Logo" />
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"></script>
+    <script>
+        var slider = tns({
+            container: '.my-slider',
+            items: 6,
+            slideBy: 'page',
+            autoplay: true,
+            gutter: 16,
+            controls: false,
+            autoplayButtonOutput: false
+        });
+    </script>
+}

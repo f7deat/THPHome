@@ -43,7 +43,7 @@ export const MenuList = () => {
                 </Menu.Item>
             </SubMenu>
             <Menu.Item key="10" icon={<AlertOutlined />}>
-                <Link to="/admin/affiliate/list">Affiliate</Link>
+                <Link to="/admin/partner">Partner</Link>
             </Menu.Item>
             <Menu.Item key="11" icon={<CommentOutlined />}>
                 <Link to="/admin/comment/list">Comment</Link>

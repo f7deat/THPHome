@@ -8,9 +8,25 @@
 @if (Model != null && Model.Count() > 0)
 {
     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        @foreach (var item in Model)
+        @foreach (var item in Model.Where(x => x.ParrentId == 0))
         {
-            <li><a href="@item.Url" class="nav-link text-white">@item.Name</a></li>
+            var childs = Model.Where(x => x.ParrentId == item.Id);
+            if (childs.Count() > 0)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">@item.Name</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @foreach (var child in childs)
+                        {
+                            <li><a class="dropdown-item" href="@child.Url">@child.Name</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item"><a href="@item.Url" class="nav-link text-white">@item.Name</a></li>
+            }
         }
     </ul>
 }

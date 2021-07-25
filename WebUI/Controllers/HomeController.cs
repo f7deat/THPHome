@@ -23,11 +23,13 @@ namespace WebUI.Controllers
         private readonly IPostService _postService;
         private readonly IBannerService _bannerService;
         private readonly IMenuService _menuService;
-        public HomeController(IPostService postService, IBannerService bannerService, IMenuService menuService)
+        private readonly IPartnerService _partnerService;
+        public HomeController(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService)
         {
             _postService = postService;
             _bannerService = bannerService;
             _menuService = menuService;
+            _partnerService = partnerService;
         }
 
         public async Task<IActionResult> Index()
@@ -35,6 +37,7 @@ namespace WebUI.Controllers
             ViewBag.Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
             ViewBag.LastedList = await _postService.GetLastedListAsync(5);
             ViewBag.BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
+            ViewBag.Partner = await _partnerService.GetListAsync();
             return View(await _postService.GetListByAllCategoryAsync());
         }
 

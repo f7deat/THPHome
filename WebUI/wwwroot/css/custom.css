@@ -1,12 +1,17 @@
 ﻿:root {
     --primary: #727cf5;
     --danger: #fa5c7c;
-    --dark: #0A142F;
+    --dark: #0e1f4b;
+    --red: #D02929;
 }
 
 a {
     text-decoration: none;
     color: var(--primary);
+}
+
+input:focus {
+    outline: none;
 }
 
 .main-menu {
@@ -77,4 +82,54 @@ a {
 .carousel-item img {
     height: 444px;
     object-fit: cover;
+}
+
+.my-slider img {
+    height: 80px;
+    object-fit: contain;
+}
+
+.nav-brand {
+    background-color: var(--red);
+}
+
+.top-menu {
+    margin-bottom: 0.5rem;
+}
+
+.top-menu .nav {
+    background-color: var(--dark);
+}
+
+.top-menu a {
+    color: #fff;
+    font-weight: 500;
+}
+
+.top-menu a:hover {
+    color: #fff;
+}
+
+    .top-menu .nav-item:hover {
+        background-color: var(--red);
+        transition: all;
+        transition-duration: 500ms;
+    }
+
+    .top-menu-category {
+        padding-right: 3rem;
+    }
+
+.top-menu-category .nav-item:first-child {
+    background-color: var(--red);
+}
+
+.main-menu .nav-link {
+    padding: 1rem;
+}
+
+.main-menu .nav-link:hover {
+    background-color: var(--red);
+    transition: all;
+    transition-duration: 500ms;
 }

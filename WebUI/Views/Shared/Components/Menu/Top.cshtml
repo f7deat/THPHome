@@ -7,17 +7,22 @@
 
 @if (Model != null && Model.Count() > 0)
 {
-    <nav class="py-2 bg-light border-bottom">
-        <div class="container d-flex flex-wrap">
-            <ul class="nav me-auto">
-                @foreach (var item in Model)
-                {
-                    <li class="nav-item"><a href="@item.Url" class="nav-link link-dark px-2">@item.Name</a></li>
-                }
-            </ul>
-            <ul class="nav">
-                <li class="nav-item"><a href="/admin" class="nav-link link-dark px-2">Đăng nhập/Đăng ký</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div class="container">
+        <nav class="flex hidden md:block top-menu text-sm">
+            <div class="flex justify-end">
+                <ul class="nav top-menu-category">
+                    @foreach (var item in Model)
+                    {
+                        <li class="nav-item"><a href="@item.Url" class="nav-link link-dark px-2">@item.Name</a></li>
+                    }
+
+                </ul>
+                <ul class="nav text-uppercase pr-2">
+                    <li class="nav-item"><a href="/" class="nav-link link-dark px-2">Tiếng việt</a></li>
+                    <li class="nav-item"><a href="?lang=en" class="nav-link link-dark px-2">Tiếng anh</a></li>
+                    <li class="nav-item"><a href="/admin" class="nav-link link-dark px-2">Đăng nhập</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
 }
