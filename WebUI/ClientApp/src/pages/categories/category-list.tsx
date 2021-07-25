@@ -273,7 +273,7 @@ export const CategoryList = () => {
                             <Empty />
                             )}
                         <div>
-                            <Checkbox onChange={(e) => setDisplayOnHome(e.target.checked)} value={displayOnHome}>Hiển thị trên trang chủ</Checkbox>
+                            <Checkbox onChange={(e) => setDisplayOnHome(e.target.checked)} checked={displayOnHome}>Hiển thị trên trang chủ</Checkbox>
                         </div>
                         
                     </Col>

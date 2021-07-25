@@ -23,5 +23,39 @@ namespace WebUI.Controllers
             _categoryService = categoryService;
             _postService = postService;
         }
+        public async Task<IActionResult> Index(Argument argument)
+        {
+            ViewData["Title"] = "Danh mục";
+            argument.PageSize = 12;
+            return View(await _categoryService.GetParrentAsync(argument.Id ?? 0));
+        }
+        public async Task<IActionResult> Details(Argument argument)
+        {
+            var category = await _categoryService.GetCategory(argument.Id ?? 0);
+            if (category is null)
+            {
+                return Redirect(SpecialPages.NotFound);
+            }
+            if (category.ParrentId != null)
+            {
+                var parrentCategory = await _categoryService.GetParrentAsync(category.ParrentId ?? 0);
+                ViewBag.ParrentCategory = parrentCategory;
+            }
+            ViewData["Title"] = category.Name;
+            if (!string.IsNullOrEmpty(argument.SearchTerm))
+            {
+                ViewData["Title"] = $"[{category.Name}] {argument.SearchTerm}";
+                ViewBag.SearchTerm = argument.SearchTerm;
+            }
+            ViewData["Description"] = category.Description;
+
+            ViewBag.Id = argument.Id;
+
+            ViewBag.RandomPosts = await _postService.GetListRandomAsync(5, argument.Id ?? 0);
+
+            ViewBag.Categories = await _categoryService.GetChildCategoriesAsync(argument.Id ?? 0);
+
+            return View(await _postService.GetListInCategoryAsync(argument.Id ?? 0, argument.SearchTerm, argument.PageIndex));
+        }
     }
 }

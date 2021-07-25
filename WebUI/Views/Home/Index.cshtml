@@ -1,5 +1,5 @@
 ﻿@using ApplicationCore.Entities;
-@model List<ApplicationCore.Models.Posts.CategoryWithPost>
+@model List<ApplicationCore.Models.Categories.GroupCategory>
 
 @{
     ViewData["Title"] = "Trang chủ";
@@ -11,8 +11,8 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/tiny-slider.css">
 
-<div class="row mb-4">
-    <div class="col-md-8">
+<div class="row">
+    <div class="col-md-8 mb-4">
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -38,12 +38,12 @@
             </button>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mb-4">
         <div class="title">ĐIỀU HÀNH HP-eUniversity</div>
         <div class="row">
             @foreach (var item in boxMenu)
             {
-                <div class="col-md-4">
+                <div class="col-4">
                     <a href="@item.Url" target="_blank">
                         <div class="box">
                             <div class="icon">
@@ -59,30 +59,63 @@
 </div>
 
 <div class="row">
-    <div class="col-md-8">
-        <div class="row">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-6">
-                    <div class="title"><a href="/category/@item.CategoryId" class="text-white">@item.CategoryName</a></div>
-                    <div class="content">
-                        @foreach (var post in item.ListPosts)
-                        {
-                            <div class="list-group border-top-0">
-                                <a href="@post.Url" class="list-group-item list-group-item-action">@post.Title</a>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mb-4">
         <partial name="/Views/Shared/_RandomPost.cshtml" model="ViewBag.LastedList" />
+    </div>
+    <div class="col-md-8 mb-4">
+
     </div>
 </div>
 
-<div class="partner border-t border-b border-gray-700 py-2">
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="title"><a href="/category/details/@item.Id" class="text-white">@item.Name</a></div>
+            <div class="category-box">
+                <div class="list-group">
+                    @foreach (var cat in item.Childs)
+                    {
+                        <a href="/category/details/@cat.Id" class="list-group-item list-group-item-action"><i class="fas fa-caret-right mr-2"></i>@cat.Name</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row counter-wrapper mb-4">
+    <div class="col-md-3">
+        <div class="p-4 md:p-10 text-center">
+            <div class="text-lg font-bold">
+                <span class="counter" data-count="14000">0</span>+ sinh viên
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-4 md:p-10 text-center">
+            <div class="text-lg font-bold">
+                <span class="counter" data-count="97">0</span>% sinh viên ra trường có việc làm
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-4 md:p-10 text-center">
+            <div class="text-lg font-bold">
+                <span class="counter" data-count="43">0</span> Chuyên ngành đào tạo chính quy
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-4 md:p-10 text-center">
+            <div class="text-lg font-bold">
+                <span class="counter" data-count="5">0</span> chương trình liên kết nước ngoài
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="partner border-t border-b py-2">
     <div class="my-slider">
         @foreach (var item in partners)
         {
@@ -102,6 +135,26 @@
             gutter: 16,
             controls: false,
             autoplayButtonOutput: false
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/3.0.1/jquery.waypoints.js"></script>
+    <script src="https://bfintal.github.io/Counter-Up/jquery.counterup.min.js"></script>
+    <script>
+        $('.counter').each(function () {
+            var $this = $(this),
+                countTo = $this.attr('data-count');
+            $({ countNum: $this.text() }).animate({
+                countNum: countTo
+            }, {
+                duration: 8000,
+                easing: 'linear',
+                step: function () {
+                    $this.text(Math.floor(this.countNum));
+                },
+                complete: function () {
+                    $this.text(this.countNum);
+                }
+            });
         });
     </script>
 }

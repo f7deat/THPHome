@@ -24,21 +24,23 @@ namespace WebUI.Controllers
         private readonly IBannerService _bannerService;
         private readonly IMenuService _menuService;
         private readonly IPartnerService _partnerService;
-        public HomeController(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService)
+        private readonly ICategoryService _categoryService;
+        public HomeController(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService, ICategoryService categoryService)
         {
             _postService = postService;
             _bannerService = bannerService;
             _menuService = menuService;
             _partnerService = partnerService;
+            _categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index()
         {
             ViewBag.Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
-            ViewBag.LastedList = await _postService.GetLastedListAsync(5);
+            ViewBag.LastedList = await _postService.GetLastedListAsync(4);
             ViewBag.BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
             ViewBag.Partner = await _partnerService.GetListAsync();
-            return View(await _postService.GetListByAllCategoryAsync());
+            return View(await _categoryService.GetGroupCategories());
         }
 
         public IActionResult Privacy() => View();

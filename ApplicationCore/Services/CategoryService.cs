@@ -4,6 +4,7 @@ using ApplicationCore.Interfaces;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models;
+using ApplicationCore.Models.Categories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -51,6 +52,8 @@ namespace ApplicationCore.Services
         public Task<Category> GetCategory(int id) => _categoryRepository.GetByIdAsync(id);
 
         public Task<IEnumerable<Category>> GetChildCategoriesAsync(int parentId) => _categoryRepository.GetChildAsync(parentId);
+
+        public Task<List<GroupCategory>> GetGroupCategories() => _categoryRepository.GetGroupCategories();
 
         public Task<IEnumerable<Category>> GetListAsyc(int id) => _categoryRepository.GetListAsyc(id);
 

@@ -1,6 +1,5 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Helpers;
-using ApplicationCore.Models;
+using ApplicationCore.Models.Categories;
 using ApplicationCore.Models.Posts;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +17,6 @@ namespace ApplicationCore.Interfaces.IRepository
         Task<IEnumerable<Category>> GetListAsyc(int id);
         Task<List<Category>> GetListInPostAsync(long postId);
         Task<bool> IsExistAsync(string normalizeName);
+        Task<List<GroupCategory>> GetGroupCategories();
     }
 }

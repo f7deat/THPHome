@@ -2,6 +2,7 @@
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Models;
+using ApplicationCore.Models.Categories;
 using ApplicationCore.Models.Posts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -32,6 +33,23 @@ namespace Infrastructure.Repositories
             {
                 return default;
             }
+        }
+
+        public async Task<List<GroupCategory>> GetGroupCategories()
+        {
+            var returnValue = new List<GroupCategory>();
+            var parrents = await _context.Categories.Where(x => (x.ParrentId == null || x.ParrentId < 1) && x.IsDisplayOnHome == true).ToListAsync();
+            foreach (var item in parrents)
+            {
+                var childs = await _context.Categories.Where(x => x.ParrentId == item.Id && x.IsDisplayOnHome == true).ToListAsync();
+                returnValue.Add(new GroupCategory
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Childs = childs
+                });
+            }
+            return returnValue;
         }
 
         public async Task<IEnumerable<Category>> GetListAsyc(int id) {

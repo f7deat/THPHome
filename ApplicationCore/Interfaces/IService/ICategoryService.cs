@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Helpers;
 using ApplicationCore.Models;
+using ApplicationCore.Models.Categories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,5 +21,6 @@ namespace ApplicationCore.Interfaces.IService
         Task<Category> GetParrentAsync(int categoryId);
         Task<List<Category>> GetListInPostAsync(long postId);
         Task<dynamic> UpdateAsync(Category category);
+        Task<List<GroupCategory>> GetGroupCategories();
     }
 }
