@@ -47,6 +47,8 @@ namespace WebUI
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddScoped<IPartnerService, PartnerService>();
             services.AddScoped<IPartnerRepository, PartnerRepository>();
+            services.AddScoped<IVideoService, VideoService>();
+            services.AddScoped<IVideoRepository, VideoRepository>();
 
             services.AddControllersWithViews();
             services.AddSession();
@@ -106,7 +108,6 @@ namespace WebUI
             {
                 app.Map(new PathString(spaPath), client =>
                 {
-                    // `https://github.com/dotnet/aspnetcore/issues/3147`
                     client.UseSpaStaticFiles(new StaticFileOptions()
                     {
                         OnPrepareResponse = ctx =>

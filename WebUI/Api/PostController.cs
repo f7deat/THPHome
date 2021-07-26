@@ -14,7 +14,7 @@ using WebUI.Models.Api.Admin;
 
 namespace WebUI.Api
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), Authorize]
     public class PostController : Controller
     {
         private readonly IPostService _postService;

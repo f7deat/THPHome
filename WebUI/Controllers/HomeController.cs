@@ -25,13 +25,15 @@ namespace WebUI.Controllers
         private readonly IMenuService _menuService;
         private readonly IPartnerService _partnerService;
         private readonly ICategoryService _categoryService;
-        public HomeController(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService, ICategoryService categoryService)
+        private readonly IVideoService _videoService;
+        public HomeController(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService, ICategoryService categoryService, IVideoService videoService)
         {
             _postService = postService;
             _bannerService = bannerService;
             _menuService = menuService;
             _partnerService = partnerService;
             _categoryService = categoryService;
+            _videoService = videoService;
         }
 
         public async Task<IActionResult> Index()
@@ -40,6 +42,7 @@ namespace WebUI.Controllers
             ViewBag.LastedList = await _postService.GetLastedListAsync(4);
             ViewBag.BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
             ViewBag.Partner = await _partnerService.GetListAsync();
+            ViewBag.Videos = await _videoService.GetListAsync(5);
             return View(await _categoryService.GetGroupCategories());
         }
 

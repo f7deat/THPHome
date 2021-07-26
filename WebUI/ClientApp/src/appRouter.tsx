@@ -13,6 +13,7 @@ import RoleList from "./pages/roles/role-list"
 import MenuSetting from "./pages/settings/menus/menu-setting"
 import Profile from "./pages/users/profile"
 import { UserEdit, UserList } from "./pages/users/user-type"
+import VideoSetting from "./pages/videos/video-setting"
 
 const _preFix = "/admin";
 const routes = [
@@ -72,6 +73,10 @@ const routes = [
     {
         path: `${_preFix}/partner`,
         main: () => <PartnerSetting />
+    },
+    {
+        path: `${_preFix}/video`,
+        main: () => <VideoSetting />
     }
   ];
 

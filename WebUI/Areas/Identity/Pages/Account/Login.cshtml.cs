@@ -123,41 +123,29 @@ namespace WebUI.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ActionType = 2;
-                    var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-                    var result = await _userManager.CreateAsync(user, Input.Password);
-                    if (result.Succeeded)
-                    {
-                        //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        //var callbackUrl = Url.Page("/Account/ConfirmEmail",pageHandler: null,values: new { area = "Identity", userId = user.Id, code = code },protocol: Request.Scheme);
+                    //ActionType = 2;
+                    //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                    //var result = await _userManager.CreateAsync(user, Input.Password);
+                    //if (result.Succeeded)
+                    //{
 
-                        //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                        //if (!await _roleManager.RoleExistsAsync(RoleName.ADMIN))
-                        //{
-                        //    var role = new IdentityRole();
-                        //    role.Name = "admin";
-                        //    await _roleManager.CreateAsync(role);
-                        //}
-
-                        await _userManager.AddToRoleAsync(user, RoleName.ADMIN);
+                    //    await _userManager.AddToRoleAsync(user, RoleName.MEMBER);
 
 
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        {
-                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
-                        }
-                        else
-                        {
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            return LocalRedirect(returnUrl);
-                        }
-                    }
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
+                    //    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    //    {
+                    //        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+                    //    }
+                    //    else
+                    //    {
+                    //        await _signInManager.SignInAsync(user, isPersistent: false);
+                    //        return LocalRedirect(returnUrl);
+                    //    }
+                    //}
+                    //foreach (var error in result.Errors)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, error.Description);
+                    //}
                 }
             }
 

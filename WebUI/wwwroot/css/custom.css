@@ -38,11 +38,11 @@ input:focus {
     text-transform: uppercase;
 }
 
-.footer-bottom-link a {
-    padding: 0 1rem;
-    text-decoration: none;
-    color: #fff;
-}
+    .footer-bottom-link a {
+        padding: 0 1rem;
+        text-decoration: none;
+        color: #fff;
+    }
 
 .footer-copyright {
     padding-top: 1rem;
@@ -58,9 +58,9 @@ input:focus {
     border-top-right-radius: 0.25rem;
 }
 
-.title.active {
-    background-color: var(--red);
-}
+    .title.active {
+        background-color: var(--red);
+    }
 
 .box {
     border: 1px solid #e1e1e1;
@@ -71,13 +71,13 @@ input:focus {
     font-weight: 500;
 }
 
-.box:hover {
-    background-color: #fafafa;
-}
+    .box:hover {
+        background-color: #fafafa;
+    }
 
-.box .icon {
-    font-size: 1.125rem;
-}
+    .box .icon {
+        font-size: 1.125rem;
+    }
 
 .carousel-item img {
     height: 200px;
@@ -97,18 +97,18 @@ input:focus {
     margin-bottom: 0.5rem;
 }
 
-.top-menu .nav {
-    background-color: var(--dark);
-}
+    .top-menu .nav {
+        background-color: var(--dark);
+    }
 
-.top-menu a {
-    color: #fff;
-    font-weight: 500;
-}
+    .top-menu a {
+        color: #fff;
+        font-weight: 500;
+    }
 
-.top-menu a:hover {
-    color: #fff;
-}
+        .top-menu a:hover {
+            color: #fff;
+        }
 
     .top-menu .nav-item:hover {
         background-color: var(--red);
@@ -116,23 +116,23 @@ input:focus {
         transition-duration: 500ms;
     }
 
-    .top-menu-category {
-        padding-right: 3rem;
-    }
-
-.top-menu-category .nav-item:first-child {
-    background-color: var(--red);
+.top-menu-category {
+    padding-right: 3rem;
 }
+
+    .top-menu-category .nav-item:first-child {
+        background-color: var(--red);
+    }
 
 .main-menu .nav-link {
     padding: 1rem;
 }
 
-.main-menu .nav-link:hover {
-    background-color: var(--red);
-    transition: all;
-    transition-duration: 500ms;
-}
+    .main-menu .nav-link:hover {
+        background-color: var(--red);
+        transition: all;
+        transition-duration: 500ms;
+    }
 
 .counter-wrapper {
     background-color: var(--red);
@@ -142,6 +142,22 @@ input:focus {
 .navbar {
     padding: 0;
 }
+
+#myTab .nav-item {
+    width: 50%;
+    background-color: #eee;
+}
+
+#myTab .nav-link {
+    width: 100%;
+    font-weight: bold; 
+    color: var(--dark);
+}
+
+    #myTab .nav-link.active {
+        background-color: var(--dark);
+        color: white;
+    }
 
 @media screen and (min-width: 768px) {
     .carousel-item img {

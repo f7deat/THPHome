@@ -24,5 +24,6 @@ namespace Infrastructure
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Menu> Menus { get; set; }
         public virtual DbSet<Partner> Partners { get; set; }
+        public virtual DbSet<Video> Videos { get; set; }
     }
 }

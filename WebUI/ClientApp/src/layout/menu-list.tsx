@@ -8,7 +8,8 @@ import {
     FileImageOutlined,
     AlertOutlined,
     CommentOutlined,
-    SettingOutlined
+    SettingOutlined,
+    VideoCameraOutlined
 } from '@ant-design/icons';
 import { Link } from "react-router-dom";
 
@@ -32,7 +33,7 @@ export const MenuList = () => {
                 <Link to={`${_preFix}/category/list`}>Category</Link>
             </Menu.Item>
             <Menu.Item key="5" icon={<FileImageOutlined />}>
-                <Link to={`${_preFix}/banner/list`}>Banner</Link>
+                <Link to={`${_preFix}/banner/list`}>Image</Link>
             </Menu.Item>
             <SubMenu key="sub2" icon={<UserOutlined />} title="User">
                 <Menu.Item key="8">
@@ -53,6 +54,9 @@ export const MenuList = () => {
                     <Link to="/admin/setting/menu">Menu</Link>
                 </Menu.Item>
             </SubMenu>
+            <Menu.Item key="13" icon={<AlertOutlined />}>
+                <Link to="/admin/video">Video</Link>
+            </Menu.Item>
         </Menu>
     )
 }
