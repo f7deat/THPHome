@@ -17,6 +17,7 @@ namespace ApplicationCore.Services
         }
         public async Task<dynamic> AddAsync(Video video)
         {
+            video.CreatedDate = DateTime.Now;
             return new
             {
                 succeeded = true,

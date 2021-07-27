@@ -43,6 +43,7 @@ namespace WebUI.Controllers
             ViewBag.BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
             ViewBag.Partner = await _partnerService.GetListAsync();
             ViewBag.Videos = await _videoService.GetListAsync(5);
+            ViewBag.Albums = await _bannerService.GetListAsync(BannerType.PHOTO, 4);
             return View(await _categoryService.GetGroupCategories());
         }
 

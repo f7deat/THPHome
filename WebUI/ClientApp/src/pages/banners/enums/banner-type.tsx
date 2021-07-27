@@ -1,7 +1,8 @@
 ﻿enum BANNER_TYPE {
     DEFAULT,
     SLIDE,
-    POST
+    POST,
+    PHOTO
 }
 
 const LIST_BANNER_TYPE = [
@@ -16,6 +17,10 @@ const LIST_BANNER_TYPE = [
     {
         id: BANNER_TYPE.POST,
         name: 'Post'
+    },
+    {
+        id: BANNER_TYPE.PHOTO,
+        name: 'Photo'
     }
 ]
 

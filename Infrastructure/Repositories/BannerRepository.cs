@@ -14,13 +14,13 @@ namespace Infrastructure.Repositories
 
         }
 
-        public async Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type)
+        public async Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type, int pageSize)
         {
             if (type == null || type == BannerType.DEFAULT)
             {
-                return await _context.Banners.OrderByDescending(x => x.Id).ToListAsync();
+                return await _context.Banners.OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
             }
-            return await _context.Banners.Where(x => x.Type == type).OrderByDescending(x => x.Id).ToListAsync();
+            return await _context.Banners.Where(x => x.Type == type).OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
         }
 
         public async Task<IEnumerable<Banner>> GetListAsync(long id) => await _context.Banners.Where(x => x.DisplayOn == id).ToListAsync();

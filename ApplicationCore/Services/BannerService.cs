@@ -30,7 +30,7 @@ namespace ApplicationCore.Services
             return new { succeeded = true };
         }
 
-        public Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type) => _bannerRepository.GetListAsync(type);
+        public Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type, int pageSize = 10) => _bannerRepository.GetListAsync(type, pageSize);
 
         public Task<IEnumerable<Banner>> GetListAsync(long id) => _bannerRepository.GetListAsync(id);
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationCore.Entities
 {
@@ -11,5 +12,6 @@ namespace ApplicationCore.Entities
         public string Url { get; set; }
         [StringLength(500)]
         public string Thumbnail { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

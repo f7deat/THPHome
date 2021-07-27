@@ -6,7 +6,7 @@ namespace ApplicationCore.Interfaces.IRepository
 {
     public interface IBannerRepository : IAsyncRepository<Banner>
     {
-        Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type);
+        Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type, int pageSize);
         Task<IEnumerable<Banner>> GetListAsync(long id);
         Task RemoveRangeAsync(long id);
     }

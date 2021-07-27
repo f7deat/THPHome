@@ -150,7 +150,7 @@ const VideoSetting = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Liên kết" name="url">
+                    <Form.Item label="Youtube Video Id" name="url">
                         <Input />
                     </Form.Item>
 

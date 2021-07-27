@@ -19,7 +19,8 @@ namespace ApplicationCore.Entities
     {
         DEFAULT,
         SLIDE,
-        POST
+        POST,
+        PHOTO
     }
 
     public enum BannerStatus
