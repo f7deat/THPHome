@@ -18,11 +18,33 @@ input:focus {
     background-color: var(--dark);
 }
 
+    .main-menu .nav-link {
+        color: #fff;
+    }
+
+    .main-menu .dropdown-menu {
+        background: var(--dark);
+        margin-top: 0;
+        border-radius: 0;
+    }
+
+        .main-menu .dropdown-menu a {
+            color: #fff;
+        }
+
+        .main-menu .dropdown-menu a:hover {
+            color: var(--dark);
+        }
+
 .footer {
     background-color: var(--dark);
     color: #fff;
-    padding: 3rem 0;
+    padding: 2rem 0 1rem 0;
 }
+
+    .footer svg {
+        display: unset;
+    }
 
 .footer-divide {
     border-top: 1px solid #979797;
@@ -30,7 +52,7 @@ input:focus {
 }
 
 .footer-bottom {
-    padding: 1rem 0;
+    padding: 0 0 1rem 0;
 }
 
 .footer-bottom-link {
@@ -69,6 +91,10 @@ input:focus {
     padding: 1rem;
     margin-top: 0.25rem;
     font-weight: 500;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 }
 
     .box:hover {
@@ -150,7 +176,7 @@ input:focus {
 
 #myTab .nav-link {
     width: 100%;
-    font-weight: bold; 
+    font-weight: bold;
     color: var(--dark);
 }
 

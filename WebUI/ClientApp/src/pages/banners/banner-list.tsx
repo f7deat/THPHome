@@ -30,6 +30,7 @@ const BannerList = () => {
     }, [init])
 
     const showDrawer = (item: any) => {
+        setBannerType(item.type || BANNER_TYPE.DEFAULT)
         setBanner(item);
         setVisible(true);
     };

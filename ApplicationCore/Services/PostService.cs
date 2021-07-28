@@ -126,5 +126,10 @@ namespace ApplicationCore.Services
         {
             return _postRepository.GetListByAllCategoryAsync();
         }
+
+        public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize)
+        {
+            return _postRepository.GetListByTypeAsync(type, pageIndex, pageSize);
+        }
     }
 }

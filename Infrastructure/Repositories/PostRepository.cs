@@ -278,5 +278,19 @@ namespace Infrastructure.Repositories
             }
             return returnValue;
         }
+
+        public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize)
+        {
+            return await _context.Posts.Where(x => x.Type == type).OrderByDescending(x => x.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(x => new PostView
+            {
+                Id = x.Id,
+                Description = x.Description,
+                ModifiedDate = x.ModifiedDate,
+                Thumbnail = x.Thumbnail,
+                Title = x.Title,
+                Url = x.Url,
+                View = x.View
+            }).ToListAsync();
+        }
     }
 }

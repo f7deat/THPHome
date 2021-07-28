@@ -34,6 +34,7 @@ namespace ApplicationCore.Interfaces.IService
         Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int pageIndex);
         Task<int> GetCountInUserAsync(string id);
         Task<PaginatedList<PostView>> GetListInTagSync(string name, string searchTerm);
+        Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize);
         Task<IEnumerable<PostView>> GetRandomPostsAsync();
         Task<IEnumerable<Post>> GetListPopularAsync();
         Task<IEnumerable<Post>> GetListByUserAsync(string id);

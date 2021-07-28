@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Unicode;
 using System.Threading.Tasks;
 using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
@@ -36,10 +37,12 @@ namespace WebUI.Controllers
             _videoService = videoService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 2)
         {
             ViewBag.Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
-            ViewBag.LastedList = await _postService.GetLastedListAsync(4);
+            ViewBag.ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 4);
+            var posts = await _postService.GetListByTypeAsync(PostType.NEWS, pageIndex, pageSize);
+            ViewBag.ListNews = PaginatedList<PostView>.CreateAsync(posts.ToList());
             ViewBag.BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
             ViewBag.Partner = await _partnerService.GetListAsync();
             ViewBag.Videos = await _videoService.GetListAsync(5);

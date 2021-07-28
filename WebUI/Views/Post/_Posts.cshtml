@@ -5,7 +5,7 @@
     @foreach (var item in Model)
     {
         <div class="md:w-1/2 md:px-1 mb-4">
-            <div class="h-full shadow flex flex-col rounded">
+            <div class="h-full flex flex-col rounded border border-gray-100">
                 <a href="@item.Url" title="@item.Title" class="bg-black">
                     <img src="@item.Thumbnail" class="w-full transition-opacity duration-700 ease-in-out hover:opacity-50 object-fit-cover" alt="@item.Title" title="@item.Title" style="max-height: 220px; min-height: 220px" />
                 </a>

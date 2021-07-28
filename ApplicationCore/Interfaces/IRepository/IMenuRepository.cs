@@ -9,5 +9,6 @@ namespace ApplicationCore.Interfaces.IRepository
     public interface IMenuRepository : IAsyncRepository<Menu>
     {
         Task<IReadOnlyList<Menu>> GetListAsync(MenuType type);
+        Task<IEnumerable<Menu>> GetListParrentAsync();
     }
 }

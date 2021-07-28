@@ -17,17 +17,34 @@ const MenuSetting = () => {
     const [menus, setMenus] = useState<any>([])
     const [visible, setVisible] = useState(false)
     const [fields, setFields] = useState<any>([]);
+    const [parrentCategories, setParrentCategories] = useState<any>([])
+    const [currentType, setCurrentType] = useState<number>(1)
 
     const [form] = Form.useForm();
 
     useEffect(() => {
         fetchData()
+    }, [currentType])
+
+    useEffect(() => {
+        getParrentCategories();
     }, [])
 
     const fetchData = () => {
-        axios.get(`/api/menu/get-list`).then(response => {
+        axios.get(`/api/menu/get-list?type=${currentType}`).then(response => {
             setMenus(response.data)
         })
+    }
+
+    const getParrentCategories = () => {
+        axios.get(`/api/menu/parrent-list`).then(response => {
+            setParrentCategories(response.data)
+        })
+    }
+
+    const filterType = (value: number) => {
+        setCurrentType(value)
+        fetchData()
     }
 
     function handleAdd() {
@@ -87,6 +104,9 @@ const MenuSetting = () => {
             {
                 name: ['icon'],
                 value: record.icon
+            },
+            {
+                name: ['parrentId']
             }
         ])
         setVisible(true)
@@ -114,7 +134,11 @@ const MenuSetting = () => {
 
     const columns = [
         {
-            title: '#',
+            title: 'Id',
+            dataIndex: 'id'
+        },
+        {
+            title: 'Index',
             dataIndex: "index"
         },
         {
@@ -124,8 +148,8 @@ const MenuSetting = () => {
             )
         },
         {
-            title: 'Type',
-            dataIndex: 'type'
+            title: 'Parrent Id',
+            dataIndex: 'parrentId'
         },
         {
             title: '',
@@ -148,6 +172,12 @@ const MenuSetting = () => {
     return (
         <div>
             <div className="mb-3">
+                <Select onChange={filterType} defaultValue={currentType} className="mr-2">
+                    <Option value={0}>Default</Option>
+                    <Option value={1}>Top Menu</Option>
+                    <Option value={2}>Main Menu</Option>
+                    <Option value={3}>Box Menu</Option>
+                </Select>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
             </div>
             <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
@@ -187,6 +217,16 @@ const MenuSetting = () => {
                             <Option value="1">Top Menu</Option>
                             <Option value="2">Main Menu</Option>
                             <Option value="3">Box Menu</Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item label="Danh mục cha" name="parrentId">
+                        <Select>
+                            {
+                                parrentCategories?.map((category: any) => (
+                                    <Option value={category.id} key={category.id}>{category.name}</Option>
+                                ))
+                            }
                         </Select>
                     </Form.Item>
 

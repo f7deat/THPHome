@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace WebUI.Api
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), Authorize]
     public class MenuController : Controller
     {
         private readonly IMenuService _menuService;
@@ -21,7 +22,7 @@ namespace WebUI.Api
         }
 
         [Route("get-list")]
-        public async Task<IActionResult> GetListAsync() => Ok(await _menuService.GetListAsync());
+        public async Task<IActionResult> GetListAsync(MenuType type = MenuType.MAIN) => Ok(await _menuService.GetListAsync(type));
 
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody] Menu menu)
@@ -45,5 +46,8 @@ namespace WebUI.Api
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id) => Ok(await _menuService.DeleteAsyn(id));
+
+        [Route("parrent-list")]
+        public async Task<IActionResult> ListParrentAsync() => Ok(await _menuService.GetListParrentAsync());
     }
 }

@@ -10,8 +10,8 @@
     public enum PostType
     {
         DEFAULT,
-        PRODUCT,
         PAGE,
-        SOURCE
+        NEWS,
+        NOTIFICATION
     }
 }

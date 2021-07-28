@@ -143,7 +143,7 @@ export const PostList = () => {
                 </Space>
             </div>
             <Tabs defaultActiveKey="1">
-                <TabPane tab="Published" key="1">
+                <TabPane tab="Default" key="1">
                     <Table dataSource={posts}
                         columns={columns}
                         rowSelection={{
@@ -156,14 +156,16 @@ export const PostList = () => {
                         pagination={pagination}
                     />
                 </TabPane>
-                <TabPane tab="Draft" key="2">
+                <TabPane tab="Page" key="2">
                     <Empty />
                 </TabPane>
-                <TabPane tab="Trash" key="3">
+                <TabPane tab="News" key="3">
+                    <Empty />
+                </TabPane>
+                <TabPane tab="Notification" key="4">
                     <Empty />
                 </TabPane>
             </Tabs>
-
 
             <Modal title="Basic Modal" visible={isModalImportVisible} onOk={() => handleImport()} onCancel={() => setIsModalImportVisible(false)}>
                 <Input type="file" onChange={(e: any) => setImportFile(e.target.files[0])} />

@@ -1,8 +1,8 @@
 ﻿export enum PostType {
     DEFAULT,
-    PRODUCT,
     PAGE,
-    SOURCE
+    NEWS,
+    NOTIFICATION
 }
 
 export const ListPostType = [
@@ -11,15 +11,15 @@ export const ListPostType = [
         name: 'Default'
     },
     {
-        value: PostType.PRODUCT,
-        name: 'Product'
-    },
-    {
         value: PostType.PAGE,
         name: 'Page'
     },
     {
-        value: PostType.SOURCE,
-        name: 'Source'
+        value: PostType.NEWS,
+        name: 'News'
+    },
+    {
+        value: PostType.NOTIFICATION,
+        name: 'Notification'
     }
 ]

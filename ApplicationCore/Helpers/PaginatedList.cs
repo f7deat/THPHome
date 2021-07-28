@@ -43,6 +43,13 @@ namespace ApplicationCore.Helpers
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
 
+        public static PaginatedList<T> CreateAsync(List<T> source)
+        {
+            var count = source.Count();
+            var items = source;
+            return new PaginatedList<T>(items, count, 1, 10);
+        }
+
     }
 
     public class Pagination
