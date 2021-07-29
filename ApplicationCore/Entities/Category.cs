@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ApplicationCore.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationCore.Entities
 {
@@ -18,6 +19,8 @@ namespace ApplicationCore.Entities
         public int? Status { get; set; }
         public int Index { get; set; }
         public bool IsDisplayOnHome { get; set; }
+        [StringLength(1000)]
+        public string Icon { get; set; }
 
     }
     public enum CategoryType

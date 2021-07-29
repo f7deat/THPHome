@@ -35,8 +35,11 @@ namespace ApplicationCore.Services
             post.CreatedDate = DateTime.Now;
             post.ModifiedDate = DateTime.Now;
             post.Status = PostStatus.PUBLISH;
-            post.Type = PostType.DEFAULT;
             post.View = 0;
+            if (string.IsNullOrEmpty(post.Url))
+            {
+                post.Url = SeoHelper.ToSeoFriendly(post.Title, post.Title.Length);
+            }
             return await _postRepository.AddAsync(post);
         }
 
@@ -94,7 +97,6 @@ namespace ApplicationCore.Services
             var postCategories = await _postCategoryRepository.GetListInPostAsync(id);
             await _postCategoryRepository.RemoveRangeAsync(postCategories);
             await _bannerRepository.RemoveRangeAsync(id);
-            // todo
             return new { succeeded = true };
         }
 
@@ -122,14 +124,8 @@ namespace ApplicationCore.Services
 
         public Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int pageIndex, int pageSize) => _postRepository.GetListByCategoryAsync(normalizeName, pageIndex, pageSize);
 
-        public Task<List<CategoryWithPost>> GetListByAllCategoryAsync()
-        {
-            return _postRepository.GetListByAllCategoryAsync();
-        }
+        public Task<List<CategoryWithPost>> GetListByAllCategoryAsync() => _postRepository.GetListByAllCategoryAsync();
 
-        public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize)
-        {
-            return _postRepository.GetListByTypeAsync(type, pageIndex, pageSize);
-        }
+        public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize) => _postRepository.GetListByTypeAsync(type, pageIndex, pageSize);
     }
 }

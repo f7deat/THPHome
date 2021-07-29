@@ -106,11 +106,15 @@ const PartnerSetting = () => {
         },
         {
             title: 'Name',
-            dataIndex: "name"
+            render: (record: any) => (
+                <a href={record.url} target="_blank">{record.name}</a>
+            )
         },
         {
-            title: 'Url',
-            dataIndex: 'url'
+            title: 'Logo',
+            render: (record: any) => (
+                <img src={record.logo} alt="logo" className="objectfit-cover" width="100" />
+            )
         },
         {
             title: '',

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationCore.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationCore.Entities
@@ -13,5 +14,6 @@ namespace ApplicationCore.Entities
         [StringLength(500)]
         public string Thumbnail { get; set; }
         public DateTime CreatedDate { get; set; }
+        public Language Language { get; set; }
     }
 }

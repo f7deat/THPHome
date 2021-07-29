@@ -75,7 +75,7 @@
     @foreach (var item in Model)
     {
         <div class="col-md-4 mb-4">
-            <div class="title"><a href="/category/details/@item.Id" class="text-white">@item.Name</a></div>
+            <div class="title"><a href="/category/details/@item.Id" class="text-white"><span class="mr-2">@Html.Raw(@item.Icon)</span> @item.Name</a></div>
             <div class="category-box">
                 <div class="list-group">
                     @foreach (var cat in item.Childs)

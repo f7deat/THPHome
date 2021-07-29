@@ -18,5 +18,6 @@ namespace ApplicationCore.Entities
         public PostStatus Status { get; set; }
         public PostType Type { get; set; }
         public string Tags { get; set; }
+        public Language Language { get; set; }
     }
 }

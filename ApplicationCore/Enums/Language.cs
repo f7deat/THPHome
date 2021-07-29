@@ -4,6 +4,7 @@
     {
         DEFAULT,
         VI,
-        EN
+        EN,
+        ZH
     }
 }

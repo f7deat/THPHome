@@ -1,4 +1,4 @@
-﻿import { Row, Col, Drawer, Input, Button, message, Select } from "antd"
+﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm } from "antd"
 import {
     PlusOutlined,
     SaveOutlined
@@ -13,7 +13,7 @@ const BannerList = () => {
     const [visible, setVisible] = useState(false);
     const [banner, setBanner] = useState<any>();
     const [listBanner, setListBanner] = useState<any>();
-    const [bannerType, setBannerType] = useState(BANNER_TYPE.DEFAULT);
+    const [bannerType, setBannerType] = useState(BANNER_TYPE.PHOTO);
 
     const optionList = LIST_BANNER_TYPE.map((value) => (
         <Option value={value.id} key={value.id}>{value.name}</Option>
@@ -30,7 +30,7 @@ const BannerList = () => {
     }, [init])
 
     const showDrawer = (item: any) => {
-        setBannerType(item.type || BANNER_TYPE.DEFAULT)
+        setBannerType(item.type || BANNER_TYPE.PHOTO)
         setBanner(item);
         setVisible(true);
     };
@@ -67,6 +67,10 @@ const BannerList = () => {
         })
     }
 
+    function handleDelete(id: number) {
+        remove(id)
+    }
+
     return (
         <div>
             <div className="mb-4">
@@ -89,9 +93,17 @@ const BannerList = () => {
                                     <div className="w-1/2 flex justify-center py-1 bg-white cursor-pointer hover:bg-red-500 hover:text-white" onClick={() => showDrawer(item)}>
                                         Watch
                                     </div>
-                                    <div className="w-1/2 flex justify-center py-1 bg-white cursor-pointer hover:bg-red-500 hover:text-white" onClick={() => remove(item.id)}>
-                                        Delete
-                                    </div>
+                                    <Popconfirm
+                                        title="Are you sure to delete?"
+                                        okText="Yes"
+                                        cancelText="No"
+                                        onConfirm={() => handleDelete(item.id)}
+                                    >
+                                        <div className="w-1/2 flex justify-center py-1 bg-white cursor-pointer hover:bg-red-500 hover:text-white">
+                                            Delete
+                                        </div>
+                                    </Popconfirm>
+                                    
                                 </div>
                             </div>
                         </Col>

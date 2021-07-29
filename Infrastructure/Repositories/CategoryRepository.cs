@@ -46,6 +46,7 @@ namespace Infrastructure.Repositories
                 {
                     Id = item.Id,
                     Name = item.Name,
+                    Icon = item.Icon,
                     Childs = childs
                 });
             }
