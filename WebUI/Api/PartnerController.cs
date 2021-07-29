@@ -1,9 +1,12 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,10 +17,12 @@ namespace WebUI.Api
     {
         private readonly IPartnerService _partnerService;
         private readonly UserManager<IdentityUser> _userManager;
-        public PartnerController(IPartnerService partnerService, UserManager<IdentityUser> userManager)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public PartnerController(IPartnerService partnerService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _partnerService = partnerService;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [Route("get-list")]
@@ -42,5 +47,28 @@ namespace WebUI.Api
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id) => Ok(await _partnerService.DeleteAsync(id));
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadAsync([FromForm] IFormFile file)
+        {
+            if (file?.Length > 0)
+            {
+                var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "files");
+
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                return Ok(new { succeeded = true, fileUrl = $"/files/{fileName}" });
+            }
+            return Ok(new { succeeded = false, fileUrl = "" });
+        }
     }
 }

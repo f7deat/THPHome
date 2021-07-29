@@ -62,10 +62,10 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 mb-4">
         <partial name="/Views/Shared/_RandomPost.cshtml" model="ViewBag.ListNotification" />
     </div>
-    <div class="col-md-8 mb-4">
+    <div class="col-md-8">
         <div class="title mb-1" style="text-transform: uppercase">Tin tức - Sự kiện</div>
         <partial name="/Views/Post/_Posts.cshtml" model="ViewBag.ListNews" />
     </div>
@@ -171,7 +171,7 @@
     <div class="my-slider">
         @foreach (var item in partners)
         {
-            <a href="@item.Url" target="_blank"><img src="@item.Logo" alt="Logo" /></a>
+            <a href="@item.Url" target="_blank" data-bs-toggle="tooltip" title="@item.Name"><img src="@item.Logo" alt="Logo" /></a>
         }
     </div>
 </div>

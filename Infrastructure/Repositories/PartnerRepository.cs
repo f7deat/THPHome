@@ -1,8 +1,9 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IRepository;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -11,5 +12,7 @@ namespace Infrastructure.Repositories
         public PartnerRepository(ApplicationDbContext context) : base(context)
         {
         }
+
+        public async Task<IReadOnlyList<Partner>> GetListAsync() => await _context.Partners.OrderByDescending(x => x.Id).ToListAsync();
     }
 }

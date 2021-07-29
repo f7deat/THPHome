@@ -42,7 +42,7 @@ input:focus {
     padding: 2rem 0 1rem 0;
 }
 
-    .footer svg {
+    .footer svg, .title svg {
         display: unset;
     }
 
@@ -78,6 +78,7 @@ input:focus {
     font-weight: bold;
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
+    margin-bottom: 0.5rem;
 }
 
     .title.active {
@@ -89,7 +90,6 @@ input:focus {
     border-radius: 0.25rem;
     text-align: center;
     padding: 1rem;
-    margin-top: 0.25rem;
     font-weight: 500;
     height: 100px;
     display: flex;

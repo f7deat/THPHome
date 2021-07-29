@@ -1,11 +1,12 @@
-﻿import { Button, Drawer, Form, Input, message, Popconfirm, Select, Space, Table } from "antd"
+﻿import { Button, Drawer, Form, Input, message, Popconfirm, Select, Space, Table, Upload } from "antd"
 import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
     SaveOutlined,
-    ArrowRightOutlined
+    ArrowRightOutlined,
+    UploadOutlined
 } from "@ant-design/icons";
 import axios from "axios";
 
@@ -134,6 +135,18 @@ const PartnerSetting = () => {
         }
     ]
 
+    const handleUpload = (info: any) => {
+        if (info.file.status !== 'uploading') {
+            console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+            form.setFieldsValue({ logo: info.file.response.fileUrl })
+            message.success(`${info.file.name} file uploaded successfully`);
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
+    }
+
     return (
         <div>
             <div className="mb-3">
@@ -158,8 +171,15 @@ const PartnerSetting = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Logo" name="logo">
-                        <Input />
+                    <Form.Item label="Logo">
+                        <div className="flex">
+                            <Form.Item name="logo" className="flex-grow mb-0">
+                                <Input />
+                            </Form.Item>
+                            <Upload action="/api/partner/upload" onChange={handleUpload}>
+                                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                            </Upload>
+                        </div>
                     </Form.Item>
 
                     <Form.Item label="Description" name="description">

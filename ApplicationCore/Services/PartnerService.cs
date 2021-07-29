@@ -39,10 +39,7 @@ namespace ApplicationCore.Services
             };
         }
 
-        public Task<IReadOnlyList<Partner>> GetListAsync()
-        {
-            return _partnerRepository.ListAllAsync();
-        }
+        public Task<IReadOnlyList<Partner>> GetListAsync() => _partnerRepository.GetListAsync();
 
         public async Task<dynamic> UpdateAsync(Partner partner)
         {
