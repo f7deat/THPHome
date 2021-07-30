@@ -1,5 +1,8 @@
-import { Button, Col, Input, message, Row, Select, Space } from 'antd'
+import { Button, Col, Input, message, Row, Select, Space, Upload } from 'antd'
 import axios from 'axios'
+import {
+    UploadOutlined
+} from "@ant-design/icons";
 import BraftEditor from 'braft-editor'
 import 'braft-editor/dist/index.css'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -95,7 +98,19 @@ const PostSetting = () => {
     }
 
     function handleChangeType(value: number) {
-        setPost({...post, type: value})
+        setPost({ ...post, type: value })
+    }
+
+    const handleUpload = (info: any) => {
+        if (info.file.status !== 'uploading') {
+            console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+            setPost({ ...post, thumbnail: info.file.response.fileUrl })
+            message.success(`${info.file.name} file uploaded successfully`);
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
     }
 
     return (
@@ -134,7 +149,7 @@ const PostSetting = () => {
                         ))
                     }
                 </Select>
-                
+
                 <div className="mb-1">Category</div>
                 <Select
                     mode="multiple"
@@ -150,13 +165,15 @@ const PostSetting = () => {
                         ))
                     }
                 </Select>
-                
-                <div className="mb-1">Thumbnail</div>
-                <Input value={post.thumbnail} onChange={(e: any) => setPost({ ...post, thumbnail: e.target.value })} className="mb-2" />
 
-                {
-                    post.thumbnail && <img src={post.thumbnail} alt="thumbnail" className="w-full object-fit-cover h-64"/>
-                }
+                <div className="mb-1">Thumbnail</div>
+                <div className="mb-2 flex">
+                    <Input value={post.thumbnail} onChange={(e: any) => setPost({ ...post, thumbnail: e.target.value })} className="flex-grow" />
+                    <Upload action="/api/partner/upload" onChange={handleUpload}>
+                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                    </Upload>
+                </div>
+                <img src={post?.thumbnail} alt="thumbnail" className="w-full object-fit-cover h-64" />
 
                 <div className="py-4">
                     <PostTag setTags={setTags} tags={tags} />

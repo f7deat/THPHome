@@ -1,7 +1,8 @@
-﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm } from "antd"
+﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload } from "antd"
 import {
     PlusOutlined,
-    SaveOutlined
+    SaveOutlined,
+    UploadOutlined
 } from '@ant-design/icons';
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
@@ -71,6 +72,18 @@ const BannerList = () => {
         remove(id)
     }
 
+    const handleUpload = (info: any) => {
+        if (info.file.status !== 'uploading') {
+            console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+            setBanner((prevState: any) => ({ ...prevState, image: info.file.response.fileUrl }))
+            message.success(`${info.file.name} file uploaded successfully`);
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
+    }
+
     return (
         <div>
             <div className="mb-4">
@@ -122,7 +135,12 @@ const BannerList = () => {
                 <div>Name</div>
                 <Input className="mb-2" value={banner?.name} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, name: e.target.value }))} />
                 <div>Image</div>
-                <Input className="mb-2" value={banner?.image} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, image: e.target.value }))} />
+                <div className="flex mb-2">
+                    <Input className="flex-grow" value={banner?.image} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, image: e.target.value }))} />
+                    <Upload action="/api/partner/upload" onChange={handleUpload}>
+                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                    </Upload>
+                </div>
                 <div>Url</div>
                 <Input className="mb-2" value={banner?.url} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, url: e.target.value }))} />
                 <div>Display On</div>

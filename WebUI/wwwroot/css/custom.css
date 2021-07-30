@@ -187,6 +187,6 @@ input:focus {
 
 @media screen and (min-width: 768px) {
     .carousel-item img {
-        height: 444px;
+        height: 364px;
     }
 }
