@@ -137,7 +137,7 @@ const BannerList = () => {
                 <div>Image</div>
                 <div className="flex mb-2">
                     <Input className="flex-grow" value={banner?.image} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, image: e.target.value }))} />
-                    <Upload action="/api/partner/upload" onChange={handleUpload}>
+                    <Upload action="/api/partner/upload" onChange={handleUpload} maxCount={1} showUploadList={false}>
                         <Button icon={<UploadOutlined />}>Click to Upload</Button>
                     </Upload>
                 </div>

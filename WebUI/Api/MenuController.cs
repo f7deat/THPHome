@@ -48,6 +48,6 @@ namespace WebUI.Api
         public async Task<IActionResult> DeleteAsync([FromRoute] int id) => Ok(await _menuService.DeleteAsyn(id));
 
         [Route("parrent-list")]
-        public async Task<IActionResult> ListParrentAsync() => Ok(await _menuService.GetListParrentAsync());
+        public async Task<IActionResult> ListParrentAsync(MenuType? type) => Ok(await _menuService.GetListParrentAsync(type));
     }
 }

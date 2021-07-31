@@ -40,7 +40,7 @@ namespace ApplicationCore.Services
 
         public Task<IReadOnlyList<Menu>> GetListAsync(MenuType type = MenuType.DEFAULT) => _menuRepository.GetListAsync(type);
 
-        public Task<IEnumerable<Menu>> GetListParrentAsync() => _menuRepository.GetListParrentAsync();
+        public Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type) => _menuRepository.GetListParrentAsync(type);
 
         public async Task<object> UpdateAsync(Menu menu)
         {

@@ -15,6 +15,13 @@ namespace Infrastructure.Repositories
 
         public async Task<IReadOnlyList<Menu>> GetListAsync(MenuType type) => await _context.Menus.Where(x => x.Type == type || type == MenuType.DEFAULT).OrderBy(x => x.Index).ToListAsync();
 
-        public async Task<IEnumerable<Menu>> GetListParrentAsync() => await _context.Menus.Where(x => x.ParrentId == 0).OrderBy(x => x.Name).ToListAsync();
+        public async Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type)
+        {
+            if (type == null)
+            {
+                return new List<Menu>();
+            }
+            return await _context.Menus.Where(x => x.ParrentId == 0 && x.Type == type).OrderBy(x => x.Name).ToListAsync();
+        }
     }
 }

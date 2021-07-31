@@ -4,10 +4,10 @@
 
     @foreach (var item in Model)
     {
-        <div class="md:w-1/2 md:px-1 mb-4">
+        <div class="md:w-1/3 md:px-1 mb-4">
             <div class="h-full flex flex-col rounded border border-gray-100">
                 <a href="@item.Url" title="@item.Title" class="bg-black">
-                    <img src="@item.Thumbnail" class="w-full transition-opacity duration-700 ease-in-out hover:opacity-50 object-fit-cover" alt="@item.Title" title="@item.Title" style="max-height: 220px; min-height: 220px" />
+                    <img src="@item.Thumbnail" class="w-full transition-opacity duration-700 ease-in-out hover:opacity-50 object-fit-cover" alt="@item.Title" title="@item.Title" style="height: 150px" />
                 </a>
                 <div class="flex-1 p-2">
                     <a href="@item.Url" title="@item.Title"><b>@item.Title</b></a>
@@ -35,9 +35,9 @@
                     <div class="relative">
                         <button type="button" class="bg-white w-10 h-10 flex justify-center items-center rounded-full border hover:bg-gray-900 hover:text-white transtion duration-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-share-alt"></i></button>
                         <ul class="hidden absolute top-10 z-10 p-0 m-0">
-                            <li class="w-10 h-10 flex bg-blue-300 text-white items-center justify-center rounded-full cursor-pointer hover:bg-blue-400"><a data-title="Twitter" href="http://twitter.com/share?url=http://defzone.net/post/@($"{item.Url}-{item.Id}.html")" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-twitter"></i></a></li>
-                            <li class="w-10 h-10 flex bg-blue-500 text-white items-center justify-center rounded-full cursor-pointer hover:bg-blue-600"><a data-title="Facebook" href="http://www.facebook.com/sharer.php?u=http://defzone.net/post/@($"{item.Url}-{item.Id}.html")" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-facebook"></i></a></li>
-                            <li class="w-10 h-10 flex bg-red-500 text-white items-center justify-center rounded-full cursor-pointer hover:bg-red-600"><a data-title="Pinterest" href="http://pinterest.com/pin/create/button/?url=http://defzone.net/post/@($"{item.Url}-{item.Id}.html")" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-pinterest"></i></a></li>
+                            <li class="w-10 h-10 flex bg-blue-300 text-white items-center justify-center rounded-full cursor-pointer hover:bg-blue-400"><a data-title="Twitter" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-twitter"></i></a></li>
+                            <li class="w-10 h-10 flex bg-blue-500 text-white items-center justify-center rounded-full cursor-pointer hover:bg-blue-600"><a data-title="Facebook" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-facebook"></i></a></li>
+                            <li class="w-10 h-10 flex bg-red-500 text-white items-center justify-center rounded-full cursor-pointer hover:bg-red-600"><a data-title="Pinterest" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-pinterest"></i></a></li>
                         </ul>
                     </div>
                 </div>

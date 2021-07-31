@@ -168,12 +168,12 @@ const PostSetting = () => {
 
                 <div className="mb-1">Thumbnail</div>
                 <div className="mb-2 flex">
-                    <Input value={post.thumbnail} onChange={(e: any) => setPost({ ...post, thumbnail: e.target.value })} className="flex-grow" />
-                    <Upload action="/api/partner/upload" onChange={handleUpload}>
+                    <Input value={post?.thumbnail} onChange={(e: any) => setPost({ ...post, thumbnail: e.target.value })} className="flex-grow" />
+                    <Upload action="/api/partner/upload" onChange={handleUpload} maxCount={1} showUploadList={false}>
                         <Button icon={<UploadOutlined />}>Click to Upload</Button>
                     </Upload>
                 </div>
-                <img src={post?.thumbnail} alt="thumbnail" className="w-full object-fit-cover h-64" />
+                <img src={post?.thumbnail || 'https://placehold.jp/350x200.png'} alt="thumbnail" className="w-full object-fit-cover h-64" />
 
                 <div className="py-4">
                     <PostTag setTags={setTags} tags={tags} />

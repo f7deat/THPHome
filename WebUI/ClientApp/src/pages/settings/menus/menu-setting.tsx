@@ -27,7 +27,7 @@ const MenuSetting = () => {
     }, [currentType])
 
     useEffect(() => {
-        getParrentCategories();
+        getParrentCategories('');
     }, [])
 
     const fetchData = () => {
@@ -36,8 +36,8 @@ const MenuSetting = () => {
         })
     }
 
-    const getParrentCategories = () => {
-        axios.get(`/api/menu/parrent-list`).then(response => {
+    const getParrentCategories = (type: string) => {
+        axios.get(`/api/menu/parrent-list?type=${type}`).then(response => {
             setParrentCategories(response.data)
         })
     }
@@ -169,6 +169,10 @@ const MenuSetting = () => {
         }
     ]
 
+    const handleChangeType = (value: string) => {
+        getParrentCategories(value)
+    }
+
     return (
         <div>
             <div className="mb-3">
@@ -212,7 +216,7 @@ const MenuSetting = () => {
                     </Form.Item>
 
                     <Form.Item name="type" label="Loại" rules={[{ required: true }]}>
-                        <Select>
+                        <Select onChange={handleChangeType}>
                             <Option value="0">Default</Option>
                             <Option value="1">Top Menu</Option>
                             <Option value="2">Main Menu</Option>

@@ -1,7 +1,5 @@
 ﻿using ApplicationCore.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ApplicationCore.Interfaces.IService
@@ -12,6 +10,6 @@ namespace ApplicationCore.Interfaces.IService
         Task<object> AddAsync(Menu menu);
         Task<object> UpdateAsync(Menu menu);
         Task<object> DeleteAsyn(int id);
-        Task<IEnumerable<Menu>> GetListParrentAsync();
+        Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type);
     }
 }

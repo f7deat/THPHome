@@ -37,7 +37,7 @@ namespace WebUI.Controllers
             _videoService = videoService;
         }
 
-        public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 2)
+        public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 3)
         {
             ViewBag.Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
             ViewBag.ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 4);

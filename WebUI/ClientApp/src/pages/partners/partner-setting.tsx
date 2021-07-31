@@ -152,7 +152,7 @@ const PartnerSetting = () => {
             <div className="mb-3">
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
             </div>
-            <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
+            <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} pagination={{ pageSize: 5 }} />
 
             <Drawer
                 title="Cài đặt"
@@ -176,7 +176,7 @@ const PartnerSetting = () => {
                             <Form.Item name="logo" className="flex-grow mb-0">
                                 <Input />
                             </Form.Item>
-                            <Upload action="/api/partner/upload" onChange={handleUpload}>
+                            <Upload action="/api/partner/upload" onChange={handleUpload} maxCount={1} showUploadList={false}>
                                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
                             </Upload>
                         </div>

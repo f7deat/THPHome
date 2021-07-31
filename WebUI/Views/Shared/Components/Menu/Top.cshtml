@@ -1,4 +1,7 @@
-﻿@using ApplicationCore.Entities
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@using ApplicationCore.Entities
 @model IEnumerable<Menu>
 
 @{
@@ -11,16 +14,40 @@
         <nav class="flex hidden md:block top-menu text-sm">
             <div class="flex justify-end">
                 <ul class="nav top-menu-category">
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Where(x => x.ParrentId == 0))
                     {
-                        <li class="nav-item"><a href="@item.Url" class="nav-link link-dark px-2">@item.Name</a></li>
+                        var childs = Model.Where(x => x.ParrentId == item.Id);
+                        if (childs.Count() > 0)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">@item.Name</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    @foreach (var child in childs)
+                                    {
+                                        <li><a class="dropdown-item" href="@child.Url">@child.Name</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a href="@item.Url" class="nav-link text-white">@item.Name</a></li>
+                        }
                     }
 
                 </ul>
                 <ul class="nav text-uppercase pr-2">
                     <li class="nav-item"><a href="/" class="nav-link link-dark px-2">Tiếng việt</a></li>
                     <li class="nav-item"><a href="?lang=en" class="nav-link link-dark px-2">Tiếng anh</a></li>
-                    <li class="nav-item"><a href="/admin" class="nav-link link-dark px-2">Đăng nhập</a></li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item"><a href="/admin" class="nav-link link-dark px-2">Quản trị</a></li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a href="/identity/account/login" class="nav-link link-dark px-2">Đăng nhập</a></li>
+                    }
+
                 </ul>
             </div>
         </nav>
