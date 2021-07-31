@@ -78,8 +78,7 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(300);
 
                     b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Index")
                         .HasColumnType("int");

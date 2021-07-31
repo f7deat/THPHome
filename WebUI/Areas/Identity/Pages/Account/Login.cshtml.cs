@@ -124,28 +124,28 @@ namespace WebUI.Areas.Identity.Pages.Account
                 else
                 {
                     //ActionType = 2;
-                    //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-                    //var result = await _userManager.CreateAsync(user, Input.Password);
-                    //if (result.Succeeded)
-                    //{
+                    var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+                    if (result.Succeeded)
+                    {
 
-                    //    await _userManager.AddToRoleAsync(user, RoleName.MEMBER);
+                        //await _userManager.AddToRoleAsync(user, RoleName.MEMBER);
 
 
-                    //    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    //    {
-                    //        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
-                    //    }
-                    //    else
-                    //    {
-                    //        await _signInManager.SignInAsync(user, isPersistent: false);
-                    //        return LocalRedirect(returnUrl);
-                    //    }
-                    //}
-                    //foreach (var error in result.Errors)
-                    //{
-                    //    ModelState.AddModelError(string.Empty, error.Description);
-                    //}
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return LocalRedirect(returnUrl);
+                        }
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
 

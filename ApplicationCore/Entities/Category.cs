@@ -19,7 +19,6 @@ namespace ApplicationCore.Entities
         public int? Status { get; set; }
         public int Index { get; set; }
         public bool IsDisplayOnHome { get; set; }
-        [StringLength(1000)]
         public string Icon { get; set; }
 
     }

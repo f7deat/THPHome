@@ -233,6 +233,7 @@ export const CategoryList = () => {
                     <Col span={12}>
                         <div>Name:</div>
                         <Input className="mb-2" value={category?.name} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, name: e.target.value }))} />
+                        <div>Icon:</div>
                         <Input className="mb-2" value={category?.icon} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, icon: e.target.value }))} />
                         <div>Normalize Name:</div>
                         <Input className="mb-2" value={category?.url} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, normalizeName: e.target.value }))} />
