@@ -87,7 +87,7 @@
             else
             {
                 <div class="bg-gray-100 mb-2 px-4 py-2">
-                    <a class="mr-1" href="/Identity/Account/Login?returnUrl=/post/@($"{Model.Url}-{Model.Id}.html")">Đăng ký / Đăng nhập</a><span>để gửi bình luận</span>
+                    <a class="mr-1" href="/Identity/Account/Login?returnUrl=@Model.Url")">Đăng ký / Đăng nhập</a><span>để gửi bình luận</span>
                 </div>
             }
             @if (listComment.Count() > 0)
