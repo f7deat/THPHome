@@ -1,5 +1,5 @@
 ﻿:root {
-    --primary: #727cf5;
+    --primary: #101c53;
     --danger: #fa5c7c;
     --dark: #0e1f4b;
     --red: #D02929;
@@ -44,8 +44,13 @@ input:focus {
     background-color: var(--dark);
     color: #fff;
     padding: 2rem 0 1rem 0;
+    font-size:small;
 }
-
+.inline {
+    display: inline-block;
+    margin: 2px;
+    vertical-align: middle;
+}
     .footer svg, .title svg {
         display: unset;
     }
