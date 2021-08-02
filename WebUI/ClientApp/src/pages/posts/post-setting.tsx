@@ -128,6 +128,7 @@ const PostSetting = () => {
                         value={editorState}
                         onChange={handleEditorChange}
                         className="border"
+                        language="vi-vn"
                     />
                 </div>
                 <Space>
@@ -157,7 +158,9 @@ const PostSetting = () => {
                     style={{ width: '100%' }}
                     placeholder="Please select"
                     onChange={handleChangeCategory} className="mb-2"
-                    value={listCategoryId}
+                    value={listCategoryId} optionFilterProp="children" filterOption={(input, option: any) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                 >
                     {
                         listCategory?.map((category: any) => (
