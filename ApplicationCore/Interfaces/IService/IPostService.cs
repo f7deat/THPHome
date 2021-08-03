@@ -41,5 +41,6 @@ namespace ApplicationCore.Interfaces.IService
         Task<IEnumerable<PostView>> GetLastedListAsync(int pageSize);
         Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize);
         Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int pageIndex, int pageSize);
+        Task<dynamic> SetActiveAsync(long id);
     }
 }

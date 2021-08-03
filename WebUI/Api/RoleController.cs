@@ -29,6 +29,8 @@ namespace WebUI.Api
             role.Name = "admin";
             await _roleManager.CreateAsync(role);
             role.Name = "member";
+            await _roleManager.CreateAsync(role);
+            role.Name = "editor";
             return Ok(await _roleManager.CreateAsync(role));
         }
 

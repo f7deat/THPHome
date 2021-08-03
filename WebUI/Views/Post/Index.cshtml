@@ -26,6 +26,9 @@
             @Model.Title
         </h1>
         <div class="p-2 shadow overflow-auto">
+            <div class="font-bold mb-3">
+                @Html.Raw(Model.Description)
+            </div>
             <div class="mb-3">
                 @Html.Raw(Model.Content)
             </div>

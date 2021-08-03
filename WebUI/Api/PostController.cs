@@ -1,4 +1,4 @@
-using ApplicationCore.Constants;
+﻿using ApplicationCore.Constants;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
 using Microsoft.AspNetCore.Authorization;
@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using WebUI.Models.Api.Admin;
 
@@ -23,12 +21,14 @@ namespace WebUI.Api
         private readonly IPostCategoryService _postCategoryService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public PostController(IPostService postService, IPostCategoryService postCategoryService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public PostController(IPostService postService, IPostCategoryService postCategoryService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager)
         {
             _postService = postService;
             _postCategoryService = postCategoryService;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
+            _roleManager = roleManager;
         }
 
         [Route("get-list")]
@@ -113,6 +113,19 @@ namespace WebUI.Api
                 return Ok(new { succeeded = true, fileUrl = $"/files/{fileName}" });
             }
             return Ok(new { succeeded = false, fileUrl = "" });
+        }
+
+        [HttpPost("active/{id}")]
+        public async Task<IActionResult> SetActiveAsync([FromRoute] long id)
+        {
+            if (User.IsInRole(RoleName.ADMIN))
+            {
+                return Ok(await _postService.SetActiveAsync(id));
+            }
+            else
+            {
+                return Ok(new { succeeded = false, message = "Truy cập bị từ chối!" });
+            }
         }
     }
 }

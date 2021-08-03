@@ -6,7 +6,7 @@ interface IPost {
     createdBy?: Date;
     content?: string;
     modifiedBy?: string;
-    modifiedDate?: string;
+    modifiedDate?: Date;
     status?: number;
     tags?: string;
     thumbnail?: string;

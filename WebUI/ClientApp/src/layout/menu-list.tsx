@@ -26,7 +26,7 @@ export const MenuList = () => {
             </Menu.Item>
             <SubMenu key="sub1" icon={<ReadOutlined />} title="Blog">
                 <Menu.Item key="2">
-                    <Link to="/admin/post/list">Post</Link>
+                    <Link to="/admin/post/list">Bài viết</Link>
                 </Menu.Item>
             </SubMenu>
             <Menu.Item key="4" icon={<ApartmentOutlined />}>
@@ -35,19 +35,19 @@ export const MenuList = () => {
             <Menu.Item key="5" icon={<FileImageOutlined />}>
                 <Link to={`${_preFix}/banner/list`}>Image</Link>
             </Menu.Item>
-            <SubMenu key="sub2" icon={<UserOutlined />} title="User">
+            <SubMenu key="sub2" icon={<UserOutlined />} title="Người dùng">
                 <Menu.Item key="8">
-                    <Link to="/admin/user/list">List</Link>
+                    <Link to="/admin/user/list">Danh sách</Link>
                 </Menu.Item>
                 <Menu.Item key="9">
-                    <Link to="/admin/role/list">Role</Link>
+                    <Link to="/admin/role/list">Quyền</Link>
                 </Menu.Item>
             </SubMenu>
             <Menu.Item key="10" icon={<AlertOutlined />}>
                 <Link to="/admin/partner">Partner</Link>
             </Menu.Item>
             <Menu.Item key="11" icon={<CommentOutlined />}>
-                <Link to="/admin/comment/list">Comment</Link>
+                <Link to="/admin/comment/list">Bình luận</Link>
             </Menu.Item>
             <SubMenu key="sub3" icon={<SettingOutlined />} title="Cài đặt">
                 <Menu.Item key="12">

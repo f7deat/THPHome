@@ -1,4 +1,4 @@
-import { Button, Col, Input, message, Row, Select, Space, Upload } from 'antd'
+﻿import { Button, Col, DatePicker, Input, message, Row, Select, Space, Upload } from 'antd'
 import axios from 'axios'
 import {
     UploadOutlined
@@ -10,6 +10,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { ListPostType } from '../../enum/post-enum'
 import PostTag from './components/post-tag'
 import IPost from './interfaces/post-model'
+import moment from 'moment';
 
 const PostSetting = () => {
 
@@ -116,13 +117,13 @@ const PostSetting = () => {
     return (
         <Row className="p-4 bg-white" gutter={16}>
             <Col span={18}>
-                <div className="mb-1">Title</div>
+                <div className="mb-1">Tiêu đề</div>
                 <Input value={post.title} onChange={(e: any) => setPost({ ...post, title: e.target.value })} className="mb-2" />
-                <div className="mb-1">Url</div>
+                <div className="mb-1">Liên kết cố định <i>(tùy chọn)</i></div>
                 <Input value={post.url} onChange={(e: any) => setPost({ ...post, url: e.target.value })} className="mb-2" />
-                <div className="mb-1">Description</div>
+                <div className="mb-1">Mô tả</div>
                 <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
-                <div className="mb-1">Content</div>
+                <div className="mb-1">Nội dung</div>
                 <div className="mb-2">
                     <BraftEditor
                         value={editorState}
@@ -132,12 +133,12 @@ const PostSetting = () => {
                     />
                 </div>
                 <Space>
-                    <Button type="primary" onClick={handleSave}>Save</Button>
-                    <Button onClick={() => history.push('/admin/post/list')}>Cancel</Button>
+                    <Button type="primary" onClick={handleSave}>Lưu lại</Button>
+                    <Button onClick={() => history.push('/admin/post/list')}>Hủy</Button>
                 </Space>
             </Col>
             <Col span={6}>
-                <div className="mb-1">Type</div>
+                <div className="mb-1">Loại</div>
                 <Select
                     placeholder="Please select"
                     onChange={handleChangeType}
@@ -151,7 +152,7 @@ const PostSetting = () => {
                     }
                 </Select>
 
-                <div className="mb-1">Category</div>
+                <div className="mb-1">Danh mục</div>
                 <Select
                     mode="multiple"
                     allowClear
@@ -177,6 +178,11 @@ const PostSetting = () => {
                     </Upload>
                 </div>
                 <img src={post?.thumbnail || 'https://placehold.jp/350x200.png'} alt="thumbnail" className="w-full object-fit-cover h-64" />
+
+                <div className="mb-1">Ngày xuất bản</div>
+                <div className="mb-2">
+                    <DatePicker onChange={(date, dateString) => setPost({ ...post, modifiedDate: date?.toDate() })} value={moment(post?.modifiedDate)} />
+                </div>
 
                 <div className="py-4">
                     <PostTag setTags={setTags} tags={tags} />

@@ -33,8 +33,7 @@ namespace ApplicationCore.Services
         public async Task<Post> AddAsync(Post post)
         {
             post.CreatedDate = DateTime.Now;
-            post.ModifiedDate = DateTime.Now;
-            post.Status = PostStatus.PUBLISH;
+            post.Status = PostStatus.DRAFT;
             post.View = 0;
             if (string.IsNullOrEmpty(post.Url))
             {
@@ -45,7 +44,6 @@ namespace ApplicationCore.Services
 
         public async Task<dynamic> EditAsync(Post post)
         {
-            post.ModifiedDate = DateTime.Now;
             await _postRepository.UpdateAsync(post);
             return new { succeeded = true };
         }
@@ -127,5 +125,24 @@ namespace ApplicationCore.Services
         public Task<List<CategoryWithPost>> GetListByAllCategoryAsync() => _postRepository.GetListByAllCategoryAsync();
 
         public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize) => _postRepository.GetListByTypeAsync(type, pageIndex, pageSize);
+
+        public async Task<dynamic> SetActiveAsync(long id)
+        {
+            var post = await _postRepository.FindAsync(id);
+            if (post == null)
+            {
+                return new { succeeded = false, message = "Data not found!" };
+            }
+            if (post.Status == PostStatus.PUBLISH)
+            {
+                post.Status = PostStatus.DRAFT;
+            }
+            else
+            {
+                post.Status = PostStatus.PUBLISH;
+            }
+            await _postRepository.UpdateAsync(post);
+            return new { succeeded = true, message = "Thành công!" };
+        }
     }
 }

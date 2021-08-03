@@ -1,4 +1,4 @@
-import { Button, Empty, Input, message, Modal, Popconfirm, Space, Table, Tabs } from "antd";
+﻿import { Button, Empty, Input, message, Modal, Popconfirm, Space, Table, Tabs, Tag } from "antd";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -93,21 +93,40 @@ export const PostList = () => {
         })
     }
 
+    function setActive(id: number) {
+        axios.post(`/api/post/active/${id}`).then(response => {
+            if (response.data.succeeded) {
+                message.success(response.data.message)
+                initCallback();
+            } else {
+                message.error(response.data.message)
+            }
+        })
+    }
+
     const columns = [
         {
-            title: 'Id',
+            title: 'STT',
             render: (text: string, record: IPost, index: number) => index + 1
         },
         {
-            title: 'Title',
+            title: 'Tiêu đề',
             render: (record: IPost) => <a href={`/post/${record.url}-${record.id}.html`}>{record.title}</a>
         },
         {
-            title: 'View',
+            title: 'Lượt xem',
             dataIndex: 'view'
         },
         {
-            title: 'Last modified',
+            title: 'Trạng thái',
+            render: (record: IPost) => (
+                <Tag color={record.status == 1 ? 'cyan' : 'gold'} onClick={() => setActive(record.id || 0)}>
+                    {record.status == 1 ? 'xuất bản' : 'chờ duyệt'}
+                </Tag>
+            )
+        },
+        {
+            title: 'Ngày xuất bản',
             dataIndex: 'modifiedDate',
             render: (text: Date) => moment(text).format('DD/MM/YYYY hh:mm:ss')
         },
@@ -133,11 +152,11 @@ export const PostList = () => {
         <div className="p-4 bg-white">
             <div className="flex justify-between mb-3">
                 <Space>
-                    <Input placeholder="input keyword..." onChange={(e: any) => setSerchTerm(e.target.value)} />
-                    <Button type="primary" icon={<SearchOutlined />} onClick={initCallback}>Search</Button>
+                    <Input placeholder="Nhập từ khóa..." onChange={(e: any) => setSerchTerm(e.target.value)} />
+                    <Button type="primary" icon={<SearchOutlined />} onClick={initCallback}>Tìm kiếm</Button>
                 </Space>
                 <Space>
-                    <Link to="/admin/post/setting"><Button type="primary" icon={<PlusOutlined />}>New Post</Button></Link>
+                    <Link to="/admin/post/setting"><Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button></Link>
                     <Button icon={<FileExcelTwoTone />} onClick={exportPost}>Export</Button>
                     <Button type="primary" danger onClick={() => setIsModalImportVisible(true)}>Import</Button>
                 </Space>

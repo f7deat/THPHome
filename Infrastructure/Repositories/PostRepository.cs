@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
 
         public async Task<PaginatedList<Post>> GetListPostByTagIdAsync(int tagId, int pageIndex, int pageSize)
         {
-            var query = from a in _context.Posts
+            var query = from a in _context.Posts.Where(x => x.Status == PostStatus.PUBLISH)
                         select a;
             return await PaginatedList<Post>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
@@ -66,7 +66,7 @@ namespace Infrastructure.Repositories
             var data = from a in _context.Posts
                        where string.IsNullOrEmpty(searchTerm) || a.Title.Contains(searchTerm)
                        orderby a.ModifiedDate descending
-                       select new { a.Id, a.Title, a.View, a.ModifiedDate, a.Url };
+                       select new { a.Id, a.Title, a.View, a.ModifiedDate, a.Url, a.Status };
             return new
             {
                 pagination = new { current, pageSize, total },
@@ -78,6 +78,7 @@ namespace Infrastructure.Repositories
         {
             var query = from a in _context.PostCategories.Where(x => x.CategoryId == id)
                         join b in _context.Posts on a.PostId equals b.Id
+                        where b.Status == PostStatus.PUBLISH
                         orderby b.ModifiedDate descending
                         select b;
             return await query.ToListAsync();
@@ -108,7 +109,7 @@ namespace Infrastructure.Repositories
 
         public IQueryable<PostView> GetListInCategory(int categoryId, string searchTerm) => from a in _context.PostCategories.Where(x => x.CategoryId == categoryId)
                                                                                             join b in _context.Posts on a.PostId equals b.Id
-                                                                                            where string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)
+                                                                                            where (string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)) && b.Status == PostStatus.PUBLISH
                                                                                             orderby b.ModifiedDate descending
                                                                                             select new PostView
                                                                                             {
@@ -125,7 +126,7 @@ namespace Infrastructure.Repositories
         {
             var query = from a in _context.Posts
                         join b in _context.PostCategories on a.Id equals b.PostId
-                        where categoryId == 0 || b.CategoryId == categoryId
+                        where (categoryId == 0 || b.CategoryId == categoryId) && a.Status == PostStatus.PUBLISH
                         orderby Guid.NewGuid()
                         select new PostView
                         {
@@ -147,7 +148,7 @@ namespace Infrastructure.Repositories
         public async Task<PaginatedList<PostView>> GetPostsInTagSync(string name, string searchTerm)
         {
             var query = from a in _context.Posts
-                        where a.Tags.ToLower().Contains(name) && (string.IsNullOrEmpty(searchTerm) || a.Title.ToLower().Contains(searchTerm))
+                        where a.Tags.ToLower().Contains(name) && (string.IsNullOrEmpty(searchTerm) || a.Title.ToLower().Contains(searchTerm)) && a.Status == PostStatus.PUBLISH
                         select new PostView
                         {
                             Title = a.Title,
@@ -161,7 +162,7 @@ namespace Infrastructure.Repositories
             return await PaginatedList<PostView>.CreateAsync(query, 1, 12);
         }
 
-        public async Task<IEnumerable<PostView>> GetRandomPostsAsync() => await _context.Posts.OrderBy(x => Guid.NewGuid()).Take(5).Select(x => new PostView
+        public async Task<IEnumerable<PostView>> GetRandomPostsAsync() => await _context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderBy(x => Guid.NewGuid()).Take(5).Select(x => new PostView
         {
             Id = x.Id,
             ModifiedDate = x.ModifiedDate,
@@ -171,7 +172,7 @@ namespace Infrastructure.Repositories
             View = x.View
         }).ToListAsync();
 
-        public async Task<PaginatedList<PostView>> GetListAsync(int pageIndex) => await PaginatedList<PostView>.CreateAsync(_context.Posts.OrderByDescending(x => x.ModifiedDate).Select(x => new PostView
+        public async Task<PaginatedList<PostView>> GetListAsync(int pageIndex) => await PaginatedList<PostView>.CreateAsync(_context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.ModifiedDate).Select(x => new PostView
         {
             Id = x.Id,
             Description = x.Description,
@@ -197,7 +198,7 @@ namespace Infrastructure.Repositories
             View = x.View
         }).ToListAsync();
 
-        public async Task<IEnumerable<PostView>> GetLastedListAsync(int pageSize) => await _context.Posts.OrderByDescending(x => x.Id).Take(pageSize).Select(x => new PostView
+        public async Task<IEnumerable<PostView>> GetLastedListAsync(int pageSize) => await _context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.Id).Take(pageSize).Select(x => new PostView
         {
             Id = x.Id,
             Description = x.Description,
@@ -214,7 +215,7 @@ namespace Infrastructure.Repositories
         {
             var query = from a in _context.Posts
                         join b in _context.PostCategories on a.Id equals b.PostId
-                        where a.Title.ToLower().Contains(searchTerm) && (b.CategoryId == categoryId || categoryId == null)
+                        where a.Title.ToLower().Contains(searchTerm) && (b.CategoryId == categoryId || categoryId == null) && a.Status == PostStatus.PUBLISH
                         orderby a.ModifiedDate descending
                         select new PostView
                         {
@@ -234,7 +235,7 @@ namespace Infrastructure.Repositories
             var query = from a in _context.Categories
                         join b in _context.PostCategories on a.Id equals b.CategoryId
                         join c in _context.Posts on b.PostId equals c.Id
-                        where a.NormalizeName == normalizeName
+                        where a.NormalizeName == normalizeName && c.Status == PostStatus.PUBLISH
                         orderby c.ModifiedDate descending
                         select new PostView
                         {
@@ -257,7 +258,7 @@ namespace Infrastructure.Repositories
             {
                 var posts = from a in _context.PostCategories
                             join b in _context.Posts on a.PostId equals b.Id
-                            where a.CategoryId == item.Id
+                            where a.CategoryId == item.Id && b.Status == PostStatus.PUBLISH
                             orderby b.ModifiedDate
                             select new PostView
                             {
@@ -281,7 +282,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize)
         {
-            return await _context.Posts.Where(x => x.Type == type).OrderByDescending(x => x.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(x => new PostView
+            return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(x => new PostView
             {
                 Id = x.Id,
                 Description = x.Description,
