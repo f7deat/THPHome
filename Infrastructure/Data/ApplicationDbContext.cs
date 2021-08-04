@@ -25,5 +25,6 @@ namespace Infrastructure
         public virtual DbSet<Menu> Menus { get; set; }
         public virtual DbSet<Partner> Partners { get; set; }
         public virtual DbSet<Video> Videos { get; set; }
+        public virtual DbSet<Attachment> Attachments { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using WebUI.Models;
 using System.Diagnostics;
 using System.Collections.Generic;
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Enums;
 
 namespace WebUI.Controllers
 {
@@ -42,7 +43,7 @@ namespace WebUI.Controllers
             ViewData["Description"] = post.Description;
 
             var categories = await _categoryService.GetListInPostAsync(id ?? 0);
-            ViewBag.RandomPosts = await _postService.GetRandomPostsAsync();
+            ViewBag.RandomPosts = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 5);
             if (categories.Count() > 0)
             {
                 var categoryId = categories.OrderBy(x => Guid.NewGuid()).FirstOrDefault().Id;

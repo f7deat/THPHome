@@ -49,6 +49,8 @@ namespace WebUI
             services.AddScoped<IPartnerRepository, PartnerRepository>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<IVideoRepository, VideoRepository>();
+            services.AddScoped<IAttachmentService, AttachmentService>();
+            services.AddScoped<IAttachmentRepository, AttachmentRepository>();
 
             services.AddControllersWithViews();
             services.AddSession();

@@ -22,13 +22,15 @@ namespace WebUI.Api
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public PostController(IPostService postService, IPostCategoryService postCategoryService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager)
+        private readonly IAttachmentService _attachmentService;
+        public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager)
         {
             _postService = postService;
             _postCategoryService = postCategoryService;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
             _roleManager = roleManager;
+            _attachmentService = attachmentService;
         }
 
         [Route("get-list")]
@@ -102,15 +104,25 @@ namespace WebUI.Api
                 if (!Directory.Exists(uploadPath))
                     Directory.CreateDirectory(uploadPath);
 
-                var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-                var filePath = Path.Combine(uploadPath, fileName);
+                var fileName = Guid.NewGuid();
+                var extension = Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(uploadPath, fileName + extension);
 
                 using (var stream = System.IO.File.Create(filePath))
                 {
                     await file.CopyToAsync(stream);
                 }
 
-                return Ok(new { succeeded = true, fileUrl = $"/files/{fileName}" });
+                var attach = new Attachment
+                {
+                    Id = fileName,
+                    Extension = extension,
+                    Name = file.FileName
+                };
+
+                await _attachmentService.AddAsync(attach);
+
+                return Ok(new { succeeded = true, fileUrl = $"/files/{fileName}{extension}" });
             }
             return Ok(new { succeeded = false, fileUrl = "" });
         }
