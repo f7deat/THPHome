@@ -121,7 +121,7 @@ const PostTag = (props: IPostTagProps) => {
             )}
             {!inputVisible && (
                 <Tag style={{ borderStyle: 'dashed' }} onClick={showInput}>
-                    <PlusOutlined /> New Tag
+                    <PlusOutlined /> Thêm thẻ
                 </Tag>
             )}
         </div>

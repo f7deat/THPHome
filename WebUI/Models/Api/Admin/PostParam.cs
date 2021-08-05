@@ -1,4 +1,6 @@
 ﻿using ApplicationCore.Entities;
+using System;
+using System.Collections.Generic;
 
 namespace WebUI.Models.Api.Admin
 {
@@ -6,5 +8,6 @@ namespace WebUI.Models.Api.Admin
     {
         public Post Post { get; set; }
         public int[] ListCategoryId { get; set; }
+        public List<Attachment> Attachments { get; set; }
     }
 }

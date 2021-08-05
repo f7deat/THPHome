@@ -11,5 +11,6 @@ namespace ApplicationCore.Entities
         public string Name { get; set; }
         [StringLength(50)]
         public string Extension { get; set; }
+        public long PostId { get; set; }
     }
 }

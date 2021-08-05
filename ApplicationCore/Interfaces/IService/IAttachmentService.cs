@@ -10,5 +10,7 @@ namespace ApplicationCore.Interfaces.IService
     {
         Task AddAsync(Attachment attachment);
         Task DeleteAsync(Guid id);
+        Task MapAsync(List<Attachment> attachments, long id);
+        Task<List<Attachment>> GetListInPostAsync(long id);
     }
 }

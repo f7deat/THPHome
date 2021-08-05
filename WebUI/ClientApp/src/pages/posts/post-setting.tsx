@@ -1,7 +1,8 @@
 ﻿import { Button, Col, DatePicker, Input, message, Row, Select, Space, Upload } from 'antd'
 import axios from 'axios'
 import {
-    UploadOutlined
+    UploadOutlined,
+    InboxOutlined
 } from "@ant-design/icons";
 import BraftEditor from 'braft-editor'
 import 'braft-editor/dist/index.css'
@@ -11,6 +12,7 @@ import { ListPostType } from '../../enum/post-enum'
 import PostTag from './components/post-tag'
 import IPost from './interfaces/post-model'
 import moment from 'moment';
+import Dragger from 'antd/lib/upload/Dragger';
 
 const PostSetting = () => {
 
@@ -24,6 +26,8 @@ const PostSetting = () => {
     const [listCategory, setListCategory] = useState<any>()
     const [listCategoryId, setListCategoryId] = useState<any>([])
     const [tags, setTags] = useState<string[]>([])
+    const [attachments, setAttachments] = useState<any>([])
+    const [defaultFileList, setDefaultFileList] = useState<any>([])
 
     const initCallback = useCallback(() => {
         if (id) {
@@ -36,6 +40,18 @@ const PostSetting = () => {
             })
             axios.get(`/api/post/get-list-category-id-in-post/${id}`).then(response => {
                 setListCategoryId(response.data)
+            })
+            axios.get(`/api/post/attachment-list-in-post/${id}`).then(response => {
+                setAttachments(response.data)
+                setDefaultFileList(response.data.map(function (x: any) {
+                    return {
+                        uid: x.id,
+                        name: x.name,
+                        status: 'done',
+                        url: `/files/${x.id}${x.extension}`
+                    }
+                }))
+                console.log(defaultFileList)
             })
         }
     }, [id])
@@ -67,7 +83,8 @@ const PostSetting = () => {
         }
         axios.post('/api/post/add', {
             post,
-            listCategoryId
+            listCategoryId,
+            attachments
         }).then(response => {
             if (response.data.succeeded) {
                 history.push('/admin/post/list')
@@ -84,7 +101,8 @@ const PostSetting = () => {
         }
         axios.post(`/api/post/update`, {
             post,
-            listCategoryId
+            listCategoryId,
+            attachments
         }).then(response => {
             if (response.data.succeeded) {
                 history.push('/admin/post/list')
@@ -110,6 +128,19 @@ const PostSetting = () => {
             setPost({ ...post, thumbnail: info.file.response.fileUrl })
             message.success(`${info.file.name} file uploaded successfully`);
         } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
+    }
+
+    const handleAttachFile = (info: any) => {
+        const { status } = info.file;
+        if (status !== 'uploading') {
+            console.log(info.file, info.fileList);
+        }
+        if (status === 'done') {
+            setAttachments([...attachments, info.file.response.attach]);
+            message.success(`${info.file.name} file uploaded successfully.`);
+        } else if (status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
     }
@@ -140,7 +171,7 @@ const PostSetting = () => {
             <Col span={6}>
                 <div className="mb-1">Loại</div>
                 <Select
-                    placeholder="Please select"
+                    placeholder="Vui lòng chọn"
                     onChange={handleChangeType}
                     className="w-full mb-2"
                     value={post.type}
@@ -157,7 +188,7 @@ const PostSetting = () => {
                     mode="multiple"
                     allowClear
                     style={{ width: '100%' }}
-                    placeholder="Please select"
+                    placeholder="Vui lòng chọn"
                     onChange={handleChangeCategory} className="mb-2"
                     value={listCategoryId} optionFilterProp="children" filterOption={(input, option: any) =>
                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -182,6 +213,17 @@ const PostSetting = () => {
                 <div className="mb-1">Ngày xuất bản</div>
                 <div className="mb-2">
                     <DatePicker onChange={(date, dateString) => setPost({ ...post, modifiedDate: date?.toDate() })} value={moment(post?.modifiedDate)} />
+                </div>
+
+                <div className="mb-1">Tệp tin đính kèm</div>
+                <div className="mb-2">
+                    <Dragger action="/api/post/upload" onChange={handleAttachFile} defaultFileList={defaultFileList}>
+                        <p className="ant-upload-drag-icon">
+                            <InboxOutlined />
+                        </p>
+                        <p className="ant-upload-text">Chọn tệp tin đính kèm</p>
+                        <p className="ant-upload-hint">Lựa chọn tệp tin để tải lên. Hỗ trợ các định dạng thông dụng .docx, .xlsx, .pdf</p>
+                    </Dragger>
                 </div>
 
                 <div className="py-4">

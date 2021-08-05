@@ -25,5 +25,28 @@ namespace ApplicationCore.Services
             var attach = await _attachmentRepository.FindAsync(id);
             await _attachmentRepository.DeleteAsync(attach);
         }
+
+        public Task<List<Attachment>> GetListInPostAsync(long id)
+        {
+            return _attachmentRepository.GetListInPostAsync(id);
+        }
+
+        public async Task MapAsync(List<Attachment> attachments, long id)
+        {
+            var listData = await _attachmentRepository.GetListInPostAsync(id);
+            if (listData.Count > 0)
+            {
+                await _attachmentRepository.RemoveRangeAsync(listData);
+            }
+            if (attachments != null)
+            {
+                foreach (var item in attachments)
+                {
+                    var attach = await _attachmentRepository.FindAsync(item.Id);
+                    attach.PostId = id;
+                }
+                await _attachmentRepository.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -54,6 +54,7 @@ namespace WebUI.Api
             if (data.Id > 0)
             {
                 await _postCategoryService.AddAsync(post.ListCategoryId, data.Id);
+                await _attachmentService.MapAsync(post.Attachments, data.Id);
             }
             return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
         }
@@ -72,12 +73,16 @@ namespace WebUI.Api
         {
             await _postCategoryService.DeleteAsync(post.Post.Id);
             await _postCategoryService.AddAsync(post.ListCategoryId, post.Post.Id);
+            await _attachmentService.MapAsync(post.Attachments, post.Post.Id);
             post.Post.ModifiedBy = _userManager.GetUserId(User);
             return Ok(await _postService.EditAsync(post.Post));
         }
 
         [Route("get-list-category-id-in-post/{postId}")]
         public async Task<IActionResult> GetListCategoryIdInPostAsync(long postId) => Ok(await _postCategoryService.GetListCategoryIdInPostAsync(postId));
+
+        [HttpGet("attachment-list-in-post/{id}")]
+        public async Task<IActionResult> GetAttachmentsAsync([FromRoute] long id) => Ok(await _attachmentService.GetListInPostAsync(id));
 
         [Route("get-total")]
         public async Task<IActionResult> GetTotalAsync() => Ok(await _postService.GetTotalAsync());
@@ -122,7 +127,7 @@ namespace WebUI.Api
 
                 await _attachmentService.AddAsync(attach);
 
-                return Ok(new { succeeded = true, fileUrl = $"/files/{fileName}{extension}" });
+                return Ok(new { succeeded = true, fileUrl = $"/files/{fileName}{extension}", attach });
             }
             return Ok(new { succeeded = false, fileUrl = "" });
         }
