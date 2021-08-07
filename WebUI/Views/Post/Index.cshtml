@@ -9,6 +9,7 @@
     var categories = (List<ApplicationCore.Entities.Category>)ViewBag.Categories;
     var listBanner = (List<ApplicationCore.Entities.Banner>)ViewBag.ListBanner;
     var listComment = (List<ApplicationCore.Models.Posts.CommentInPost>)ViewBag.ListComment;
+    var attachments = ViewBag.Attachments as List<ApplicationCore.Entities.Attachment>;
     var breadcrumbs = new List<Breadcrumb>
 {
         new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" }
@@ -60,6 +61,27 @@
             <button type="button" data-toggle="modal" data-target="report-modal"><i class="fa fa-flag"></i></button>
         </div>
 
+        @if (attachments.Count > 0)
+        {
+            <div class="title">Tệp tin đính kèm</div>
+            <div class="p-2 shadow mb-3">
+                @foreach (var item in attachments)
+                {
+                    if (item.Extension == ".pdf")
+                    {
+                        <embed src="/files/@($"{item.Id}{item.Extension}")" style="width: 100%; height: 800px" type="application/pdf">
+                    }
+                    else
+                    {
+                        <div class="py-2">
+                            <i class="fas fa-file mr-1"></i>
+                            <a href="/files/@($"{item.Id}{item.Extension}")">@item.Name</a>
+                        </div>
+                    }
+                }
+            </div>
+        }
+
         <div class="px-4 py-2 bg-gray-800 text-white font-bold rounded-t"><i class="fas fa-comment mr-2 text-sm"></i>Bình luận</div>
         <div class="mb-3">
             @if (SignInManager.IsSignedIn(User))
@@ -90,7 +112,7 @@
             else
             {
                 <div class="bg-gray-100 mb-2 px-4 py-2">
-                    <a class="mr-1" href="/Identity/Account/Login?returnUrl=@Model.Url")">Đăng ký / Đăng nhập</a><span>để gửi bình luận</span>
+                    <a class="mr-1" href="/Identity/Account/Login?returnUrl=@Model.Url" )">Đăng ký / Đăng nhập</a><span>để gửi bình luận</span>
                 </div>
             }
             @if (listComment.Count() > 0)

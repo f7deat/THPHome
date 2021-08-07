@@ -19,13 +19,15 @@ namespace WebUI.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IBannerService _bannerService;
         private readonly ICommentService _commentService;
-        public PostController(ApplicationDbContext context, IPostService postService, ICategoryService categoryService, IBannerService bannerService, ICommentService commentService)
+        private readonly IAttachmentService _attachmentService;
+        public PostController(ApplicationDbContext context, IPostService postService, ICategoryService categoryService, IBannerService bannerService, ICommentService commentService, IAttachmentService attachmentService)
         {
             _context = context;
             _postService = postService;
             _categoryService = categoryService;
             _bannerService = bannerService;
             _commentService = commentService;
+            _attachmentService = attachmentService;
         }
 
         [Route("post/{url}-{id}.html")]
@@ -58,6 +60,8 @@ namespace WebUI.Controllers
             ViewBag.ListBanner = await _bannerService.GetListAsync(id ?? 0);
 
             ViewBag.ListComment = await _commentService.GetListInPostAsync(id ?? 0);
+
+            ViewBag.Attachments = await _attachmentService.GetListInPostAsync(id ?? 0);
 
             return View(post);
         }

@@ -13,11 +13,16 @@
         @foreach (var item in Model)
         {
             <div class="d-flex mt-1 align-items-center">
-                <a href="/post/@($"{item.Url}-{item.Id}.html")" title="@item.Title" class="bg-dark mr-2" style="width: 70px; height: 55px">
-                    <img class="object-fit-cover max-w-none transition duration-700 hover:opacity-50" src="@item.Thumbnail" alt="IMG" style="width: 70px; height: 55px" />
+                <a href="@item.Url" title="@item.Title" class="bg-dark mr-2" style="width: 70px; height: 55px">
+                    @if (!string.IsNullOrEmpty(item.Thumbnail))
+                    {
+                        <img class="object-fit-cover max-w-none transition duration-700 hover:opacity-50" src="@item.Thumbnail" alt="IMG" style="width: 70px; height: 55px" />
+                    }
                 </a>
                 <div>
-                    <div class="mb-1"><a href="@item.Url" title="@item.Title" data-bs-toggle="tooltip">@item.Title</a></div>
+                    <div class="mb-1">
+                        <a href="@item.Url" title="@item.Title" data-bs-toggle="tooltip">@item.Title</a>
+                    </div>
                     <div class="text-muted text-xs d-flex">
                         <div class="mr-2"><i class="fa fa-calendar mr-2"></i>@item.ModifiedDate</div>
                         <div><i class="fas fa-eye mr-2"></i>@item.View.ToString("N0")</div>

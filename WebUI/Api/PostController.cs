@@ -144,5 +144,11 @@ namespace WebUI.Api
                 return Ok(new { succeeded = false, message = "Truy cập bị từ chối!" });
             }
         }
+
+        [HttpDelete("file/delete/{id}")]
+        public async Task<IActionResult> DeleteAttachmentAsync([FromRoute] Guid id)
+        {
+            return Ok(await _attachmentService.DeleteAsync(id));
+        }
     }
 }

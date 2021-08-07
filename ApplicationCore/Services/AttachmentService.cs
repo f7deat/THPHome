@@ -3,6 +3,7 @@ using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,10 +21,23 @@ namespace ApplicationCore.Services
             await _attachmentRepository.AddAsync(attachment);
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<dynamic> DeleteAsync(Guid id)
         {
-            var attach = await _attachmentRepository.FindAsync(id);
-            await _attachmentRepository.DeleteAsync(attach);
+            try
+            {
+                var attach = await _attachmentRepository.FindAsync(id);
+                var file = $"~/files/{id}{attach.Extension}";
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
+                await _attachmentRepository.DeleteAsync(attach);
+                return new { succeeded = true, message = "succeeded!" };
+            }
+            catch (Exception ex)
+            {
+                return new { succeeded = false, message = ex.ToString() };
+            }
         }
 
         public Task<List<Attachment>> GetListInPostAsync(long id)
@@ -33,11 +47,6 @@ namespace ApplicationCore.Services
 
         public async Task MapAsync(List<Attachment> attachments, long id)
         {
-            var listData = await _attachmentRepository.GetListInPostAsync(id);
-            if (listData.Count > 0)
-            {
-                await _attachmentRepository.RemoveRangeAsync(listData);
-            }
             if (attachments != null)
             {
                 foreach (var item in attachments)

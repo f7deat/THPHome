@@ -26,7 +26,6 @@ const PostSetting = () => {
     const [listCategory, setListCategory] = useState<any>()
     const [listCategoryId, setListCategoryId] = useState<any>([])
     const [tags, setTags] = useState<string[]>([])
-    const [attachments, setAttachments] = useState<any>([])
     const [defaultFileList, setDefaultFileList] = useState<any>([])
 
     const initCallback = useCallback(() => {
@@ -42,16 +41,15 @@ const PostSetting = () => {
                 setListCategoryId(response.data)
             })
             axios.get(`/api/post/attachment-list-in-post/${id}`).then(response => {
-                setAttachments(response.data)
-                setDefaultFileList(response.data.map(function (x: any) {
+                let mapData = response.data.map(function (x: any) {
                     return {
                         uid: x.id,
                         name: x.name,
                         status: 'done',
                         url: `/files/${x.id}${x.extension}`
                     }
-                }))
-                console.log(defaultFileList)
+                });
+                setDefaultFileList(mapData)
             })
         }
     }, [id])
@@ -81,6 +79,11 @@ const PostSetting = () => {
         if (tags.length > 0) {
             post.tags = tags.join(',');
         }
+        let attachments = defaultFileList.map(function (x: any) {
+            return {
+                id: x.uid
+            }
+        })
         axios.post('/api/post/add', {
             post,
             listCategoryId,
@@ -99,6 +102,11 @@ const PostSetting = () => {
         if (tags.length > 0) {
             post.tags = tags.join(',')
         }
+        let attachments = defaultFileList.map(function (x: any) {
+            return {
+                id: x.uid
+            }
+        })
         axios.post(`/api/post/update`, {
             post,
             listCategoryId,
@@ -138,11 +146,27 @@ const PostSetting = () => {
             console.log(info.file, info.fileList);
         }
         if (status === 'done') {
-            setAttachments([...attachments, info.file.response.attach]);
+            let mapData = {
+                uid: info.file.response.attach.id,
+                name: info.file.response.attach.name,
+                status: 'done',
+                url: `/files/${info.file.response.attach.id}${info.file.response.attach.extension}`
+            }
+            setDefaultFileList([...defaultFileList, mapData])
             message.success(`${info.file.name} file uploaded successfully.`);
         } else if (status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
+    }
+
+    const handleRemoveFile = (file: any) => {
+        axios.delete(`/api/post/file/delete/${file.uid}`).then(x => {
+            if (x.data.succeeded) {
+                setDefaultFileList(defaultFileList.filter((x: any) => x.uid !== file.uid))
+            } else {
+                message.error(x.data.message)
+            }
+        })
     }
 
     return (
@@ -217,7 +241,7 @@ const PostSetting = () => {
 
                 <div className="mb-1">Tệp tin đính kèm</div>
                 <div className="mb-2">
-                    <Dragger action="/api/post/upload" onChange={handleAttachFile} defaultFileList={defaultFileList}>
+                    <Dragger action="/api/post/upload" onChange={handleAttachFile} fileList={defaultFileList} onRemove={handleRemoveFile}>
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>
