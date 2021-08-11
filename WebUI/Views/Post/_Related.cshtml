@@ -8,13 +8,13 @@
         {
             <div class="md:w-4/12 md:px-1 mb-4">
                 <div class="h-full shadow flex flex-col rounded">
-                    <a href="@item.Url" title="@item.Title">
+                    <a href="@($"/post/{item.Url}.html")" title="@item.Title">
                         <div class="bg-black">
                             <img src="@item.Thumbnail" class="w-full transition-opacity duration-700 ease-in-out hover:opacity-50 object-fit-cover" style="height: 200px" />
                         </div>
                     </a>
                     <div class="flex-1 p-2">
-                        <a href="@item.Url" title="@item.Title"><b>@item.Title</b></a>
+                        <a href="@($"/post/{item.Url}.html")" title="@item.Title"><b>@item.Title</b></a>
                         <div class="text-gray-600">
                             @if (item.Description?.Length > 155)
                             {
