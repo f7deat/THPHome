@@ -225,11 +225,11 @@ const PostSetting = () => {
                     }
                 </Select>
 
-                <div className="mb-1">Thumbnail</div>
+                <div className="mb-1">Ảnh đại diện</div>
                 <div className="mb-2 flex">
                     <Input value={post?.thumbnail} onChange={(e: any) => setPost({ ...post, thumbnail: e.target.value })} className="flex-grow" />
                     <Upload action="/api/partner/upload" onChange={handleUpload} maxCount={1} showUploadList={false}>
-                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                        <Button icon={<UploadOutlined />}>Tải lên</Button>
                     </Upload>
                 </div>
                 <img src={post?.thumbnail || 'https://placehold.jp/350x200.png'} alt="thumbnail" className="w-full object-fit-cover h-64" />

@@ -28,12 +28,12 @@ export const MenuList = () => {
                 <Menu.Item key="2">
                     <Link to="/admin/post/list">Bài viết</Link>
                 </Menu.Item>
+                <Menu.Item key="4">
+                    <Link to={`${_preFix}/category/list`}>Danh mục</Link>
+                </Menu.Item>
             </SubMenu>
-            <Menu.Item key="4" icon={<ApartmentOutlined />}>
-                <Link to={`${_preFix}/category/list`}>Category</Link>
-            </Menu.Item>
             <Menu.Item key="5" icon={<FileImageOutlined />}>
-                <Link to={`${_preFix}/banner/list`}>Image</Link>
+                <Link to={`${_preFix}/banner/list`}>Hình ảnh</Link>
             </Menu.Item>
             <SubMenu key="sub2" icon={<UserOutlined />} title="Người dùng">
                 <Menu.Item key="8">
@@ -44,7 +44,7 @@ export const MenuList = () => {
                 </Menu.Item>
             </SubMenu>
             <Menu.Item key="10" icon={<AlertOutlined />}>
-                <Link to="/admin/partner">Partner</Link>
+                <Link to="/admin/partner">Đối tác</Link>
             </Menu.Item>
             <Menu.Item key="11" icon={<CommentOutlined />}>
                 <Link to="/admin/comment/list">Bình luận</Link>

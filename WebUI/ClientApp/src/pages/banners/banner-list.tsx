@@ -104,7 +104,7 @@ const BannerList = () => {
                                 <img src={item.image} alt={item.name} className="object-fit-cover w-full h-40" />
                                 <div className="flex absolute bottom-0 w-full">
                                     <div className="w-1/2 flex justify-center py-1 bg-white cursor-pointer hover:bg-red-500 hover:text-white" onClick={() => showDrawer(item)}>
-                                        Watch
+                                        Chi tiết
                                     </div>
                                     <Popconfirm
                                         title="Are you sure to delete?"
@@ -113,7 +113,7 @@ const BannerList = () => {
                                         onConfirm={() => handleDelete(item.id)}
                                     >
                                         <div className="w-1/2 flex justify-center py-1 bg-white cursor-pointer hover:bg-red-500 hover:text-white">
-                                            Delete
+                                            Xóa
                                         </div>
                                     </Popconfirm>
                                     
@@ -149,7 +149,7 @@ const BannerList = () => {
                 <Select defaultValue={banner?.type} style={{ width: '100%' }} onChange={(value) => setBanner((prevState: any) => ({ ...prevState, type: value }))} className="mb-3">
                     {optionList}
                 </Select>
-                <Button type="primary" icon={<SaveOutlined />} onClick={save}>Save changes</Button>
+                <Button type="primary" icon={<SaveOutlined />} onClick={save}>Lưu</Button>
             </Drawer>
         </div>
     )

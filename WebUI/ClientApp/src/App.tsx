@@ -34,11 +34,13 @@ const App = () => {
                     <LostInSpaceLogin />
                 </Layout>) : (
                     <Layout className="h-screen">
-                        <Sider trigger={null} collapsible collapsed={collapsed} className="fixed h-screen">
-                            <div className="logo" />
+                        <Sider trigger={null} collapsible collapsed={collapsed} className="h-screen">
+                            <div className="logo">
+                                <img src="/img/admin-logo.svg" alt="logo" style={{ height: 32 }} />
+                            </div>
                             <MenuList />
                         </Sider>
-                        <Layout className="site-layout" style={{ marginLeft: 200 }}>
+                        <Layout className="site-layout">
                             <AppHeader collapsed={collapsed} setCollapsed={setCollapsed} user={user} />
                             <Content className="p-4">
                                 <AppRouter />

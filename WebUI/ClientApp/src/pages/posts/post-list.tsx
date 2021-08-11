@@ -162,7 +162,7 @@ export const PostList = () => {
                 </Space>
             </div>
             <Tabs defaultActiveKey="1">
-                <TabPane tab="Default" key="1">
+                <TabPane tab="Mặc định" key="1">
                     <Table dataSource={posts}
                         columns={columns}
                         rowSelection={{
@@ -175,13 +175,13 @@ export const PostList = () => {
                         pagination={pagination}
                     />
                 </TabPane>
-                <TabPane tab="Page" key="2">
+                <TabPane tab="Trang" key="2">
                     <Empty />
                 </TabPane>
-                <TabPane tab="News" key="3">
+                <TabPane tab="Tin tức" key="3">
                     <Empty />
                 </TabPane>
-                <TabPane tab="Notification" key="4">
+                <TabPane tab="Thông báo" key="4">
                     <Empty />
                 </TabPane>
             </Tabs>

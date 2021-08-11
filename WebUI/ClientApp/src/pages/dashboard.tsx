@@ -21,68 +21,30 @@ export const Dashboard = () => {
         <div>
             <Row gutter={16} className="mb-4">
                 <Col span={6}>
-                    <div className="bg-white rounded">
+                    <div className="bg-white rounded" style={{ marginBottom: 23 }}>
                         <Statistic
-                            title="Total View"
+                            title="Lượt xem"
                             value={postView}
                             className="p-4"
                         />
                         <div className="border-t px-4 py-2">
-                            Total Post: {postCount}
+                            Số bài viết: {postCount}
                         </div>
                     </div>
-                </Col>
-                <Col span={6}>
                     <div className="bg-white rounded">
                         <Statistic
-                            title="Idle"
-                            value={9.3}
-                            precision={2}
-                            valueStyle={{ color: '#cf1322' }}
-                            prefix={<ArrowDownOutlined />}
-                            suffix="%"
+                            title="Bình luận"
+                            value={0}
                             className="p-4"
-                        /><div className="border-t px-4 py-2">
-                            Total Post: {postCount}
+                        />
+                        <div className="border-t px-4 py-2">
+                            Đang chờ: 0
                         </div>
                     </div>
                 </Col>
-                <Col span={6}>
-                    <div className="bg-white rounded">
-                        <Statistic
-                            title="Idle"
-                            value={9.3}
-                            precision={2}
-                            valueStyle={{ color: '#cf1322' }}
-                            prefix={<ArrowDownOutlined />}
-                            suffix="%"
-                            className="p-4"
-                        /><div className="border-t px-4 py-2">
-                            Total Post: {postCount}
-                        </div>
-                    </div>
-                </Col>
-                <Col span={6}>
-                    <div className="bg-white rounded">
-                        <Statistic
-                            title="Idle"
-                            value={9.3}
-                            precision={2}
-                            valueStyle={{ color: '#cf1322' }}
-                            prefix={<ArrowDownOutlined />}
-                            suffix="%"
-                            className="p-4"
-                        /><div className="border-t px-4 py-2">
-                            Total Post: {postCount}
-                        </div>
-                    </div>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={8}>
-                    <Card title="Top View">
+                <Col span={18}>
+                    <Card title="Bài viết xem nhiều" className="p-0" bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}>
                         <List
-                            bordered
                             dataSource={posts}
                             renderItem={(item: any) => (
                                 <List.Item>
