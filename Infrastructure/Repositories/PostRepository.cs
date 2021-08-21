@@ -282,7 +282,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize)
         {
-            return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(x => new PostView
+            return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.ModifiedDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(x => new PostView
             {
                 Id = x.Id,
                 Description = x.Description,

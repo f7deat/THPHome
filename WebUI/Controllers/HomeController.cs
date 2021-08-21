@@ -40,7 +40,7 @@ namespace WebUI.Controllers
         public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 3)
         {
             ViewBag.Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
-            ViewBag.ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 4);
+            ViewBag.ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 3);
             var posts = await _postService.GetListByTypeAsync(PostType.NEWS, pageIndex, pageSize);
             ViewBag.ListNews = PaginatedList<PostView>.CreateAsync(posts.ToList());
             ViewBag.BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
