@@ -1,13 +1,17 @@
 ﻿:root {
     --primary: #101c53;
     --danger: #fa5c7c;
-    --dark: #0e1f4b;
+    --darka: #005a9c;
+    --dark: #00387a;
+    --darko: #0e1f4b;
     --red: #D02929;
+    --ueni: #2e74dd;
+    --uwhite: #fff;
 }
 
 a {
     text-decoration: none;
-    color: var(--primary);
+    color: var(--ueni);
 }
 
 .object-fit-cover {
@@ -37,7 +41,8 @@ input:focus {
         }
 
             .main-menu .dropdown-menu a:hover, .top-menu .dropdown-menu a:hover {
-                color: var(--dark);
+                color: var(--uwhite);
+                background: var(--darko);
             }
 
 .top-menu .dropdown-menu {
@@ -48,16 +53,18 @@ input:focus {
     background-color: var(--dark);
     color: #fff;
     padding: 2rem 0 1rem 0;
-    font-size:small;
+    font-size: small;
 }
+
 .inline {
     display: inline-block;
     margin: 2px;
     vertical-align: middle;
 }
-    .footer svg, .title svg {
-        display: unset;
-    }
+
+.footer svg, .title svg {
+    display: unset;
+}
 
 .footer-divide {
     border-top: 1px solid #979797;
@@ -198,8 +205,46 @@ input:focus {
         color: white;
     }
 
+li.dropdown:hover .dropdown-menu {
+    display: block !important;
+}
+
+.dropdown-mega.show, li.dropdown:hover .dropdown-mega {
+    display: none !important;
+    justify-content: space-between;
+    font-size: 0.875rem;
+}
+
+.dropdown-mega .header {
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    display: block;
+}
+
+.dropdown-mega .mega-stack li a {
+    padding: 0.5rem 1rem;
+    display: block;
+}
+
 @media screen and (min-width: 768px) {
     .carousel-item img {
         height: 364px;
+    }
+
+    .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
+        display: flex !important;
+        left: -56px !important;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
+        width: calc(100vw - 478px);
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
+        width: calc(100vw - 664px);
     }
 }

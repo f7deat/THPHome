@@ -30,7 +30,7 @@ const App = () => {
     return (
         loading ? (<div />) :
             !isAuthenticated ? (
-                <Layout className="h-screen flex items-center">
+                <Layout className="flex items-center">
                     <LostInSpaceLogin />
                 </Layout>) : (
                     <Layout className="h-screen">

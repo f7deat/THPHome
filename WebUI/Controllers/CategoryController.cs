@@ -9,6 +9,7 @@ using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Constants;
 using ApplicationCore.Models;
+using ApplicationCore.Enums;
 
 namespace WebUI.Controllers
 {
@@ -50,8 +51,6 @@ namespace WebUI.Controllers
             ViewData["Description"] = category.Description;
 
             ViewBag.Id = argument.Id;
-
-            ViewBag.RandomPosts = await _postService.GetListRandomAsync(5, argument.Id ?? 0);
 
             ViewBag.Categories = await _categoryService.GetChildCategoriesAsync(argument.Id ?? 0);
 

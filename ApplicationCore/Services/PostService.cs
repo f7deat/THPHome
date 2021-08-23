@@ -68,7 +68,7 @@ namespace ApplicationCore.Services
 
         public Task<dynamic> GetListAsync(int pageIndex, int pageSize, string searchTerm) => _postRepository.GetListAsync(pageIndex, pageSize, searchTerm);
 
-        public async Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int pageIndex) => await PaginatedList<PostView>.CreateAsync(_postRepository.GetListInCategory(categoryId, searchTerm), pageIndex, 10);
+        public async Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int pageIndex) => await PaginatedList<PostView>.CreateAsync(_postRepository.GetListInCategory(categoryId, searchTerm), pageIndex, 9);
 
         public Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0) => _postRepository.GetListRandomAsync(pageSize, categoryId);
 
