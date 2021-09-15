@@ -7,3 +7,7 @@ function playVideo(videoId) {
     let frame = document.getElementById('frame-play');
     frame.src = 'https://www.youtube.com/embed/' + videoId;
 }
+
+AOS.init({
+    duration: 2000
+});

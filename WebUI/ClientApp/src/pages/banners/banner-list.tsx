@@ -7,6 +7,7 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { BANNER_TYPE, LIST_BANNER_TYPE } from "./enums/banner-type";
+import { FileExplorer } from "../files/file-explorer";
 
 const { Option } = Select;
 
@@ -14,7 +15,8 @@ const BannerList = () => {
     const [visible, setVisible] = useState(false);
     const [banner, setBanner] = useState<any>();
     const [listBanner, setListBanner] = useState<any>();
-    const [bannerType, setBannerType] = useState(BANNER_TYPE.PHOTO);
+    const [bannerType, setBannerType] = useState(BANNER_TYPE.PHOTO)
+    const [explorerVisible, setExplorerVisible] = useState<boolean>(false)
 
     const optionList = LIST_BANNER_TYPE.map((value) => (
         <Option value={value.id} key={value.id}>{value.name}</Option>
@@ -84,6 +86,14 @@ const BannerList = () => {
         }
     }
 
+    const handleExplorer = () => {
+        setExplorerVisible(true)
+    }
+
+    const handleExplorerOk = () => {
+        setExplorerVisible(false)
+    }
+
     return (
         <div>
             <div className="mb-4">
@@ -138,8 +148,9 @@ const BannerList = () => {
                 <div className="flex mb-2">
                     <Input className="flex-grow" value={banner?.image} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, image: e.target.value }))} />
                     <Upload action="/api/partner/upload" onChange={handleUpload} maxCount={1} showUploadList={false}>
-                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                        <Button icon={<UploadOutlined />}>Tải lên</Button>
                     </Upload>
+                    <Button icon={<UploadOutlined />} onClick={handleExplorer}>Duyệt</Button>
                 </div>
                 <div>Url</div>
                 <Input className="mb-2" value={banner?.url} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, url: e.target.value }))} />
@@ -151,6 +162,7 @@ const BannerList = () => {
                 </Select>
                 <Button type="primary" icon={<SaveOutlined />} onClick={save}>Lưu</Button>
             </Drawer>
+            <FileExplorer visible={explorerVisible} onOk={handleExplorerOk} onCancel={() => setExplorerVisible(false)} />
         </div>
     )
 }
