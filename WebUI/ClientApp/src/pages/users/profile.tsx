@@ -1,13 +1,12 @@
-﻿import { Col, Empty, Row, Table, Tabs, Typography } from "antd"
-import Avatar from "antd/lib/avatar/avatar"
+﻿import { Col, Empty, Row, Table, Tabs, Typography, Image, Button } from "antd"
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { IUsePrams } from "../../interfaces/use-params";
 import {
-    UserOutlined,
     StarOutlined,
-    CommentOutlined
+    CommentOutlined,
+    EditOutlined
 } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
@@ -27,7 +26,7 @@ const Profile = () => {
             axios.get(`/api/post/get-count-in-user/${response.data.id}`).then(post => {
                 setPostCount(post.data)
             })
-            axios.get(`/api/post/get-list-in-user/${response.data.id}`).then(response => {
+            axios.get(`/api/post/list-in-user/${response.data.id}`).then(response => {
                 setListPost(response.data)
             })
             axios.get(`/api/comment/get-count-in-user/${response.data.id}`).then(response => {
@@ -50,10 +49,14 @@ const Profile = () => {
     return (
         <div>
             <div className="relative" style={{ marginBottom: '5rem' }}>
-                <div className="h-40 bg-white rounded"></div>
+                <div className="h-40 bg-white rounded">
+                    <div className="flex justify-end">
+                        <Link to={`/admin/user/edit/${profile?.id}`}><Button type="text" icon={<EditOutlined />}></Button></Link>
+                    </div>
+                </div>
                 <div className="absolute flex items-center" style={{ top: '5rem', left: '3rem' }}>
                     <div className="mr-2">
-                        <Avatar size={150} src={profile?.avatar} />
+                        <Image width={150} src={profile?.avatar} className="rounded-full" />
                     </div>
                     <div>
                         <div className="font-bold text-lg">{profile?.email}</div>
@@ -71,7 +74,7 @@ const Profile = () => {
                         <div className="px-4">
                             <Tabs defaultActiveKey="1">
                                 <TabPane tab="Post" key="1">
-                                    <Table dataSource={listPost} rowKey="id" columns={columns} />
+                                    <Table dataSource={listPost} rowKey="id" columns={columns} pagination={{ pageSize: 5 }} />
                                 </TabPane>
                                 <TabPane tab="Comment" key="2">
                                     <Empty />
