@@ -91,5 +91,8 @@ namespace WebUI.Api
             System.IO.File.Delete(path);
             return Ok(new { succeeded = true, message = "Succeeded!" });
         }
+
+        [HttpGet("custom-css")]
+        public IActionResult GetCustomCss() => Ok(System.IO.File.ReadAllText(Path.Combine(_webHostEnvironment.WebRootPath, "css", "style.css")));
     }
 }

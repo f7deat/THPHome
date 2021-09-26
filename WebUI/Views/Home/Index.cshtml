@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/tiny-slider.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
 
-<div class="row">
+<div class="row" data-aos="fade-up">
     <div class="col-md-8 mb-4">
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
@@ -61,7 +61,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" data-aos="fade-up">
     <div class="col-md-4 mb-4">
         <partial name="/Views/Shared/_RandomPost.cshtml" model="ViewBag.ListNotification" />
     </div>
@@ -74,7 +74,7 @@
 <div class="row g-2">
     @foreach (var item in Model)
     {
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-4" data-aos="fade-up">
             <div class="title"><a href="/category/details/@item.Id" class="text-white"><span class="mr-2">@Html.Raw(@item.Icon)</span> @item.Name</a></div>
             <div class="category-box">
                 <div class="list-group">
@@ -88,7 +88,7 @@
     }
 </div>
 
-<div class="row counter-wrapper mb-4 shadow">
+<div class="row counter-wrapper mb-4 shadow" data-aos="fade-up">
     <div class="col-md-3">
         <div class="p-4 md:p-10 text-center">
             <div class="text-lg font-bold">
@@ -119,7 +119,7 @@
     </div>
 </div>
 
-<div class="media">
+<div class="media" data-aos="fade-up">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Thư viện video</button>
@@ -167,7 +167,7 @@
     </div>
 </div>
 
-<div class="partner border-t border-b py-2">
+<div class="partner border-t border-b py-2" data-aos="fade-up">
     <div class="my-slider">
         @foreach (var item in partners)
         {
