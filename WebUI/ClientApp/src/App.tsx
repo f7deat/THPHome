@@ -33,8 +33,8 @@ const App = () => {
                 <Layout className="flex items-center">
                     <LostInSpaceLogin />
                 </Layout>) : (
-                    <Layout className="h-screen">
-                        <Sider trigger={null} collapsible collapsed={collapsed} className="h-screen">
+                    <Layout>
+                        <Sider trigger={null} collapsible collapsed={collapsed}>
                             <div className="logo">
                                 <img src="/img/admin-logo.svg" alt="logo" style={{ height: 32 }} />
                             </div>

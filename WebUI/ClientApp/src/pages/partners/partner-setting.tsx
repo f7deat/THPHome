@@ -1,4 +1,4 @@
-﻿import { Button, Drawer, Form, Input, message, Popconfirm, Select, Space, Table, Upload } from "antd"
+﻿import { Button, Drawer, Form, Input, message, Popconfirm, Popover, Select, Space, Table, Upload, Image, Tag } from "antd"
 import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
@@ -102,19 +102,21 @@ const PartnerSetting = () => {
 
     const columns = [
         {
-            title: '#',
-            dataIndex: "id"
+            title: 'STT',
+            dataIndex: "index"
         },
         {
-            title: 'Name',
+            title: 'Tên đối tác',
             render: (record: any) => (
-                <a href={record.url} target="_blank">{record.name}</a>
+                <Popover content={<Image src={record.logo} width={200} />} title="Logo">
+                    <a href={record.url} target="_blank">{record.name}</a>
+                </Popover>
             )
         },
         {
-            title: 'Logo',
+            title: 'Trạng thái',
             render: (record: any) => (
-                <img src={record.logo} alt="logo" className="objectfit-cover" width="100" />
+                record.status === 1 ? <Tag color="green">Đang kích hoạt</Tag> : <Tag color="red">Không hoạt động</Tag>
             )
         },
         {
@@ -152,7 +154,7 @@ const PartnerSetting = () => {
             <div className="mb-3">
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
             </div>
-            <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} pagination={{ pageSize: 5 }} />
+            <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
 
             <Drawer
                 title="Cài đặt"
