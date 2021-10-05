@@ -13,6 +13,6 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<IReadOnlyList<Partner>> GetListAsync() => await _context.Partners.OrderByDescending(x => x.Id).ToListAsync();
+        public async Task<IReadOnlyList<Partner>> GetListAsync(int status) => await _context.Partners.Where(x => status == -1 || x.Status == status).OrderByDescending(x => x.Index).ToListAsync();
     }
 }

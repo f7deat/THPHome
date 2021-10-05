@@ -1,4 +1,4 @@
-﻿import { Button, Drawer, Form, Input, message, Popconfirm, Popover, Select, Space, Table, Upload, Image, Tag } from "antd"
+﻿import { Button, Drawer, Form, Input, message, Popconfirm, Popover, Select, Space, Table, Upload, Image, Tag, Switch, InputNumber } from "antd"
 import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
@@ -6,7 +6,8 @@ import {
     PlusOutlined,
     SaveOutlined,
     ArrowRightOutlined,
-    UploadOutlined
+    UploadOutlined,
+    SearchOutlined
 } from "@ant-design/icons";
 import axios from "axios";
 
@@ -77,6 +78,14 @@ const PartnerSetting = () => {
             {
                 name: ['url'],
                 value: record.url
+            },
+            {
+                name: ['status'],
+                value: record.status === 1
+            },
+            {
+                name: ['index'],
+                value: record.index
             }
         ])
         setVisible(true)
@@ -84,6 +93,8 @@ const PartnerSetting = () => {
 
     const onFinish = (values: any) => {
         let url = '';
+        values.status === true ? values.status = 1 : values.status = 0;
+        values.index = Number(values.index);
         if (values.id) {
             url = `/api/partner/update`;
         } else {
@@ -151,7 +162,11 @@ const PartnerSetting = () => {
 
     return (
         <div>
-            <div className="mb-3">
+            <div className="mb-3 flex justify-between">
+                <Space>
+                    <Input />
+                    <Button type="primary" icon={<SearchOutlined />}>Tìm kiếm</Button>
+                </Space>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
             </div>
             <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
@@ -191,6 +206,16 @@ const PartnerSetting = () => {
                     <Form.Item label="Liên kết" name="url">
                         <Input />
                     </Form.Item>
+
+                    <Space size={40}>
+                        <Form.Item label="Số thứ tự" name="index">
+                            <InputNumber />
+                        </Form.Item>
+
+                        <Form.Item label="Trạng thái" name="status" valuePropName="checked">
+                            <Switch />
+                        </Form.Item>
+                    </Space>
 
                     <Form.Item>
                         <Space>

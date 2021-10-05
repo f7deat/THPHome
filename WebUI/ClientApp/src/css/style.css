@@ -14,6 +14,10 @@
     border: 0 solid #e5e7eb;
 }
 
+#root {
+    height: 100%;
+}
+
 .absolute {
     position: absolute;
 }
@@ -108,6 +112,10 @@
 
 .justify-end {
     justify-content: flex-end;
+}
+
+.h-full {
+    height: 100%;
 }
 
 .h-screen {

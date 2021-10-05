@@ -8,6 +8,6 @@ namespace ApplicationCore.Interfaces.IRepository
 {
     public interface IPartnerRepository : IAsyncRepository<Partner>
     {
-        Task<IReadOnlyList<Partner>> GetListAsync();
+        Task<IReadOnlyList<Partner>> GetListAsync(int status);
     }
 }

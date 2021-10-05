@@ -30,10 +30,10 @@ const App = () => {
     return (
         loading ? (<div />) :
             !isAuthenticated ? (
-                <Layout className="flex items-center">
+                <Layout className="flex items-center h-full">
                     <LostInSpaceLogin />
                 </Layout>) : (
-                    <Layout>
+                <Layout className="h-full">
                         <Sider trigger={null} collapsible collapsed={collapsed}>
                             <div className="logo">
                                 <img src="/img/admin-logo.svg" alt="logo" style={{ height: 32 }} />
