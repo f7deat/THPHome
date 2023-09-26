@@ -13,6 +13,7 @@ import moment from 'moment';
 import Dragger from 'antd/lib/upload/Dragger';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import QuillToolbar, { formats, modules } from '../../components/editor-toolbar';
 
 const PostSetting = () => {
 
@@ -176,11 +177,14 @@ const PostSetting = () => {
                 <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
                 <div className="mb-1">Nội dung</div>
                 <div className="mb-2">
+                    <QuillToolbar />
                     <ReactQuill
                         value={value}
                         onChange={setValue}
                         className="border"
                         theme="snow"
+                        modules={modules}
+                        formats={formats}
                     />
                 </div>
                 <Space>
