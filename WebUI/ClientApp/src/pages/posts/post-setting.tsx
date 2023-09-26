@@ -4,8 +4,6 @@ import {
     UploadOutlined,
     InboxOutlined
 } from "@ant-design/icons";
-import BraftEditor from 'braft-editor'
-import 'braft-editor/dist/index.css'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { ListPostType } from '../../enum/post-enum'
@@ -13,6 +11,8 @@ import PostTag from './components/post-tag'
 import IPost from './interfaces/post-model'
 import moment from 'moment';
 import Dragger from 'antd/lib/upload/Dragger';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const PostSetting = () => {
 
@@ -21,7 +21,8 @@ const PostSetting = () => {
     const history = useHistory();
     const { id } = useParams<any>()
 
-    const [editorState, setEditorState] = useState<any>(null)
+    const [value, setValue] = useState('');
+
     const [post, setPost] = useState<IPost>({})
     const [listCategory, setListCategory] = useState<any>()
     const [listCategoryId, setListCategoryId] = useState<any>([])
@@ -32,7 +33,7 @@ const PostSetting = () => {
         if (id) {
             axios.get(`/api/post/get/${id}`).then(response => {
                 setPost(response.data)
-                setEditorState(BraftEditor.createEditorState(response.data.content));
+                setValue(response.data.content);
                 if (response.data.tags) {
                     setTags((response.data.tags).split(','))
                 }
@@ -61,10 +62,6 @@ const PostSetting = () => {
         })
     }, [initCallback])
 
-    const handleEditorChange = (editorState: any) => {
-        setEditorState(editorState)
-    }
-
     const handleSave = () => {
         if (id) {
             handleEdit()
@@ -74,8 +71,7 @@ const PostSetting = () => {
     }
 
     const handleAdd = () => {
-        const htmlContent = editorState?.toHTML();
-        post.content = htmlContent;
+        post.content = value;
         if (tags.length > 0) {
             post.tags = tags.join(',');
         }
@@ -98,7 +94,7 @@ const PostSetting = () => {
     }
 
     const handleEdit = () => {
-        post.content = editorState?.toHTML();
+        post.content = value;
         if (tags.length > 0) {
             post.tags = tags.join(',')
         }
@@ -180,11 +176,11 @@ const PostSetting = () => {
                 <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
                 <div className="mb-1">Nội dung</div>
                 <div className="mb-2">
-                    <BraftEditor
-                        value={editorState}
-                        onChange={handleEditorChange}
+                    <ReactQuill
+                        value={value}
+                        onChange={setValue}
                         className="border"
-                        language="vi-vn"
+                        theme="snow"
                     />
                 </div>
                 <Space>

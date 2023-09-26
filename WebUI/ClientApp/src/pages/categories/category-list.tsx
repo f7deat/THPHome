@@ -243,9 +243,6 @@ export const CategoryList = () => {
                             placeholder="Select category"
                             optionFilterProp="children"
                             onChange={onChange}
-                            filterOption={(input, option) =>
-                                option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                            }
                             className="w-full mb-2"
                             value={category?.parrentId}
                         >
