@@ -8,6 +8,7 @@ using ApplicationCore.Helpers;
 using System;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
+using ApplicationCore.Models.Filters;
 
 namespace Infrastructure.Repositories
 {
@@ -60,17 +61,24 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<dynamic> GetListAsync(int current, int pageSize, string searchTerm)
+        public async Task<dynamic> GetListAsync(PostFilterOptions filterOptions)
         {
-            var total = await _context.Posts.CountAsync(x => string.IsNullOrEmpty(searchTerm) || x.Title.Contains(searchTerm));
-            var data = from a in _context.Posts
-                       where string.IsNullOrEmpty(searchTerm) || a.Title.Contains(searchTerm)
-                       orderby a.ModifiedDate descending
-                       select new { a.Id, a.Title, a.View, a.ModifiedDate, a.Url, a.Status };
+            var query = _context.Posts.Where(x => (string.IsNullOrEmpty(filterOptions.SearchTerm) || x.Title.Contains(filterOptions.SearchTerm))
+            && (filterOptions.Type == null || x.Type == filterOptions.Type)).OrderByDescending(x => x.ModifiedDate)
+            .Select(x => new
+            {
+                x.Id,
+                x.Title,
+                x.View,
+                x.ModifiedDate,
+                x.Url,
+                x.Status
+            });
+            var total = await query.CountAsync();
             return new
             {
-                pagination = new { current, pageSize, total },
-                data = await data.Skip((current - 1) * pageSize).Take(pageSize).ToListAsync()
+                pagination = new { current = filterOptions.PageIndex, pageSize = filterOptions.PageSize, total },
+                data = await query.Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync()
             };
         }
 

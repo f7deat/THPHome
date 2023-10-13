@@ -39,6 +39,23 @@ namespace WebUI.Api
             return Ok(new { succeeded = false, message = "File not found", url = string.Empty });
         }
 
+        [HttpPost("image/upload")]
+        public async Task<IActionResult> ImageUploadAsync([FromForm] IFormFile file)
+        {
+            if (file is null) return BadRequest("File not found!");
+            var folder = Guid.NewGuid().ToString();
+            var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", folder);
+            if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
+            var filePath = Path.Combine(uploadPath, file.FileName);
+            
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { succeeded = true, url = $"/img/{folder}/{file.FileName}" });
+        }
+
         [HttpGet("directories")]
         public IActionResult Folders(string path = "files", int pageIndex = 1, int pageSize = 10)
         {

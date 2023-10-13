@@ -5,6 +5,7 @@ using ApplicationCore.Helpers;
 using System.Collections.Generic;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
+using ApplicationCore.Models.Filters;
 
 namespace ApplicationCore.Interfaces.IRepository
 {
@@ -14,7 +15,7 @@ namespace ApplicationCore.Interfaces.IRepository
         Task<int> GetTotalViewAsync();
         Task<IEnumerable<Post>> GetTopViewAsync(int pageSize);
         Task<dynamic> GetDataBarChartAsync();
-        Task<dynamic> GetListAsync(int pageIndex, int pageSize, string searchTerm);
+        Task<dynamic> GetListAsync(PostFilterOptions filterOptions);
         Task<IEnumerable<Post>> GetInCategoryAsync(int id);
         Task<bool> IsExistInCategory(int id);
         Task<dynamic> AddRangeAsync(List<Post> posts);

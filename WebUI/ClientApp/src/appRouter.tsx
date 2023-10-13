@@ -18,53 +18,52 @@ import VideoSetting from "./pages/videos/video-setting"
 const _preFix = "/admin";
 const routes = [
     {
-      path: `${_preFix}`,
-      exact: true,
-      main: () => <Dashboard />
+        path: `${_preFix}`,
+        main: () => <Dashboard />
     },
     {
-      path: `${_preFix}/comment/list`,
-      main: () => <CommentList />
+        path: `${_preFix}/comment/list`,
+        main: () => <CommentList />
     },
     {
-      path: `${_preFix}/banner/list`,
-      main: () => <BannerList />
+        path: `${_preFix}/banner/list`,
+        main: () => <BannerList />
     },
     {
-      path: `${_preFix}/user/edit/:id`,
-      main: () => <UserEdit />
+        path: `${_preFix}/user/edit/:id`,
+        main: () => <UserEdit />
     },
     {
-      path: `${_preFix}/user/list`,
-      main: () => <UserList />
+        path: `${_preFix}/user/list`,
+        main: () => <UserList />
     },
     {
-      path: `${_preFix}/user/profile`,
-      main: () => <Profile />
+        path: `${_preFix}/user/profile`,
+        main: () => <Profile />
     },
     {
-      path: `${_preFix}/role/list`,
-      main: () => <RoleList />
+        path: `${_preFix}/role/list`,
+        main: () => <RoleList />
     },
     {
-      path: `${_preFix}/affiliate/list`,
-      main: () => <AffiliateList />
+        path: `${_preFix}/affiliate/list`,
+        main: () => <AffiliateList />
     },
     {
-      path: `${_preFix}/affiliate/details/:id`,
-      main: () => <AffiliateDetails />
+        path: `${_preFix}/affiliate/details/:id`,
+        main: () => <AffiliateDetails />
     },
     {
-      path: `${_preFix}/post/setting/:id?`,
-      main: () => <PostSetting />
+        path: `${_preFix}/post/setting/:id?`,
+        main: () => <PostSetting />
     },
     {
-      path: `${_preFix}/post/list`,
-      main: () => <PostList />
+        path: `${_preFix}/post/list`,
+        main: () => <PostList />
     },
     {
-      path: `${_preFix}/category/list`,
-      main: () => <CategoryList />
+        path: `${_preFix}/category/list`,
+        main: () => <CategoryList />
     },
     {
         path: `${_preFix}/setting/menu`,
@@ -78,13 +77,13 @@ const routes = [
         path: `${_preFix}/video`,
         main: () => <VideoSetting />
     }
-  ];
+];
 
 export const AppRouter = () => {
     return (
         <Switch>
             {routes.map((route, index) => (
-                <Route key={index} path={route.path} exact={route.exact || true} children={<route.main />} />
+                <Route key={index} path={route.path} exact={true} children={<route.main />} />
             ))}
         </Switch>
     )

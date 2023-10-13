@@ -4,7 +4,7 @@ import {
     UploadOutlined,
     InboxOutlined
 } from "@ant-design/icons";
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { ListPostType } from '../../enum/post-enum'
 import PostTag from './components/post-tag'
@@ -20,7 +20,8 @@ const PostSetting = () => {
     const { Option } = Select;
 
     const history = useHistory();
-    const { id } = useParams<any>()
+    const { id } = useParams<any>();
+    const reactQuillRef = useRef<any>();
 
     const [value, setValue] = useState('');
 
@@ -87,7 +88,7 @@ const PostSetting = () => {
             attachments
         }).then(response => {
             if (response.data.succeeded) {
-                history.push('/admin/post/list')
+                history.push(`/admin/post/list?type=${post.type}`);
             } else {
                 message.error('ERROR');
             }
@@ -166,6 +167,38 @@ const PostSetting = () => {
         })
     }
 
+
+    const imageHandler = useCallback(() => {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", "image/*");
+        input.click();
+        input.onchange = async () => {
+            if (input !== null && input.files !== null) {
+                const file = input.files[0];
+                const formData = new FormData();
+                formData.append("file", file);
+                const response = await axios({
+                    url: '/api/file/image/upload',
+                    data: formData,
+                    method: 'POST'
+                });
+                if (response.data) {
+                    message.success('Tải lên thành công!');
+                    const quill = reactQuillRef.current;
+                    debugger
+                    if (quill) {
+                        const range = quill?.getEditorSelection();
+                        range && quill?.getEditor().insertEmbed(range.index, "image", response.data.url);
+                    }
+                    return response.data.url;
+                }
+                message.success('Tải lên thất bại!')
+            }
+        };
+    }, []);
+
+
     return (
         <Row className="p-4 bg-white" gutter={16}>
             <Col span={18}>
@@ -179,12 +212,28 @@ const PostSetting = () => {
                 <div className="mb-2">
                     <QuillToolbar />
                     <ReactQuill
+                        ref={reactQuillRef}
                         value={value}
                         onChange={setValue}
                         className="border"
                         theme="snow"
-                        modules={modules}
+                        modules={{
+                            toolbar: {
+                                container: "#toolbar",
+                                handlers: {
+                                    image: imageHandler,
+                                },
+                                history: {
+                                    delay: 500,
+                                    maxStack: 100,
+                                    userOnly: true
+                                }
+                            }
+                        }}
                         formats={formats}
+                        style={{
+                            height: 400
+                        }}
                     />
                 </div>
                 <Space>

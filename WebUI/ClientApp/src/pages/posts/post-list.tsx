@@ -21,7 +21,8 @@ export const PostList = () => {
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
     const [importFile, setImportFile] = useState<any>();
     const [isModalImportVisible, setIsModalImportVisible] = useState(false)
-    const [searchTerm, setSerchTerm] = useState<string>('')
+    const [searchTerm, setSerchTerm] = useState<string>('');
+    const [activeKey, setActiveKey] = useState<string>('1');
 
     function bindData(response: any) {
         setPosts(response.data);
@@ -30,10 +31,10 @@ export const PostList = () => {
     }
 
     const initCallback = useCallback(() => {
-        axios.get(`/api/post/get-list?pageIndex=1&pageSize=10&searchTerm=${searchTerm}`).then(response => {
+        axios.get(`/api/post/get-list?pageIndex=1&pageSize=10&searchTerm=${searchTerm}&type=${activeKey}`).then(response => {
             bindData(response.data)
         })
-    }, [searchTerm])
+    }, [searchTerm, activeKey])
 
     useEffect(() => {
         initCallback();
@@ -70,12 +71,8 @@ export const PostList = () => {
         }
     }
 
-    const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-        console.log(pagination)
-        setLoading(true);
-        axios.get(`/api/post/get-list?pageIndex=${pagination.current}&pageSize=${pagination.pageSize}`).then(response => {
-            bindData(response.data);
-        });
+    const onTabChange = (activeKey: string) => {
+        setActiveKey(activeKey);
     }
 
     const handleImport = () => {
@@ -102,6 +99,14 @@ export const PostList = () => {
                 message.error(response.data.message)
             }
         })
+    }
+
+    const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+        console.log(pagination)
+        setLoading(true);
+        axios.get(`/api/post/get-list?pageIndex=${pagination.current}&pageSize=${pagination.pageSize}&type=${activeKey}`).then(response => {
+            bindData(response.data);
+        });
     }
 
     const columns = [
@@ -161,7 +166,7 @@ export const PostList = () => {
                     <Button type="primary" danger onClick={() => setIsModalImportVisible(true)}>Import</Button>
                 </Space>
             </div>
-            <Tabs defaultActiveKey="1">
+            <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey}>
                 <TabPane tab="Mặc định" key="1">
                     <Table dataSource={posts}
                         columns={columns}
@@ -171,18 +176,48 @@ export const PostList = () => {
                         }}
                         loading={loading}
                         rowKey="id"
-                        onChange={handleTableChange}
                         pagination={pagination}
+                        onChange={handleTableChange}
                     />
                 </TabPane>
                 <TabPane tab="Trang" key="2">
-                    <Empty />
+                    <Table dataSource={posts}
+                        columns={columns}
+                        rowSelection={{
+                            type: 'checkbox',
+                            ...rowSelection,
+                        }}
+                        loading={loading}
+                        rowKey="id"
+                        pagination={pagination}
+                        onChange={handleTableChange}
+                    />
                 </TabPane>
                 <TabPane tab="Tin tức" key="3">
-                    <Empty />
+                    <Table dataSource={posts}
+                        columns={columns}
+                        rowSelection={{
+                            type: 'checkbox',
+                            ...rowSelection,
+                        }}
+                        loading={loading}
+                        rowKey="id"
+                        pagination={pagination}
+                        onChange={handleTableChange}
+                    />
                 </TabPane>
                 <TabPane tab="Thông báo" key="4">
-                    <Empty />
+                    <Table dataSource={posts}
+                        columns={columns}
+                        rowSelection={{
+                            type: 'checkbox',
+                            ...rowSelection,
+                        }}
+                        loading={loading}
+                        rowKey="id"
+                        pagination={pagination}
+                        onChange={handleTableChange}
+                    />
                 </TabPane>
             </Tabs>
 

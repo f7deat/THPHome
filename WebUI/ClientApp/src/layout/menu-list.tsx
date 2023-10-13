@@ -1,5 +1,5 @@
 ﻿import { Menu } from "antd"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import {
     DashboardOutlined,
     UserOutlined,
@@ -17,10 +17,21 @@ const { SubMenu } = Menu;
 
 export const MenuList = () => {
 
+    const [activeKey, setActiveKey] = useState<string>('1');
+
+    useEffect(() => {
+        const act = localStorage.getItem('active_menu');
+        setActiveKey(act || '1');
+    }, []);
+
     const _preFix = "/admin";
+    const onClick = (event: any) => {
+        setActiveKey(event.key);
+        localStorage.setItem('active_menu', event.key);
+    }
 
     return (
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+        <Menu theme="dark" mode="inline" onClick={onClick} activeKey={activeKey}>
             <Menu.Item key="1" icon={<DashboardOutlined />}>
                 <Link to="/admin">Dashboard</Link>
             </Menu.Item>

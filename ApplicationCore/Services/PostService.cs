@@ -3,6 +3,7 @@ using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Models.Filters;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -33,6 +34,7 @@ namespace ApplicationCore.Services
         public async Task<Post> AddAsync(Post post)
         {
             post.CreatedDate = DateTime.Now;
+            post.ModifiedDate = DateTime.Now;
             post.Status = PostStatus.DRAFT;
             post.View = 0;
             if (string.IsNullOrEmpty(post.Url))
@@ -66,7 +68,7 @@ namespace ApplicationCore.Services
 
         public Task<IEnumerable<Post>> GetInCategoryAsync(int id) => _postRepository.GetInCategoryAsync(id);
 
-        public Task<dynamic> GetListAsync(int pageIndex, int pageSize, string searchTerm) => _postRepository.GetListAsync(pageIndex, pageSize, searchTerm);
+        public Task<dynamic> GetListAsync(PostFilterOptions filterOptions) => _postRepository.GetListAsync(filterOptions);
 
         public async Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int pageIndex) => await PaginatedList<PostView>.CreateAsync(_postRepository.GetListInCategory(categoryId, searchTerm), pageIndex, 9);
 

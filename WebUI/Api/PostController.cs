@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Constants;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,8 +34,8 @@ namespace WebUI.Api
             _attachmentService = attachmentService;
         }
 
-        [Route("get-list")]
-        public async Task<IActionResult> GetListAsync(int pageIndex, int pageSize, string searchTerm) => Ok(await _postService.GetListAsync(pageIndex, pageSize, searchTerm));
+        [HttpGet("get-list")]
+        public async Task<IActionResult> GetListAsync([FromQuery] PostFilterOptions filterOptions) => Ok(await _postService.GetListAsync(filterOptions));
 
         [Route("get-in-category/{id}")]
         public async Task<IActionResult> GetInCategoryAsync(int id) => Ok(await _postService.GetInCategoryAsync(id));

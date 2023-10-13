@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
+using ApplicationCore.Models.Filters;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace ApplicationCore.Interfaces.IService
     {
         Task<IEnumerable<Post>> GetListAsync(PostType type);
         Task<PaginatedList<PostView>> GetListAsync(int pageIndex);
-        Task<dynamic> GetListAsync(int pageIndex, int pageSize, string searchTerm);
+        Task<dynamic> GetListAsync(PostFilterOptions filterOptions);
         Task<int> GetTotalViewAsync();
         Task<IEnumerable<Post>> GetTopViewAsync(int pageSize);
         Task<IEnumerable<PostView>> GetListInTagAsync(string tagName, int pageSize);

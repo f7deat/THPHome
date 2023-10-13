@@ -17,8 +17,6 @@ namespace WebUI
         {
             CreateHostBuilder(args).Build().Run();
         }
-        // "Server=103.216.113.32;Database=defzonen_data;User Id=defzonen_thp;Password=Rs366x*u;Trusted_Connection=False;MultipleActiveResultSets=true"
-        // "Server=LAPTOP-IIRBIRMG\\SQLEXPRESS;Database=THPHome;Trusted_Connection=True;MultipleActiveResultSets=true"
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
