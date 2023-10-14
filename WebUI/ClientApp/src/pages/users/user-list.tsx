@@ -16,7 +16,7 @@ const UserList = () => {
     const [listUser, setListUser] = useState<any>([])
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [listRole, setListRole] = useState<any>([])
-    const [user, setUser] = useState<any>({})
+    const [user, setUser] = useState<any>()
     const [drawerVisible, setDrawerVisible] = useState<boolean>(false)
 
     useEffect(() => {
@@ -29,13 +29,16 @@ const UserList = () => {
         })
     }, [])
 
-    function openRolePanel(user: any) {
-        setUser(user)
+    function openRolePanel(record: any) {
+        setUser(record)
         fetchRole()
     }
 
     function fetchRole() {
         axios.get('/api/role/get-list').then(response => {
+            if (!user) {
+                return;
+            }
             axios.get(`/api/user/roles/${user.id}`).then(responseRoleInUser => {
                 response.data.map((value: any) => {
                     let isInRole = responseRoleInUser.data.find((x: any) => x === value.name)

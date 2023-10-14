@@ -6,17 +6,24 @@ import {
     LogoutOutlined
 } from '@ant-design/icons';
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const { Header } = Layout;
 
 export const AppHeader = (props: any) => {
+
+    const handleLogout = () => {
+        axios.post(`/api/user/logout`).then(response => {
+            window.location.href = '/';
+        })
+    }
 
     const menu = (
         <Menu>
             <Menu.Item icon={<UserOutlined />} className="cursor-pointer">
                 <Link to="/admin/user/profile">Profile</Link>
             </Menu.Item>
-            <Menu.Item danger icon={<LogoutOutlined />} className="cursor-pointer">Logout</Menu.Item>
+            <Menu.Item danger icon={<LogoutOutlined />} className="cursor-pointer" onClick={() => handleLogout()}>Logout</Menu.Item>
         </Menu>
     );
 

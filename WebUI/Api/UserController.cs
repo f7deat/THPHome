@@ -217,13 +217,20 @@ namespace WebUI.Api
             return Ok(await _userManager.ConfirmEmailAsync(user, input.Code));
         }
 
-        [HttpGet("set-password"), AllowAnonymous]
+        [HttpGet("set-password")]
         public async Task<IActionResult> SetPasswordAsync([FromQuery] SetPasswordModel args)
         {
             var user = await _userManager.FindByNameAsync(args.UserName);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, args.Password);
             return Ok(result);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
         }
 
         #region Role
