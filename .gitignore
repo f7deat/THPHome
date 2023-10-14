@@ -355,3 +355,6 @@ MigrationBackup/
 /WebUI/ClientApp/package-lock.json
 /WebUI/Properties
 /WebUI/ScaffoldingReadMe.txt
+/WebUI/wwwroot/files
+/package-lock.json
+/package.json
