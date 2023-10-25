@@ -1,4 +1,4 @@
-﻿import { Button, Col, DatePicker, Input, message, Row, Select, Space, Upload } from 'antd'
+﻿import { Button, Col, DatePicker, Input, message, Row, Select, Space, Upload, UploadProps } from 'antd'
 import axios from 'axios'
 import {
     UploadOutlined,
@@ -10,10 +10,11 @@ import { ListPostType } from '../../enum/post-enum'
 import PostTag from './components/post-tag'
 import IPost from './interfaces/post-model'
 import moment from 'moment';
-import Dragger from 'antd/lib/upload/Dragger';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import QuillToolbar, { formats, modules } from '../../components/editor-toolbar';
+
+const { Dragger } = Upload;
 
 const PostSetting = () => {
 
@@ -138,25 +139,6 @@ const PostSetting = () => {
         }
     }
 
-    const handleAttachFile = (info: any) => {
-        const { status } = info.file;
-        if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-            let mapData = {
-                uid: info.file.response.attach.id,
-                name: info.file.response.attach.name,
-                status: 'done',
-                url: `/files/${info.file.response.attach.id}${info.file.response.attach.extension}`
-            }
-            setDefaultFileList([...defaultFileList, mapData])
-            message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    }
-
     const handleRemoveFile = (file: any) => {
         axios.delete(`/api/post/file/delete/${file.uid}`).then(x => {
             if (x.data.succeeded) {
@@ -167,6 +149,27 @@ const PostSetting = () => {
         })
     }
 
+    const dummyRequest = async (file: any) => {
+        let formData = new FormData();
+        formData.append('file', file);
+        const response = await axios.post('/api/post/upload', formData);
+        let mapData = {
+            uid: response.data.attach.id,
+            name: response.data.attach.name,
+            status: 'done',
+            url: `/files/${response.data.attach.id}${response.data.attach.extension}`
+        }
+        setDefaultFileList([...defaultFileList, mapData])
+        message.success(`${file.name} file uploaded successfully.`);
+    }
+
+    const props: UploadProps = {
+        name: 'file',
+        multiple: false,
+        beforeUpload: dummyRequest,
+        fileList: defaultFileList,
+        onRemove: handleRemoveFile
+    };
 
     const imageHandler = useCallback(() => {
         const input = document.createElement("input");
@@ -290,7 +293,7 @@ const PostSetting = () => {
 
                 <div className="mb-1">Tệp tin đính kèm</div>
                 <div className="mb-2">
-                    <Dragger action="/api/post/upload" onChange={handleAttachFile} fileList={defaultFileList} onRemove={handleRemoveFile}>
+                    <Dragger {...props}>
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>

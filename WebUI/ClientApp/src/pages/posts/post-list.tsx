@@ -167,7 +167,7 @@ export const PostList = () => {
                 </Space>
             </div>
             <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey}>
-                <TabPane tab="Mặc định" key="1">
+                <TabPane tab="Mặc định" key="0">
                     <Table dataSource={posts}
                         columns={columns}
                         rowSelection={{
@@ -180,7 +180,7 @@ export const PostList = () => {
                         onChange={handleTableChange}
                     />
                 </TabPane>
-                <TabPane tab="Trang" key="2">
+                <TabPane tab="Trang" key="1">
                     <Table dataSource={posts}
                         columns={columns}
                         rowSelection={{
@@ -193,7 +193,7 @@ export const PostList = () => {
                         onChange={handleTableChange}
                     />
                 </TabPane>
-                <TabPane tab="Tin tức" key="3">
+                <TabPane tab="Tin tức" key="2">
                     <Table dataSource={posts}
                         columns={columns}
                         rowSelection={{
@@ -206,7 +206,7 @@ export const PostList = () => {
                         onChange={handleTableChange}
                     />
                 </TabPane>
-                <TabPane tab="Thông báo" key="4">
+                <TabPane tab="Thông báo" key="3">
                     <Table dataSource={posts}
                         columns={columns}
                         rowSelection={{
