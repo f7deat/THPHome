@@ -410,3 +410,9 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
+.ql-video {
+    width: 650px;
+    height: 400px;
+    margin: auto;
+}

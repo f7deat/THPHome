@@ -189,7 +189,6 @@ const PostSetting = () => {
                 if (response.data) {
                     message.success('Tải lên thành công!');
                     const quill = reactQuillRef.current;
-                    debugger
                     if (quill) {
                         const range = quill?.getEditorSelection();
                         range && quill?.getEditor().insertEmbed(range.index, "image", response.data.url);
@@ -200,7 +199,6 @@ const PostSetting = () => {
             }
         };
     }, []);
-
 
     return (
         <Row className="p-4 bg-white" gutter={16}>
@@ -224,7 +222,7 @@ const PostSetting = () => {
                             toolbar: {
                                 container: "#toolbar",
                                 handlers: {
-                                    image: imageHandler,
+                                    image: imageHandler
                                 },
                                 history: {
                                     delay: 500,
