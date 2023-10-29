@@ -7,7 +7,6 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { ListPostType } from '../../enum/post-enum'
-import PostTag from './components/post-tag'
 import IPost from './interfaces/post-model'
 import moment from 'moment';
 import ReactQuill from 'react-quill';
@@ -29,7 +28,6 @@ const PostSetting = () => {
     const [post, setPost] = useState<IPost>({})
     const [listCategory, setListCategory] = useState<any>()
     const [listCategoryId, setListCategoryId] = useState<any>([])
-    const [tags, setTags] = useState<string[]>([])
     const [defaultFileList, setDefaultFileList] = useState<any>([])
 
     const initCallback = useCallback(() => {
@@ -37,9 +35,6 @@ const PostSetting = () => {
             axios.get(`/api/post/get/${id}`).then(response => {
                 setPost(response.data)
                 setValue(response.data.content);
-                if (response.data.tags) {
-                    setTags((response.data.tags).split(','))
-                }
             })
             axios.get(`/api/post/get-list-category-id-in-post/${id}`).then(response => {
                 setListCategoryId(response.data)
@@ -75,9 +70,6 @@ const PostSetting = () => {
 
     const handleAdd = () => {
         post.content = value;
-        if (tags.length > 0) {
-            post.tags = tags.join(',');
-        }
         let attachments = defaultFileList.map(function (x: any) {
             return {
                 id: x.uid
@@ -98,9 +90,6 @@ const PostSetting = () => {
 
     const handleEdit = () => {
         post.content = value;
-        if (tags.length > 0) {
-            post.tags = tags.join(',')
-        }
         let attachments = defaultFileList.map(function (x: any) {
             return {
                 id: x.uid
@@ -298,10 +287,6 @@ const PostSetting = () => {
                         <p className="ant-upload-text">Chọn tệp tin đính kèm</p>
                         <p className="ant-upload-hint">Lựa chọn tệp tin để tải lên. Hỗ trợ các định dạng thông dụng .docx, .xlsx, .pdf</p>
                     </Dragger>
-                </div>
-
-                <div className="py-4">
-                    <PostTag setTags={setTags} tags={tags} />
                 </div>
             </Col>
         </Row >

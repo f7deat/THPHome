@@ -1,4 +1,5 @@
 ﻿@model ApplicationCore.Entities.Post
+@using ApplicationCore.Entities;
 @using WebUI.Models.ComponentModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
@@ -10,6 +11,7 @@
     var listBanner = (List<ApplicationCore.Entities.Banner>)ViewBag.ListBanner;
     var listComment = (List<ApplicationCore.Models.Posts.CommentInPost>)ViewBag.ListComment;
     var attachments = ViewBag.Attachments as List<ApplicationCore.Entities.Attachment>;
+    var relateds = ViewBag.RelatedPosts as List<Post>;
     var breadcrumbs = new List<Breadcrumb>
 {
         new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" }
@@ -133,6 +135,23 @@
                 <div class="mt-1 border text-center p-2 text-sm">Chưa có bình luận. Hãy là người đầu tiên</div>
             }
         </div>
+
+
+        @if (relateds != null)
+        {
+            <div class="related">
+                <h1 class="p-2 bg-gray-800 text-white font-bold rounded-t">
+                    Bài viết liên quan
+                </h1>
+                @foreach (var item in relateds)
+                {
+                    <div class="px-2 py-1 border-b border-r border-r">
+                        <i class="fab fa-staylinked mr-1 me-1"></i>
+                        <a href="/post/@item.Url">@item.Title - <span class="text-muted text-sm"><i class="fa fa-eye"></i> @item.View.ToString("N0")</span></a>
+                    </div>
+                }
+            </div>
+        }
     </div>
     <div class="md:w-4/12 md:ml-1">
         <div class="mb-4">
@@ -216,9 +235,6 @@
         </div>
     </div>
 </div>
-
-
-<partial name="_Related" model="ViewBag.RelatedPosts" />
 
 @{
     var context = "\"@context\": \"https://schema.org\"";

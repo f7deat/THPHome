@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Enums;
+using ApplicationCore.Entities;
 
 namespace WebUI.Controllers
 {
@@ -48,11 +49,20 @@ namespace WebUI.Controllers
             ViewBag.RandomPosts = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 5);
             if (categories.Count() > 0)
             {
-                var categoryId = categories.OrderBy(x => Guid.NewGuid()).FirstOrDefault().Id;
-                ViewBag.RelatedPosts = await (from a in _context.PostCategories.Where(x => x.CategoryId == categoryId)
-                                        join b in _context.Posts on a.PostId equals b.Id
-                                        where b.Id != id
-                                        select b).Take(3).ToListAsync();
+                var categoryIds = categories.Select(c => c.Id);
+                var relateds = from c in _context.PostCategories
+                               join p in _context.Posts on c.PostId equals p.Id
+                               where categoryIds.Contains(c.CategoryId) && p.Status == PostStatus.PUBLISH && p.Id != post.Id
+                               orderby p.Id descending
+                               select new Post
+                               {
+                                   Id = p.Id,
+                                   Title = p.Title,
+                                   ModifiedDate = p.ModifiedDate,
+                                   View = p.View,
+                                   Url = p.Url + p.Id + ".html"
+                               };
+                ViewBag.RelatedPosts = await relateds.Take(6).ToListAsync();
             }
 
             ViewBag.Categories = categories;
