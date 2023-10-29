@@ -62,7 +62,7 @@ namespace WebUI.Controllers
                                    View = p.View,
                                    Url = p.Url + "-" + p.Id + ".html"
                                };
-                ViewBag.RelatedPosts = await relateds.Take(6).ToListAsync();
+                ViewBag.RelatedPosts = await relateds.Take(10).ToListAsync();
             }
 
             ViewBag.Categories = categories;
