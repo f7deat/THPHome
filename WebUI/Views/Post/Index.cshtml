@@ -139,13 +139,13 @@
 
         @if (relateds != null)
         {
-            <div class="related">
+            <div class="related mb-4">
                 <h1 class="p-2 bg-gray-800 text-white font-bold rounded-t">
                     Bài viết liên quan
                 </h1>
                 @foreach (var item in relateds)
                 {
-                    <div class="px-2 py-1 border-b border-r border-r">
+                    <div class="px-2 py-1 border-b border-r border-l">
                         <i class="fab fa-staylinked mr-1 me-1"></i>
                         <a href="/post/@item.Url">@item.Title - <span class="text-muted text-sm"><i class="fa fa-eye"></i> @item.View.ToString("N0")</span></a>
                     </div>
