@@ -194,8 +194,6 @@ const PostSetting = () => {
             <Col span={18}>
                 <div className="mb-1">Tiêu đề</div>
                 <Input value={post.title} onChange={(e: any) => setPost({ ...post, title: e.target.value })} className="mb-2" />
-                <div className="mb-1">Liên kết cố định <i>(tùy chọn)</i></div>
-                <Input value={post.url} onChange={(e: any) => setPost({ ...post, url: e.target.value })} className="mb-2" />
                 <div className="mb-1">Mô tả</div>
                 <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
                 <div className="mb-1">Nội dung</div>

@@ -37,15 +37,18 @@ namespace ApplicationCore.Services
             post.ModifiedDate = DateTime.Now;
             post.Status = PostStatus.DRAFT;
             post.View = 0;
-            if (string.IsNullOrEmpty(post.Url))
-            {
-                post.Url = SeoHelper.ToSeoFriendly(post.Title, post.Title.Length);
-            }
+            post.Url = SeoHelper.ToSeoFriendly(post.Title, post.Title.Length);
             return await _postRepository.AddAsync(post);
         }
 
         public async Task<dynamic> EditAsync(Post post)
         {
+            if (string.IsNullOrWhiteSpace(post.Title))
+            {
+                return new { succeded = false };
+            }
+            post.Url = SeoHelper.ToSeoFriendly(post.Title, post.Title.Length);
+            post.Title = post.Title.Trim();
             await _postRepository.UpdateAsync(post);
             return new { succeeded = true };
         }

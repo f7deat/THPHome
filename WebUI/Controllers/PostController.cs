@@ -60,7 +60,7 @@ namespace WebUI.Controllers
                                    Title = p.Title,
                                    ModifiedDate = p.ModifiedDate,
                                    View = p.View,
-                                   Url = p.Url + p.Id + ".html"
+                                   Url = p.Url + "-" + p.Id + ".html"
                                };
                 ViewBag.RelatedPosts = await relateds.Take(6).ToListAsync();
             }
