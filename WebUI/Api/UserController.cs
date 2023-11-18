@@ -1,6 +1,4 @@
 using ApplicationCore.Constants;
-using ApplicationCore.Interfaces.IService;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,15 +15,17 @@ using WebUI.Models.Api.Admin.Users;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using WebUI.Models.Api.Admin.User;
+using ApplicationCore.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebUI.Api
 {
     [Route("api/[controller]"), Authorize]
     public class UserController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        public UserController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -47,15 +47,7 @@ namespace WebUI.Api
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetList()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (await _userManager.IsInRoleAsync(user, RoleName.ADMIN))
-            {
-                return Ok(_userManager.Users);
-            }
-            return Unauthorized();
-        }
+        public async Task<IActionResult> GetList() => Ok(await _userManager.Users.ToListAsync());
 
         [HttpPost("add-to-role")]
         public async Task<IActionResult> AddToRoleAsync([FromBody] AddToRole addToRole)
@@ -188,7 +180,7 @@ namespace WebUI.Api
 
             // Only include personal data for download
             var personalData = new Dictionary<string, string>();
-            var personalDataProps = typeof(IdentityUser).GetProperties().Where(
+            var personalDataProps = typeof(ApplicationUser).GetProperties().Where(
                             prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
             foreach (var p in personalDataProps)
             {
@@ -231,6 +223,29 @@ namespace WebUI.Api
         {
             await _signInManager.SignOutAsync();
             return Ok();
+        }
+
+        [HttpGet("select")]
+        public async Task<IActionResult> SelectAsync()
+        {
+            return Ok(await _userManager.Users.Select(x => new
+            {
+                label = x.Name + " - " + x.Email,
+                value = x.Id
+            }).ToListAsync());
+        }
+
+        [HttpGet("init"), AllowAnonymous]
+        public async Task<IActionResult> InitAsync()
+        {
+            var user = new ApplicationUser
+            {
+                Name = "Ðinh Công Tân",
+                UserName = "tandc",
+                Email = "defzone.net@gmail.com",
+                JobTile = "Developer"
+            };
+            return Ok(await _userManager.CreateAsync(user, "Password@123"));
         }
 
         #region Role

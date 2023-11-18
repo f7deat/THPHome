@@ -15,9 +15,9 @@ namespace WebUI.Api
     public class CommentController : Controller
     {
         private readonly ICommentService _commentService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CommentController(ICommentService commentService, UserManager<IdentityUser> userManager)
+        public CommentController(ICommentService commentService, UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
             _commentService = commentService;

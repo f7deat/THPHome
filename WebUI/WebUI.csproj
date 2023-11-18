@@ -4,8 +4,9 @@
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<UserSecretsId>aspnet-WebUI-B99D5605-2D89-49BA-A32A-23911C9E9E8A</UserSecretsId>
 		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
 		<SpaRoot>ClientApp\</SpaRoot>
+		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
 	</PropertyGroup>
 
 	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">

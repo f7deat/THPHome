@@ -15,8 +15,8 @@ namespace WebUI.Api
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
-        private UserManager<IdentityUser> _userManager;
-        public CategoryController(ICategoryService categoryService, UserManager<IdentityUser> userManager)
+        private UserManager<ApplicationUser> _userManager;
+        public CategoryController(ICategoryService categoryService, UserManager<ApplicationUser> userManager)
         {
             _categoryService = categoryService;
             _userManager = userManager;

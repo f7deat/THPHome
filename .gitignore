@@ -358,3 +358,4 @@ MigrationBackup/
 /WebUI/wwwroot/files
 /package-lock.json
 /package.json
+/Infrastructure/Migrations

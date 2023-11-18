@@ -18,9 +18,9 @@ namespace WebUI.Api
     public class BannerController : Controller
     {
         private readonly IBannerService _bannerService;
-        private UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public BannerController(IBannerService bannerService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public BannerController(IBannerService bannerService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _bannerService = bannerService;
             _userManager = userManager;

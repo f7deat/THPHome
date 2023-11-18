@@ -6,6 +6,8 @@ import BannerList from "./pages/banners/banner-list"
 import { CategoryList } from "./pages/categories/category-list"
 import CommentList from "./pages/comments/comment-list"
 import { Dashboard } from "./pages/dashboard"
+import Department from "./pages/departments"
+import DepartmentDetail from "./pages/departments/details"
 import PartnerSetting from "./pages/partners/partner-setting"
 import { PostList } from "./pages/posts/post-list"
 import PostSetting from "./pages/posts/post-setting"
@@ -40,6 +42,14 @@ const routes = [
     {
         path: `${_preFix}/user/profile`,
         main: () => <Profile />
+    },
+    {
+        path: `${_preFix}/user/department`,
+        main: () => <Department />
+    },
+    {
+        path: `${_preFix}/user/department/detail/:id`,
+        main: () => <DepartmentDetail />
     },
     {
         path: `${_preFix}/role/list`,

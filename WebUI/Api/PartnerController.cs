@@ -16,9 +16,9 @@ namespace WebUI.Api
     public class PartnerController : Controller
     {
         private readonly IPartnerService _partnerService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public PartnerController(IPartnerService partnerService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public PartnerController(IPartnerService partnerService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _partnerService = partnerService;
             _userManager = userManager;

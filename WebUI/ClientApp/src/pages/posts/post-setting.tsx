@@ -12,6 +12,7 @@ import moment from 'moment';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import QuillToolbar, { formats, modules } from '../../components/editor-toolbar';
+import { table } from 'console';
 
 const { Dragger } = Upload;
 

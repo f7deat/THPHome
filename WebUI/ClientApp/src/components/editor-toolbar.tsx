@@ -1,8 +1,4 @@
-﻿import { message } from "antd";
-import { RcFile } from "antd/lib/upload";
-import axios from "axios";
-import { useCallback } from "react";
-import { Quill } from "react-quill";
+﻿import { Quill } from "react-quill";
 
 // Add sizes to whitelist and register them
 const Size = Quill.import("formats/size");
@@ -53,8 +49,20 @@ export const formats = [
     "image",
     "color",
     "code-block",
-    "video"
+    "video",
+    "table"
 ];
+
+Quill.register('modules/table', function (quill: any, options: any) {
+    var container = document.querySelector('#counter');
+    quill.on('text-change', function () {
+        var text = quill.getText();
+        // There are a couple issues with counting words
+        // this way but we'll fix these later
+        //container.innerText = text.split(/\s+/).length;
+        console.log(text)
+    });
+});
 
 // Quill Toolbar component
 export const QuillToolbar = () => (
@@ -107,6 +115,7 @@ export const QuillToolbar = () => (
             <button className="ql-link" />
             <button className="ql-image" />
             <button className="ql-video" />
+            <button className="ql-table" />
         </span>
         <span className="ql-formats">
             <button className="ql-formula" />

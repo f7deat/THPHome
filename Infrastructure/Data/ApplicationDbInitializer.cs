@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ApplicationCore.Entities;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,13 +8,13 @@ namespace Infrastructure.Data
 {
     public static class ApplicationDbInitializer
     {
-        public static void SeedUsers(UserManager<IdentityUser> userManager)
+        public static void SeedUsers(UserManager<ApplicationUser> userManager)
         {
             if (userManager.FindByEmailAsync("abc@xyz.com").Result == null)
             {
-                IdentityUser user = new IdentityUser
+                var user = new ApplicationUser
                 {
-                    UserName = "abc@xyz.com",
+                    UserName = "tandc@xyz.com",
                     Email = "abc@xyz.com"
                 };
 

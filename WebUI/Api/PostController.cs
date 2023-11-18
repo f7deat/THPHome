@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using WebUI.Models.Api.Admin;
 
@@ -20,11 +19,11 @@ namespace WebUI.Api
     {
         private readonly IPostService _postService;
         private readonly IPostCategoryService _postCategoryService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IAttachmentService _attachmentService;
-        public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager)
+        public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager)
         {
             _postService = postService;
             _postCategoryService = postCategoryService;

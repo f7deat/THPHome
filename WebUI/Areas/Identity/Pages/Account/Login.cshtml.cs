@@ -14,21 +14,22 @@ using Microsoft.Extensions.Logging;
 using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 using ApplicationCore.Constants;
+using ApplicationCore.Entities;
 
 namespace WebUI.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, 
+        public LoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager)
         {
@@ -54,8 +55,7 @@ namespace WebUI.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            public string UserName { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -91,7 +91,7 @@ namespace WebUI.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(bool isLogin, string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/admin");
+            returnUrl ??= Url.Content("/admin");
 
             if (ModelState.IsValid || isLogin)
             {
@@ -100,11 +100,11 @@ namespace WebUI.Areas.Identity.Pages.Account
                     ActionType = 1;
                     // This doesn't count login failures towards account lockout
                     // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                    var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                    var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
-                        return LocalRedirect(returnUrl);
+                        return Redirect(returnUrl);
                     }
                     if (result.RequiresTwoFactor)
                     {

@@ -14,8 +14,8 @@ namespace WebUI.Api
     public class MenuController : Controller
     {
         private readonly IMenuService _menuService;
-        private readonly UserManager<IdentityUser> _userManager;
-        public MenuController(IMenuService menuService, UserManager<IdentityUser> userManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public MenuController(IMenuService menuService, UserManager<ApplicationUser> userManager)
         {
             _menuService = menuService;
             _userManager = userManager;
