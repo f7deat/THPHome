@@ -32,8 +32,9 @@ const App = () => {
             !isAuthenticated ? (
                 <Layout className="flex items-center h-full">
                     <LostInSpaceLogin />
-                </Layout>) : (
-                <Layout className="h-full">
+                </Layout>) :
+                (
+                    <Layout className="h-full">
                         <Sider trigger={null} collapsible collapsed={collapsed}>
                             <div className="logo">
                                 <img src="/img/admin-logo.svg" alt="logo" style={{ height: 32 }} />
@@ -46,7 +47,8 @@ const App = () => {
                                 <AppRouter />
                             </Content>
                         </Layout>
-                    </Layout>)
+                    </Layout>
+                )
     );
 }
 

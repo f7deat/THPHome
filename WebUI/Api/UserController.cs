@@ -246,14 +246,14 @@ namespace WebUI.Api
                 Name = "Đinh Công Tân",
                 UserName = "tandc",
                 Email = "defzone.net@gmail.com",
-                JobTile = "Developer"
+                JobTitle = "Developer"
             };
             var user2 = new ApplicationUser
             {
                 Name = "Nguyễn Ngọc Khương",
                 UserName = "khuongnn",
                 Email = "khuongnn@dhhp.edu.vn",
-                JobTile = "Solution architecture"
+                JobTitle = "Solution architecture"
             };
             var role = new IdentityRole
             {
@@ -263,6 +263,19 @@ namespace WebUI.Api
             await _userManager.AddToRoleAsync(user, RoleName.ADMIN);
             await _userManager.AddToRoleAsync(user2, RoleName.ADMIN);
             return Ok(await _userManager.CreateAsync(user, "Password@123"));
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateAsync([FromBody] ApplicationUser args)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = args.UserName,
+                Email = args.Email,
+                Name = args.Name,
+                JobTitle = args.JobTitle
+            };
+            return Ok(await _userManager.CreateAsync(user));
         }
 
         #region Role

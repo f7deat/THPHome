@@ -18,6 +18,10 @@
     height: 100%;
 }
 
+.gap-4 {
+    gap: 1rem;
+}
+
 .absolute {
     position: absolute;
 }

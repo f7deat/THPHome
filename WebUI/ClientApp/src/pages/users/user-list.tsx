@@ -1,4 +1,4 @@
-﻿import { Button, Checkbox, Drawer, Input, message, Modal, Popconfirm, Space, Table } from "antd"
+﻿import { Button, Checkbox, Drawer, Input, message, Modal, Popconfirm, Space, Table, Form } from "antd"
 import axios from "axios"
 import React, { useEffect, useState } from "react"
 import {
@@ -17,9 +17,9 @@ const UserList = () => {
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [listRole, setListRole] = useState<any>([])
     const [user, setUser] = useState<any>()
-    const [drawerVisible, setDrawerVisible] = useState<boolean>(false)
+    const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
 
-    useEffect(() => {
+    const fetchUsers = () => {
         axios.get('/api/user/list').then(response => {
             if (response.status === 401) {
                 setListUser([])
@@ -27,6 +27,10 @@ const UserList = () => {
                 setListUser(response.data);
             }
         })
+    }
+
+    useEffect(() => {
+        fetchUsers();
     }, [])
 
     function openRolePanel(record: any) {
@@ -145,7 +149,16 @@ const UserList = () => {
             title: 'Is In Role',
             render: (record: any) => <Checkbox checked={record.isInRole} onClick={() => handleSetRole(record)} />
         }
-    ]
+    ];
+
+    const onAddUser = async (values: any) => {
+        const response = await axios.post(`/api/user/create`, values);
+        if (response.data.succeeded) {
+            setDrawerVisible(false);
+            fetchUsers();
+            message.success('Thêm thành công!');
+        }
+    }
 
     return (
         <div>
@@ -155,7 +168,7 @@ const UserList = () => {
                         <Input />
                         <Button icon={<SearchOutlined />} type="primary"></Button>
                     </Space>
-                    <Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAdd}>Add</Button>
+                    <Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAdd}>Thêm thành viên</Button>
                 </div>
                 <Table dataSource={listUser} columns={columns} rowKey="id" />
             </div>
@@ -169,7 +182,22 @@ const UserList = () => {
                 </div>
                 <Table columns={roleColumns} rowKey="id" dataSource={listRole} />
             </Modal>
-            <Drawer visible={drawerVisible} width={700} onClose={() => setDrawerVisible(false)}></Drawer>
+            <Drawer visible={drawerVisible} width={700} onClose={() => setDrawerVisible(false)} title="Người dùng">
+                <Form onFinish={onAddUser} layout="vertical">
+                    <Form.Item name="name" label="Họ và tên" required>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="userName" label="Tên đăng nhập" required>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="email" label="Email">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">Tạo thành viên</Button>
+                    </Form.Item>
+                </Form>
+            </Drawer>
         </div>
     )
 }

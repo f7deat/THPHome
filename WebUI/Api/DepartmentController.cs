@@ -33,6 +33,9 @@ namespace WebUI.Api
             });
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(await _context.Departments.FindAsync(id));
+
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody] Department args)
         {
@@ -151,6 +154,22 @@ namespace WebUI.Api
             detail.ModifiedBy = user.Id;
             await _context.SaveChangesAsync();
             return Ok(IdentityResult.Success);
+        }
+
+        [HttpGet("users-in-department/{id}")]
+        public async Task<IActionResult> GetUsersInDepartmentAsync([FromRoute] Guid id)
+        {
+            var users = from a in _context.Users
+                        join b in _context.DepartmentUsers on a.Id equals b.UserId
+                        join c in _context.Departments on b.DepartmentId equals c.Id
+                        where b.DepartmentId == id
+                        select new
+                        {
+                            b.Id,
+                            a.Name,
+                            a.Email
+                        };
+            return Ok(await users.ToListAsync());
         }
     }
 }

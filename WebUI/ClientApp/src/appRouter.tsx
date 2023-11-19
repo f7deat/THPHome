@@ -48,7 +48,7 @@ const routes = [
         main: () => <Department />
     },
     {
-        path: `${_preFix}/user/department/detail/:id`,
+        path: `${_preFix}/department/detail/:id`,
         main: () => <DepartmentDetail />
     },
     {

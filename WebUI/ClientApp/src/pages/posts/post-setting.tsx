@@ -11,8 +11,7 @@ import IPost from './interfaces/post-model'
 import moment from 'moment';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import QuillToolbar, { formats, modules } from '../../components/editor-toolbar';
-import { table } from 'console';
+import QuillToolbar, { formats } from '../../components/editor-toolbar';
 
 const { Dragger } = Upload;
 

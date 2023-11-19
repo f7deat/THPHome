@@ -2,10 +2,11 @@
 @model WebUI.Pages.Departments.IndexModel
 @{
     ViewData["Title"] = "Khoa - Viện";
+    var j = 0;
+    var i = 0;
 }
 
 <div class="row">
-
     <div class="col-md-3">
         <div class="title">KHOA – VIỆN</div>
         <ul class="list-group">
@@ -20,24 +21,47 @@
     <div class="col-md-9">
         <div class="title">@Model.Department.Name</div>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>
-            </li>
+            @foreach (var item in Model.DepartmentDetails)
+            {
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(j == 0 ? "active" : "")" id="tabH-@item.Id" data-bs-toggle="tab" data-bs-target="#tab-@item.Id" type="button" role="tab" aria-controls="@item.Id" aria-selected="true">@item.Type</button>
+                </li>
+                j++;
+            }
         </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">...</div>
-            <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">...</div>
-            <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">...</div>
-            <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div>
+        <div class="tab-content mb-4" id="myTabContent">
+            @foreach (var item in Model.DepartmentDetails)
+            {
+                <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="tab-@item.Id" role="tabpanel" aria-labelledby="@item.Id" tabindex="0">
+                    <div class="border p-4">
+                        @Html.Raw(item.Content)
+                    </div>
+                </div>
+                i++;
+            }
+        </div>
+        <div class="title">Cơ cấu tổ chức</div>
+        <div class="p-4">
+            @foreach (var rank in Model.UserRanks)
+            {
+                <div class="mb-4">
+                    <div class="fw-bold text-center mb-2 h5">@rank.Key</div>
+                    <div class="row justify-center">
+                        @foreach (var item in rank.Value)
+                        {
+                            <div class="col-md-4 flex flex-col items-center">
+                                <div class="mb-2 d-flex">
+                                    <div class="rounded-circle bg-dark" style="width: 4rem;height: 4rem;">
+
+                                    </div>
+                                </div>
+                                <div class="text-muted">@item.JobTitle</div>
+                                <div class="fw-bold mb-2">@item.Name</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
