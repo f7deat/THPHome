@@ -193,6 +193,9 @@ const UserList = () => {
                     <Form.Item name="email" label="Email">
                         <Input />
                     </Form.Item>
+                    <Form.Item name="jobTitle" label="Chức danh">
+                        <Input />
+                    </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit">Tạo thành viên</Button>
                     </Form.Item>

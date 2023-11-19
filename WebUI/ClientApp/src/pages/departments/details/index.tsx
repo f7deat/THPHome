@@ -1,4 +1,4 @@
-﻿import { Button, Modal, Tabs, Card, Form, Input, message, TableColumnType, Space, InputNumber, Popconfirm, Row, Col, Select, Divider, List } from "antd"
+﻿import { Button, Modal, Tabs, Card, Form, Input, message, TableColumnType, Space, InputNumber, Popconfirm, Row, Col, Select, Divider, List, Table } from "antd"
 import axios from "axios";
 import { useEffect, useState } from "react"
 import {
@@ -15,12 +15,29 @@ const DepartmentDetail: React.FC = () => {
     const [dataSource, setDataSource] = useState<any>([]);
     const [department, setDepartment] = useState<any>();
     const [form] = Form.useForm();
+    const [formType] = Form.useForm();
     const [users, setUsers] = useState<any>([]);
     const [usersInDepartment, setUserInDepartment] = useState<any>([]);
 
     const fetchData = () => {
         axios.get(`/api/department/detail/${id}`).then(response => {
             setDataSource(response.data);
+            if (response.data && response.data.length > 0) {
+                formType.setFields([
+                    {
+                        name: 'id',
+                        value: response.data[0].id
+                    },
+                    {
+                        name: 'type',
+                        value: response.data[0].type
+                    },
+                    {
+                        name: 'content',
+                        value: response.data[0].content
+                    }
+                ])
+            }
         });
     }
 
@@ -72,31 +89,88 @@ const DepartmentDetail: React.FC = () => {
         }
     }
 
+    const columns: TableColumnType<any>[] = [
+        {
+            title: 'Rank',
+            dataIndex: 'rank'
+        },
+        {
+            title: 'Họ và tên',
+            dataIndex: 'name'
+        },
+        {
+            title: 'Chức danh',
+            dataIndex: 'jobTitle'
+        },
+        {
+            title: 'Tác vụ',
+            render: (_, record) => (
+                <Space>
+                    <Button type="primary" danger icon={<DeleteOutlined /> } />
+                </Space>
+            )
+        }
+    ]
+
+    const onFinishType = async (values: any) => {
+        const response = await axios.post(`/api/department/update-detail`, values);
+        if (response.data.succeeded) {
+            message.success('Thành công!');
+        }
+    }
+
     return (
         <>
             <Row gutter={16}>
-                <Col span={18}>
+                <Col span={16}>
                     <Card title={department?.name} extra={<Button type="primary" onClick={() => {
                         form.resetFields();
                         setOpen(true);
                     }}>Thêm mới</Button>}>
                         <Tabs
                             type="card"
+                            onChange={(activeKey) => {
+                                const data = dataSource.find((x: any) => x.id === activeKey);
+                                if (data) {
+                                    formType.setFields([
+                                        {
+                                            name: 'id',
+                                            value: data.id
+                                        },
+                                        {
+                                            name: 'type',
+                                            value: data.type
+                                        },
+                                        {
+                                            name: 'content',
+                                            value: data.content
+                                        }
+                                    ])
+                                }
+                            }}
                             items={dataSource?.map((record: any) => {
                                 return {
                                     label: record.type,
                                     key: record.id,
                                     children: (
                                         <>
-                                            <div className="mb-4">
-                                                <ReactQuill value={record.content} />
-                                            </div>
-                                            <div className="flex justify-end gap-4">
-                                                <Button type="primary">Lưu lại</Button>
-                                                <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeContent(record.id)}>
-                                                    <Button type="primary" danger>Xóa</Button>
-                                                </Popconfirm>
-                                            </div>
+                                            <Form form={formType} layout="vertical" onFinish={onFinishType}>
+                                                <Form.Item name="id" hidden>
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item name="type" label="Tiêu đề" required>
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item name="content" label="Nội dung" required>
+                                                    <ReactQuill />
+                                                </Form.Item>
+                                                <div className="flex justify-end gap-4">
+                                                    <Button type="primary" htmlType="submit">Lưu lại</Button>
+                                                    <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeContent(record.id)}>
+                                                        <Button type="primary" danger>Xóa</Button>
+                                                    </Popconfirm>
+                                                </div>
+                                            </Form>
                                         </>
                                     ),
                                 };
@@ -104,14 +178,14 @@ const DepartmentDetail: React.FC = () => {
                         />
                     </Card>
                 </Col>
-                <Col span={6}>
+                <Col span={8}>
                     <Card title="Cơ cấu tổ chức">
                         <Form layout="vertical" onFinish={addUser}>
                             <Form.Item name="userId" required label="Thành viên">
-                                <Select options={users} />
+                                <Select options={users} showSearch />
                             </Form.Item>
                             <Space>
-                                <Form.Item name="rank" required label="Thứ tự">
+                                <Form.Item name="rank" required label="Rank">
                                     <InputNumber />
                                 </Form.Item>
                                 <Form.Item name="type" required label="Nhóm">
@@ -123,18 +197,7 @@ const DepartmentDetail: React.FC = () => {
                             </Form.Item>
                         </Form>
                         <Divider>Thành viên trong Viện - Khoa</Divider>
-                        <List
-                            dataSource={usersInDepartment}
-                            renderItem={(item: any) => (
-                                <List.Item actions={[
-                                    <Button type="primary" danger key="delete" size="small">
-                                        <DeleteOutlined />
-                                    </Button>
-                                ]}>
-                                    {item.name} - {item.email}
-                                </List.Item>
-                            )}
-                        />
+                        <Table dataSource={usersInDepartment} rowKey="id" columns={columns} />
                     </Card>
                 </Col>
             </Row>

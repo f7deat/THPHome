@@ -1,11 +1,12 @@
-﻿@using ApplicationCore.Entities
-@model IEnumerable<Menu>
+﻿@using ApplicationCore.Entities;
+@using WebUI.ViewComponents;
+@model MainMenu
 
 @{
     Layout = null;
 }
 
-@if (Model != null && Model.Count() > 0)
+@if (Model != null && Model.Menus.Count() > 0)
 {
     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 
@@ -30,18 +31,14 @@
                 <li>
                     <a class="header" href="/departments"><i class="ubermenu-icon fa fa-sign-in"></i><span class="ubermenu-target-title ubermenu-target-text">KHOA – VIỆN ĐÀO TẠO</span></a>
                     <ul class="mega-stack">
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-kinh-te-qtkd/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Kinh tế và Quản trị kinh doanh</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-ke-toan-tai-chinh-n/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Kế toán – Tài chính</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-ngoai-ngu/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Ngoại ngữ</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-du-lich/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Du lịch</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-cntt/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Công nghệ thông tin</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-dien-co/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Điện-Cơ</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-xay-dung/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Xây dựng</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-tieu-hoc-mam-non/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Giáo dục Tiểu học và Mầm non</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-ngu-van/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Ngữ văn và Khoa học xã hội</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-toan/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Toán và Khoa học tự nhiên</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-giao-duc-chinh-tri/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Lý luận Chính trị</span></a></li>
-                        <li><a href="https://dhhp.edu.vn/vi/khoa-tam-ly-giao-duc/"><span class="ubermenu-target-title ubermenu-target-text">Khoa Tâm lý – Giáo dục học</span></a></li>
+                        @foreach (var item in Model.Faculties)
+                        {
+                            <li>
+                                <a href="/departments?type=@DepartmentType.Faculty&id=@item.Id">
+                                    <span class="ubermenu-target-title ubermenu-target-text">@item.Name</span>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </li>
                 <li>
@@ -76,9 +73,9 @@
                 </li>
             </ul>
         </li>
-        @foreach (var item in Model.Where(x => x.ParrentId == 0))
+        @foreach (var item in Model.Menus.Where(x => x.ParrentId == 0))
         {
-            var childs = Model.Where(x => x.ParrentId == item.Id);
+            var childs = Model.Menus.Where(x => x.ParrentId == item.Id);
             if (childs.Count() > 0)
             {
                 <li class="nav-item dropdown">

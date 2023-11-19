@@ -7,7 +7,10 @@
     phoneNumber?: string;
     phoneNumberConfirmed: string;
     lockoutEnabled: boolean;
-    lockoutEnd?: Date
+    lockoutEnd?: Date;
+    name: string;
+    jobTitle: string;
+    avatar: string;
 }
 
 export type { UserInterface }

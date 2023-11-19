@@ -1,4 +1,4 @@
-﻿import { Button, Modal, Table, Card, Form, Input, message, TableColumnType, Space, Popconfirm } from "antd"
+﻿import { Button, Modal, Table, Card, Form, Input, message, TableColumnType, Space, Popconfirm, Tabs, Empty } from "antd"
 import axios from "axios";
 import { useEffect, useState } from "react"
 import {
@@ -69,11 +69,33 @@ const Department: React.FC = () => {
 
     return (
         <>
-            <Card title="Khoa - Viện" extra={<Button type="primary" onClick={() => {
-                form.resetFields();
-                setOpen(true);
-            }}>Thêm mới</Button>}>
-                <Table dataSource={dataSource} rowKey="id" columns={columns } />
+            <Card title="Phòng ban">
+                <Tabs
+                    items={[
+                        {
+                            key: 'faculty',
+                            label: 'Khoa - Viện',
+                            children: (
+                                <Card title="Phòng ban" extra={<Button type="primary" onClick={() => {
+                                    form.resetFields();
+                                    setOpen(true);
+                                }}>Thêm mới</Button>}>
+                                    <Table dataSource={dataSource} rowKey="id" columns={columns} />
+                                </Card>
+                            )
+                        },
+                        {
+                            key: 'function',
+                            label: 'Ban chức năng',
+                            children: <Empty description="Sắp có" />
+                        },
+                        {
+                            key: 'center',
+                            label: 'Trung tâm',
+                            children: <Empty description="Sắp có" />
+                        }
+                    ]}
+                />
             </Card>
             <Modal title="Khoa - Viện" open={open} onCancel={() => {
                 setOpen(false)

@@ -245,15 +245,13 @@ namespace WebUI.Api
             {
                 Name = "Đinh Công Tân",
                 UserName = "tandc",
-                Email = "defzone.net@gmail.com",
-                JobTitle = "Developer"
+                Email = "defzone.net@gmail.com"
             };
             var user2 = new ApplicationUser
             {
                 Name = "Nguyễn Ngọc Khương",
                 UserName = "khuongnn",
-                Email = "khuongnn@dhhp.edu.vn",
-                JobTitle = "Solution architecture"
+                Email = "khuongnn@dhhp.edu.vn"
             };
             var role = new IdentityRole
             {
@@ -265,6 +263,22 @@ namespace WebUI.Api
             return Ok(await _userManager.CreateAsync(user, "Password@123"));
         }
 
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateAsync([FromBody] ApplicationUser args)
+        {
+            var user = await _userManager.FindByIdAsync(args.Id);
+            if (user is null)
+            {
+                return Ok(IdentityResult.Failed(new IdentityError
+                {
+                    Description = "User not found!"
+                }));
+            }
+            user.Name = args.Name;
+            user.Avatar = args.Avatar;
+            return Ok(await _userManager.UpdateAsync(user));
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync([FromBody] ApplicationUser args)
         {
@@ -272,8 +286,7 @@ namespace WebUI.Api
             {
                 UserName = args.UserName,
                 Email = args.Email,
-                Name = args.Name,
-                JobTitle = args.JobTitle
+                Name = args.Name
             };
             return Ok(await _userManager.CreateAsync(user));
         }

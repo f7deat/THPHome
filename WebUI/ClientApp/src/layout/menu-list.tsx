@@ -54,7 +54,7 @@ export const MenuList = () => {
                     <Link to="/admin/role/list">Quyền</Link>
                 </Menu.Item>
                 <Menu.Item key="department">
-                    <Link to="/admin/user/department">Khoa - Viện</Link>
+                    <Link to="/admin/user/department">Phòng ban</Link>
                 </Menu.Item>
             </SubMenu>
             <Menu.Item key="10" icon={<AlertOutlined />}>

@@ -22,18 +22,18 @@ namespace WebUI.Pages.Departments
         public List<Department> Departments { get; set; }
         public Department Department { get; set; }
         public List<DepartmentDetail> DepartmentDetails { get; set; }
-        public Dictionary<string, IEnumerable<UserRank>> UserRanks { get; set; }
+        public Dictionary<int, IEnumerable<UserRank>> UserRanks { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? id, DepartmentType type = DepartmentType.Faculty)
         {
-            Departments = await _context.Departments.ToListAsync();
+            Departments = await _context.Departments.Where(x => x.Type == type).ToListAsync();
             if (id == null)
             {
-                Department = await _context.Departments.FirstOrDefaultAsync();
+                Department = Departments.FirstOrDefault(x => x.Type == type);
             }
             else
             {
-                Department = await _context.Departments.FirstOrDefaultAsync(x => x.Id == id);
+                Department = Departments.FirstOrDefault(x => x.Id == id);
             }
             if (Department is null)
             {
@@ -55,12 +55,12 @@ namespace WebUI.Pages.Departments
                                    Id = u.Id,
                                    Name = u.Name,
                                    Email = u.Email,
-                                   JobTitle = u.JobTitle,
+                                   JobTitle = du.JobTitle,
                                    Avatar = u.Avatar,
                                    Rank = du.Rank,
                                    Group = du.Type
                                }).ToListAsync();
-            UserRanks = query.GroupBy(x => x.Group).ToDictionary(x => x.Key, x => x.Select(y => new UserRank
+            UserRanks = query.GroupBy(x => x.Rank).ToDictionary(x => x.Key, x => x.Select(y => new UserRank
             {
                 Avatar = y.Avatar,
                 Rank = y.Rank,

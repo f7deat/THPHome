@@ -23,12 +23,12 @@ namespace WebUI.Api
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> ListAsync([FromQuery] FilterOptions filterOptions)
+        public async Task<IActionResult> ListAsync()
         {
             var query = _context.Departments;
             return Ok(new
             {
-                data = await query.OrderByDescending(x => x.ModifiedDate).Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
+                data = await query.OrderByDescending(x => x.ModifiedDate).ToListAsync(),
                 total = await query.CountAsync()
             });
         }
@@ -143,13 +143,14 @@ namespace WebUI.Api
         [HttpPost("update-detail")]
         public async Task<IActionResult> UpdateDetailAsync([FromBody] DepartmentDetail args)
         {
-            var detail = await _context.DepartmentDetails.FirstOrDefaultAsync(x => x.Type == args.Type && x.DepartmentId == args.DepartmentId);
+            var detail = await _context.DepartmentDetails.FindAsync(args.Id);
             if (detail is null)
             {
                 return BadRequest("Data not found!");
             }
             var user = await _userManager.GetUserAsync(User);
             detail.Content = args.Content;
+            detail.Type = args.Type;
             detail.ModifiedDate = DateTime.Now;
             detail.ModifiedBy = user.Id;
             await _context.SaveChangesAsync();
@@ -167,7 +168,9 @@ namespace WebUI.Api
                         {
                             b.Id,
                             a.Name,
-                            a.Email
+                            a.Email,
+                            b.Rank,
+                            b.JobTitle
                         };
             return Ok(await users.ToListAsync());
         }

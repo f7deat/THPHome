@@ -23,7 +23,7 @@
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             @foreach (var item in Model.DepartmentDetails)
             {
-                <li class="nav-item" role="presentation">
+                <li class="nav-item flex-1" role="presentation">
                     <button class="nav-link @(j == 0 ? "active" : "")" id="tabH-@item.Id" data-bs-toggle="tab" data-bs-target="#tab-@item.Id" type="button" role="tab" aria-controls="@item.Id" aria-selected="true">@item.Type</button>
                 </li>
                 j++;
@@ -41,11 +41,10 @@
             }
         </div>
         <div class="title">Cơ cấu tổ chức</div>
-        <div class="p-4">
+        <div class="p-4 border">
             @foreach (var rank in Model.UserRanks)
             {
                 <div class="mb-4">
-                    <div class="fw-bold text-center mb-2 h5">@rank.Key</div>
                     <div class="row justify-center">
                         @foreach (var item in rank.Value)
                         {
