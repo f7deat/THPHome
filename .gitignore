@@ -359,3 +359,4 @@ MigrationBackup/
 /package-lock.json
 /package.json
 /Infrastructure/Migrations
+/WebUI/ClientApp/yarn.lock

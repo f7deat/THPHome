@@ -59,7 +59,7 @@ namespace WebUI.Api
             {
                 return BadRequest("Department not found!");
             }
-            if (await _context.DeparmentUsers.AnyAsync(x => x.DeparmentId == id))
+            if (await _context.DepartmentUsers.AnyAsync(x => x.DepartmentId == id))
             {
                 return BadRequest("Deparment has user!");
             }
@@ -83,18 +83,72 @@ namespace WebUI.Api
         }
 
         [HttpPost("add-user")]
-        public async Task<IActionResult> AddUserAsync([FromBody] DeparmentUser args)
+        public async Task<IActionResult> AddUserAsync([FromBody] DepartmentUser args)
         {
-            var department = await _context.Departments.FindAsync(args.DeparmentId);
+            var department = await _context.Departments.FindAsync(args.DepartmentId);
             if (department is null)
             {
                 return BadRequest("Department not found!");
             }
-            if (await _context.DeparmentUsers.AnyAsync(x => x.DeparmentId == args.DeparmentId && x.UserId == args.UserId))
+            if (await _context.DepartmentUsers.AnyAsync(x => x.DepartmentId == args.DepartmentId && x.UserId == args.UserId))
             {
                 return BadRequest("Người dùng đã tồn tại trong Khoa - Viện!");
             }
-            await _context.DeparmentUsers.AddAsync(args);
+            await _context.DepartmentUsers.AddAsync(args);
+            await _context.SaveChangesAsync();
+            return Ok(IdentityResult.Success);
+        }
+
+        [HttpPost("add-detail")]
+        public async Task<IActionResult> AddDetailAsync([FromBody] DepartmentDetail args)
+        {
+            if (!await _context.Departments.AnyAsync(x => x.Id == args.DepartmentId))
+            {
+                return BadRequest("Không tìm thấy Khoa - Viện!");
+            }
+            await _context.DepartmentDetails.AddAsync(args);
+            await _context.SaveChangesAsync();
+            return Ok(IdentityResult.Success);
+        }
+
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> DetailAsync([FromRoute] Guid id)
+        {
+            if (!await _context.Departments.AnyAsync(x => x.Id == id))
+            {
+                return BadRequest("Không tìm thấy Khoa - Viện!");
+            }
+            var data = await _context.DepartmentDetails.Where(x => x.DepartmentId == id)
+                .OrderBy(x => x.SortOrder)
+                .ToListAsync();
+            return Ok(data);
+        }
+
+        [HttpPost("detail/delete/{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        {
+            var detail = await _context.DepartmentDetails.FindAsync(id);
+            if (detail == null)
+            {
+                return BadRequest("Data not found!");
+            }
+            _context.DepartmentDetails.Remove(detail);
+            await _context.SaveChangesAsync();
+            return Ok(IdentityResult.Success);
+        }
+
+        [HttpPost("update-detail")]
+        public async Task<IActionResult> UpdateDetailAsync([FromBody] DepartmentDetail args)
+        {
+            var detail = await _context.DepartmentDetails.FirstOrDefaultAsync(x => x.Type == args.Type && x.DepartmentId == args.DepartmentId);
+            if (detail is null)
+            {
+                return BadRequest("Data not found!");
+            }
+            var user = await _userManager.GetUserAsync(User);
+            detail.Content = args.Content;
+            detail.ModifiedDate = DateTime.Now;
+            detail.ModifiedBy = user.Id;
             await _context.SaveChangesAsync();
             return Ok(IdentityResult.Success);
         }

@@ -28,7 +28,7 @@ namespace Infrastructure
         public virtual DbSet<Video> Videos { get; set; }
         public virtual DbSet<Attachment> Attachments { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
-        public virtual DbSet<DeparmentDetail> DeparmentDetails { get; set; }
-        public virtual DbSet<DeparmentUser> DeparmentUsers { get; set; }
+        public virtual DbSet<DepartmentDetail> DepartmentDetails { get; set; }
+        public virtual DbSet<DepartmentUser> DepartmentUsers { get; set; }
     }
 }

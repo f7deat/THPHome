@@ -1,4 +1,4 @@
-using ApplicationCore.Constants;
+﻿using ApplicationCore.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +25,13 @@ namespace WebUI.Api
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+
+        public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         [Route("get/{id?}")]
@@ -240,11 +243,25 @@ namespace WebUI.Api
         {
             var user = new ApplicationUser
             {
-                Name = "�inh C�ng T�n",
+                Name = "Đinh Công Tân",
                 UserName = "tandc",
                 Email = "defzone.net@gmail.com",
                 JobTile = "Developer"
             };
+            var user2 = new ApplicationUser
+            {
+                Name = "Nguyễn Ngọc Khương",
+                UserName = "khuongnn",
+                Email = "khuongnn@dhhp.edu.vn",
+                JobTile = "Solution architecture"
+            };
+            var role = new IdentityRole
+            {
+                Name = RoleName.ADMIN
+            };
+            await _roleManager.CreateAsync(role);
+            await _userManager.AddToRoleAsync(user, RoleName.ADMIN);
+            await _userManager.AddToRoleAsync(user2, RoleName.ADMIN);
             return Ok(await _userManager.CreateAsync(user, "Password@123"));
         }
 
