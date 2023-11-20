@@ -93,10 +93,6 @@ namespace WebUI.Api
             {
                 return BadRequest("Department not found!");
             }
-            if (await _context.DepartmentUsers.AnyAsync(x => x.DepartmentId == args.DepartmentId && x.UserId == args.UserId))
-            {
-                return BadRequest("Người dùng đã tồn tại trong Khoa - Viện!");
-            }
             await _context.DepartmentUsers.AddAsync(args);
             await _context.SaveChangesAsync();
             return Ok(IdentityResult.Success);
@@ -123,9 +119,20 @@ namespace WebUI.Api
             }
             var data = await _context.DepartmentDetails.Where(x => x.DepartmentId == id)
                 .OrderBy(x => x.SortOrder)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.DepartmentId,
+                    x.Type,
+                    x.SortOrder,
+                    x.ModifiedDate
+                })
                 .ToListAsync();
             return Ok(data);
         }
+
+        [HttpGet("detail/content/{id}")]
+        public async Task<IActionResult> GetDetailContent([FromRoute] Guid id) => Ok(await _context.DepartmentDetails.FindAsync(id));
 
         [HttpPost("detail/delete/{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
@@ -153,6 +160,7 @@ namespace WebUI.Api
             detail.Type = args.Type;
             detail.ModifiedDate = DateTime.Now;
             detail.ModifiedBy = user.Id;
+            detail.SortOrder = args.SortOrder;
             await _context.SaveChangesAsync();
             return Ok(IdentityResult.Success);
         }

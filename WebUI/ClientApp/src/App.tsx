@@ -35,13 +35,20 @@ const App = () => {
                 </Layout>) :
                 (
                     <Layout className="h-full">
-                        <Sider trigger={null} collapsible collapsed={collapsed}>
+                        <Sider trigger={null} collapsible collapsed={collapsed} style={{
+                            overflow: 'auto',
+                            height: '100vh',
+                            position: 'fixed',
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                        }}>
                             <div className="logo">
                                 <img src="/img/admin-logo.svg" alt="logo" style={{ height: 32 }} />
                             </div>
                             <MenuList />
                         </Sider>
-                        <Layout className="site-layout">
+                        <Layout className="site-layout" style={{ marginLeft: 200 }}>
                             <AppHeader collapsed={collapsed} setCollapsed={setCollapsed} user={user} />
                             <Content className="p-4">
                                 <AppRouter />

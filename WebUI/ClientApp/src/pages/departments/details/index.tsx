@@ -1,12 +1,13 @@
 ﻿import { Button, Modal, Tabs, Card, Form, Input, message, TableColumnType, Space, InputNumber, Popconfirm, Row, Col, Select, Divider, List, Table } from "antd"
 import axios from "axios";
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
     DeleteOutlined
 } from "@ant-design/icons";
 import { useHistory, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
+import MyEditor from '../../../../src/components/my-editor';
 
 const DepartmentDetail: React.FC = () => {
 
@@ -19,24 +20,30 @@ const DepartmentDetail: React.FC = () => {
     const [users, setUsers] = useState<any>([]);
     const [usersInDepartment, setUserInDepartment] = useState<any>([]);
 
+    const getDeatailContent = (id: string) => {
+        axios.get(`/api/department/detail/content/${id}`).then(response => {
+            formType.setFields([
+                {
+                    name: 'id',
+                    value: response.data.id
+                },
+                {
+                    name: 'type',
+                    value: response.data.type
+                },
+                {
+                    name: 'content',
+                    value: response.data.content
+                }
+            ])
+        })
+    }
+
     const fetchData = () => {
         axios.get(`/api/department/detail/${id}`).then(response => {
             setDataSource(response.data);
             if (response.data && response.data.length > 0) {
-                formType.setFields([
-                    {
-                        name: 'id',
-                        value: response.data[0].id
-                    },
-                    {
-                        name: 'type',
-                        value: response.data[0].type
-                    },
-                    {
-                        name: 'content',
-                        value: response.data[0].content
-                    }
-                ])
+                getDeatailContent(response.data[0].id)
             }
         });
     }
@@ -81,11 +88,31 @@ const DepartmentDetail: React.FC = () => {
     }
 
     const addUser = async (values: any) => {
-        values.departmentId = id;
-        const response = await axios.post(`/api/department/add-user`, values);
-        if (response.data) {
-            message.success('Thành công!');
-            fetchUsersInDepartment();
+        try {
+            values.departmentId = id;
+            const response = await axios.post(`/api/department/add-user`, values);
+            if (response.data) {
+                message.success('Thành công!');
+                fetchUsersInDepartment();
+            }
+        } catch (e) {
+            console.log(e);
+            message.error('Có lỗi xảy ra!');
+        }
+    }
+
+    const filterOption = (input: string, option?: { label: string; value: string }) =>
+        (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+    const removeUserFromDepartment = async (id: string) => {
+        try {
+            const response = await axios.post(`/api/department/detail/delete/${id}`);
+            if (response.data.succeeded) {
+                message.success('Thành công!');
+                fetchUsersInDepartment();
+            }
+        } catch (e) {
+            message.error(e)
         }
     }
 
@@ -106,7 +133,9 @@ const DepartmentDetail: React.FC = () => {
             title: 'Tác vụ',
             render: (_, record) => (
                 <Space>
-                    <Button type="primary" danger icon={<DeleteOutlined /> } />
+                    <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeUserFromDepartment(record.id) }>
+                        <Button type="primary" danger icon={<DeleteOutlined />} />
+                    </Popconfirm>
                 </Space>
             )
         }
@@ -130,23 +159,7 @@ const DepartmentDetail: React.FC = () => {
                         <Tabs
                             type="card"
                             onChange={(activeKey) => {
-                                const data = dataSource.find((x: any) => x.id === activeKey);
-                                if (data) {
-                                    formType.setFields([
-                                        {
-                                            name: 'id',
-                                            value: data.id
-                                        },
-                                        {
-                                            name: 'type',
-                                            value: data.type
-                                        },
-                                        {
-                                            name: 'content',
-                                            value: data.content
-                                        }
-                                    ])
-                                }
+                                getDeatailContent(activeKey);
                             }}
                             items={dataSource?.map((record: any) => {
                                 return {
@@ -162,7 +175,7 @@ const DepartmentDetail: React.FC = () => {
                                                     <Input />
                                                 </Form.Item>
                                                 <Form.Item name="content" label="Nội dung" required>
-                                                    <ReactQuill />
+                                                    <MyEditor name="content" />
                                                 </Form.Item>
                                                 <div className="flex justify-end gap-4">
                                                     <Button type="primary" htmlType="submit">Lưu lại</Button>
@@ -182,13 +195,16 @@ const DepartmentDetail: React.FC = () => {
                     <Card title="Cơ cấu tổ chức">
                         <Form layout="vertical" onFinish={addUser}>
                             <Form.Item name="userId" required label="Thành viên">
-                                <Select options={users} showSearch />
+                                <Select options={users} showSearch filterOption={filterOption} />
                             </Form.Item>
                             <Space>
                                 <Form.Item name="rank" required label="Rank">
                                     <InputNumber />
                                 </Form.Item>
                                 <Form.Item name="type" required label="Nhóm">
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="jobTitle" label="Chức danh">
                                     <Input />
                                 </Form.Item>
                             </Space>

@@ -21,7 +21,12 @@ a {
 input:focus {
     outline: none;
 }
-
+.table table {
+    width: 100%;
+}
+.table table td {
+    border-width: 1px;
+}
 .main-menu {
     background-color: var(--dark);
 }

@@ -360,3 +360,4 @@ MigrationBackup/
 /package.json
 /Infrastructure/Migrations
 /WebUI/ClientApp/yarn.lock
+/WebUI/wwwroot/img
