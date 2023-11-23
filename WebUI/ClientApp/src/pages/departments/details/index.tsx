@@ -6,8 +6,8 @@ import {
     DeleteOutlined
 } from "@ant-design/icons";
 import { useHistory, useParams } from "react-router-dom";
-import ReactQuill from 'react-quill';
 import MyEditor from '../../../../src/components/my-editor';
+import request from "../../../services/request";
 
 const DepartmentDetail: React.FC = () => {
 
@@ -80,10 +80,15 @@ const DepartmentDetail: React.FC = () => {
     }
 
     const removeContent = async (id: string) => {
-        const response = await axios.post(`/api/department/detail/delete/${id}`);
-        if (response.data) {
-            message.success('Thành công!');
-            fetchData();
+        try {
+            const response = await axios.post(`/api/department/detail/delete/${id}`);
+            if (response.data) {
+                message.success('Thành công!');
+                fetchData();
+            }
+        } catch (e) {
+            console.log(e)
+            message.error('zxc')
         }
     }
 
@@ -112,7 +117,8 @@ const DepartmentDetail: React.FC = () => {
                 fetchUsersInDepartment();
             }
         } catch (e) {
-            message.error(e)
+            console.log(e);
+            message.error(e.response.data);
         }
     }
 
@@ -228,10 +234,7 @@ const DepartmentDetail: React.FC = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item label="Nội dung" name="content" required>
-                        <ReactQuill
-                            className="border"
-                            theme="snow"
-                        />
+                        <MyEditor name='content' />
                     </Form.Item>
                     <Form.Item label="Thứ tự" name="sortOrder" required>
                         <InputNumber />

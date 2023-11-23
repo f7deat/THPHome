@@ -8,18 +8,18 @@
 export const ListPostType = [
     {
         value: PostType.DEFAULT,
-        name: 'Default'
+        label: 'Mặc định'
     },
     {
         value: PostType.PAGE,
-        name: 'Page'
+        label: 'Trang'
     },
     {
         value: PostType.NEWS,
-        name: 'News'
+        label: 'Tin tức'
     },
     {
         value: PostType.NOTIFICATION,
-        name: 'Notification'
+        label: 'Thông báo'
     }
 ]

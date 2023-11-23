@@ -137,12 +137,12 @@ namespace WebUI.Api
         [HttpPost("detail/delete/{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
-            var detail = await _context.DepartmentDetails.FindAsync(id);
+            var detail = await _context.DepartmentUsers.FindAsync(id);
             if (detail == null)
             {
                 return BadRequest("Data not found!");
             }
-            _context.DepartmentDetails.Remove(detail);
+            _context.DepartmentUsers.Remove(detail);
             await _context.SaveChangesAsync();
             return Ok(IdentityResult.Success);
         }

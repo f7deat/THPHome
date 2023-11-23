@@ -9,20 +9,23 @@ import {
     SearchOutlined
 } from '@ant-design/icons';
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import IPost from "./interfaces/post-model";
 
 const { TabPane } = Tabs;
 
 export const PostList = () => {
 
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
+    const type = searchParams.get("type");
     const [posts, setPosts] = useState();
     const [loading, setLoading] = useState<boolean>(true);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
     const [importFile, setImportFile] = useState<any>();
     const [isModalImportVisible, setIsModalImportVisible] = useState(false)
     const [searchTerm, setSerchTerm] = useState<string>('');
-    const [activeKey, setActiveKey] = useState<string>('1');
+    const [activeKey, setActiveKey] = useState<string>(type || '1');
 
     function bindData(response: any) {
         setPosts(response.data);

@@ -9,9 +9,8 @@ import { useHistory, useParams } from 'react-router-dom'
 import { ListPostType } from '../../enum/post-enum'
 import IPost from './interfaces/post-model'
 import moment from 'moment';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import MyEditor from '../../components/my-editor';
+import request from '../../services/request';
 
 const { Dragger } = Upload;
 
@@ -22,7 +21,6 @@ const PostSetting = () => {
 
     const history = useHistory();
     const { id } = useParams<any>();
-    const reactQuillRef = useRef<any>();
 
     const [post, setPost] = useState<IPost>({})
     const [listCategory, setListCategory] = useState<any>()
@@ -64,14 +62,13 @@ const PostSetting = () => {
         })
     }, [initCallback])
 
-    const handleAdd = (values: any) => {
-        post.content = values.content;
+    const handleAdd = () => {
         let attachments = defaultFileList.map(function (x: any) {
             return {
                 id: x.uid
             }
         })
-        axios.post('/api/post/add', {
+        request.post('/api/post/add', {
             post,
             listCategoryId,
             attachments
@@ -84,8 +81,7 @@ const PostSetting = () => {
         })
     }
 
-    const handleEdit = (values: any) => {
-        post.content = values.content;
+    const handleEdit = () => {
         let attachments = defaultFileList.map(function (x: any) {
             return {
                 id: x.uid
@@ -97,7 +93,7 @@ const PostSetting = () => {
             attachments
         }).then(response => {
             if (response.data.succeeded) {
-                history.push('/admin/post/list')
+                history.push(`/admin/post/list?type=${post.type}`)
             } else {
                 message.error('ERROR');
             }
@@ -106,10 +102,6 @@ const PostSetting = () => {
 
     function handleChangeCategory(value: number[]) {
         setListCategoryId(value)
-    }
-
-    function handleChangeType(value: number) {
-        setPost({ ...post, type: value })
     }
 
     const handleUpload = (info: any) => {
@@ -156,40 +148,15 @@ const PostSetting = () => {
         onRemove: handleRemoveFile
     };
 
-    const imageHandler = useCallback(() => {
-        const input = document.createElement("input");
-        input.setAttribute("type", "file");
-        input.setAttribute("accept", "image/*");
-        input.click();
-        input.onchange = async () => {
-            if (input !== null && input.files !== null) {
-                const file = input.files[0];
-                const formData = new FormData();
-                formData.append("file", file);
-                const response = await axios({
-                    url: '/api/file/image/upload',
-                    data: formData,
-                    method: 'POST'
-                });
-                if (response.data) {
-                    message.success('Tải lên thành công!');
-                    const quill = reactQuillRef.current;
-                    if (quill) {
-                        const range = quill?.getEditorSelection();
-                        range && quill?.getEditor().insertEmbed(range.index, "image", response.data.url);
-                    }
-                    return response.data.url;
-                }
-                message.success('Tải lên thất bại!')
-            }
-        };
-    }, []);
-
     const onFinish = async (values: any) => {
+        values.type = Number(values.type);
+        post.content = values.content;
+        post.type = values.type;
+        post.title = values.title;
         if (id) {
-            handleEdit(values)
+            handleEdit()
         } else {
-            handleAdd(values)
+            handleAdd()
         }
     }
 
@@ -198,12 +165,21 @@ const PostSetting = () => {
             <Form onFinish={onFinish} layout="vertical" form={form}>
                 <Row gutter={16}>
                     <Col span={18}>
-                        <div className="mb-1">Tiêu đề</div>
-                        <Input value={post.title} onChange={(e: any) => setPost({ ...post, title: e.target.value })} className="mb-2" />
+                        <Form.Item name="title" label="Tiêu đề" rules={[
+                            {
+                                required: true
+                            }
+                        ]}>
+                            <Input />
+                        </Form.Item>
                         <div className="mb-1">Mô tả</div>
                         <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
 
-                        <Form.Item name="content" label="Nội dung" required>
+                        <Form.Item name="content" label="Nội dung" rules={[
+                            {
+                                required: true
+                            }
+                        ]}>
                             <MyEditor name="content" />
                         </Form.Item>
                         <Space>
@@ -212,19 +188,13 @@ const PostSetting = () => {
                         </Space>
                     </Col>
                     <Col span={6}>
-                        <div className="mb-1">Loại</div>
-                        <Select
-                            placeholder="Vui lòng chọn"
-                            onChange={handleChangeType}
-                            className="w-full mb-2"
-                            value={post.type}
-                        >
+                        <Form.Item label="Loại" name="type" rules={[
                             {
-                                ListPostType.map((value, index) => (
-                                    <Option key={index} value={value.value}>{value.name}</Option>
-                                ))
+                                required: true
                             }
-                        </Select>
+                        ]}>
+                            <Select options={ListPostType} />
+                        </Form.Item>
 
                         <div className="mb-1">Danh mục</div>
                         <Select
