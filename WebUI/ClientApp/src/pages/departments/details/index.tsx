@@ -2,12 +2,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"
 import {
-    EditOutlined,
     DeleteOutlined
 } from "@ant-design/icons";
 import { useHistory, useParams } from "react-router-dom";
 import MyEditor from '../../../../src/components/my-editor';
-import request from "../../../services/request";
+import { TabContentDepartment } from "./tab-content";
 
 const DepartmentDetail: React.FC = () => {
 
@@ -16,34 +15,15 @@ const DepartmentDetail: React.FC = () => {
     const [dataSource, setDataSource] = useState<any>([]);
     const [department, setDepartment] = useState<any>();
     const [form] = Form.useForm();
-    const [formType] = Form.useForm();
     const [users, setUsers] = useState<any>([]);
     const [usersInDepartment, setUserInDepartment] = useState<any>([]);
-
-    const getDeatailContent = (id: string) => {
-        axios.get(`/api/department/detail/content/${id}`).then(response => {
-            formType.setFields([
-                {
-                    name: 'id',
-                    value: response.data.id
-                },
-                {
-                    name: 'type',
-                    value: response.data.type
-                },
-                {
-                    name: 'content',
-                    value: response.data.content
-                }
-            ])
-        })
-    }
+    const [activeTab, setActiveTab] = useState<string>();
 
     const fetchData = () => {
         axios.get(`/api/department/detail/${id}`).then(response => {
             setDataSource(response.data);
             if (response.data && response.data.length > 0) {
-                getDeatailContent(response.data[0].id)
+                setActiveTab(response.data[0].id)
             }
         });
     }
@@ -76,19 +56,6 @@ const DepartmentDetail: React.FC = () => {
                 setOpen(false);
                 fetchData();
             }
-        }
-    }
-
-    const removeContent = async (id: string) => {
-        try {
-            const response = await axios.post(`/api/department/detail/delete/${id}`);
-            if (response.data) {
-                message.success('Thành công!');
-                fetchData();
-            }
-        } catch (e) {
-            console.log(e)
-            message.error('zxc')
         }
     }
 
@@ -139,20 +106,13 @@ const DepartmentDetail: React.FC = () => {
             title: 'Tác vụ',
             render: (_, record) => (
                 <Space>
-                    <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeUserFromDepartment(record.id) }>
+                    <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeUserFromDepartment(record.id)}>
                         <Button type="primary" danger icon={<DeleteOutlined />} />
                     </Popconfirm>
                 </Space>
             )
         }
     ]
-
-    const onFinishType = async (values: any) => {
-        const response = await axios.post(`/api/department/update-detail`, values);
-        if (response.data.succeeded) {
-            message.success('Thành công!');
-        }
-    }
 
     return (
         <>
@@ -165,33 +125,13 @@ const DepartmentDetail: React.FC = () => {
                         <Tabs
                             type="card"
                             onChange={(activeKey) => {
-                                getDeatailContent(activeKey);
+                                setActiveTab(activeKey);
                             }}
                             items={dataSource?.map((record: any) => {
                                 return {
                                     label: record.type,
                                     key: record.id,
-                                    children: (
-                                        <>
-                                            <Form form={formType} layout="vertical" onFinish={onFinishType}>
-                                                <Form.Item name="id" hidden>
-                                                    <Input />
-                                                </Form.Item>
-                                                <Form.Item name="type" label="Tiêu đề" required>
-                                                    <Input />
-                                                </Form.Item>
-                                                <Form.Item name="content" label="Nội dung" required>
-                                                    <MyEditor name="content" />
-                                                </Form.Item>
-                                                <div className="flex justify-end gap-4">
-                                                    <Button type="primary" htmlType="submit">Lưu lại</Button>
-                                                    <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeContent(record.id)}>
-                                                        <Button type="primary" danger>Xóa</Button>
-                                                    </Popconfirm>
-                                                </div>
-                                            </Form>
-                                        </>
-                                    ),
+                                    children: <TabContentDepartment activeTab={activeTab} fetchData={fetchData} />,
                                 };
                             })}
                         />

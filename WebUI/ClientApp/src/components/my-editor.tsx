@@ -55,6 +55,7 @@ const MyEditor: React.FC<InputProps> = (props) => {
 
     return (
         <ReactQuill
+            value={form.getFieldValue(props.name)}
             ref={reactQuillRef }
             theme="snow" modules={{
             toolbar: {
