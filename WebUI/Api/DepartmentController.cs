@@ -98,6 +98,19 @@ namespace WebUI.Api
             return Ok(IdentityResult.Success);
         }
 
+        [HttpPost("remove-user/{id}")]
+        public async Task<IActionResult> RemoveUserAsync([FromRoute] Guid id)
+        {
+            var user = await _context.DepartmentUsers.FindAsync();
+            if (user is null)
+            {
+                return BadRequest("Department not found!");
+            }
+            await _context.DepartmentUsers.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return Ok(IdentityResult.Success);
+        }
+
         [HttpPost("add-detail")]
         public async Task<IActionResult> AddDetailAsync([FromBody] DepartmentDetail args)
         {
@@ -137,12 +150,12 @@ namespace WebUI.Api
         [HttpPost("detail/delete/{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
-            var detail = await _context.DepartmentUsers.FindAsync(id);
+            var detail = await _context.DepartmentDetails.FindAsync(id);
             if (detail == null)
             {
                 return BadRequest("Data not found!");
             }
-            _context.DepartmentUsers.Remove(detail);
+            _context.DepartmentDetails.Remove(detail);
             await _context.SaveChangesAsync();
             return Ok(IdentityResult.Success);
         }
@@ -165,6 +178,23 @@ namespace WebUI.Api
             return Ok(IdentityResult.Success);
         }
 
+        [HttpPost("update-user")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] DepartmentUser args)
+        {
+            var user = await _context.DepartmentUsers.FindAsync(args.Id);
+            if (user is null)
+            {
+                return BadRequest("Data not found");
+            }
+            user.ModifiedDate = DateTime.Now;
+            user.JobTitle = args.JobTitle;
+            user.Rank = args.Rank;
+            user.Type = args.Type;
+            _context.DepartmentUsers.Update(user);
+            await _context.SaveChangesAsync();
+            return Ok(IdentityResult.Success);
+        }
+
         [HttpGet("users-in-department/{id}")]
         public async Task<IActionResult> GetUsersInDepartmentAsync([FromRoute] Guid id)
         {
@@ -178,7 +208,9 @@ namespace WebUI.Api
                             a.Name,
                             a.Email,
                             b.Rank,
-                            b.JobTitle
+                            b.JobTitle,
+                            userId = a.Id,
+                            b.Type
                         };
             return Ok(await users.ToListAsync());
         }

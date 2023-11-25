@@ -2,7 +2,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"
 import {
-    DeleteOutlined
+    DeleteOutlined, EditOutlined
 } from "@ant-design/icons";
 import { useHistory, useParams } from "react-router-dom";
 import MyEditor from '../../../../src/components/my-editor';
@@ -18,6 +18,7 @@ const DepartmentDetail: React.FC = () => {
     const [users, setUsers] = useState<any>([]);
     const [usersInDepartment, setUserInDepartment] = useState<any>([]);
     const [activeTab, setActiveTab] = useState<string>();
+    const [formUser] = Form.useForm();
 
     const fetchData = () => {
         axios.get(`/api/department/detail/${id}`).then(response => {
@@ -62,6 +63,14 @@ const DepartmentDetail: React.FC = () => {
     const addUser = async (values: any) => {
         try {
             values.departmentId = id;
+            if (values.id) {
+                const response = await axios.post(`/api/department/update-user`, values);
+                if (response.data) {
+                    message.success('Thành công!');
+                    fetchUsersInDepartment();
+                }
+                return;
+            }
             const response = await axios.post(`/api/department/add-user`, values);
             if (response.data) {
                 message.success('Thành công!');
@@ -78,7 +87,7 @@ const DepartmentDetail: React.FC = () => {
 
     const removeUserFromDepartment = async (id: string) => {
         try {
-            const response = await axios.post(`/api/department/detail/delete/${id}`);
+            const response = await axios.post(`/api/department/remove-user/${id}`);
             if (response.data.succeeded) {
                 message.success('Thành công!');
                 fetchUsersInDepartment();
@@ -87,6 +96,31 @@ const DepartmentDetail: React.FC = () => {
             console.log(e);
             message.error(e.response.data);
         }
+    }
+
+    const onEdit = (record: any) => {
+        formUser.setFields([
+            {
+                name: 'id',
+                value: record.id
+            },
+            {
+                name: 'userId',
+                value: record.userId
+            },
+            {
+                name: 'rank',
+                value: record.rank
+            },
+            {
+                name: 'type',
+                value: record.type
+            },
+            {
+                name: 'jobTitle',
+                value: record.jobTitle
+            }
+        ])
     }
 
     const columns: TableColumnType<any>[] = [
@@ -106,6 +140,7 @@ const DepartmentDetail: React.FC = () => {
             title: 'Tác vụ',
             render: (_, record) => (
                 <Space>
+                    <Button icon={<EditOutlined />} onClick={() => onEdit(record)} />
                     <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeUserFromDepartment(record.id)}>
                         <Button type="primary" danger icon={<DeleteOutlined />} />
                     </Popconfirm>
@@ -139,7 +174,8 @@ const DepartmentDetail: React.FC = () => {
                 </Col>
                 <Col span={8}>
                     <Card title="Cơ cấu tổ chức">
-                        <Form layout="vertical" onFinish={addUser}>
+                        <Form layout="vertical" onFinish={addUser} form={formUser}>
+                            <Form.Item name="id" hidden><Input /></Form.Item>
                             <Form.Item name="userId" required label="Thành viên">
                                 <Select options={users} showSearch filterOption={filterOption} />
                             </Form.Item>
@@ -155,7 +191,7 @@ const DepartmentDetail: React.FC = () => {
                                 </Form.Item>
                             </Space>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit" className="w-full">Thêm</Button>
+                                <Button type="primary" htmlType="submit" className="w-full">Lưu lại</Button>
                             </Form.Item>
                         </Form>
                         <Divider>Thành viên trong Viện - Khoa</Divider>

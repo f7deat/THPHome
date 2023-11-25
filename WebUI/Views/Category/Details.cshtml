@@ -1,8 +1,9 @@
 ﻿@model ApplicationCore.Helpers.PaginatedList<ApplicationCore.Models.Posts.PostView>
+@using ApplicationCore.Entities;
 @using Microsoft.AspNetCore.Identity
 @using WebUI.Models.ComponentModel
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     var breadcrumbs = new List<Breadcrumb>

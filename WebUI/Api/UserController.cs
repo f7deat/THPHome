@@ -233,7 +233,7 @@ namespace WebUI.Api
         {
             return Ok(await _userManager.Users.Select(x => new
             {
-                label = x.Name + " - " + x.Email,
+                label = x.Name ?? x.UserName + " - " + x.Email,
                 value = x.Id
             }).ToListAsync());
         }

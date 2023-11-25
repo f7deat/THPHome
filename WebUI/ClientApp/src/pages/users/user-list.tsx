@@ -79,8 +79,12 @@ const UserList = () => {
 
     const columns = [
         {
-            title: 'User Name',
-            dataIndex: 'userName',
+            title: 'Name',
+            dataIndex: 'name',
+        },
+        {
+            title: 'User name',
+            dataIndex: 'userName'
         },
         {
             title: 'Email',
