@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import {
-    EditOutlined,
+    FolderOutlined,
     DeleteOutlined
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
@@ -38,7 +38,11 @@ const Department: React.FC = () => {
     }
 
     const onConfirm = async (id: string) => {
-
+        const response = await axios.post(`/api/department/remove/${id}`);
+        if (response.data) {
+            message.success('Xóa thành công!');
+            fetchData();
+        }
     }
 
     const columns: TableColumnType<any>[] = [
@@ -58,7 +62,7 @@ const Department: React.FC = () => {
             title: 'Tác vụ',
             render: (value, record) => (
                 <Space>
-                    <Button type="primary" icon={<EditOutlined />} onClick={() => history.push(`/admin/department/detail/${record.id}`)}></Button>
+                    <Button type="primary" icon={<FolderOutlined />} onClick={() => history.push(`/admin/department/detail/${record.id}`)}></Button>
                     <Popconfirm title="Xóa bản ghi?" onConfirm={() => onConfirm(record.id)}>
                         <Button type="primary" danger icon={<DeleteOutlined />} />
                     </Popconfirm>
@@ -104,7 +108,12 @@ const Department: React.FC = () => {
                     <Form.Item name="id" hidden>
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Tên phòng ban" name="name" required>
+                    <Form.Item label="Tên phòng ban" name="name" rules={[
+                        {
+                            required: true,
+                            message: 'Vui lòng nhập tên phòng ban'
+                        }
+                    ]}>
                         <Input />
                     </Form.Item>
                     <Form.Item label="Mô tả" name="description">

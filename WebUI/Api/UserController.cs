@@ -50,7 +50,16 @@ namespace WebUI.Api
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetList() => Ok(await _userManager.Users.ToListAsync());
+        public async Task<IActionResult> GetList([FromQuery] string searchTerm)
+        {
+            searchTerm = searchTerm ?? string.Empty;
+            searchTerm = searchTerm.Trim().ToLower();
+            return Ok(await _userManager.Users.Where(x => string.IsNullOrEmpty(searchTerm)
+         || x.UserName.ToLower().Contains(searchTerm) || (
+         !string.IsNullOrEmpty(x.Name) &&
+         x.Name.ToLower().Contains(searchTerm)
+         )).ToListAsync());
+        }
 
         [HttpPost("add-to-role")]
         public async Task<IActionResult> AddToRoleAsync([FromBody] AddToRole addToRole)
@@ -80,6 +89,18 @@ namespace WebUI.Api
         {
             var user = await _userManager.FindByIdAsync(id);
             return Ok(await _userManager.RemoveFromRoleAsync(user, role));
+        }
+
+        [HttpPost("delete/{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null)
+            {
+                return BadRequest("Người dùng không tồn tại!");
+            }
+            await _userManager.DeleteAsync(user);
+            return Ok(IdentityResult.Success);
         }
 
         [HttpPost("get-authentication-token"), AllowAnonymous]
@@ -257,10 +278,12 @@ namespace WebUI.Api
             {
                 Name = RoleName.ADMIN
             };
+            await _userManager.CreateAsync(user, "Password@123");
+            await _userManager.CreateAsync(user2, "Password@123");
             await _roleManager.CreateAsync(role);
             await _userManager.AddToRoleAsync(user, RoleName.ADMIN);
             await _userManager.AddToRoleAsync(user2, RoleName.ADMIN);
-            return Ok(await _userManager.CreateAsync(user, "Password@123"));
+            return Ok();
         }
 
         [HttpPost("update")]

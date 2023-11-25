@@ -69,6 +69,7 @@ const DepartmentDetail: React.FC = () => {
                     message.success('Thành công!');
                     fetchUsersInDepartment();
                 }
+                formUser.resetFields();
                 return;
             }
             const response = await axios.post(`/api/department/add-user`, values);
@@ -76,6 +77,7 @@ const DepartmentDetail: React.FC = () => {
                 message.success('Thành công!');
                 fetchUsersInDepartment();
             }
+            formUser.resetFields();
         } catch (e) {
             console.log(e);
             message.error('Có lỗi xảy ra!');
@@ -176,20 +178,31 @@ const DepartmentDetail: React.FC = () => {
                     <Card title="Cơ cấu tổ chức">
                         <Form layout="vertical" onFinish={addUser} form={formUser}>
                             <Form.Item name="id" hidden><Input /></Form.Item>
-                            <Form.Item name="userId" required label="Thành viên">
+                            <Form.Item name="userId" label="Thành viên" rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng chọn thành viên'
+                                }
+                            ]}>
                                 <Select options={users} showSearch filterOption={filterOption} />
                             </Form.Item>
-                            <Space>
-                                <Form.Item name="rank" required label="Rank">
-                                    <InputNumber />
-                                </Form.Item>
-                                <Form.Item name="type" required label="Nhóm">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item name="jobTitle" label="Chức danh">
-                                    <Input />
-                                </Form.Item>
-                            </Space>
+                            <Row gutter={8}>
+                                <Col span={6}>
+                                    <Form.Item name="rank" label="Rank">
+                                        <InputNumber className="w-full" />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={9}>
+                                    <Form.Item name="type" required label="Nhóm">
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={9}>
+                                    <Form.Item name="jobTitle" label="Chức danh">
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
                             <Form.Item>
                                 <Button type="primary" htmlType="submit" className="w-full">Lưu lại</Button>
                             </Form.Item>
@@ -206,7 +219,12 @@ const DepartmentDetail: React.FC = () => {
                     <Form.Item name="id" hidden>
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Nhóm" name="type" required>
+                    <Form.Item label="Nhóm" name="type" rules={[
+                        {
+                            required: true,
+                            message: 'Vui lòng nhập tên nhóm'
+                        }
+                    ]}>
                         <Input />
                     </Form.Item>
                     <Form.Item label="Nội dung" name="content" required>

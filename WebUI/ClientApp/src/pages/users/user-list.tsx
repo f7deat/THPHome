@@ -18,9 +18,14 @@ const UserList = () => {
     const [listRole, setListRole] = useState<any>([])
     const [user, setUser] = useState<any>()
     const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     const fetchUsers = () => {
-        axios.get('/api/user/list').then(response => {
+        axios.get('/api/user/list', {
+            params: {
+                searchTerm
+            }
+        }).then(response => {
             if (response.status === 401) {
                 setListUser([])
             } else {
@@ -107,6 +112,13 @@ const UserList = () => {
                         title="Are you sure to delete?"
                         okText="Yes"
                         cancelText="No"
+                        onConfirm={async () => {
+                            const response = await axios.post(`/api/user/delete/${record.id}`);
+                            if (response.data) {
+                                message.success('Xóa thành công!');
+                                fetchUsers();
+                            }
+                        }}
                     >
                         <Button type="primary" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
@@ -169,8 +181,8 @@ const UserList = () => {
             <div className="bg-white p-4">
                 <div className="flex justify-between mb-3">
                     <Space>
-                        <Input />
-                        <Button icon={<SearchOutlined />} type="primary"></Button>
+                        <Input onChange={(e) => setSearchTerm(e.currentTarget.value)} />
+                        <Button icon={<SearchOutlined />} type="primary" onClick={() => fetchUsers()}>Tìm kiếm</Button>
                     </Space>
                     <Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAdd}>Thêm thành viên</Button>
                 </div>
@@ -188,10 +200,20 @@ const UserList = () => {
             </Modal>
             <Drawer visible={drawerVisible} width={700} onClose={() => setDrawerVisible(false)} title="Người dùng">
                 <Form onFinish={onAddUser} layout="vertical">
-                    <Form.Item name="name" label="Họ và tên" required>
+                    <Form.Item name="name" label="Họ và tên" rules={[
+                        {
+                            required: true,
+                            message: 'Vui lòng nhập họ và tên'
+                        }
+                    ]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="userName" label="Tên đăng nhập" required>
+                    <Form.Item name="userName" label="Tên đăng nhập" rules={[
+                        {
+                            required: true,
+                            message: 'Vui lòng nhập tên đăng nhập'
+                        }
+                    ]}>
                         <Input />
                     </Form.Item>
                     <Form.Item name="email" label="Email">

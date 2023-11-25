@@ -12,7 +12,7 @@
         <ul class="list-group">
             @foreach (var department in Model.Departments)
             {
-                <li class="list-group-item">
+                <li class="list-group-item @(Model.Department.Id == department.Id ? "active" : "")">
                     <a href="/departments?id=@department.Id">@department.Name</a>
                 </li>
             }

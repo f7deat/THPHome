@@ -101,12 +101,12 @@ namespace WebUI.Api
         [HttpPost("remove-user/{id}")]
         public async Task<IActionResult> RemoveUserAsync([FromRoute] Guid id)
         {
-            var user = await _context.DepartmentUsers.FindAsync();
+            var user = await _context.DepartmentUsers.FindAsync(id);
             if (user is null)
             {
                 return BadRequest("Department not found!");
             }
-            await _context.DepartmentUsers.AddAsync(user);
+            _context.DepartmentUsers.Remove(user);
             await _context.SaveChangesAsync();
             return Ok(IdentityResult.Success);
         }

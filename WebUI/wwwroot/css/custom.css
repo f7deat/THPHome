@@ -239,6 +239,15 @@ li.dropdown:hover .dropdown-menu {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
 }
 
+.list-group-item.active {
+    background-color: var(--red);
+    border-color: var(--red);
+}
+
+.list-group-item.active a {
+    color: white;
+}
+
 @media screen and (min-width: 768px) {
     .carousel-item img {
         height: 364px;
