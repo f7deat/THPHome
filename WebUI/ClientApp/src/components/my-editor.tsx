@@ -1,74 +1,71 @@
-﻿import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { Form, InputProps, message } from "antd";
-import React, { useCallback, useRef } from "react";
-import axios from 'axios';
+﻿import { Form, InputProps, message } from "antd";
+import React, { useRef } from "react";
+import { Editor } from '@tinymce/tinymce-react';
+import axios from "axios";
 
 const MyEditor: React.FC<InputProps> = (props) => {
 
     const form = Form.useFormInstance();
-    const reactQuillRef = useRef<any>();
+    const editorRef = useRef(null);
 
-    const imageHandler = useCallback(() => {
-        const input = document.createElement("input");
-        input.setAttribute("type", "file");
-        input.setAttribute("accept", "image/*");
-        input.click();
-        input.onchange = async () => {
-            if (input !== null && input.files !== null) {
-                const file = input.files[0];
-                const formData = new FormData();
-                formData.append("file", file);
-                const response = await axios({
-                    url: '/api/file/image/upload',
-                    data: formData,
-                    method: 'POST'
-                });
-                if (response.data) {
-                    message.success('Tải lên thành công!');
-                    const quill = reactQuillRef.current;
-                    if (quill) {
-                        const range = quill?.getEditorSelection();
-                        range && quill?.getEditor().insertEmbed(range.index, "image", response.data.url);
-                    }
-                    return response.data.url;
-                }
-                message.success('Tải lên thất bại!')
-            }
-        };
-    }, []);
-
-    const toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike'],
-        ['blockquote', 'code-block', 'video', 'image'],
-        [{ header: 1 }, { header: 2 }],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        [{ script: 'sub' }, { script: 'super' }],
-        [{ indent: '-1' }, { indent: '+1' }],
-        [{ direction: 'rtl' }],
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        [{ color: ['red'] }, { background: ['red'] }],
-        [{ font: ['500'] }],
-        [{ 'align': ['', 'justify', 'right', 'center'] }],
-        ['clean']
-    ];
+    const log = () => {
+        if (editorRef.current) {
+            form.setFieldValue(props.name, editorRef.current.getContent())
+        }
+    };
 
     return (
-        <ReactQuill
-            value={form.getFieldValue(props.name)}
-            ref={reactQuillRef }
-            theme="snow" modules={{
-            toolbar: {
-                container: toolbarOptions,
-                handlers: {
-                    image: imageHandler
-                },
-            }
-        }}
-            onChange={(value) => {
-                form.setFieldValue(props.name, value);
-            }}
-        />
+        <>
+            <Editor
+                onChange={log }
+                onInit={(evt, editor) => editorRef.current = editor}
+                apiKey='mn4nbwhddqp9jr1g1c3w17dkdu96ji7lr2fmolsncez1k3ng'
+                init={{
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                    file_picker_types: 'file image media',
+                    file_picker_callback: (callback, value, meta) => {
+                        // Provide file and text for the link dialog
+                        if (meta.filetype == 'file') {
+                            callback('mypage.html', { text: 'My text' });
+                        }
+
+                        // Provide image and alt text for the image dialog
+                        if (meta.filetype == 'image') {
+                            const input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+
+                            input.addEventListener('change', async (e: any) => {
+                                const file = e.target.files[0];
+
+                                const formData = new FormData();
+                                formData.append("file", file);
+                                const response = await axios({
+                                    url: '/api/file/image/upload',
+                                    data: formData,
+                                    method: 'POST'
+                                });
+                                if (response.data) {
+                                    message.success('Tải lên thành công!');
+                                    callback(response.data.url, { alt: 'My alt text' });
+                                }
+                            });
+
+                            input.click();
+                            
+                        }
+
+                        // Provide alternative source and posted for the media dialog
+                        if (meta.filetype == 'media') {
+                            callback('movie.mp4', { source2: 'alt.ogg', poster: 'image.jpg' });
+                        }
+                    }
+                }}
+                
+                initialValue={form.getFieldValue(props.name)}
+            />
+        </>
     )
 }
 export default MyEditor

@@ -35,6 +35,14 @@ const PostSetting = () => {
                     {
                         name: 'content',
                         value: response.data.content
+                    },
+                    {
+                        name: 'title',
+                        value: response.data.title
+                    },
+                    {
+                        name: 'type',
+                        value: response.data.type
                     }
                 ])
             })
@@ -167,7 +175,8 @@ const PostSetting = () => {
                     <Col span={18}>
                         <Form.Item name="title" label="Tiêu đề" rules={[
                             {
-                                required: true
+                                required: true,
+                                message: 'Vui lòng nhập tiêu đề bài viết'
                             }
                         ]}>
                             <Input />
@@ -177,7 +186,8 @@ const PostSetting = () => {
 
                         <Form.Item name="content" label="Nội dung" rules={[
                             {
-                                required: true
+                                required: true,
+                                message: 'Vui lòng nhập nội dung'
                             }
                         ]}>
                             <MyEditor name="content" />
@@ -190,7 +200,8 @@ const PostSetting = () => {
                     <Col span={6}>
                         <Form.Item label="Loại" name="type" rules={[
                             {
-                                required: true
+                                required: true,
+                                message: 'Vui lòng chọn loại bài viết'
                             }
                         ]}>
                             <Select options={ListPostType} />

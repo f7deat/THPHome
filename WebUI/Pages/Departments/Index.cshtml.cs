@@ -30,6 +30,7 @@ namespace WebUI.Pages.Departments
             if (id == null)
             {
                 Department = Departments.FirstOrDefault(x => x.Type == type);
+                id = Department.Id;
             }
             else
             {
