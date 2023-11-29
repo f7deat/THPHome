@@ -294,7 +294,7 @@ namespace Infrastructure.Repositories
             {
                 Id = x.Id,
                 Description = x.Description,
-                ModifiedDate = x.ModifiedDate,
+                ModifiedDate = x.CreatedDate,
                 Thumbnail = x.Thumbnail,
                 Title = x.Title,
                 Url = x.Url,
