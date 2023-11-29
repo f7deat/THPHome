@@ -37,12 +37,14 @@ namespace WebUI.Controllers
             _videoService = videoService;
         }
 
-        public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 3)
+        public async Task<IActionResult> Index()
         {
             ViewBag.Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
-            ViewBag.ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 4);
-            var posts = await _postService.GetListByTypeAsync(PostType.NEWS, pageIndex, pageSize);
-            ViewBag.ListNews = PaginatedList<PostView>.CreateAsync(posts.ToList());
+            // Thông báo
+            ViewBag.ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6);
+            // Tin tức nổi bật
+            ViewBag.ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 8);
+
             ViewBag.BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
             ViewBag.Partner = await _partnerService.GetListAsync(1);
             ViewBag.Videos = await _videoService.GetListAsync(5);
