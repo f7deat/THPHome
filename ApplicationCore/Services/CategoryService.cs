@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Interfaces.IRepository;
@@ -40,7 +41,7 @@ namespace ApplicationCore.Services
         {
             if (await _postRepository.IsExistInCategory(id))
             {
-                return new { succeeded = false, message = $"Category ${id} not exist!" };
+                return new { succeeded = false, message = $"Category {id} not exist!" };
             }
             var category = await _categoryRepository.GetByIdAsync(id);
             await _categoryRepository.DeleteAsync(category);
@@ -53,7 +54,7 @@ namespace ApplicationCore.Services
 
         public Task<IEnumerable<Category>> GetChildCategoriesAsync(int parentId) => _categoryRepository.GetChildAsync(parentId);
 
-        public Task<List<GroupCategory>> GetGroupCategories() => _categoryRepository.GetGroupCategories();
+        public Task<List<GroupCategory>> GetGroupCategories(Language language) => _categoryRepository.GetGroupCategories(language);
 
         public Task<IEnumerable<Category>> GetListAsyc(int id) => _categoryRepository.GetListAsyc(id);
 

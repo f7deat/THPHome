@@ -3,6 +3,7 @@ using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
 using ApplicationCore.Services;
+using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace WebUI.Pages
         public IEnumerable<PostView> ListNotification;
         public IEnumerable<Banner> Slides;
 
-        public IndexModel(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService, IVideoService videoService, ICategoryService categoryService) : base(postService)
+        public IndexModel(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService, IVideoService videoService, ICategoryService categoryService, ApplicationDbContext context) : base(postService, context)
         {
             _bannerService = bannerService;
             _menuService = menuService;
@@ -45,14 +46,15 @@ namespace WebUI.Pages
             // Tin tức nổi bật
             ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 8, PageData.Language);
 
-            BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
+            BoxMenu = await _menuService.GetListAsync(PageData.Language, MenuType.BOX);
             Partners = await _partnerService.GetListAsync(1);
             Videos = await _videoService.GetListAsync(5);
             Albums = await _bannerService.GetListAsync(BannerType.PHOTO, 4);
-            GroupCategories = await _categoryService.GetGroupCategories();
+            GroupCategories = await _categoryService.GetGroupCategories(PageData.Language);
             if (!string.IsNullOrWhiteSpace(lang))
             {
                 Response.Cookies.Append("locale", lang);
+                return Redirect("/");
             }
             return Page();
         }

@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Drawer, Empty, Input, message, Modal, Popconfirm, Row, Select, Space, Switch, Table, } from "antd";
+import { Button, Checkbox, Col, Drawer, Empty, Form, Input, message, Modal, Popconfirm, Row, Select, Space, Switch, Table, } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -42,7 +42,7 @@ export const CategoryList = () => {
             });
     }
 
-    function update(item:any) {
+    function update(item: any) {
         axios.post(`/api/category/update`, item).then(response => {
             message.success(response.data.message);
             getList(id);
@@ -109,7 +109,7 @@ export const CategoryList = () => {
             dataIndex: "id",
         },
         {
-            title: "Name",
+            title: "Tên danh mục",
             render: (record: any) => (
                 <div>
                     <div onClick={() => setId(record.id)} className="font-bold cursor-pointer">
@@ -119,13 +119,16 @@ export const CategoryList = () => {
                         {record.description}
                     </div>
                 </div>
-            ),
-            width: '50%'
+            )
+        },
+        {
+            title: 'Normalized Name',
+            dataIndex: 'normalizeName'
         },
         {
             title: "Status",
             render: (record: any) => (
-                <Switch defaultChecked={record.status === 1} onChange={(e: boolean) => handleChangeStatus(record, e)}/>
+                <Switch defaultChecked={record.status === 1} onChange={(e: boolean) => handleChangeStatus(record, e)} />
             ),
         },
         {
@@ -229,54 +232,63 @@ export const CategoryList = () => {
                 onCancel={() => setIsModalVisible(false)}
                 width={600}
             >
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <div>Name:</div>
-                        <Input className="mb-2" value={category?.name} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, name: e.target.value }))} />
-                        <div>Icon:</div>
-                        <Input className="mb-2" value={category?.icon} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, icon: e.target.value }))} />
-                        <div>Normalize Name:</div>
-                        <Input className="mb-2" value={category?.url} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, normalizeName: e.target.value }))} />
-                        <div>Parrent:</div>
-                        <Select
-                            showSearch
-                            placeholder="Select category"
-                            optionFilterProp="children"
-                            onChange={onChange}
-                            className="w-full mb-2"
-                            value={category?.parrentId}
-                        >
-                            <Option value={-1} key={-1}>Trống</Option>
-                            {
-                                categories && categories?.map((value: any) => (
-                                    <Option value={value.id} key={value.id}>
-                                        {value.name}
-                                    </Option>
-                                ))
-                            }
-                        </Select>
-                        <div>Description:</div>
-                        <TextArea className="mb-2" value={category?.description} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, description: e.target.value }))} />
-                    </Col>
-                    <Col span={12}>
-                        <div>Thumbnail:</div>
-                        <Input className="mb-2" value={category?.thumbnail} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, thumbnail: e.target.value }))} />
-                        {category?.thumbnail ? (
-                            <img
-                                src={category?.thumbnail}
-                                alt={category?.name}
-                                className="w-full object-fit-cover"
-                                height={138}
-                            />
-                        ) : (
-                            <Empty />
+                <Form layout="vertical">
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <div>Tên danh mục:</div>
+                            <Input className="mb-2" value={category?.name} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, name: e.target.value }))} />
+                            <div>Icon:</div>
+                            <Input className="mb-2" value={category?.icon} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, icon: e.target.value }))} />
+                            <Form.Item label="Normalize Name" tooltip="Dùng làm key cho đa ngôn ngữ" rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập!'
+                                }
+                            ]}>
+                                <Input className="mb-2" value={category?.url} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, normalizeName: e.target.value }))} />
+                            </Form.Item>
+                            <div>Danh mục cha:</div>
+                            <Select
+                                showSearch
+                                placeholder="Select category"
+                                optionFilterProp="children"
+                                onChange={onChange}
+                                className="w-full mb-2"
+                                value={category?.parrentId}
+                                allowClear
+                            >
+                                <Option value={-1} key={-1}>Trống</Option>
+                                {
+                                    categories && categories?.map((value: any) => (
+                                        <Option value={value.id} key={value.id}>
+                                            {value.name}
+                                        </Option>
+                                    ))
+                                }
+                            </Select>
+                            <div>Mô tả:</div>
+                            <TextArea className="mb-2" value={category?.description} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, description: e.target.value }))} />
+                        </Col>
+                        <Col span={12}>
+                            <div>Thumbnail:</div>
+                            <Input className="mb-2" value={category?.thumbnail} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, thumbnail: e.target.value }))} />
+                            {category?.thumbnail ? (
+                                <img
+                                    src={category?.thumbnail}
+                                    alt={category?.name}
+                                    className="w-full object-fit-cover"
+                                    height={138}
+                                />
+                            ) : (
+                                <Empty />
                             )}
-                        <div>
-                            <Checkbox onChange={(e) => setDisplayOnHome(e.target.checked)} checked={displayOnHome}>Hiển thị trên trang chủ</Checkbox>
-                        </div>
-                        
-                    </Col>
-                </Row>
+                            <div>
+                                <Checkbox onChange={(e) => setDisplayOnHome(e.target.checked)} checked={displayOnHome}>Hiển thị trên trang chủ</Checkbox>
+                            </div>
+
+                        </Col>
+                    </Row>
+                </Form>
             </Modal>
         </div>
     );

@@ -46,7 +46,7 @@ namespace WebUI.TagHelpers
                 }
             }
 
-            var cacheKey = $"{Key}-{nameof(Localization)}";
+            var cacheKey = $"{Key}-{nameof(Localization)}_{locale}";
             if (!_memoryCache.TryGetValue($"{cacheKey}", out string cacheValue))
             {
                 var i18n = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == Key && x.Language == lang);

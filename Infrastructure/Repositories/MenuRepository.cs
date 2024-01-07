@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ApplicationCore.Enums;
 
 namespace Infrastructure.Repositories
 {
@@ -13,7 +14,9 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<IReadOnlyList<Menu>> GetListAsync(MenuType type) => await _context.Menus.Where(x => x.Type == type || type == MenuType.DEFAULT).OrderBy(x => x.Index).ToListAsync();
+        public async Task<IReadOnlyList<Menu>> GetListAsync(Language language, MenuType type) => await _context.Menus
+            .Where(x => x.Language == language)
+            .Where(x => x.Type == type || type == MenuType.DEFAULT).OrderBy(x => x.Index).ToListAsync();
 
         public async Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type)
         {

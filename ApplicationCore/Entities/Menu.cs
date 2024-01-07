@@ -17,6 +17,7 @@ namespace ApplicationCore.Entities
         public int Status { get; set; }
         [StringLength(250)]
         public string Icon { get; set; }
+        public Language Language { get; set; }
     }
 
     public enum MenuType

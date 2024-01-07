@@ -64,10 +64,10 @@ export const AppHeader = (props: any) => {
                 alignItems: 'center'
             }}>
                 <Dropdown overlay={<Menu>
-                    <Menu.Item icon={<UserOutlined />} className="cursor-pointer" onClick={() => setCookie('locale', 'vi-VN', 360)}>
+                    <Menu.Item className="cursor-pointer" onClick={() => setCookie('locale', 'vi-VN', 360)}>
                         Tiếng Việt
                     </Menu.Item>
-                    <Menu.Item icon={<LogoutOutlined />} className="cursor-pointer" onClick={() => setCookie('locale', 'en-US', 360)}>
+                    <Menu.Item className="cursor-pointer" onClick={() => setCookie('locale', 'en-US', 360)}>
                         English
                     </Menu.Item>
                 </Menu>}>

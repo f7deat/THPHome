@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebUI.Foundations;
 
 namespace WebUI.ViewComponents
 {
@@ -19,6 +20,14 @@ namespace WebUI.ViewComponents
         {
             _menuService = menuService;
             _context = context;
+        }
+        protected Post PageData
+        {
+            get
+            {
+                RouteData.Values.TryGetValue(nameof(Post), out var values);
+                return values as Post ?? new Post();
+            }
         }
 
         public async Task<IViewComponentResult> InvokeAsync(MenuType type)
@@ -35,14 +44,14 @@ namespace WebUI.ViewComponents
                 case MenuType.MAIN:
                     var model = new MainMenu
                     {
-                        Menus = await _menuService.GetListAsync(type),
+                        Menus = await _menuService.GetListAsync(PageData.Language, type),
                         Faculties = await _context.Departments.Where(x => x.Type == DepartmentType.Faculty).ToListAsync()
                     };
                     return View("Main", model);
                 default:
                     break;
             }
-            return View(view, await _menuService.GetListAsync(type));
+            return View(view, await _menuService.GetListAsync(PageData.Language, type));
         }
     }
 

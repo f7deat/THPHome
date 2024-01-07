@@ -33,13 +33,9 @@ const Localization: React.FC = () => {
     };
 
     function handleRemove(id: number) {
-        axios.delete(`/api/menu/delete/${id}`).then(response => {
-            if (response.data.succeeded) {
-                message.success(response.data.message)
-                fetchData()
-            } else {
-                message.error(response.data.message)
-            }
+        axios.post(`/api/localization/delete/${id}`).then(response => {
+            message.success('OK')
+            fetchData()
         })
     }
 

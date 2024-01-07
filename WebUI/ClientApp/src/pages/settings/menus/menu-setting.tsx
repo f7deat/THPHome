@@ -1,4 +1,4 @@
-﻿import { Button, Drawer, Form, Input, message, Popconfirm, Select, Space, Table } from "antd"
+﻿import { Button, Drawer, Form, Input, InputNumber, message, Popconfirm, Select, Space, Table } from "antd"
 import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
@@ -18,7 +18,7 @@ const MenuSetting = () => {
     const [visible, setVisible] = useState(false)
     const [fields, setFields] = useState<any>([]);
     const [parrentCategories, setParrentCategories] = useState<any>([])
-    const [currentType, setCurrentType] = useState<number>(1)
+    const [currentType, setCurrentType] = useState<string>('1')
 
     const [form] = Form.useForm();
 
@@ -42,13 +42,19 @@ const MenuSetting = () => {
         })
     }
 
-    const filterType = (value: number) => {
+    const filterType = (value: string) => {
         setCurrentType(value)
         fetchData()
     }
 
     function handleAdd() {
         form.resetFields()
+        form.setFields([
+            {
+                name: 'type',
+                value: currentType
+            }
+        ])
         setVisible(true)
     }
 
@@ -106,7 +112,14 @@ const MenuSetting = () => {
                 value: record.icon
             },
             {
-                name: ['parrentId']
+                name: ['parrentId'],
+                value: record.parrentId
+            }
+        ])
+        form.setFields([
+            {
+                name: ['type'],
+                value: record.type
             }
         ])
         setVisible(true)
@@ -127,9 +140,9 @@ const MenuSetting = () => {
             } else {
                 message.error(response.data.message)
             }
-            fetchData()
+            setVisible(false);
+            fetchData();
         })
-        setVisible(false)
     };
 
     const columns = [
@@ -138,21 +151,17 @@ const MenuSetting = () => {
             dataIndex: 'id'
         },
         {
-            title: 'Index',
+            title: 'Thứ tự',
             dataIndex: "index"
         },
         {
-            title: 'Name',
+            title: 'Tên',
             render: (record: any) => (
-                <Link to={`/admin/game/item/${record.id}`}>{record.name}</Link>
+                <a href={record.url} target="_blank">{record.name}</a>
             )
         },
         {
-            title: 'Parrent Id',
-            dataIndex: 'parrentId'
-        },
-        {
-            title: '',
+            title: 'Tác vụ',
             render: (record: any) => (
                 <Space>
                     <Button icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
@@ -177,10 +186,10 @@ const MenuSetting = () => {
         <div>
             <div className="mb-3">
                 <Select onChange={filterType} defaultValue={currentType} className="mr-2">
-                    <Option value={0}>Default</Option>
-                    <Option value={1}>Top Menu</Option>
-                    <Option value={2}>Main Menu</Option>
-                    <Option value={3}>Box Menu</Option>
+                    <Option value='0'>Default</Option>
+                    <Option value='1'>Top Menu</Option>
+                    <Option value='2'>Main Menu</Option>
+                    <Option value='3'>Box Menu</Option>
                 </Select>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
             </div>
@@ -199,15 +208,20 @@ const MenuSetting = () => {
                     <Form.Item hidden={true} name="createdBy"></Form.Item>
                     <Form.Item hidden={true} name="createdDate"></Form.Item>
                     <Form.Item hidden={true} name="modifiedBy"></Form.Item>
-                    <Form.Item label="Name" name="name">
+                    <Form.Item label="Tên" name="name" rules={[
+                        {
+                            required: true,
+                            message: 'Vui lòng nhập'
+                        }
+                    ]}>
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Thumbnail" name="thumbnail">
+                    <Form.Item label="Ảnh đại diện" name="thumbnail">
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Description" name="description">
+                    <Form.Item label="Mô tả" name="description">
                         <Input.TextArea />
                     </Form.Item>
 
@@ -235,7 +249,7 @@ const MenuSetting = () => {
                     </Form.Item>
 
                     <Form.Item label="Thứ tự" name="index">
-                        <Input />
+                        <InputNumber />
                     </Form.Item>
 
                     <Form.Item label="Icon" name="icon">

@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Models;
@@ -35,17 +36,18 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<List<GroupCategory>> GetGroupCategories()
+        public async Task<List<GroupCategory>> GetGroupCategories(Language language)
         {
             var returnValue = new List<GroupCategory>();
             var parrents = await _context.Categories.Where(x => (x.ParrentId == null || x.ParrentId < 1) && x.IsDisplayOnHome == true).ToListAsync();
             foreach (var item in parrents)
             {
                 var childs = await _context.Categories.Where(x => x.ParrentId == item.Id && x.IsDisplayOnHome == true).ToListAsync();
+                var name = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == item.NormalizeName && x.Language == language);
                 returnValue.Add(new GroupCategory
                 {
                     Id = item.Id,
-                    Name = item.Name,
+                    Name = name?.Value ?? item.Name,
                     Icon = item.Icon,
                     Childs = childs
                 });

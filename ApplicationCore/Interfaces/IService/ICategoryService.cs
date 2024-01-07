@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Models;
 using ApplicationCore.Models.Categories;
@@ -21,6 +22,6 @@ namespace ApplicationCore.Interfaces.IService
         Task<Category> GetParrentAsync(int categoryId);
         Task<List<Category>> GetListInPostAsync(long postId);
         Task<dynamic> UpdateAsync(Category category);
-        Task<List<GroupCategory>> GetGroupCategories();
+        Task<List<GroupCategory>> GetGroupCategories(Language language);
     }
 }

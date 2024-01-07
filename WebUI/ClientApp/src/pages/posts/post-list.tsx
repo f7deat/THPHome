@@ -11,6 +11,7 @@ import {
 import moment from "moment";
 import { Link, useLocation } from "react-router-dom";
 import IPost from "./interfaces/post-model";
+import Tooltip from "antd/es/tooltip";
 
 const { TabPane } = Tabs;
 
@@ -128,9 +129,13 @@ export const PostList = () => {
         {
             title: 'Trạng thái',
             render: (record: IPost) => (
-                <Tag color={record.status == 1 ? 'cyan' : 'gold'} onClick={() => setActive(record.id || 0)}>
-                    {record.status == 1 ? 'xuất bản' : 'chờ duyệt'}
-                </Tag>
+                <Tooltip title="Nhấp để chuyển trạng thái">
+                    <Tag color={record.status == 1 ? 'cyan' : 'gold'} onClick={() => setActive(record.id || 0)} style={{
+                        cursor: 'pointer'
+                    }}>
+                        {record.status == 1 ? 'xuất bản' : 'chờ duyệt'}
+                    </Tag>
+                </Tooltip>
             )
         },
         {

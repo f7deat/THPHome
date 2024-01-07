@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
+using Infrastructure;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
@@ -10,9 +11,12 @@ namespace WebUI.Foundations
     public class EntryPageModel : PageModel
     {
         protected readonly IPostService _postService;
-        public EntryPageModel(IPostService postService)
+        private readonly ApplicationDbContext _context;
+
+        public EntryPageModel(IPostService postService, ApplicationDbContext context)
         {
             _postService = postService;
+            _context = context;
         }
 
         public Post PageData { private set; get; } = new Post();

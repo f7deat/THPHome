@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
+using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,19 +11,25 @@ using System.Threading.Tasks;
 
 namespace WebUI.Api
 {
-    [Route("api/[controller]"), Authorize]
-    public class MenuController : Controller
+    public class MenuController : BaseController
     {
         private readonly IMenuService _menuService;
         private readonly UserManager<ApplicationUser> _userManager;
-        public MenuController(IMenuService menuService, UserManager<ApplicationUser> userManager)
+        private readonly ApplicationDbContext _context;
+
+        public MenuController(IMenuService menuService, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _menuService = menuService;
             _userManager = userManager;
+            _context = context;
         }
 
         [Route("get-list")]
-        public async Task<IActionResult> GetListAsync(MenuType type = MenuType.MAIN) => Ok(await _menuService.GetListAsync(type));
+        public async Task<IActionResult> GetListAsync(MenuType type = MenuType.MAIN)
+        {
+            var lang = GetLanguage();
+            return Ok(await _menuService.GetListAsync(lang, type));
+        }
 
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody] Menu menu)
@@ -32,6 +39,7 @@ namespace WebUI.Api
             menu.ModifiedBy = user.Id;
             menu.CreatedDate = DateTime.Now;
             menu.ModifiedDate = DateTime.Now;
+            menu.Language = GetLanguage();
             return Ok(await _menuService.AddAsync(menu));
         }
 
@@ -39,9 +47,18 @@ namespace WebUI.Api
         public async Task<IActionResult> UpdateAsync([FromBody] Menu menu)
         {
             var user = await _userManager.GetUserAsync(User);
-            menu.ModifiedBy = user.Id;
-            menu.ModifiedDate = DateTime.Now;
-            return Ok(await _menuService.UpdateAsync(menu));
+            var data = await _context.Menus.FindAsync(menu.Id);
+            if (data is null) return BadRequest("Data not found!");
+            data.ModifiedBy = user.Id;
+            data.CreatedDate = DateTime.Now;
+            data.Name = menu.Name;
+            data.Description = menu.Description;
+            data.Icon = menu.Icon;
+            data.ParrentId = menu.ParrentId;
+            data.Index = menu.Index;
+            data.Url = menu.Url;
+            data.Type = menu.Type;
+            return Ok(await _menuService.UpdateAsync(data));
         }
 
         [HttpDelete("delete/{id}")]

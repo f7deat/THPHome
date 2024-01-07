@@ -63,8 +63,23 @@ namespace WebUI.Api
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody]PostParam post)
         {
+            Request.Cookies.TryGetValue("locale", out string locale);
+
+            var lang = Language.VI;
+            if (!string.IsNullOrEmpty(locale))
+            {
+                if (locale == "en-US")
+                {
+                    lang = Language.EN;
+                }
+            }
+            post.Post.Language = lang;
             post.Post.CreatedBy = _userManager.GetUserId(User);
             post.Post.ModifiedBy = _userManager.GetUserId(User);
+            if (string.IsNullOrWhiteSpace(post.Post.Thumbnail))
+            {
+                post.Post.Thumbnail = "/files/fc7bef56-0a30-4f2e-a369-d4e0419344dd.png";
+            }
             var data = await _postService.AddAsync(post.Post);
             if (data.Id > 0)
             {
@@ -90,7 +105,14 @@ namespace WebUI.Api
             await _postCategoryService.AddAsync(post.ListCategoryId, post.Post.Id);
             await _attachmentService.MapAsync(post.Attachments, post.Post.Id);
             post.Post.ModifiedBy = _userManager.GetUserId(User);
-            return Ok(await _postService.EditAsync(post.Post));
+            var data = await _postService.FindAsync(post.Post.Id);
+            data.Description = post.Post.Description;
+            data.Title = post.Post.Title;
+            data.Content = post.Post.Content;
+            data.Thumbnail = post.Post.Thumbnail;
+            data.Type = post.Post.Type;
+            data.ModifiedDate = post.Post.ModifiedDate;
+            return Ok(await _postService.EditAsync(data));
         }
 
         [Route("get-list-category-id-in-post/{postId}")]

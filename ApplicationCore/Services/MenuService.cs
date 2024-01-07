@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
 using System;
@@ -38,7 +39,7 @@ namespace ApplicationCore.Services
             };
         }
 
-        public Task<IReadOnlyList<Menu>> GetListAsync(MenuType type = MenuType.DEFAULT) => _menuRepository.GetListAsync(type);
+        public Task<IReadOnlyList<Menu>> GetListAsync(Language language, MenuType type = MenuType.DEFAULT) => _menuRepository.GetListAsync(language, type);
 
         public Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type) => _menuRepository.GetListParrentAsync(type);
 

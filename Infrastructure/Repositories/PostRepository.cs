@@ -332,6 +332,9 @@ namespace Infrastructure.Repositories
                 await _context.Posts.AddAsync(post);
                 await _context.SaveChangesAsync();
             }
+            post.View++;
+            _context.Update(post);
+            await _context.SaveChangesAsync();
             return post;
         }
     }

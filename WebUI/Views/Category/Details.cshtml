@@ -19,8 +19,8 @@
     breadcrumbs.Add(new Breadcrumb { Id = breadcrumbs.Count + 1, Url = $"/category/details/{ViewBag.Id}", Name = ViewData["Title"].ToString(), Icon = "fas fa-folder-open", IsActive = true });
 }
 <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
-<div class="md:flex md:-mx-1">
-    <div class="md:w-8/12 md:mx-1">
+<div class="row">
+    <div class="col-md-8">
         <div class="mb-2 flex items-center justify-between">
             <form class="w-3/5 mr-2" action="/category/details" method="get">
                 <input type="hidden" value="@ViewBag.Id" name="Id" />
@@ -48,15 +48,8 @@
             </div>
         </div>
 
-        <h1 class="p-2 bg-gray-800 font-bold text-white mb-2 flex justify-between items-center">
+        <h1 class="title">
             @ViewData["Title"]
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <a href="/admin/categories" class="btn btn-outline-warning float-right btn-sm">
-                    <i class="fa fa-pen"></i>
-                    Edit
-                </a>
-            }
         </h1>
 
         <partial name="/Views/Post/_Posts.cshtml" model="Model" />
@@ -78,11 +71,13 @@
             </a>
         </div>
     </div>
-    <div class="md:w-4/12 md:mx-1">
+    <div class="col-md-4">
         @if (ViewBag.Categories.Count > 0)
         {
             <div class="mb-4">
-                <div class="p-2 bg-gray-800 text-white font-weight-bold">Danh mục con</div>
+                <div class="title">
+                    <localize key="category" />
+                </div>
                 @foreach (var item in ViewBag.Categories)
                 {
                     <div class="p-2 border-b">

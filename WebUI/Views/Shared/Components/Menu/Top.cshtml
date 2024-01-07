@@ -6,16 +6,7 @@
 
 @{
     Layout = null;
-    var locale = "vi-VN";
-    Context.Request.Cookies.TryGetValue("locale", out locale);
-    if (Context.Request.QueryString.HasValue && Context.Request.QueryString.Value.Contains("en-US"))
-    {
-        locale = "en-US";
-    }
-    if (Context.Request.QueryString.HasValue && Context.Request.QueryString.Value.Contains("vi-VN"))
-    {
-        locale = "vi-VN";
-    }
+    Context.Request.Cookies.TryGetValue("locale", out var locale);
 }
 
 @if (Model != null)
