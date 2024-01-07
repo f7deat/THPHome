@@ -28,7 +28,17 @@ namespace WebUI.Controllers
         {
             ViewData["Title"] = "Danh mục";
             argument.PageSize = 12;
-            return View(await _categoryService.GetParrentAsync(argument.Id ?? 0));
+
+            Request.Cookies.TryGetValue("locale", out string locale);
+            var lang = Language.VI;
+            if (!string.IsNullOrEmpty(locale))
+            {
+                if (locale == "en-US")
+                {
+                    lang = Language.EN;
+                }
+            }
+            return View(await _categoryService.ListAllAsync(lang));
         }
         public async Task<IActionResult> Details(Argument argument)
         {

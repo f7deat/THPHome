@@ -305,24 +305,16 @@ namespace Infrastructure.Repositories
             }).ToListAsync();
         }
 
-        public async Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale)
+        public async Task<Post> EnsureDataAsync(string url, PostType pAGE, Language locale)
         {
-            var lang = Language.VI;
-            if (!string.IsNullOrEmpty(locale))
-            {
-                if (locale == "en-US")
-                {
-                    lang = Language.EN;
-                }
-            }
-            var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Type == pAGE && x.Language == lang);
+            var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Type == pAGE && x.Language == locale);
             if (post is null)
             {
                 post = new Post
                 {
                     Title = url,
                     Url = url,
-                    Language = lang,
+                    Language = locale,
                     Status = PostStatus.PUBLISH,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now,

@@ -39,15 +39,18 @@ namespace Infrastructure.Repositories
         public async Task<List<GroupCategory>> GetGroupCategories(Language language)
         {
             var returnValue = new List<GroupCategory>();
-            var parrents = await _context.Categories.Where(x => (x.ParrentId == null || x.ParrentId < 1) && x.IsDisplayOnHome == true).ToListAsync();
+            var parrents = await _context.Categories
+                .Where(x => x.Language == language)
+                .Where(x => (x.ParrentId == null || x.ParrentId < 1) && x.IsDisplayOnHome == true).ToListAsync();
             foreach (var item in parrents)
             {
-                var childs = await _context.Categories.Where(x => x.ParrentId == item.Id && x.IsDisplayOnHome == true).ToListAsync();
-                var name = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == item.NormalizeName && x.Language == language);
+                var childs = await _context.Categories
+                    .Where(x => x.Language == language)
+                    .Where(x => x.ParrentId == item.Id && x.IsDisplayOnHome == true).ToListAsync();
                 returnValue.Add(new GroupCategory
                 {
                     Id = item.Id,
-                    Name = name?.Value ?? item.Name,
+                    Name = item.Name,
                     Icon = item.Icon,
                     Childs = childs
                 });
@@ -55,11 +58,15 @@ namespace Infrastructure.Repositories
             return returnValue;
         }
 
-        public async Task<IEnumerable<Category>> GetListAsyc(int id) {
+        public async Task<IEnumerable<Category>> GetListAsyc(int id, Language lang) {
             if (id == 0)
-            return await _context.Categories.Where(x => x.ParrentId == null || x.ParrentId == -1).ToListAsync();
+            return await _context.Categories.Where(x => x.ParrentId == null || x.ParrentId == -1)
+                    .Where(x => x.Language == lang)
+                    .ToListAsync();
             else
-            return await _context.Categories.Where(x => x.ParrentId == id).ToListAsync();
+            return await _context.Categories.Where(x => x.ParrentId == id)
+                    .Where(x => x.Language == lang)
+                    .ToListAsync();
         }
 
         public async Task<List<Category>> GetListInPostAsync(long postId)
@@ -94,6 +101,13 @@ namespace Infrastructure.Repositories
         }
 
         public async Task<bool> IsExistAsync(string name) => await _context.Categories.AnyAsync(x => x.NormalizeName.ToLower() == name || x.Name.ToLower() == name);
+
+        public async Task<IReadOnlyList<Category>> ListAllAsync(Language lang)
+        {
+            return await _context.Categories.Where(x => x.Language == lang)
+                .OrderBy(x => x.Index)
+                .ToListAsync();
+        }
 
         public IQueryable<Category> ListByParrentId(int? parrentId) => _context.Categories.Where(x => x.ParrentId == parrentId);
     }

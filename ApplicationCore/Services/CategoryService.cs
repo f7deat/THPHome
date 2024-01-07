@@ -15,6 +15,7 @@ namespace ApplicationCore.Services
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IPostRepository _postRepository;
+
         public CategoryService(ICategoryRepository categoryRepository, IPostRepository postRepository)
         {
             _categoryRepository = categoryRepository;
@@ -56,13 +57,13 @@ namespace ApplicationCore.Services
 
         public Task<List<GroupCategory>> GetGroupCategories(Language language) => _categoryRepository.GetGroupCategories(language);
 
-        public Task<IEnumerable<Category>> GetListAsyc(int id) => _categoryRepository.GetListAsyc(id);
+        public Task<IEnumerable<Category>> GetListAsyc(int id, Language lang) => _categoryRepository.GetListAsyc(id, lang);
 
         public Task<List<Category>> GetListInPostAsync(long postId) => _categoryRepository.GetListInPostAsync(postId);
 
         public Task<Category> GetParrentAsync(int categoryId) => _categoryRepository.GetParrentAsync(categoryId);
 
-        public Task<IReadOnlyList<Category>> ListAllAsync() => _categoryRepository.ListAllAsync();
+        public Task<IReadOnlyList<Category>> ListAllAsync(Language lang) => _categoryRepository.ListAllAsync(lang);
 
         public Task<IReadOnlyList<Category>> ListAsync(ISpecification<Category> spec) => _categoryRepository.ListAsync(spec);
 

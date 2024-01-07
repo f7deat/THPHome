@@ -153,7 +153,7 @@ namespace ApplicationCore.Services
             return new { succeeded = true, message = "Thành công!" };
         }
 
-        public async Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale)
+        public async Task<Post> EnsureDataAsync(string url, PostType pAGE, Language locale)
         {
             return await _postRepository.EnsureDataAsync(url, pAGE, locale);
         }

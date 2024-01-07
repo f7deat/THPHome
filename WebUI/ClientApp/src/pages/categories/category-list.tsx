@@ -61,7 +61,7 @@ export const CategoryList = () => {
                     getList(id);
                     setIsModalVisible(false);
                 } else {
-                    message.error(response.data.error);
+                    message.error(response.data.message);
                 }
             });
         }
@@ -100,7 +100,10 @@ export const CategoryList = () => {
 
     function handleChangeStatus(record: any, checked: boolean) {
         checked ? record.status = 1 : record.status = 0;
-        update(record);
+        axios.post(`/api/category/active`, record).then(response => {
+            message.success(response.data.message);
+            getList(id);
+        })
     }
 
     const columns = [

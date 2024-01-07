@@ -8,6 +8,7 @@ using Infrastructure;
 using ApplicationCore.Entities;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Enums;
 
 namespace WebUI.Controllers
 {
@@ -25,7 +26,17 @@ namespace WebUI.Controllers
             ViewBag.RandomPosts = await _postService.GetRandomPostsAsync();
             ViewData["Title"] = searchTerm ?? "Tìm kiếm";
 
-            ViewData["Id"] = new SelectList(await _categoryService.ListAllAsync(), "Id", "Name");
+            Request.Cookies.TryGetValue("locale", out string locale);
+            var lang = Language.VI;
+            if (!string.IsNullOrEmpty(locale))
+            {
+                if (locale == "en-US")
+                {
+                    lang = Language.EN;
+                }
+            }
+
+            ViewData["Id"] = new SelectList(await _categoryService.ListAllAsync(lang), "Id", "Name");
 
             if (string.IsNullOrEmpty(searchTerm))
             {

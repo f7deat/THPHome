@@ -28,8 +28,16 @@ namespace WebUI.Foundations
             {
                 return;
             }
-            var language = Request.Cookies.TryGetValue("locale", out string locale);
-            var catalog = await _postService.EnsureDataAsync(page.ToLower(), PostType.PAGE, locale);
+            Request.Cookies.TryGetValue("locale", out string locale);
+            var lang = Language.VI;
+            if (!string.IsNullOrEmpty(locale))
+            {
+                if (locale == "en-US")
+                {
+                    lang = Language.EN;
+                }
+            }
+            var catalog = await _postService.EnsureDataAsync(page.ToLower(), PostType.PAGE, lang);
             PageData = catalog;
             ViewData["Title"] = catalog.Title;
             ViewData["Description"] = catalog.Description;

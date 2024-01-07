@@ -20,6 +20,7 @@ namespace ApplicationCore.Entities
         public int Index { get; set; }
         public bool IsDisplayOnHome { get; set; }
         public string Icon { get; set; }
+        public Language Language { get; set; }
 
     }
     public enum CategoryType
