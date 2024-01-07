@@ -7,27 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebUI.Foundations;
 
 namespace WebUI.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : EntryPageModel
     {
         private readonly IBannerService _bannerService;
-        private readonly IPostService _postService;
         private readonly IMenuService _menuService;
         private readonly IPartnerService _partnerService;
         private readonly IVideoService _videoService;
         private readonly ICategoryService _categoryService;
-
-        public IndexModel(IBannerService bannerService, IPostService postService, IMenuService menuService, IPartnerService partnerService, IVideoService videoService, ICategoryService categoryService)
-        {
-            _bannerService = bannerService;
-            _postService = postService;
-            _menuService = menuService;
-            _partnerService = partnerService;
-            _videoService = videoService;
-            _categoryService = categoryService;
-        }
 
         public List<ApplicationCore.Models.Categories.GroupCategory> GroupCategories;
         public IEnumerable<Menu> BoxMenu;
@@ -38,13 +28,22 @@ namespace WebUI.Pages
         public IEnumerable<PostView> ListNotification;
         public IEnumerable<Banner> Slides;
 
+        public IndexModel(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService, IVideoService videoService, ICategoryService categoryService) : base(postService)
+        {
+            _bannerService = bannerService;
+            _menuService = menuService;
+            _partnerService = partnerService;
+            _videoService = videoService;
+            _categoryService = categoryService;
+        }
+
         public async Task<IActionResult> OnGetAsync(string lang)
         {
             Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
             // Thông báo
-            ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6);
+            ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Language);
             // Tin tức nổi bật
-            ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 8);
+            ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 8, PageData.Language);
 
             BoxMenu = await _menuService.GetListAsync(MenuType.BOX);
             Partners = await _partnerService.GetListAsync(1);

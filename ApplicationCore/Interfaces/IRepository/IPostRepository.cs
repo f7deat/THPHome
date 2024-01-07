@@ -36,6 +36,7 @@ namespace ApplicationCore.Interfaces.IRepository
         Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int pageIndex, int pageSize);
         Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int pageIndex, int pageSize);
         Task<List<CategoryWithPost>> GetListByAllCategoryAsync();
-        Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize);
+        Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize, Language language);
+        Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale);
     }
 }

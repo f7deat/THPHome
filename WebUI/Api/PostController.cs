@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Constants;
 using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +35,21 @@ namespace WebUI.Api
         }
 
         [HttpGet("get-list")]
-        public async Task<IActionResult> GetListAsync([FromQuery] PostFilterOptions filterOptions) => Ok(await _postService.GetListAsync(filterOptions));
+        public async Task<IActionResult> GetListAsync([FromQuery] PostFilterOptions filterOptions)
+        {
+            Request.Cookies.TryGetValue("locale", out string locale);
+
+            var lang = Language.VI;
+            if (!string.IsNullOrEmpty(locale))
+            {
+                if (locale == "en-US")
+                {
+                    lang = Language.EN;
+                }
+            }
+            filterOptions.Language = lang;
+            return Ok(await _postService.GetListAsync(filterOptions));
+        }
 
         [Route("get-in-category/{id}")]
         public async Task<IActionResult> GetInCategoryAsync(int id) => Ok(await _postService.GetInCategoryAsync(id));

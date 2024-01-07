@@ -184,12 +184,7 @@ const PostSetting = () => {
                         <div className="mb-1">Mô tả</div>
                         <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
 
-                        <Form.Item name="content" label="Nội dung" rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập nội dung'
-                            }
-                        ]}>
+                        <Form.Item name="content" label="Nội dung">
                             <MyEditor name="content" />
                         </Form.Item>
                         <Space>

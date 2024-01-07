@@ -35,7 +35,7 @@ export const MenuList = () => {
             <Menu.Item key="1" icon={<DashboardOutlined />}>
                 <Link to="/admin">Dashboard</Link>
             </Menu.Item>
-            <SubMenu key="sub1" icon={<ReadOutlined />} title="Blog">
+            <SubMenu key="sub1" icon={<ReadOutlined />} title="Nội dung">
                 <Menu.Item key="2">
                     <Link to="/admin/post/list">Bài viết</Link>
                 </Menu.Item>

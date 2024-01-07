@@ -35,7 +35,7 @@ namespace ApplicationCore.Interfaces.IService
         Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int pageIndex);
         Task<int> GetCountInUserAsync(string id);
         Task<PaginatedList<PostView>> GetListInTagSync(string name, string searchTerm);
-        Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize);
+        Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize, Language language);
         Task<IEnumerable<PostView>> GetRandomPostsAsync();
         Task<IEnumerable<Post>> GetListPopularAsync();
         Task<IEnumerable<Post>> GetListByUserAsync(string id);
@@ -43,5 +43,6 @@ namespace ApplicationCore.Interfaces.IService
         Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize);
         Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int pageIndex, int pageSize);
         Task<dynamic> SetActiveAsync(long id);
+        Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale);
     }
 }

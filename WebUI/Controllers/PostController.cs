@@ -46,7 +46,7 @@ namespace WebUI.Controllers
             ViewData["Description"] = post.Description;
 
             var categories = await _categoryService.GetListInPostAsync(id ?? 0);
-            ViewBag.RandomPosts = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 5);
+            ViewBag.RandomPosts = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 5, Language.VI);
             if (categories.Count() > 0)
             {
                 var categoryIds = categories.Select(c => c.Id);

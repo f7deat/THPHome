@@ -30,7 +30,6 @@ namespace Infrastructure
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<DepartmentDetail> DepartmentDetails { get; set; }
         public virtual DbSet<DepartmentUser> DepartmentUsers { get; set; }
-        //public virtual DbSet<Localization> Localizations { get; set; }
-        //public virtual DbSet<Page> Pages { get; set; }
+        public virtual DbSet<Localization> Localizations { get; set; }
     }
 }

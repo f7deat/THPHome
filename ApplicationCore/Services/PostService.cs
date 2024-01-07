@@ -18,6 +18,7 @@ namespace ApplicationCore.Services
         private readonly ICategoryRepository _categoryRepository;
         private readonly IPostCategoryRepository _postCategoryRepository;
         private readonly IBannerRepository _bannerRepository;
+
         public PostService(
             IPostRepository postRepository,
             ICategoryRepository categoryRepository,
@@ -46,7 +47,10 @@ namespace ApplicationCore.Services
             {
                 return new { succeded = false };
             }
-            post.Url = SeoHelper.ToSeoFriendly(post.Title, post.Title.Length);
+            if (post.Type != PostType.PAGE)
+            {
+                post.Url = SeoHelper.ToSeoFriendly(post.Title, post.Title.Length);
+            }
             post.Title = post.Title.Trim();
             await _postRepository.UpdateAsync(post);
             return new { succeeded = true };
@@ -128,7 +132,7 @@ namespace ApplicationCore.Services
 
         public Task<List<CategoryWithPost>> GetListByAllCategoryAsync() => _postRepository.GetListByAllCategoryAsync();
 
-        public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize) => _postRepository.GetListByTypeAsync(type, pageIndex, pageSize);
+        public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize, Language language) => _postRepository.GetListByTypeAsync(type, pageIndex, pageSize, language);
 
         public async Task<dynamic> SetActiveAsync(long id)
         {
@@ -147,6 +151,11 @@ namespace ApplicationCore.Services
             }
             await _postRepository.UpdateAsync(post);
             return new { succeeded = true, message = "Thành công!" };
+        }
+
+        public async Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale)
+        {
+            return await _postRepository.EnsureDataAsync(url, pAGE, locale);
         }
     }
 }

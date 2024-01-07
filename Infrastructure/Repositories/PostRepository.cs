@@ -72,8 +72,10 @@ namespace Infrastructure.Repositories
                 x.View,
                 x.ModifiedDate,
                 x.Url,
-                x.Status
+                x.Status,
+                x.Language
             });
+            query = query.Where(x => x.Language == filterOptions.Language);
             var total = await query.CountAsync();
             return new
             {
@@ -288,9 +290,10 @@ namespace Infrastructure.Repositories
             return returnValue;
         }
 
-        public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize)
+        public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize, Language language)
         {
-            return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.CreatedDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(x => new PostView
+            return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Language == language)
+                .OrderByDescending(x => x.CreatedDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(x => new PostView
             {
                 Id = x.Id,
                 Description = x.Description,
@@ -300,6 +303,36 @@ namespace Infrastructure.Repositories
                 Url = x.Url,
                 View = x.View
             }).ToListAsync();
+        }
+
+        public async Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale)
+        {
+            var lang = Language.VI;
+            if (!string.IsNullOrEmpty(locale))
+            {
+                if (locale == "en-US")
+                {
+                    lang = Language.EN;
+                }
+            }
+            var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Type == pAGE && x.Language == lang);
+            if (post is null)
+            {
+                post = new Post
+                {
+                    Title = url,
+                    Url = url,
+                    Language = lang,
+                    Status = PostStatus.PUBLISH,
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    Type = pAGE,
+                    View = 0
+                };
+                await _context.Posts.AddAsync(post);
+                await _context.SaveChangesAsync();
+            }
+            return post;
         }
     }
 }

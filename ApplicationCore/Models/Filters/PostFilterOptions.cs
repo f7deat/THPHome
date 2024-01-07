@@ -9,5 +9,6 @@ namespace ApplicationCore.Models.Filters
     {
         public string SearchTerm { get; set; }
         public PostType? Type { get; set; }
+        public Language Language { get; set; }
     }
 }
