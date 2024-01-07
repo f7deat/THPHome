@@ -42,9 +42,9 @@
     }
 
     <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" class="px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white hover:text-white @prevDisabled shadow rounded flex items-center">
-        <i class="fa fa-angle-double-left mr-2"></i> Trang trước
+        <i class="fa fa-angle-double-left mr-2"></i> <localize key="previous_page" />
     </a>
     <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" class="px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white hover:text-white @nextDisabled shadow rounded flex items-center">
-        Trang sau <i class="fa fa-angle-double-right ml-2"></i>
+        <localize key="next_page" /> <i class="fa fa-angle-double-right ml-2"></i>
     </a>
 </div>

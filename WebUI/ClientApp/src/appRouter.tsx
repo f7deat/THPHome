@@ -12,6 +12,7 @@ import PartnerSetting from "./pages/partners/partner-setting"
 import { PostList } from "./pages/posts/post-list"
 import PostSetting from "./pages/posts/post-setting"
 import RoleList from "./pages/roles/role-list"
+import Localization from "./pages/settings/localizations"
 import MenuSetting from "./pages/settings/menus/menu-setting"
 import Profile from "./pages/users/profile"
 import { UserEdit, UserList } from "./pages/users/user-type"
@@ -78,6 +79,10 @@ const routes = [
     {
         path: `${_preFix}/setting/menu`,
         main: () => <MenuSetting />
+    },
+    {
+        path: `${_preFix}/setting/localization`,
+        main: () => <Localization />
     },
     {
         path: `${_preFix}/partner`,

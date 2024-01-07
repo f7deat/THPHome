@@ -67,6 +67,9 @@ export const MenuList = () => {
                 <Menu.Item key="12">
                     <Link to="/admin/setting/menu">Menu</Link>
                 </Menu.Item>
+                <Menu.Item key="locale">
+                    <Link to="/admin/setting/localization">Ngôn ngữ</Link>
+                </Menu.Item>
             </SubMenu>
             <Menu.Item key="13" icon={<AlertOutlined />}>
                 <Link to="/admin/video">Video</Link>

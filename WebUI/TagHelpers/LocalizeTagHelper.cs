@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -36,22 +37,39 @@ namespace WebUI.TagHelpers
 
             _actionContextAccessor.ActionContext.HttpContext.Request.Cookies.TryGetValue("locale", out string locale);
 
-            var cacheKey = $"{locale}-{nameof(Localization)}-{Key}";
+            var lang = Language.VI;
+            if (!string.IsNullOrEmpty(locale))
+            {
+                if (locale == "en-US")
+                {
+                    lang = Language.EN;
+                }
+            }
+
+            var cacheKey = $"{Key}-{nameof(Localization)}";
             if (!_memoryCache.TryGetValue($"{cacheKey}", out string cacheValue))
             {
-                var i18n = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == Key);
+                var i18n = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == Key && x.Language == lang);
                 if (i18n is null)
                 {
                     i18n = new Localization
                     {
                         Key = Key,
+                        Language = lang,
+                        CreatedBy = Guid.Empty.ToString(),
+                        ModifiedBy = Guid.Empty.ToString(),
+                        CreatedDate = DateTime.Now,
+                        ModifiedDate = DateTime.Now
                     };
                     await _context.AddAsync(i18n);
                     await _context.SaveChangesAsync();
                 }
                 cacheValue = i18n.Value ?? Key;
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(1));
-                _memoryCache.Set(cacheKey, cacheValue, cacheEntryOptions);
+                if (cacheValue != Key)
+                {
+                    var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(1));
+                    _memoryCache.Set(cacheKey, cacheValue, cacheEntryOptions);
+                }
             }
 
             output.Content.SetContent(cacheValue);

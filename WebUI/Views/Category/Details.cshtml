@@ -35,11 +35,15 @@
             </form>
             <div class="relative">
                 <div class="text-purple-600 font-medium cursor-pointer" onclick="toggleFilter()">
-                    <i class="fas fa-sort-amount-up"></i> Sắp xếp
+                    <i class="fas fa-sort-amount-up"></i> <localize key="sort" />
                 </div>
                 <div class="absolute w-32 shadow-sm bg-white z-10 mt-2 hidden" id="toggle-filter">
-                    <div class="p-2 cursor-pointer hover:bg-gray-100" onclick="toggleFilter()">Lượt xem</div>
-                    <div class="p-2 cursor-pointer hover:bg-gray-100" onclick="toggleFilter()">Ngày cập nhật</div>
+                    <div class="p-2 cursor-pointer hover:bg-gray-100" onclick="toggleFilter()">
+                        <localize key="view" />
+                    </div>
+                    <div class="p-2 cursor-pointer hover:bg-gray-100" onclick="toggleFilter()">
+                        <localize key="modified_date" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,12 +69,12 @@
 
             <a asp-action="details" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
                asp-route-pageIndex="@(Model.PageIndex - 1)" class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white @prevDisabled shadow">
-                <i class="fa fa-angle-double-left"></i> Trang trước
+                <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
             </a>
             <a asp-action="details" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
                asp-route-pageIndex="@(Model.PageIndex + 1)"
                class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white float-right @nextDisabled shadow">
-                Trang sau <i class="fa fa-angle-double-right"></i>
+                <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
             </a>
         </div>
     </div>

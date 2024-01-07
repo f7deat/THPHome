@@ -59,7 +59,9 @@
 <div class="row" data-aos="fade-up">
 
     <div class="col-md-8">
-        <div class="title mb-1" style="text-transform: uppercase">Tin tức - Sự kiện</div>
+        <div class="title mb-1" style="text-transform: uppercase">
+            <localize key="news_and_events" />
+        </div>
         <partial name="/Views/Post/_PostsNoPaging.cshtml" model="@Model.ListNews.Take(3)" />
         <div class="related mb-4 border-t">
             @foreach (var item in Model.ListNews.Skip(3))
@@ -99,28 +101,28 @@
     <div class="col-md-3">
         <div class="p-4 md:p-10 text-center">
             <div class="text-lg font-bold">
-                <span class="counter" data-count="14000">0</span>+ sinh viên
+                <span class="counter" data-count="14000">0</span>+ <localize key="students" />
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="p-4 md:p-10 text-center">
             <div class="text-lg font-bold">
-                <span class="counter" data-count="97">0</span>% sinh viên ra trường có việc làm
+                <span class="counter" data-count="97">0</span>% <localize key="students_have_jobs" />
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="p-4 md:p-10 text-center">
             <div class="text-lg font-bold">
-                <span class="counter" data-count="43">0</span> Chuyên ngành đào tạo chính quy
+                <span class="counter" data-count="43">0</span> <localize key="formal_training" />
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="p-4 md:p-10 text-center">
             <div class="text-lg font-bold">
-                <span class="counter" data-count="5">0</span> chương trình liên kết nước ngoài
+                <span class="counter" data-count="5">0</span> <localize key="foreign_affiliate_program" />
             </div>
         </div>
     </div>
@@ -129,10 +131,14 @@
 <div class="media" data-aos="fade-up">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Thư viện video</button>
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                <localize key="playlist" />
+            </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Thư viện ảnh</button>
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                <localize key="gallery" />
+            </button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">

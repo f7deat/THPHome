@@ -6,6 +6,16 @@
 
 @{
     Layout = null;
+    var locale = "vi-VN";
+    Context.Request.Cookies.TryGetValue("locale", out locale);
+    if (Context.Request.QueryString.HasValue && Context.Request.QueryString.Value.Contains("en-US"))
+    {
+        locale = "en-US";
+    }
+    if (Context.Request.QueryString.HasValue && Context.Request.QueryString.Value.Contains("vi-VN"))
+    {
+        locale = "vi-VN";
+    }
 }
 
 @if (Model != null)
@@ -38,7 +48,7 @@
                 </ul>
                
                 <ul class="nav text-uppercase pr-2">
-                    <li class="nav-item">
+                    <li class="nav-item @(locale == "vi-VN" || string.IsNullOrEmpty(locale) ? "bg-danger" : "")">
                         <a href="/?lang=vi-VN" class="nav-link link-dark px-2">
                             <div class="inline">
                                 <svg width="17" height="15" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +60,7 @@
                             </div>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item @(locale == "en-US" ? "bg-danger" : "")">
                         <a href="/?lang=en-US" class="nav-link link-dark px-2">
                             <div class="inline">
                                 <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">

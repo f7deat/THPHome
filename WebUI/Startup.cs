@@ -16,6 +16,7 @@ using System;
 using Microsoft.Net.Http.Headers;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Entities;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace WebUI
 {
@@ -52,6 +53,7 @@ namespace WebUI
             services.AddScoped<IVideoRepository, VideoRepository>();
             services.AddScoped<IAttachmentService, AttachmentService>();
             services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddControllersWithViews();
             services.AddSession();

@@ -57,11 +57,11 @@
                     }
                     <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-keyword="@ViewData["Title"]"
                        class="px-4 py-1 bg-gray-800 text-white hover:bg-gray-900 hover:text-white rounded @prevDisabled shadow">
-                        <i class="fa fa-angle-double-left"></i> Trang trước
+                        <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
                     </a>
                     <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-keyword="@ViewData["Title"]"
                        class="px-4 py-1 bg-gray-800 text-white hover:bg-gray-900 hover:text-white rounded @nextDisabled shadow">
-                        Trang sau <i class="fa fa-angle-double-right"></i>
+                        <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
                     </a>
                 </div>
             }
