@@ -13,10 +13,8 @@ namespace WebUI.Controllers
 {
     public class LocalizationController : BaseController
     {
-        private readonly ApplicationDbContext _context;
-        public LocalizationController(ApplicationDbContext context)
+        public LocalizationController(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
 
         [HttpGet("list")]

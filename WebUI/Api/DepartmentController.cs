@@ -13,12 +13,10 @@ namespace WebUI.Api
 {
     public class DepartmentController : BaseController
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DepartmentController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public DepartmentController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : base(context)
         {
-            _context = context;
             _userManager = userManager;
         }
 
