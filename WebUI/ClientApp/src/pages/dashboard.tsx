@@ -41,6 +41,16 @@ export const Dashboard = () => {
                             Đang chờ: 0
                         </div>
                     </div>
+                    <div className="bg-white rounded">
+                        <Statistic
+                            title="Giảng viên"
+                            value={0}
+                            className="p-4"
+                        />
+                        <div className="border-t px-4 py-2">
+                            Phòng ban: 0
+                        </div>
+                    </div>
                 </Col>
                 <Col span={18}>
                     <Card title="Bài viết xem nhiều" className="p-0" bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}>

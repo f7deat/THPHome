@@ -11,7 +11,7 @@ namespace WebUI.Foundations
     public class EntryPageModel : PageModel
     {
         protected readonly IPostService _postService;
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         public EntryPageModel(IPostService postService, ApplicationDbContext context)
         {

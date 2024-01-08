@@ -18,79 +18,82 @@
     }
     breadcrumbs.Add(new Breadcrumb { Id = breadcrumbs.Count + 1, Url = $"/category/details/{ViewBag.Id}", Name = ViewData["Title"].ToString(), Icon = "fas fa-folder-open", IsActive = true });
 }
-<partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
-<div class="row">
-    <div class="col-md-8">
-        <div class="mb-2 flex items-center justify-between">
-            <form class="w-3/5 mr-2" action="/category/details" method="get">
-                <input type="hidden" value="@ViewBag.Id" name="Id" />
+<div class="container">
+
+    <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-2 flex items-center justify-between">
+                <form class="w-3/5 mr-2" action="/category/details" method="get">
+                    <input type="hidden" value="@ViewBag.Id" name="Id" />
+                    <div class="relative">
+                        <input type="search" name="searchTerm" placeholder="Tìm kiếm..."
+                               class="pl-10 border pr-5 appearance-none h-10 w-full rounded-full text-sm focus:outline-none"
+                               autocomplete="off" value="@ViewBag.SearchTerm" />
+                        <button type="submit" class="absolute top-0 left-0 py-2 px-3">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
                 <div class="relative">
-                    <input type="search" name="searchTerm" placeholder="Tìm kiếm..."
-                           class="pl-10 border pr-5 appearance-none h-10 w-full rounded-full text-sm focus:outline-none"
-                           autocomplete="off" value="@ViewBag.SearchTerm" />
-                    <button type="submit" class="absolute top-0 left-0 py-2 px-3">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
-            <div class="relative">
-                <div class="text-purple-600 font-medium cursor-pointer" onclick="toggleFilter()">
-                    <i class="fas fa-sort-amount-up"></i> <localize key="sort" />
-                </div>
-                <div class="absolute w-32 shadow-sm bg-white z-10 mt-2 hidden" id="toggle-filter">
-                    <div class="p-2 cursor-pointer hover:bg-gray-100" onclick="toggleFilter()">
-                        <localize key="view" />
+                    <div class="text-purple-600 font-medium cursor-pointer" onclick="toggleFilter()">
+                        <i class="fas fa-sort-amount-up"></i> <localize key="sort" />
                     </div>
-                    <div class="p-2 cursor-pointer hover:bg-gray-100" onclick="toggleFilter()">
-                        <localize key="modified_date" />
+                    <div class="absolute w-32 shadow-sm bg-white z-10 mt-2 hidden" id="toggle-filter">
+                        <div class="p-2 cursor-pointer hover:bg-gray-100" onclick="toggleFilter()">
+                            <localize key="view" />
+                        </div>
+                        <div class="p-2 cursor-pointer hover:bg-gray-100" onclick="toggleFilter()">
+                            <localize key="modified_date" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <h1 class="title">
-            @ViewData["Title"]
-        </h1>
+            <h1 class="title">
+                @ViewData["Title"]
+            </h1>
 
-        <partial name="/Views/Post/_Posts.cshtml" model="Model" />
-        <div class="mb-3">
-            @{
-                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-            }
-
-
-            <a asp-action="details" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
-               asp-route-pageIndex="@(Model.PageIndex - 1)" class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white @prevDisabled shadow">
-                <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
-            </a>
-            <a asp-action="details" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
-               asp-route-pageIndex="@(Model.PageIndex + 1)"
-               class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white float-right @nextDisabled shadow">
-                <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
-            </a>
-        </div>
-    </div>
-    <div class="col-md-4">
-        @if (ViewBag.Categories.Count > 0)
-        {
-            <div class="mb-4">
-                <div class="title">
-                    <localize key="category" />
-                </div>
-                @foreach (var item in ViewBag.Categories)
-                {
-                    <div class="p-2 border-b">
-                        <a href="/category/details/@item.Id" class="font-weight-bold text-dark" title="@item.Name">
-                            <i class="fas fa-angle-right"></i> @item.Name
-                        </a>
-                        <a href="#" class="float-right text-dark">
-                            <i class="fa fa-plus"></i>
-                        </a>
-                    </div>
+            <partial name="/Views/Post/_Posts.cshtml" model="Model" />
+            <div class="mb-3">
+                @{
+                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
                 }
+
+
+                <a asp-action="details" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
+                   asp-route-pageIndex="@(Model.PageIndex - 1)" class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white @prevDisabled shadow">
+                    <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
+                </a>
+                <a asp-action="details" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
+                   asp-route-pageIndex="@(Model.PageIndex + 1)"
+                   class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white float-right @nextDisabled shadow">
+                    <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
+                </a>
             </div>
-        }
+        </div>
+        <div class="col-md-4">
+            @if (ViewBag.Categories.Count > 0)
+            {
+                <div class="mb-4">
+                    <div class="title">
+                        <localize key="category" />
+                    </div>
+                    @foreach (var item in ViewBag.Categories)
+                    {
+                        <div class="p-2 border-b">
+                            <a href="/category/details/@item.Id" class="font-weight-bold text-dark" title="@item.Name">
+                                <i class="fas fa-angle-right"></i> @item.Name
+                            </a>
+                            <a href="#" class="float-right text-dark">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
     </div>
 </div>
 @section scripts {

@@ -17,212 +17,216 @@
     }
 }
 
-<partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
-<div class="md:flex">
-    <div class="md:w-8/12 md:mr-1">
-        <h1 class="p-2 bg-gray-800 text-white font-bold rounded-t">
-            @Model.PageData.Title
-        </h1>
-        <div class="p-2 shadow overflow-auto">
-            @if (!string.IsNullOrWhiteSpace(Model.PageData.Description))
-            {
-                <div class="font-bold mb-3">
-                    @Html.Raw(Model.PageData.Description)
-                </div>
-            }
-            <div class="mb-3 ql-editor">
-                @Html.Raw(Model.PageData.Content)
-            </div>
-            @if (!string.IsNullOrEmpty(Model.PageData.Tags))
-            {
-                <div class="mb-2">
-                    <i class="fas fa-tag mr-2"></i>
-                    @{
-                        var listTag = Model.PageData.Tags.Split(",");
-                        foreach (var item in listTag)
-                        {
-                            <a href="/post/tag?name=@item" class="px-4 py-1 rounded-full bg-gray-800 hover:bg-gray-900 text-white mr-2 text-sm hover:text-white">@item</a>
-                        };
-                    }
-                </div>
-            }
-        </div>
+<div class="container">
 
-        <div class="flex p-2 justify-between text-sm bg-gray-200 shadow mb-3">
-            <div class="post-info">
-                <span class="mr-2">
-                    <i class="fas fa-clock"></i>
-                    @Model.PageData.ModifiedDate
-                </span>
-                <span>
-                    <i class="fa fa-eye"></i> @(Model.PageData.View.ToString("N0"))
-                </span>
-            </div>
-            <button type="button" data-toggle="modal" data-target="report-modal"><i class="fa fa-flag"></i></button>
-        </div>
-
-        @if (Model.Attachments.Count > 0)
-        {
-            <div class="title">Tệp tin đính kèm</div>
-            <div class="p-2 shadow mb-3">
-                @foreach (var item in Model.Attachments)
+    <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
+    <div class="md:flex">
+        <div class="md:w-8/12 md:mr-1">
+            <h1 class="p-2 bg-gray-800 text-white font-bold rounded-t">
+                @Model.PageData.Title
+            </h1>
+            <div class="p-2 shadow overflow-auto">
+                @if (!string.IsNullOrWhiteSpace(Model.PageData.Description))
                 {
-                    if (item.Extension == ".pdf")
+                    <div class="font-bold mb-3">
+                        @Html.Raw(Model.PageData.Description)
+                    </div>
+                }
+                <div class="mb-3 ql-editor">
+                    @Html.Raw(Model.PageData.Content)
+                </div>
+                @if (!string.IsNullOrEmpty(Model.PageData.Tags))
+                {
+                    <div class="mb-2">
+                        <i class="fas fa-tag mr-2"></i>
+                        @{
+                            var listTag = Model.PageData.Tags.Split(",");
+                            foreach (var item in listTag)
+                            {
+                                <a href="/post/tag?name=@item" class="px-4 py-1 rounded-full bg-gray-800 hover:bg-gray-900 text-white mr-2 text-sm hover:text-white">@item</a>
+                            };
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="flex p-2 justify-between text-sm bg-gray-200 shadow mb-3">
+                <div class="post-info">
+                    <span class="mr-2">
+                        <i class="fas fa-clock"></i>
+                        @Model.PageData.ModifiedDate
+                    </span>
+                    <span>
+                        <i class="fa fa-eye"></i> @(Model.PageData.View.ToString("N0"))
+                    </span>
+                </div>
+                <button type="button" data-toggle="modal" data-target="report-modal"><i class="fa fa-flag"></i></button>
+            </div>
+
+            @if (Model.Attachments.Count > 0)
+            {
+                <div class="title">Tệp tin đính kèm</div>
+                <div class="p-2 shadow mb-3">
+                    @foreach (var item in Model.Attachments)
                     {
-                        <embed src="/files/@($"{item.Id}{item.Extension}")" style="width: 100%; height: 800px" type="application/pdf">
+                        if (item.Extension == ".pdf")
+                        {
+                            <embed src="/files/@($"{item.Id}{item.Extension}")" style="width: 100%; height: 800px" type="application/pdf">
+                        }
+                        else
+                        {
+                            <div class="py-2">
+                                <i class="fas fa-file mr-1"></i>
+                                <a href="/files/@($"{item.Id}{item.Extension}")">@item.Name</a>
+                            </div>
+                        }
                     }
-                    else
+                </div>
+            }
+
+            <div class="px-4 py-2 bg-gray-800 text-white font-bold rounded-t"><i class="fas fa-comment mr-2 text-sm"></i>Bình luận</div>
+            <div class="mb-3">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="px-4 py-2 bg-gray-100 mb-3">
+                        <textarea class="p-4 w-full border mb-2 bg-white" id="txtCommentContent"></textarea>
+                        <button class="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded" type="button" onclick="addComment()">Gửi bình luận</button>
+                    </div>
+                    <script>
+                        async function addComment() {
+                            const rawResponse = await fetch('/api/comment/add', {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ content: document.getElementById('txtCommentContent').value, postId: @Model.PageData.Id })
+                            });
+                            const content = await rawResponse.json();
+                            if (content.succeeded) {
+                                location.reload();
+                            } else {
+                                console.log(content)
+                            }
+                        }
+                    </script>
+                }
+                else
+                {
+                    <div class="bg-gray-100 mb-2 px-4 py-2">
+                        <a class="mr-1" href="/Identity/Account/Login?returnUrl=@Model.Url" )">Đăng ký / Đăng nhập</a><span>để gửi bình luận</span>
+                    </div>
+                }
+                @if (Model.ListComment.Count() > 0)
+                {
+                    foreach (var item in Model.ListComment)
                     {
-                        <div class="py-2">
-                            <i class="fas fa-file mr-1"></i>
-                            <a href="/files/@($"{item.Id}{item.Extension}")">@item.Name</a>
+                        <div class="px-4 py-2 bg-gray-100 flex items-center justify-between border-t border-l border-r">
+                            <div class="font-bold"><i class="fas fa-user text-sm mr-2"></i>@item.UserName</div>
+                            <div class="text-gray-700"><i class="fas fa-calendar text-sm mr-1"></i> @item.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
+                        </div>
+                        <div class="px-4 py-2 border-b border-l border-r">
+                            @item.Content
                         </div>
                     }
                 }
+                else
+                {
+                    <div class="mt-1 border text-center p-2 text-sm">Chưa có bình luận. Hãy là người đầu tiên</div>
+                }
             </div>
-        }
 
-        <div class="px-4 py-2 bg-gray-800 text-white font-bold rounded-t"><i class="fas fa-comment mr-2 text-sm"></i>Bình luận</div>
-        <div class="mb-3">
-            @if (SignInManager.IsSignedIn(User))
+
+            @if (Model.RelatedPosts != null)
             {
-                <div class="px-4 py-2 bg-gray-100 mb-3">
-                    <textarea class="p-4 w-full border mb-2 bg-white" id="txtCommentContent"></textarea>
-                    <button class="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded" type="button" onclick="addComment()">Gửi bình luận</button>
-                </div>
-                <script>
-                    async function addComment() {
-                        const rawResponse = await fetch('/api/comment/add', {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ content: document.getElementById('txtCommentContent').value, postId: @Model.PageData.Id })
-                        });
-                        const content = await rawResponse.json();
-                        if (content.succeeded) {
-                            location.reload();
-                        } else {
-                            console.log(content)
-                        }
+                <div class="related mb-4">
+                    <h1 class="p-2 bg-gray-800 text-white font-bold rounded-t">
+                        Bài viết liên quan
+                    </h1>
+                    @foreach (var item in Model.RelatedPosts)
+                    {
+                        <div class="px-2 py-1 border-b border-r border-l">
+                            <i class="fab fa-staylinked mr-1 me-1"></i>
+                            <a href="/post/@item.Url">@item.Title</a> <i class="text-muted text-sm">(@item.ModifiedDate.ToString("dd/MM/yyyy hh:mm"))</i>
+                        </div>
                     }
-                </script>
-            }
-            else
-            {
-                <div class="bg-gray-100 mb-2 px-4 py-2">
-                    <a class="mr-1" href="/Identity/Account/Login?returnUrl=@Model.Url" )">Đăng ký / Đăng nhập</a><span>để gửi bình luận</span>
                 </div>
             }
-            @if (Model.ListComment.Count() > 0)
-            {
-                foreach (var item in Model.ListComment)
-                {
-                    <div class="px-4 py-2 bg-gray-100 flex items-center justify-between border-t border-l border-r">
-                        <div class="font-bold"><i class="fas fa-user text-sm mr-2"></i>@item.UserName</div>
-                        <div class="text-gray-700"><i class="fas fa-calendar text-sm mr-1"></i> @item.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
-                    </div>
-                    <div class="px-4 py-2 border-b border-l border-r">
-                        @item.Content
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="mt-1 border text-center p-2 text-sm">Chưa có bình luận. Hãy là người đầu tiên</div>
-            }
         </div>
-
-
-        @if (Model.RelatedPosts != null)
-        {
-            <div class="related mb-4">
-                <h1 class="p-2 bg-gray-800 text-white font-bold rounded-t">
-                    Bài viết liên quan
-                </h1>
-                @foreach (var item in Model.RelatedPosts)
-                {
-                    <div class="px-2 py-1 border-b border-r border-l">
-                        <i class="fab fa-staylinked mr-1 me-1"></i>
-                        <a href="/post/@item.Url">@item.Title</a> <i class="text-muted text-sm">(@item.ModifiedDate.ToString("dd/MM/yyyy hh:mm"))</i>
-                    </div>
-                }
-            </div>
-        }
-    </div>
-    <div class="md:w-4/12 md:ml-1">
-        <div class="mb-4">
-            <partial name="/Views/Shared/_RandomPost.cshtml" model="Model.RandomPosts" />
-        </div>
-    </div>
-</div>
-
-<div class="fixed z-10 inset-0 overflow-y-auto hidden" id="report-modal">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
-        </div>
-
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="flex items-center mb-3">
-                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-red-100 sm:mx-0">
-                        <svg class="h-5 w-5 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            Góp ý - Báo lỗi
-                        </h3>
-                    </div>
-                </div>
-                <textarea placeholder="Nhập nội dung..." class="border w-full p-3" id="report-message"></textarea>
-            </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" onclick="sendReport()">
-                    Gửi
-                </button>
-                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" data-target="report-modal" data-toggle="modal">
-                    Hủy
-                </button>
+        <div class="md:w-4/12 md:ml-1">
+            <div class="mb-4">
+                <partial name="/Views/Shared/_RandomPost.cshtml" model="Model.RandomPosts" />
             </div>
         </div>
     </div>
-</div>
 
-<div class="fixed z-10 inset-0 overflow-y-auto hidden" id="report-thank">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
-        </div>
-
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="flex justify-center mb-3">
-                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0">
-                        <i class="fas fa-check text-green-600 fa-2x"></i>
-                    </div>
-                </div>
-                <div class="p-3 text-center">
-                    <div class="mb-3 font-bold text-xl">
-                        Gửi tin nhắn thành công
-                    </div>
-                    <div class="text-gray-700">
-                        Cám ơn bạn đã gửi tin nhắn cho chúng tôi. Hi vọng bạn sẽ có những trải nghiệm tuyệt vời hơn trên <span class="text-gray-700">DefZone</span>
-                    </div>
-                </div>
+    <div class="fixed z-10 inset-0 overflow-y-auto hidden" id="report-modal">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" data-target="report-thank" data-toggle="modal">
-                    Đóng
-                </button>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="flex items-center mb-3">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-red-100 sm:mx-0">
+                            <svg class="h-5 w-5 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                Góp ý - Báo lỗi
+                            </h3>
+                        </div>
+                    </div>
+                    <textarea placeholder="Nhập nội dung..." class="border w-full p-3" id="report-message"></textarea>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" onclick="sendReport()">
+                        Gửi
+                    </button>
+                    <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" data-target="report-modal" data-toggle="modal">
+                        Hủy
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
+    <div class="fixed z-10 inset-0 overflow-y-auto hidden" id="report-thank">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="flex justify-center mb-3">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0">
+                            <i class="fas fa-check text-green-600 fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <div class="mb-3 font-bold text-xl">
+                            Gửi tin nhắn thành công
+                        </div>
+                        <div class="text-gray-700">
+                            Cám ơn bạn đã gửi tin nhắn cho chúng tôi. Hi vọng bạn sẽ có những trải nghiệm tuyệt vời hơn trên <span class="text-gray-700">DefZone</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" data-target="report-thank" data-toggle="modal">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @{

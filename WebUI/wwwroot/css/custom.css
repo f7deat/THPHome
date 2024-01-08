@@ -21,12 +21,15 @@ a {
 input:focus {
     outline: none;
 }
+
 .table table {
     width: 100%;
 }
-.table table td {
-    border-width: 1px;
-}
+
+    .table table td {
+        border-width: 1px;
+    }
+
 .main-menu {
     background-color: var(--dark);
 }
@@ -185,11 +188,6 @@ input:focus {
         transition-duration: 500ms;
     }
 
-.counter-wrapper {
-    background-color: var(--red);
-    color: white;
-}
-
 .navbar {
     padding: 0;
 }
@@ -244,9 +242,41 @@ li.dropdown:hover .dropdown-menu {
     border-color: var(--red);
 }
 
-.list-group-item.active a {
+    .list-group-item.active a {
+        color: white;
+    }
+
+.statistics {
+    background: linear-gradient(0deg, rgb(51 91 160 / 95%), rgb(51 91 160 / 95%)), url(imgs/bg-statistics.png);
+    min-height: 220px;
+    background-size: cover;
+    position: relative;
+    padding: 3rem 0;
     color: white;
 }
+
+    .statistics .grid {
+        gap: 1rem;
+    }
+
+    .statistics .flex {
+        justify-content: center;
+        align-content: center;
+    }
+
+        .statistics .flex:last-child {
+            border-right: 0;
+        }
+
+    .statistics .head {
+        font-size: 48px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .statistics .des {
+        text-align: center;
+    }
 
 @media screen and (min-width: 768px) {
     .carousel-item img {
@@ -256,6 +286,10 @@ li.dropdown:hover .dropdown-menu {
     .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
         display: flex !important;
         left: -56px !important;
+    }
+
+    .statistics .flex {
+        border-right: 4px solid #fff;
     }
 }
 

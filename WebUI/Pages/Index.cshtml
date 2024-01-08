@@ -9,174 +9,191 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/tiny-slider.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
 
-<div class="row" data-aos="fade-up">
-    <div class="col-md-8 mb-4">
-        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            <div class="carousel-inner">
-                @foreach (var item in Model.Slides)
-                {
-                    <div class="carousel-item @(i == 0 ? "active" : "")">
-                        <img src="@item.Image" class="d-block w-100" alt="...">
-                    </div>
-                    @(i++)
-                }
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-    </div>
-    <div class="col-md-4 mb-4">
-        <div class="title">
-            <localize key="operator" />
-        </div>
-        <div class="row g-2">
-            @foreach (var item in Model.BoxMenu)
-            {
-                <div class="col-4">
-                    <a href="@item.Url" target="_blank">
-                        <div class="box">
-                            <div class="icon">
-                                @Html.Raw(item.Icon)
-                            </div>
-                            <div class="name text-truncate" data-bs-toggle="tooltip" title="@item.Name">@item.Name</div>
-                        </div>
-                    </a>
+<div class="container">
+    <div class="row" data-aos="fade-up">
+        <div class="col-md-8 mb-4">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
-            }
-        </div>
-    </div>
-</div>
-
-<div class="row" data-aos="fade-up">
-
-    <div class="col-md-8">
-        <div class="title mb-1" style="text-transform: uppercase">
-            <localize key="news_and_events" />
-        </div>
-        <partial name="/Views/Post/_PostsNoPaging.cshtml" model="@Model.ListNews.Take(3)" />
-        <div class="related mb-4 border-t">
-            @foreach (var item in Model.ListNews.Skip(3))
-            {
-                <div class="px-2 py-1 border-b border-r border-l">
-                    <i class="fab fa-staylinked mr-1 me-1"></i>
-                    <a href="@item.Url">@item.Title</a> <i class="text-muted text-sm">(@item.ModifiedDate.ToString("dd/MM/yyyy hh:mm"))</i>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="col-md-4 mb-4">
-        <partial name="/Views/Shared/_RandomPost.cshtml" model="Model.ListNotification" />
-    </div>
-
-</div>
-
-<div class="row g-2">
-    @foreach (var item in Model.GroupCategories)
-    {
-        <div class="col-md-4 mb-4" data-aos="fade-up">
-            <div class="title"><a href="/category/details/@item.Id" class="text-white"><span class="mr-2">@Html.Raw(@item.Icon)</span> @item.Name</a></div>
-            <div class="category-box">
-                <div class="list-group">
-                    @foreach (var cat in item.Childs)
+                <div class="carousel-inner">
+                    @foreach (var item in Model.Slides)
                     {
-                        <a href="/category/details/@cat.Id" class="list-group-item list-group-item-action"><i class="fas fa-caret-right mr-2"></i>@cat.Name</a>
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@item.Image" class="d-block w-100" alt="...">
+                        </div>
+                        @(i++)
                     }
                 </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
         </div>
-    }
-</div>
-
-<div class="row counter-wrapper mb-4 shadow" data-aos="fade-up">
-    <div class="col-md-3">
-        <div class="p-4 md:p-10 text-center">
-            <div class="text-lg font-bold">
-                <span class="counter" data-count="14000">0</span>+ <localize key="students" />
+        <div class="col-md-4 mb-4">
+            <div class="title">
+                <localize key="operator" />
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="p-4 md:p-10 text-center">
-            <div class="text-lg font-bold">
-                <span class="counter" data-count="97">0</span>% <localize key="students_have_jobs" />
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="p-4 md:p-10 text-center">
-            <div class="text-lg font-bold">
-                <span class="counter" data-count="43">0</span> <localize key="formal_training" />
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="p-4 md:p-10 text-center">
-            <div class="text-lg font-bold">
-                <span class="counter" data-count="5">0</span> <localize key="foreign_affiliate_program" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="media" data-aos="fade-up">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
-                <localize key="playlist" />
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
-                <localize key="gallery" />
-            </button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div class="row">
-                <div class="col-md-8 mb-4">
-                    <iframe style="width: 100%; height: 100%" src="https://www.youtube.com/embed/@Model.Videos.FirstOrDefault()?.Url" poster="https://img.youtube.com/vi/@Model.Videos.FirstOrDefault()?.Url/0.jpg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="frame-play"></iframe>
-                </div>
-                <div class="col-md-4 mb-4">
-                    @foreach (var item in Model.Videos)
-                    {
-                        <div class="flex items-center">
-                            <div class="bg-dark" style="width: 100px">
-                                <img src="https://img.youtube.com/vi/@item.Url/0.jpg" alt="IMG" style="width: 100px; height: 70px; object-fit: cover" class="transition duration-700 hover:opacity-75" onclick="playVideo('@item.Url')" />
-                            </div>
-                            <div class="p-2" onclick="playVideo('@item.Url')" style="width: calc(100% - 100px);">
-                                <div class="font-bold hover:text-blue-500 cursor-pointer">@item.Name</div>
-                                <div class="text-muted text-sm">@item.CreatedDate</div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             <div class="row g-2">
-                @foreach (var item in Model.Albums)
+                @foreach (var item in Model.BoxMenu)
                 {
-                    <div class="col-6 col-md-3 mb-4">
-                        <div class="bg-dark">
-                            <a href="@item.Image" class="image-popup">
-                                <img src="@item.Image" alt="IMG" class="transition duration-700 hover:opacity-75 w-full md:h-80 h-32" style="object-fit: cover;" />
-                            </a>
-                        </div>
+                    <div class="col-4">
+                        <a href="@item.Url" target="_blank">
+                            <div class="box">
+                                <div class="icon">
+                                    @Html.Raw(item.Icon)
+                                </div>
+                                <div class="name text-truncate" data-bs-toggle="tooltip" title="@item.Name">@item.Name</div>
+                            </div>
+                        </a>
                     </div>
                 }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row" data-aos="fade-up">
+
+        <div class="col-md-8">
+            <div class="title mb-1" style="text-transform: uppercase">
+                <localize key="news_and_events" />
+            </div>
+            <partial name="/Views/Post/_PostsNoPaging.cshtml" model="@Model.ListNews.Take(3)" />
+            <div class="related mb-4 border-t">
+                @foreach (var item in Model.ListNews.Skip(3))
+                {
+                    <div class="px-2 py-1 border-b border-r border-l">
+                        <i class="fab fa-staylinked mr-1 me-1"></i>
+                        <a href="@item.Url">@item.Title</a> <i class="text-muted text-sm">(@item.ModifiedDate.ToString("dd/MM/yyyy hh:mm"))</i>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <partial name="/Views/Shared/_RandomPost.cshtml" model="Model.ListNotification" />
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container">
+    <div class="row g-2">
+        @foreach (var item in Model.GroupCategories)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="title"><a href="/category/details/@item.Id" class="text-white"><span class="mr-2">@Html.Raw(@item.Icon)</span> @item.Name</a></div>
+                <div class="category-box">
+                    <div class="list-group">
+                        @foreach (var cat in item.Childs)
+                        {
+                            <a href="/category/details/@cat.Id" class="list-group-item list-group-item-action"><i class="fas fa-caret-right mr-2"></i>@cat.Name</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+<div class="row mb-4 statistics">
+    <div class="grid md:grid-cols-4 grid-cols-2 counter-wrapper">
+        <div class="flex flex-col">
+            <div class="head">
+                <span class="counter" data-count="270">0</span>K+
+            </div>
+            <div class="des" data-aos="fade-up">
+                <localize key="students" />
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <div class="head">
+                <span class="counter" data-count="97">0</span>%
+            </div>
+            <div class="des" data-aos="fade-up">
+                <localize key="students_have_jobs" />
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <div class="head">
+                <span class="counter" data-count="500">0</span>+
+            </div>
+            <div class="des" data-aos="fade-up">
+                <localize key="formal_training" />
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <div class="head">
+                <span class="counter" data-count="100">0</span>+
+            </div>
+            <div class="des" data-aos="fade-up">
+                <localize key="foreign_affiliate_program" />
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="container">
+    <div class="media">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                    <localize key="playlist" />
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                    <localize key="gallery" />
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="row">
+                    <div class="col-md-8 mb-4">
+                        <iframe style="width: 100%; height: 100%" src="https://www.youtube.com/embed/@Model.Videos.FirstOrDefault()?.Url" poster="https://img.youtube.com/vi/@Model.Videos.FirstOrDefault()?.Url/0.jpg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="frame-play"></iframe>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        @foreach (var item in Model.Videos)
+                        {
+                            <div class="flex items-center">
+                                <div class="bg-dark" style="width: 100px">
+                                    <img src="https://img.youtube.com/vi/@item.Url/0.jpg" alt="IMG" style="width: 100px; height: 70px; object-fit: cover" class="transition duration-700 hover:opacity-75" onclick="playVideo('@item.Url')" />
+                                </div>
+                                <div class="p-2" onclick="playVideo('@item.Url')" style="width: calc(100% - 100px);">
+                                    <div class="font-bold hover:text-blue-500 cursor-pointer">@item.Name</div>
+                                    <div class="text-muted text-sm">@item.CreatedDate</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="row g-2">
+                    @foreach (var item in Model.Albums)
+                    {
+                        <div class="col-6 col-md-3 mb-4">
+                            <div class="bg-dark">
+                                <a href="@item.Image" class="image-popup">
+                                    <img src="@item.Image" alt="IMG" class="transition duration-700 hover:opacity-75 w-full md:h-80 h-32" style="object-fit: cover;" />
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>

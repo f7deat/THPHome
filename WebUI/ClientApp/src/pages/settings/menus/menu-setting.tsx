@@ -17,18 +17,15 @@ const MenuSetting = () => {
     const [menus, setMenus] = useState<any>([])
     const [visible, setVisible] = useState(false)
     const [fields, setFields] = useState<any>([]);
-    const [parrentCategories, setParrentCategories] = useState<any>([])
-    const [currentType, setCurrentType] = useState<string>('1')
+    const [currentType, setCurrentType] = useState<string>('1');
+    const [parents, setParents] = useState<any[]>([]);
 
     const [form] = Form.useForm();
 
     useEffect(() => {
-        fetchData()
+        fetchData();
+        getParrentCategories(currentType)
     }, [currentType])
-
-    useEffect(() => {
-        getParrentCategories('');
-    }, [])
 
     const fetchData = () => {
         axios.get(`/api/menu/get-list?type=${currentType}`).then(response => {
@@ -37,8 +34,8 @@ const MenuSetting = () => {
     }
 
     const getParrentCategories = (type: string) => {
-        axios.get(`/api/menu/parrent-list?type=${type}`).then(response => {
-            setParrentCategories(response.data)
+        axios.get(`/api/menu/parent-options?type=${type}`).then(response => {
+            setParents(response.data)
         })
     }
 
@@ -127,7 +124,6 @@ const MenuSetting = () => {
 
     const onFinish = (values: any) => {
         let url = '';
-        values.index = Number(values.index)
         values.type = Number(values.type)
         if (values.id) {
             url = `/api/menu/update`;
@@ -142,6 +138,7 @@ const MenuSetting = () => {
             }
             setVisible(false);
             fetchData();
+            getParrentCategories(currentType)
         })
     };
 
@@ -239,13 +236,7 @@ const MenuSetting = () => {
                     </Form.Item>
 
                     <Form.Item label="Danh mục cha" name="parrentId">
-                        <Select>
-                            {
-                                parrentCategories?.map((category: any) => (
-                                    <Option value={category.id} key={category.id}>{category.name}</Option>
-                                ))
-                            }
-                        </Select>
+                        <Select options={parents} showSearch allowClear />
                     </Form.Item>
 
                     <Form.Item label="Thứ tự" name="index">

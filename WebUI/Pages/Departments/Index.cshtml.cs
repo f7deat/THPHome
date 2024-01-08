@@ -1,4 +1,5 @@
 using ApplicationCore.Entities;
+using ApplicationCore.Interfaces.IService;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,15 +9,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebUI.Foundations;
 
 namespace WebUI.Pages.Departments
 {
-    public class IndexModel : PageModel
+    public class IndexModel : EntryPageModel
     {
-        private readonly ApplicationDbContext _context;
-        public IndexModel(ApplicationDbContext context)
+        public IndexModel(ApplicationDbContext context, IPostService postService) : base(postService, context)
         {
-            _context = context;
         }
 
         public List<Department> Departments { get; set; }

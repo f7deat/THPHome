@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,11 @@ namespace WebUI.Api
     {
         private readonly IMenuService _menuService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _context;
 
-        public MenuController(IMenuService menuService, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public MenuController(IMenuService menuService, UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(context)
         {
             _menuService = menuService;
             _userManager = userManager;
-            _context = context;
         }
 
         [Route("get-list")]
@@ -29,6 +28,17 @@ namespace WebUI.Api
         {
             var lang = GetLanguage();
             return Ok(await _menuService.GetListAsync(lang, type));
+        }
+
+        [HttpGet("parent-options")]
+        public async Task<IActionResult> ParentOptionsAsync([FromQuery] MenuType type)
+        {
+            var lang = GetLanguage();
+            return Ok(await _context.Menus.Where(x => x.ParrentId == 0 && x.Type == type && x.Language == lang).Select(x => new
+            {
+                label = x.Name,
+                value = x.Id
+            }).ToListAsync());
         }
 
         [HttpPost("add")]

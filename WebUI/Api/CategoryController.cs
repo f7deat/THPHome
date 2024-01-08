@@ -18,7 +18,7 @@ namespace WebUI.Api
         private UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public CategoryController(ICategoryService categoryService, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public CategoryController(ICategoryService categoryService, UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(context)
         {
             _categoryService = categoryService;
             _userManager = userManager;

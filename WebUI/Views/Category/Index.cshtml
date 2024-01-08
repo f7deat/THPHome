@@ -8,30 +8,33 @@
         new Breadcrumb { Id = 2, Name = "Danh mục", Url = "/category", Icon ="fas fa-folder" }
     };
 }
-<partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
+<div class="container">
 
-<div class="md:flex md:flex-wrap md:-mx-1">
-    @foreach (var item in Model)
-    {
-        <div class="md:w-1/4 md:px-1 mb-4">
-            <div class="bg-gray-800 text-white relative">
-                @if (string.IsNullOrEmpty(item.Thumbnail))
-                {
-                    <img src="https://placehold.jp/1b1b28/1f1f29/350x200.png?text=No%20Image" class="w-full object-fit-cover h-48" alt="no image" />
-                }
-                else
-                {
-                    <img src="@item.Thumbnail" class="w-full object-fit-cover h-48" alt="@item.Name">
-                }
-                <div class="absolute p-4 top-0">
-                    <h5 class="font-bold">
-                        <a href="/category/details/@item.Id" class="text-white text-shadow hover:text-white">
-                            @item.Name
-                        </a>
-                    </h5>
-                    <p class="text-gray-400">@item.Description</p>
+    <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
+
+    <div class="md:flex md:flex-wrap md:-mx-1">
+        @foreach (var item in Model)
+        {
+            <div class="md:w-1/4 md:px-1 mb-4">
+                <div class="bg-gray-800 text-white relative">
+                    @if (string.IsNullOrEmpty(item.Thumbnail))
+                    {
+                        <img src="https://placehold.jp/1b1b28/1f1f29/350x200.png?text=No%20Image" class="w-full object-fit-cover h-48" alt="no image" />
+                    }
+                    else
+                    {
+                        <img src="@item.Thumbnail" class="w-full object-fit-cover h-48" alt="@item.Name">
+                    }
+                    <div class="absolute p-4 top-0">
+                        <h5 class="font-bold">
+                            <a href="/category/details/@item.Id" class="text-white text-shadow hover:text-white">
+                                @item.Name
+                            </a>
+                        </h5>
+                        <p class="text-gray-400">@item.Description</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
