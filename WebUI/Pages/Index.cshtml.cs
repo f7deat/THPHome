@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Models.Payload;
 using ApplicationCore.Models.Posts;
 using ApplicationCore.Services;
 using Infrastructure;
@@ -46,7 +47,11 @@ namespace WebUI.Pages
             // Tin tức nổi bật
             ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 8, PageData.Language);
 
-            BoxMenu = await _menuService.GetListAsync(PageData.Language, MenuType.BOX);
+            BoxMenu = await _menuService.GetListAsync(new ListMenuPayload
+            {
+                Language = PageData.Language,
+                Type = MenuType.TOP
+            });
             Partners = await _partnerService.GetListAsync(1);
             Videos = await _videoService.GetListAsync(5);
             Albums = await _bannerService.GetListAsync(BannerType.PHOTO, 4);

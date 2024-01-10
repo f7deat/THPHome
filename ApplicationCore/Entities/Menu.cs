@@ -18,6 +18,13 @@ namespace ApplicationCore.Entities
         [StringLength(250)]
         public string Icon { get; set; }
         public Language Language { get; set; }
+        public string Mode { get; set; }
+    }
+
+    public class MenuMode
+    {
+        public const string Flyout = "Flyout";
+        public const string Mega = "Mega";
     }
 
     public enum MenuType

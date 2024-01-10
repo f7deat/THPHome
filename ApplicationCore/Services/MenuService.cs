@@ -2,6 +2,8 @@
 using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Models.Payload;
+using ApplicationCore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -39,7 +41,7 @@ namespace ApplicationCore.Services
             };
         }
 
-        public Task<IReadOnlyList<Menu>> GetListAsync(Language language, MenuType type = MenuType.DEFAULT) => _menuRepository.GetListAsync(language, type);
+        public Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload) => _menuRepository.GetListAsync(payload);
 
         public Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type) => _menuRepository.GetListParrentAsync(type);
 

@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Models.Payload;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,11 +24,11 @@ namespace WebUI.Api
             _userManager = userManager;
         }
 
-        [Route("get-list")]
-        public async Task<IActionResult> GetListAsync(MenuType type = MenuType.MAIN)
+        [HttpGet("list")]
+        public async Task<IActionResult> GetListAsync([FromQuery] ListMenuPayload payload)
         {
-            var lang = GetLanguage();
-            return Ok(await _menuService.GetListAsync(lang, type));
+            payload.Language = GetLanguage();
+            return Ok(await _menuService.GetListAsync(payload));
         }
 
         [HttpGet("parent-options")]
@@ -68,6 +69,7 @@ namespace WebUI.Api
             data.Index = menu.Index;
             data.Url = menu.Url;
             data.Type = menu.Type;
+            data.Mode = menu.Mode;
             return Ok(await _menuService.UpdateAsync(data));
         }
 

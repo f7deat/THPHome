@@ -1,4 +1,4 @@
-﻿import { Button, Drawer, Form, Input, InputNumber, message, Popconfirm, Select, Space, Table } from "antd"
+﻿import { Button, Col, Drawer, Form, Input, InputNumber, message, Popconfirm, Row, Select, Space, Table, Tabs, TabsProps } from "antd"
 import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Card from "antd/lib/card/Card";
 
 const { Option } = Select;
 
@@ -18,24 +19,17 @@ const MenuSetting = () => {
     const [visible, setVisible] = useState(false)
     const [fields, setFields] = useState<any>([]);
     const [currentType, setCurrentType] = useState<string>('1');
-    const [parents, setParents] = useState<any[]>([]);
+    const [menu, setMenu] = useState<any>();
 
     const [form] = Form.useForm();
 
     useEffect(() => {
         fetchData();
-        getParrentCategories(currentType)
-    }, [currentType])
+    }, [currentType, menu])
 
     const fetchData = () => {
-        axios.get(`/api/menu/get-list?type=${currentType}`).then(response => {
+        axios.get(`/api/menu/list?type=${currentType}&parentId=${menu?.id || ''}`).then(response => {
             setMenus(response.data)
-        })
-    }
-
-    const getParrentCategories = (type: string) => {
-        axios.get(`/api/menu/parent-options?type=${type}`).then(response => {
-            setParents(response.data)
         })
     }
 
@@ -107,16 +101,16 @@ const MenuSetting = () => {
             {
                 name: ['icon'],
                 value: record.icon
-            },
-            {
-                name: ['parrentId'],
-                value: record.parrentId
             }
         ])
         form.setFields([
             {
-                name: ['type'],
+                name: 'type',
                 value: record.type
+            },
+            {
+                name: 'mode',
+                value: record.mode
             }
         ])
         setVisible(true)
@@ -124,7 +118,8 @@ const MenuSetting = () => {
 
     const onFinish = (values: any) => {
         let url = '';
-        values.type = Number(values.type)
+        values.type = Number(currentType)
+        values.parrentId = menu?.id;
         if (values.id) {
             url = `/api/menu/update`;
         } else {
@@ -138,7 +133,6 @@ const MenuSetting = () => {
             }
             setVisible(false);
             fetchData();
-            getParrentCategories(currentType)
         })
     };
 
@@ -153,8 +147,9 @@ const MenuSetting = () => {
         },
         {
             title: 'Tên',
-            render: (record: any) => (
-                <a href={record.url} target="_blank">{record.name}</a>
+            dataIndex: 'name',
+            render: (dom: any, record: any) => (
+                <Button type="link" size="small" onClick={() => setMenu(record)}>{dom}</Button>
             )
         },
         {
@@ -175,21 +170,24 @@ const MenuSetting = () => {
         }
     ]
 
-    const handleChangeType = (value: string) => {
-        getParrentCategories(value)
-    }
+    const items: TabsProps['items'] = [
+        {
+            key: '1',
+            label: 'Top Menu'
+        },
+        {
+            key: '2',
+            label: 'Main Menu'
+        },
+        {
+            key: '3',
+            label: 'Box Menu'
+        },
+    ];
 
     return (
-        <div>
-            <div className="mb-3">
-                <Select onChange={filterType} defaultValue={currentType} className="mr-2">
-                    <Option value='0'>Default</Option>
-                    <Option value='1'>Top Menu</Option>
-                    <Option value='2'>Main Menu</Option>
-                    <Option value='3'>Box Menu</Option>
-                </Select>
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
-            </div>
+        <Card title={menu?.name || 'Menu'} extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>}>
+            <Tabs defaultActiveKey="1" items={items} onChange={filterType} />
             <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
 
             <Drawer
@@ -226,26 +224,26 @@ const MenuSetting = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="type" label="Loại" rules={[{ required: true }]}>
-                        <Select onChange={handleChangeType}>
-                            <Option value="0">Default</Option>
-                            <Option value="1">Top Menu</Option>
-                            <Option value="2">Main Menu</Option>
-                            <Option value="3">Box Menu</Option>
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item label="Danh mục cha" name="parrentId">
-                        <Select options={parents} showSearch allowClear />
-                    </Form.Item>
-
-                    <Form.Item label="Thứ tự" name="index">
-                        <InputNumber />
-                    </Form.Item>
-
-                    <Form.Item label="Icon" name="icon">
-                        <Input />
-                    </Form.Item>
+                    <Row gutter={16}>
+                        <Col span={8}>
+                            <Form.Item name="mode" label="Kiểu hiển thị">
+                                <Select>
+                                    <Option value="Flyout">Flyout</Option>
+                                    <Option value="Mega">Mega</Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="Thứ tự" name="index">
+                                <InputNumber style={{ width: '100%' }} />
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="Icon" name="icon">
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
                     <Form.Item>
                         <Space>
@@ -255,7 +253,7 @@ const MenuSetting = () => {
                     </Form.Item>
                 </Form>
             </Drawer>
-        </div>
+        </Card>
     )
 }
 

@@ -1,5 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
+using ApplicationCore.Models.Payload;
+using ApplicationCore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +11,7 @@ namespace ApplicationCore.Interfaces.IRepository
 {
     public interface IMenuRepository : IAsyncRepository<Menu>
     {
-        Task<IReadOnlyList<Menu>> GetListAsync(Language language, MenuType type);
+        Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload);
         Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type);
     }
 }

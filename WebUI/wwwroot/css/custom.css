@@ -207,14 +207,23 @@ input:focus {
         color: white;
     }
 
+.dropdown {
+    position: unset;
+}
 li.dropdown:hover .dropdown-menu {
     display: block !important;
+}
+
+.dropdown-mega li {
+    flex: 1;
 }
 
 .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
     display: none !important;
     justify-content: space-between;
     font-size: 0.875rem;
+    left: 0;
+    right: 0;
 }
 
 .dropdown-mega .header {
@@ -285,7 +294,7 @@ li.dropdown:hover .dropdown-menu {
 
     .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
         display: flex !important;
-        left: -56px !important;
+        position: absolute;
     }
 
     .statistics .flex {
@@ -294,19 +303,10 @@ li.dropdown:hover .dropdown-menu {
 }
 
 @media screen and (min-width: 1200px) {
-    .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
-        width: calc(100vw - 478px);
-    }
 
     .ql-editor .ql-video {
         width: 650px;
         margin: auto;
         height: 400px;
-    }
-}
-
-@media screen and (min-width: 1400px) {
-    .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
-        width: calc(100vw - 664px);
     }
 }

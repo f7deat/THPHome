@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Models.Payload;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,22 +43,19 @@ namespace WebUI.ViewComponents
                     view = "Top";
                     break;
                 case MenuType.MAIN:
-                    var model = new MainMenu
+                    return View("Main", await _menuService.GetListAsync(new ListMenuPayload
                     {
-                        Menus = await _menuService.GetListAsync(PageData.Language, type),
-                        Faculties = await _context.Departments.Where(x => x.Type == DepartmentType.Faculty).ToListAsync()
-                    };
-                    return View("Main", model);
+                        Language = PageData.Language,
+                        Type = type
+                    }));
                 default:
                     break;
             }
-            return View(view, await _menuService.GetListAsync(PageData.Language, type));
+            return View(view, await _menuService.GetListAsync(new ListMenuPayload
+            {
+                Language = PageData.Language,
+                Type = type
+            }));
         }
-    }
-
-    public class MainMenu
-    {
-        public IReadOnlyList<Menu> Menus { get; set; }
-        public IEnumerable<Department> Faculties { get; set; }
     }
 }

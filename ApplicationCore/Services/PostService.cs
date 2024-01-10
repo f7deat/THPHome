@@ -6,6 +6,7 @@ using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Filters;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

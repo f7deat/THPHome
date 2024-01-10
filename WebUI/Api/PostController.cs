@@ -8,15 +8,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using ApplicationCore.Helpers;
 using WebUI.Models.Api.Admin;
+using Infrastructure;
 
 namespace WebUI.Api
 {
-    [Route("api/[controller]"), Authorize]
-    public class PostController : Controller
+    public class PostController : BaseController
     {
         private readonly IPostService _postService;
         private readonly IPostCategoryService _postCategoryService;
@@ -24,7 +26,7 @@ namespace WebUI.Api
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IAttachmentService _attachmentService;
-        public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager)
+        public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager, ApplicationDbContext context) : base(context)
         {
             _postService = postService;
             _postCategoryService = postCategoryService;
@@ -73,9 +75,10 @@ namespace WebUI.Api
                     lang = Language.EN;
                 }
             }
+            var user = await _userManager.GetUserAsync(User);
             post.Post.Language = lang;
-            post.Post.CreatedBy = _userManager.GetUserId(User);
-            post.Post.ModifiedBy = _userManager.GetUserId(User);
+            post.Post.CreatedBy = user.Id;
+            post.Post.ModifiedBy = user.Id;
             if (string.IsNullOrWhiteSpace(post.Post.Thumbnail))
             {
                 post.Post.Thumbnail = "/files/fc7bef56-0a30-4f2e-a369-d4e0419344dd.png";
@@ -86,14 +89,28 @@ namespace WebUI.Api
                 await _postCategoryService.AddAsync(post.ListCategoryId, data.Id);
                 await _attachmentService.MapAsync(post.Attachments, data.Id);
             }
+            await Telegram.SendMessageAsync($"{user.UserName} added: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
             return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
         }
 
         [HttpPost("set-status")]
-        public async Task<IActionResult> SetStatusAsync(Post post) => Ok(await _postService.SetStatusAsync(post));
+        public async Task<IActionResult> SetStatusAsync(Post post)
+        {
+            var data = await _context.Posts.FindAsync(post.Id);
+            var user = await _userManager.GetUserAsync(User);
+            var text = post.Status == PostStatus.PUBLISH ? "publish" : "draft";
+            await Telegram.SendMessageAsync($"{user.UserName} {text}: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            return Ok(await _postService.SetStatusAsync(post));
+        }
 
         [HttpPost("remove/{id}")]
-        public async Task<IActionResult> RemoveAsync([FromRoute] long id) => Ok(await _postService.RemoveAsync(id));
+        public async Task<IActionResult> RemoveAsync([FromRoute] long id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            var user = await _userManager.GetUserAsync(User);
+            await Telegram.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
+            return Ok(await _postService.RemoveAsync(id));
+        }
 
         [Route("get/{id}")]
         public async Task<IActionResult> GetAsync([FromRoute] long id) => Ok(await _postService.FindAsync(id));
@@ -101,10 +118,11 @@ namespace WebUI.Api
         [HttpPost("update")]
         public async Task<IActionResult> UpdateAsync([FromBody]PostParam post)
         {
+            var user = await _userManager.GetUserAsync(User);
             await _postCategoryService.DeleteAsync(post.Post.Id);
             await _postCategoryService.AddAsync(post.ListCategoryId, post.Post.Id);
             await _attachmentService.MapAsync(post.Attachments, post.Post.Id);
-            post.Post.ModifiedBy = _userManager.GetUserId(User);
+            post.Post.ModifiedBy = user.Id;
             var data = await _postService.FindAsync(post.Post.Id);
             data.Description = post.Post.Description;
             data.Title = post.Post.Title;
@@ -112,6 +130,7 @@ namespace WebUI.Api
             data.Thumbnail = post.Post.Thumbnail;
             data.Type = post.Post.Type;
             data.ModifiedDate = post.Post.ModifiedDate;
+            await Telegram.SendMessageAsync($"{user.UserName} updated: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
             return Ok(await _postService.EditAsync(data));
         }
 
@@ -174,6 +193,9 @@ namespace WebUI.Api
         {
             if (User.IsInRole(RoleName.ADMIN))
             {
+                var user = await _userManager.GetUserAsync(User);
+                var data = await _context.Posts.FindAsync(id);
+                await Telegram.SendMessageAsync($"{user.UserName} publish: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
                 return Ok(await _postService.SetActiveAsync(id));
             }
             else
