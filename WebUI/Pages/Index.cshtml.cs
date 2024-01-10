@@ -50,7 +50,7 @@ namespace WebUI.Pages
             BoxMenu = await _menuService.GetListAsync(new ListMenuPayload
             {
                 Language = PageData.Language,
-                Type = MenuType.TOP
+                Type = MenuType.BOX
             });
             Partners = await _partnerService.GetListAsync(1);
             Videos = await _videoService.GetListAsync(5);
