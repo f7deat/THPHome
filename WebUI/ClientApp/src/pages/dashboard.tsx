@@ -8,6 +8,7 @@ import axios from "axios";
 
 export const Dashboard = () => {
     const [postCount, setPostCount] = useState(0);
+    const [fileCount, setFileCount] = useState(0);
     const [postView, setPostView] = useState(0);
     const [posts, setPosts] = useState<any>([]);
 
@@ -15,6 +16,7 @@ export const Dashboard = () => {
         axios.get('/api/post/get-total').then(response => setPostCount(response.data));
         axios.get('/api/post/get-view').then(response => setPostView(response.data));
         axios.get('/api/post/get-list-popular').then(response => setPosts(response.data));
+        axios.get('/api/file/total').then(response => setFileCount(response.data));
     }, [])
 
     return (
@@ -31,7 +33,17 @@ export const Dashboard = () => {
                             Số bài viết: {postCount}
                         </div>
                     </div>
-                    <div className="bg-white rounded">
+                    <div className="bg-white rounded" style={{ marginBottom: 23 }}>
+                        <Statistic
+                            title="Tệp tin"
+                            value={fileCount}
+                            className="p-4"
+                        />
+                        <div className="border-t px-4 py-2">
+                            Đang chờ: 0
+                        </div>
+                    </div>
+                    <div className="bg-white rounded" style={{ marginBottom: 23 }}>
                         <Statistic
                             title="Bình luận"
                             value={0}

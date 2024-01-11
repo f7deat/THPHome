@@ -28,14 +28,13 @@ const MenuSetting = () => {
     }, [currentType, menu])
 
     const fetchData = () => {
-        axios.get(`/api/menu/list?type=${currentType}&parentId=${menu?.id || ''}`).then(response => {
+        axios.get(`/api/menu/list?type=${currentType}`).then(response => {
             setMenus(response.data)
         })
     }
 
     const filterType = (value: string) => {
         setCurrentType(value)
-        fetchData()
     }
 
     function handleAdd() {
@@ -143,7 +142,8 @@ const MenuSetting = () => {
         },
         {
             title: 'Thứ tự',
-            dataIndex: "index"
+            dataIndex: "index",
+            width: 100
         },
         {
             title: 'Tên',
@@ -153,9 +153,21 @@ const MenuSetting = () => {
             )
         },
         {
+            title: 'Kiểu hiển thị',
+            dataIndex: 'mode'
+        },
+        {
+            title: 'Liên kết',
+            dataIndex: 'url'
+        },
+        {
             title: 'Tác vụ',
             render: (record: any) => (
                 <Space>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => {
+                        setMenu(record);
+                        setVisible(true);
+                    } }></Button>
                     <Button icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
@@ -166,7 +178,8 @@ const MenuSetting = () => {
                         <Button type="primary" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
                 </Space>
-            )
+            ),
+            width: 200
         }
     ]
 
@@ -186,9 +199,9 @@ const MenuSetting = () => {
     ];
 
     return (
-        <Card title={menu?.name || 'Menu'} extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>}>
-            <Tabs defaultActiveKey="1" items={items} onChange={filterType} />
-            <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
+        <Card title='Menu' extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>}>
+            <Tabs defaultActiveKey="1" items={items} onChange={filterType} type="card" />
+            <Table dataSource={menus} columns={columns} rowKey="id" />
 
             <Drawer
                 title="Cài đặt"

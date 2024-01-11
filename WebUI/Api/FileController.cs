@@ -1,8 +1,10 @@
 ﻿using ApplicationCore.Models.Files;
+using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,11 +13,10 @@ using System.Threading.Tasks;
 
 namespace WebUI.Api
 {
-    [Authorize, Route("api/[controller]")]
-    public class FileController : Controller
+    public class FileController : BaseController
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public FileController(IWebHostEnvironment webHostEnvironment)
+        public FileController(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context) : base (context)
         {
             _webHostEnvironment = webHostEnvironment;
         }
@@ -111,5 +112,11 @@ namespace WebUI.Api
 
         [HttpGet("custom-css")]
         public IActionResult GetCustomCss() => Ok(System.IO.File.ReadAllText(Path.Combine(_webHostEnvironment.WebRootPath, "css", "style.css")));
+
+        [HttpGet("total")]
+        public async Task<IActionResult> TotalAsync()
+        {
+            return Ok(await _context.Attachments.CountAsync());
+        }
     }
 }

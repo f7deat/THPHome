@@ -1,4 +1,4 @@
-﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Upload, UploadProps } from 'antd'
+﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Spin, Upload, UploadProps } from 'antd'
 import axios from 'axios'
 import {
     UploadOutlined,
@@ -26,6 +26,7 @@ const PostSetting = () => {
     const [listCategory, setListCategory] = useState<any>()
     const [listCategoryId, setListCategoryId] = useState<any>([])
     const [defaultFileList, setDefaultFileList] = useState<any>([])
+    const [loading, setLoading] = useState<boolean>();
 
     const initCallback = useCallback(() => {
         if (id) {
@@ -86,6 +87,7 @@ const PostSetting = () => {
             } else {
                 message.error('ERROR');
             }
+            setLoading(false);
         })
     }
 
@@ -105,6 +107,7 @@ const PostSetting = () => {
             } else {
                 message.error('ERROR');
             }
+            setLoading(false);
         })
     }
 
@@ -161,6 +164,7 @@ const PostSetting = () => {
         post.content = values.content;
         post.type = values.type;
         post.title = values.title;
+        setLoading(true);
         if (id) {
             handleEdit()
         } else {
@@ -188,7 +192,7 @@ const PostSetting = () => {
                             <MyEditor name="content" />
                         </Form.Item>
                         <Space>
-                            <Button type="primary" htmlType="submit">Lưu lại</Button>
+                            <Button type="primary" htmlType="submit" loading={loading}>Lưu lại</Button>
                             <Button onClick={() => history.push('/admin/post/list')}>Hủy</Button>
                         </Space>
                     </Col>

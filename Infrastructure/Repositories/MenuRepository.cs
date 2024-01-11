@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
             foreach (var item in menus)
             {
-                item.Childs = await GetListAsync(new ListMenuPayload
+                item.Children = await GetListAsync(new ListMenuPayload
                 {
                     Language = item.Language,
                     Type = item.Type,

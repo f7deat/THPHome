@@ -18,7 +18,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-mega">
                     @{
-                        foreach (var mega1 in item.Childs)
+                        foreach (var mega1 in item.Children)
                         {
                             <li>
                                 <a class="header" href="@mega1.Url">
@@ -26,7 +26,7 @@
                                 </a>
                                 @{
                                     <ul class="mega-stack">
-                                        @foreach (var mega2 in mega1.Childs)
+                                        @foreach (var mega2 in mega1.Children)
                                         {
                                             <li>
                                                 <a href="@mega2.Url">
@@ -46,12 +46,12 @@
         }
         if (item.Mode != MenuMode.Mega)
         {
-            if (item.Childs.Count() > 0)
+            if (item.Children.Count() > 0)
             {
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">@item.Name</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        @foreach (var child in item.Childs)
+                        @foreach (var child in item.Children)
                         {
                             <li><a class="dropdown-item" href="@child.Url">@child.Name</a></li>
                         }

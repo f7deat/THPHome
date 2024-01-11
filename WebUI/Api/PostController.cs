@@ -89,7 +89,7 @@ namespace WebUI.Api
                 await _postCategoryService.AddAsync(post.ListCategoryId, data.Id);
                 await _attachmentService.MapAsync(post.Attachments, data.Id);
             }
-            await Telegram.SendMessageAsync($"{user.UserName} added: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            _ = Telegram.SendMessageAsync($"{user.UserName} added: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
             return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
         }
 
@@ -99,7 +99,7 @@ namespace WebUI.Api
             var data = await _context.Posts.FindAsync(post.Id);
             var user = await _userManager.GetUserAsync(User);
             var text = post.Status == PostStatus.PUBLISH ? "publish" : "draft";
-            await Telegram.SendMessageAsync($"{user.UserName} {text}: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            _ = Telegram.SendMessageAsync($"{user.UserName} {text}: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
             return Ok(await _postService.SetStatusAsync(post));
         }
 
@@ -108,7 +108,7 @@ namespace WebUI.Api
         {
             var post = await _context.Posts.FindAsync(id);
             var user = await _userManager.GetUserAsync(User);
-            await Telegram.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
+            _ = Telegram.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
             return Ok(await _postService.RemoveAsync(id));
         }
 
@@ -130,7 +130,7 @@ namespace WebUI.Api
             data.Thumbnail = post.Post.Thumbnail;
             data.Type = post.Post.Type;
             data.ModifiedDate = post.Post.ModifiedDate;
-            await Telegram.SendMessageAsync($"{user.UserName} updated: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            _ = Telegram.SendMessageAsync($"{user.UserName} updated: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
             return Ok(await _postService.EditAsync(data));
         }
 
