@@ -163,7 +163,7 @@
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <div class="row">
                     <div class="col-md-8 mb-4">
-                        <iframe style="width: 100%; height: 100%" src="https://www.youtube.com/embed/@Model.Videos.FirstOrDefault()?.Url" poster="https://img.youtube.com/vi/@Model.Videos.FirstOrDefault()?.Url/0.jpg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="frame-play"></iframe>
+                        <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="https://www.youtube.com/embed/@Model.Videos.FirstOrDefault()?.Url"></div>
                     </div>
                     <div class="col-md-4 mb-4">
                         @foreach (var item in Model.Videos)
@@ -242,5 +242,20 @@
                 }
             });
         });
+        const player = new Plyr('#player');
+        function playVideo(url) {
+            player.source = {
+                type: 'video',
+                title: 'Example title',
+                sources: [
+                    {
+                        src: url,
+                        provider: 'youtube'
+                    }
+                ]
+            };
+
+            player.play();
+        }
     </script>
 }

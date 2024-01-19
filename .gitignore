@@ -361,3 +361,5 @@ MigrationBackup/
 /Infrastructure/Migrations
 /WebUI/ClientApp/yarn.lock
 /WebUI/wwwroot/img
+/Portal/pnpm-lock.yaml
+/WebUI/appsettings.Development.json

@@ -4,38 +4,13 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<UserSecretsId>aspnet-WebUI-B99D5605-2D89-49BA-A32A-23911C9E9E8A</UserSecretsId>
 		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-		<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
-		<SpaRoot>ClientApp\</SpaRoot>
-		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
-
-	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
-		<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
-
-		<!-- Include the newly-built files in the publish output -->
-		<ItemGroup>
-			<DistFiles Include="$(SpaRoot)build\**" />
-			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-				<RelativePath>%(DistFiles.Identity)</RelativePath>
-				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			</ResolvedFileToPublish>
-		</ItemGroup>
-	</Target>
-
-	<ItemGroup>
-		<Compile Remove="ClientApp\build\**" />
-		<Content Remove="ClientApp\build\**" />
-		<EmbeddedResource Remove="ClientApp\build\**" />
-		<None Remove="ClientApp\build\**" />
-		<TypeScriptCompile Remove="ClientApp\build\**" />
-		<TypeScriptCompile Remove="ClientApp\node_modules\**" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="EPPlus" Version="7.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.1" />
@@ -60,22 +35,5 @@
 		<ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
 		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>
-
-
-	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<TypeScriptTarget>ES2020</TypeScriptTarget>
-		<TypeScriptJSXEmit>React</TypeScriptJSXEmit>
-		<TypeScriptModuleKind>None</TypeScriptModuleKind>
-		<TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-		<TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-		<TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-		<TypeScriptOutFile />
-		<TypeScriptOutDir />
-		<TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-		<TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-		<TypeScriptSourceMap>True</TypeScriptSourceMap>
-		<TypeScriptMapRoot />
-		<TypeScriptSourceRoot />
-	</PropertyGroup>
 
 </Project>

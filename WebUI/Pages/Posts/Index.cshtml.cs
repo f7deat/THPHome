@@ -41,10 +41,10 @@ namespace WebUI.Pages.Posts
             RandomPosts = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 5, Language.VI);
             if (Categories.Count() > 0)
             {
-                var categoryIds = Categories.Select(c => c.Id);
+                var categoryId = Categories.Select(c => c.Id).First();
                 var relateds = from c in _context.PostCategories
                                join p in _context.Posts on c.PostId equals p.Id
-                               where categoryIds.Contains(c.CategoryId) && p.Status == PostStatus.PUBLISH && p.Id != PageData.Id
+                               where c.CategoryId == categoryId && p.Status == PostStatus.PUBLISH && p.Id != PageData.Id
                                orderby p.Id descending
                                select new Post
                                {

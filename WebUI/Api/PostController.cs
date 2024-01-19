@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using ApplicationCore.Helpers;
 using WebUI.Models.Api.Admin;
 using Infrastructure;
+using WebUI.Extensions;
 
 namespace WebUI.Api
 {
@@ -39,17 +40,6 @@ namespace WebUI.Api
         [HttpGet("get-list")]
         public async Task<IActionResult> GetListAsync([FromQuery] PostFilterOptions filterOptions)
         {
-            Request.Cookies.TryGetValue("locale", out string locale);
-
-            var lang = Language.VI;
-            if (!string.IsNullOrEmpty(locale))
-            {
-                if (locale == "en-US")
-                {
-                    lang = Language.EN;
-                }
-            }
-            filterOptions.Language = lang;
             return Ok(await _postService.GetListAsync(filterOptions));
         }
 
@@ -65,18 +55,7 @@ namespace WebUI.Api
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody]PostParam post)
         {
-            Request.Cookies.TryGetValue("locale", out string locale);
-
-            var lang = Language.VI;
-            if (!string.IsNullOrEmpty(locale))
-            {
-                if (locale == "en-US")
-                {
-                    lang = Language.EN;
-                }
-            }
-            var user = await _userManager.GetUserAsync(User);
-            post.Post.Language = lang;
+            var user = await _userManager.FindByIdAsync(User.GetId());
             post.Post.CreatedBy = user.Id;
             post.Post.ModifiedBy = user.Id;
             if (string.IsNullOrWhiteSpace(post.Post.Thumbnail))
@@ -89,7 +68,10 @@ namespace WebUI.Api
                 await _postCategoryService.AddAsync(post.ListCategoryId, data.Id);
                 await _attachmentService.MapAsync(post.Attachments, data.Id);
             }
-            _ = Telegram.SendMessageAsync($"{user.UserName} added: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            if (_webHostEnvironment.IsProduction())
+            {
+                _ = Telegram.SendMessageAsync($"{user.UserName} added: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            }
             return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
         }
 
@@ -99,7 +81,10 @@ namespace WebUI.Api
             var data = await _context.Posts.FindAsync(post.Id);
             var user = await _userManager.GetUserAsync(User);
             var text = post.Status == PostStatus.PUBLISH ? "publish" : "draft";
-            _ = Telegram.SendMessageAsync($"{user.UserName} {text}: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            if (_webHostEnvironment.IsProduction())
+            {
+                _ = Telegram.SendMessageAsync($"{user.UserName} {text}: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            }
             return Ok(await _postService.SetStatusAsync(post));
         }
 
@@ -108,7 +93,10 @@ namespace WebUI.Api
         {
             var post = await _context.Posts.FindAsync(id);
             var user = await _userManager.GetUserAsync(User);
-            _ = Telegram.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
+            if (_webHostEnvironment.IsProduction())
+            {
+                _ = Telegram.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
+            }
             return Ok(await _postService.RemoveAsync(id));
         }
 
@@ -130,7 +118,10 @@ namespace WebUI.Api
             data.Thumbnail = post.Post.Thumbnail;
             data.Type = post.Post.Type;
             data.ModifiedDate = post.Post.ModifiedDate;
-            _ = Telegram.SendMessageAsync($"{user.UserName} updated: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            if (_webHostEnvironment.IsProduction())
+            {
+                _ = Telegram.SendMessageAsync($"{user.UserName} updated: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            }
             return Ok(await _postService.EditAsync(data));
         }
 
@@ -195,7 +186,10 @@ namespace WebUI.Api
             {
                 var user = await _userManager.GetUserAsync(User);
                 var data = await _context.Posts.FindAsync(id);
-                await Telegram.SendMessageAsync($"{user.UserName} publish: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+                if (_webHostEnvironment.IsProduction())
+                {
+                    _ = Telegram.SendMessageAsync($"{user.UserName} publish: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+                }
                 return Ok(await _postService.SetActiveAsync(id));
             }
             else
