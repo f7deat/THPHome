@@ -1,8 +1,9 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using ApplicationCore.ViewModels
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @using ApplicationCore.Entities
-@model IEnumerable<Menu>
+@model IEnumerable<MenuViewModel>
 
 @{
     Layout = null;
@@ -15,25 +16,25 @@
         <nav class="flex hidden md:block top-menu text-sm">
             <div class="flex justify-end">
                 <ul class="nav top-menu-category">
-                    @foreach (var item in Model.Where(x => x.ParrentId == 0))
+                    @foreach (var item in Model)
                     {
-                        var childs = Model.Where(x => x.ParrentId == item.Id);
-                        if (childs.Count() > 0)
+                        if (item.Children != null)
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">@item.Name</a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    @foreach (var child in childs)
-                                    {
-                                        <li><a class="dropdown-item" href="@child.Url">@child.Name</a></li>
-                                    }
-                                </ul>
-                            </li>
+                            if (item.Children.Count() > 0)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">@item.Name</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        @foreach (var child in item.Children)
+                                        {
+                                            <li><a class="dropdown-item" href="@child.Url">@child.Name</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                                continue;
+                            }
                         }
-                        else
-                        {
-                            <li class="nav-item"><a href="@item.Url" class="nav-link text-white"><div class="inline">@Html.Raw(@item.Icon)</div><div class="inline">@item.Name</div></a></li>
-                        }
+                        <li class="nav-item"><a href="@item.Url" class="nav-link text-white"><div class="inline">@Html.Raw(@item.Icon)</div><div class="inline">@item.Name</div></a></li>
                     }
 
                 </ul>

@@ -1,7 +1,7 @@
-﻿@model List<ApplicationCore.Entities.Category>
+﻿@page "/category"
 @using WebUI.Models.ComponentModel
+@model WebUI.Pages.Categories.IndexModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
     var breadcrumbs = new List<Breadcrumb>
 {
         new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" },
@@ -13,7 +13,7 @@
     <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
 
     <div class="md:flex md:flex-wrap md:-mx-1">
-        @foreach (var item in Model)
+        @foreach (var item in Model.Categories)
         {
             <div class="md:w-1/4 md:px-1 mb-4">
                 <div class="bg-gray-800 text-white relative">

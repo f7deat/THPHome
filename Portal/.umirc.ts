@@ -24,11 +24,13 @@ export default defineConfig({
       redirect: '/home',
     },
     {
+      icon: 'DashboardOutlined',
       name: 'Dashboard',
       path: '/home',
       component: './Home',
     },
     {
+      icon: 'FormOutlined',
       name: 'Bài viết',
       path: '/post/list',
       component: './posts/post-list',
@@ -46,11 +48,13 @@ export default defineConfig({
       hideInMenu: true
     },
     {
+      icon: 'AppstoreAddOutlined',
       name: 'Danh mục',
       path: '/category/list',
       component: './categories/category-list',
     },
     {
+      icon: 'ApartmentOutlined',
       name: 'Phòng ban',
       path: '/departments',
       component: './departments',
@@ -62,41 +66,43 @@ export default defineConfig({
       hideInMenu: true
     },
     {
+      icon: 'VideoCameraAddOutlined',
       name: 'Video',
       path: '/videos',
       component: './videos/video-setting',
     },
     {
+      icon: 'TeamOutlined',
       name: 'Người dùng',
       path: '/users',
       component: './users/user-list',
     },
     {
+      icon: 'SolutionOutlined',
       name: 'Đối tác',
       path: '/partners',
       component: './partners/partner-setting',
     },
     {
+      icon: 'DownloadOutlined',
       name: 'Tài liệu',
       path: '/files',
       component: './files/file-explorer',
     },
     {
+      icon: 'PictureOutlined',
       name: 'Banner',
       path: '/banners',
       component: './banners/banner-list',
     },
     {
+      icon: 'CommentOutlined',
       name: 'Bình luận',
       path: '/comments',
       component: './comments/comment-list',
     },
     {
-      name: 'Quyền',
-      path: '/roles',
-      component: './roles/role-list',
-    },
-    {
+      icon: 'SettingOutlined',
       name: 'Cài đặt',
       path: '/settings',
       routes: [
@@ -109,6 +115,11 @@ export default defineConfig({
           name: 'Ngôn ngữ',
           path: '/settings/localizations',
           component: './settings/localizations',
+        },
+        {
+          name: 'Quyền',
+          path: '/settings/roles',
+          component: './roles/role-list',
         }
       ]
     },
