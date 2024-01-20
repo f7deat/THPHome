@@ -101,7 +101,18 @@ namespace WebUI.Api
         }
 
         [Route("get/{id}")]
-        public async Task<IActionResult> GetAsync([FromRoute] long id) => Ok(await _postService.FindAsync(id));
+        public async Task<IActionResult> GetAsync([FromRoute] long id)
+        {
+            var post = await _postService.FindAsync(id);
+            if (!string.IsNullOrEmpty(post.Thumbnail))
+            {
+                if (!post.Thumbnail.StartsWith("http"))
+                {
+                    post.Thumbnail = $"https://dhhp.edu.vn{post.Thumbnail}";
+                }
+            }
+            return Ok(post);
+        }
 
         [HttpPost("update")]
         public async Task<IActionResult> UpdateAsync([FromBody]PostParam post)
