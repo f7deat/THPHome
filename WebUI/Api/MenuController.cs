@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Payload;
 using Infrastructure;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebUI.Extensions;
 
 namespace WebUI.Api
 {
@@ -27,15 +29,13 @@ namespace WebUI.Api
         [HttpGet("list")]
         public async Task<IActionResult> GetListAsync([FromQuery] ListMenuPayload payload)
         {
-            payload.Language = GetLanguage();
             return Ok(await _menuService.GetListAsync(payload));
         }
 
-        [HttpGet("parent-options")]
-        public async Task<IActionResult> ParentOptionsAsync([FromQuery] MenuType type)
+        [HttpGet("options")]
+        public async Task<IActionResult> OptionsAsync([FromQuery] Language language)
         {
-            var lang = GetLanguage();
-            return Ok(await _context.Menus.Where(x => x.ParrentId == 0 && x.Type == type && x.Language == lang).Select(x => new
+            return Ok(await _context.Menus.Where(x => x.Language == language).OrderBy(x => x.Name).Select(x => new
             {
                 label = x.Name,
                 value = x.Id
@@ -45,7 +45,7 @@ namespace WebUI.Api
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody] Menu menu)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             menu.CreatedBy = user.Id;
             menu.ModifiedBy = user.Id;
             menu.CreatedDate = DateTime.Now;
@@ -57,7 +57,7 @@ namespace WebUI.Api
         [HttpPost("update")]
         public async Task<IActionResult> UpdateAsync([FromBody] Menu menu)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             var data = await _context.Menus.FindAsync(menu.Id);
             if (data is null) return BadRequest("Data not found!");
             data.ModifiedBy = user.Id;

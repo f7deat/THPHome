@@ -1,7 +1,7 @@
 ﻿import { Button, Form, Input, message, Popconfirm } from "antd";
-import axios from "axios";
 import React, { useEffect } from "react";
 import MyEditor from "../../../components/my-editor";
+import { request } from "@umijs/max";
 
 interface TabContentProps {
     activeTab?: string;
@@ -15,15 +15,18 @@ export const TabContentDepartment: React.FC<TabContentProps> = (props) => {
     const [formType] = Form.useForm();
 
     const onFinishType = async (values: any) => {
-        const response = await axios.post(`/api/department/update-detail`, values);
-        if (response.data.succeeded) {
+        const response = await request(`department/update-detail`, {
+            method: 'POST',
+            data: values
+        });
+        if (response.succeeded) {
             message.success('Thành công!');
         }
     }
 
     useEffect(() => {
         if (activeTab) {
-            axios.get(`/api/department/detail/content/${activeTab}`).then(response => {
+            request(`department/detail/content/${activeTab}`).then(response => {
                 formType.setFields([
                     {
                         name: 'id',
@@ -44,14 +47,14 @@ export const TabContentDepartment: React.FC<TabContentProps> = (props) => {
 
     const removeContent = async () => {
         try {
-            const response = await axios.post(`/api/department/detail/delete/${activeTab}`);
+            const response = await request(`department/detail/delete/${activeTab}`, {
+                method: 'POST'
+            });
             if (response.data) {
                 message.success('Thành công!');
                 fetchData();
             }
         } catch (e) {
-            console.log(e)
-            message.error('zxc')
         }
     }
 

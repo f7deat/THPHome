@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using WebUI.Extensions;
 
 namespace WebUI.Api
 {
@@ -37,7 +38,7 @@ namespace WebUI.Api
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody] Department args)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             var department = new Department
             {
                 CreatedBy = user.Id,
@@ -166,7 +167,7 @@ namespace WebUI.Api
             {
                 return BadRequest("Data not found!");
             }
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             detail.Content = args.Content;
             detail.Type = args.Type;
             detail.ModifiedDate = DateTime.Now;

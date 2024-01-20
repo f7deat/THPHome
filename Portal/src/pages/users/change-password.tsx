@@ -1,5 +1,5 @@
-﻿import { Button, Form, Input, message } from "antd"
-import axios from "axios";
+﻿import { request } from "@umijs/max";
+import { Button, Form, Input, message } from "antd"
 
 export default function ChangePassword() {
 
@@ -8,8 +8,11 @@ export default function ChangePassword() {
             message.warning('Xác nhận mật khẩu không chính xác!');
         }
         else {
-            axios.post(`/api/user/change-password`, values).then(response => {
-                if (response.data.succeeded) {
+           request(`user/change-password`, {
+            method: 'POST',
+            data: values
+           }).then(response => {
+                if (response.succeeded) {
                     message.success('Đổi mật khẩu thành công!')
                 }
             })

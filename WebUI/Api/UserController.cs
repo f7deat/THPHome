@@ -37,7 +37,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     {
         if (string.IsNullOrEmpty(id))
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             var result = new ApplicationUser();
             result.Email = user.Email;
             result.Id = user.Id;
@@ -139,7 +139,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     [HttpPost("delete-personal-data")]
     public async Task<IActionResult> DeletePersonalDataAsync([FromBody] string password)
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await _userManager.FindByIdAsync(User.GetId());
         if (user == null)
         {
             return NotFound();
@@ -165,7 +165,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     [HttpPost("disable-2fa")]
     public async Task<IActionResult> Disable2faAsync()
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await _userManager.FindByIdAsync(User.GetId());
         if (user == null)
         {
             return NotFound();
@@ -177,7 +177,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordModel input)
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await _userManager.FindByIdAsync(User.GetId());
         if (user == null)
         {
             return NotFound();
@@ -194,7 +194,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     [HttpPost("download-personal-data")]
     public async Task<IActionResult> DownloadPersonalDataAsync()
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await _userManager.FindByIdAsync(User.GetId());
         if (user == null)
         {
             return NotFound();

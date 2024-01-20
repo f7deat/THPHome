@@ -9,7 +9,7 @@ import {
     UploadOutlined,
     SearchOutlined
 } from "@ant-design/icons";
-import axios from "axios";
+import { request } from "@umijs/max";
 
 const PartnerSetting = () => {
 
@@ -24,8 +24,8 @@ const PartnerSetting = () => {
     }, [])
 
     const fetchData = () => {
-        axios.get(`/api/partner/get-list`).then(response => {
-            setMenus(response.data)
+        request(`partner/get-list`).then(response => {
+            setMenus(response)
         })
     }
 
@@ -39,12 +39,14 @@ const PartnerSetting = () => {
     };
 
     function handleRemove(id: number) {
-        axios.delete(`/api/partner/delete/${id}`).then(response => {
-            if (response.data.succeeded) {
-                message.success(response.data.message)
+        request(`partner/delete/${id}`, {
+            method: 'DELETE'
+        }).then(response => {
+            if (response.succeeded) {
+                message.success(response.message)
                 fetchData()
             } else {
-                message.error(response.data.message)
+                message.error(response.message)
             }
         })
     }
@@ -96,15 +98,18 @@ const PartnerSetting = () => {
         values.status === true ? values.status = 1 : values.status = 0;
         values.index = Number(values.index);
         if (values.id) {
-            url = `/api/partner/update`;
+            url = `partner/update`;
         } else {
-            url = `/api/partner/add`;
+            url = `partner/add`;
         }
-        axios.post(url, values).then(response => {
-            if (response.data.succeeded) {
-                message.success(response.data.message)
+        request(url, {
+            method: 'POST',
+            data: values
+        }).then(response => {
+            if (response.succeeded) {
+                message.success(response.message)
             } else {
-                message.error(response.data.message)
+                message.error(response.message)
             }
             fetchData()
         })

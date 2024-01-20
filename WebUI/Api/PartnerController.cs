@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WebUI.Extensions;
 
 namespace WebUI.Api
 {
@@ -31,7 +32,7 @@ namespace WebUI.Api
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody] Partner partner)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             partner.ModifiedBy = user.Id;
             partner.CreatedBy = user.Id;
             return Ok(await _partnerService.AddAsync(partner));
@@ -40,7 +41,7 @@ namespace WebUI.Api
         [HttpPost("update")]
         public async Task<IActionResult> UpdateAsync([FromBody] Partner partner)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             partner.ModifiedBy = user.Id;
             return Ok(await _partnerService.UpdateAsync(partner));
         }

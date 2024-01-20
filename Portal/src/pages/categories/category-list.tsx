@@ -1,5 +1,4 @@
 import { Button, Checkbox, Col, Drawer, Empty, Form, Input, message, Modal, Popconfirm, Row, Select, Space, Switch, Table, } from "antd";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
     EditOutlined,
@@ -9,7 +8,9 @@ import {
     ArrowLeftOutlined,
     SearchOutlined
 } from "@ant-design/icons";
-import { request } from "@umijs/max";
+import { request, useIntl } from "@umijs/max";
+import { PageContainer } from "@ant-design/pro-components";
+import { language } from "@/utils/format";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -23,8 +24,10 @@ const CategoryList = () => {
     const [category, setCategory] = useState<any>();
     const [displayOnHome, setDisplayOnHome] = useState<boolean>(false);
 
+    const intl = useIntl();
+
     const getList = (id: number) => {
-        request(`category/get-list/${id}`).then((response) => {
+        request(`category/get-list/${id}?language=${language(intl.locale)}`).then((response) => {
             setCategories(response);
         });
     }
@@ -54,6 +57,7 @@ const CategoryList = () => {
     }
 
     const handleOk = () => {
+        category.language = language(intl.locale)
         category.isDisplayOnHome = displayOnHome;
         if (category.id) {
             update(category);
@@ -206,10 +210,10 @@ const CategoryList = () => {
     }
 
     return (
-        <div className="p-4 bg-white">
+        <PageContainer>
             <Space className="mb-2">
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-                    New Category
+                    Tạo mới
                 </Button>
                 <Button icon={<ArrowLeftOutlined />} onClick={() => setId(0)} hidden={id === 0}>
                     Back
@@ -307,7 +311,7 @@ const CategoryList = () => {
                     </Row>
                 </Form>
             </Modal>
-        </div>
+        </PageContainer>
     );
 };
 export default CategoryList

@@ -7,10 +7,6 @@
 
 export const ListPostType = [
     {
-        value: PostType.DEFAULT,
-        label: 'Mặc định'
-    },
-    {
         value: PostType.PAGE,
         label: 'Trang'
     },

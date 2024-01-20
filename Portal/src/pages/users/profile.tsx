@@ -1,19 +1,18 @@
 ﻿import { Col, Empty, Row, Table, Tabs, Typography, Image, Button } from "antd"
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { IUsePrams } from "../../interfaces/use-params";
 import {
     StarOutlined,
     CommentOutlined,
     EditOutlined
 } from "@ant-design/icons";
+import { request, useParams } from "@umijs/max";
+import { Link } from "@umijs/max";
 
 const { TabPane } = Tabs;
 
 const Profile = () => {
 
-    const { id } = useParams<IUsePrams>();
+    const { id } = useParams();
 
     const [profile, setProfile] = useState<any>()
     const [postCount, setPostCount] = useState<number>(0)
@@ -21,16 +20,16 @@ const Profile = () => {
     const [commentCount, setCommentCount] = useState<number>(0)
 
     useEffect(() => {
-        axios.get(`/api/user/get/${id || ''}`).then(response => {
-            setProfile(response.data);
-            axios.get(`/api/post/get-count-in-user/${response.data.id}`).then(post => {
-                setPostCount(post.data)
+        request(`user/get/${id || ''}`).then(response => {
+            setProfile(response);
+            request(`post/get-count-in-user/${response.id}`).then(post => {
+                setPostCount(post)
             })
-            axios.get(`/api/post/list-in-user/${response.data.id}`).then(response => {
-                setListPost(response.data)
+            request(`post/list-in-user/${response.id}`).then(response => {
+                setListPost(response)
             })
-            axios.get(`/api/comment/get-count-in-user/${response.data.id}`).then(response => {
-                setCommentCount(response.data)
+            request(`comment/get-count-in-user/${response.id}`).then(response => {
+                setCommentCount(response)
             })
         });
     }, [id])

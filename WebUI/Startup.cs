@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebUI.Options;
 
 namespace WebUI;
 
@@ -63,7 +64,7 @@ public class Startup
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
         services.AddControllersWithViews();
-
+        services.Configure<SettingOptions>(Configuration.GetSection(SettingOptions.Settings));
         services.AddCors();
         services
     .AddAuthentication(options =>

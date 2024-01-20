@@ -34,8 +34,8 @@ namespace WebUI.Api
                 {
                     await file.CopyToAsync(stream);
                 }
-
-                return Ok(new { succeeded = true, url = $"/files/{file.FileName}" });
+                var host = Request.Host.Value;
+                return Ok(new { succeeded = true, url = $"https://{host}/files/{file.FileName}" });
             }
             return Ok(new { succeeded = false, message = "File not found", url = string.Empty });
         }

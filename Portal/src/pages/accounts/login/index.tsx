@@ -70,7 +70,7 @@ const Login: React.FC = () => {
     return (
         <Layout className="overflow-hidden">
             <Helmet>
-                <title>Login - DefZone.Net</title>
+                <title>Login - Hai Phong University</title>
             </Helmet>
             {
                 loading ? (<Spin fullscreen />) : (

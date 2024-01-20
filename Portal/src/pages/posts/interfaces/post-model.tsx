@@ -1,3 +1,5 @@
+import { Language } from "@/utils/enum";
+
 interface IPost {
     id?: number;
     title?: string;
@@ -10,6 +12,7 @@ interface IPost {
     status?: number;
     tags?: string;
     thumbnail?: string;
+    language?: Language;
     type?: number;
     url?: string;
     view?: number;

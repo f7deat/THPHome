@@ -1,5 +1,4 @@
 ﻿import { Button, Empty, Input, message, Modal, Popconfirm, Space, Table, Tabs, Tag } from "antd";
-import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import {
     EditOutlined,
@@ -11,7 +10,9 @@ import {
 import moment from "moment";
 import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
-import { Link, request } from "@umijs/max";
+import { Link, request, useIntl, useParams, useSearchParams } from "@umijs/max";
+import { language } from "@/utils/format";
+import { PageContainer } from "@ant-design/pro-components";
 
 const { TabPane } = Tabs;
 
@@ -22,6 +23,7 @@ const PostList = () => {
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
     const [searchTerm, setSerchTerm] = useState<string>('');
     const [activeKey, setActiveKey] = useState<string>('1');
+    const intl = useIntl();
 
     function bindData(response: any) {
         setPosts(response.data);
@@ -30,8 +32,7 @@ const PostList = () => {
     }
 
     const initCallback = useCallback(() => {
-        request(`post/get-list?pageIndex=1&pageSize=10&searchTerm=${searchTerm}&type=${activeKey}&language=1`).then(response => {
-            console.log(response)
+        request(`post/get-list?pageIndex=1&pageSize=10&searchTerm=${searchTerm}&type=${activeKey}&language=${language(intl.locale)}`).then(response => {
             bindData(response)
         })
     }, [searchTerm, activeKey])
@@ -39,10 +40,6 @@ const PostList = () => {
     useEffect(() => {
         initCallback();
     }, [initCallback])
-
-    const rowSelection = (e: any) => {
-        console.log(e)
-    }
 
     function remove(id: number) {
         request(`post/remove/${id}`, {
@@ -75,9 +72,8 @@ const PostList = () => {
     }
 
     const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-        console.log(pagination)
         setLoading(true);
-        axios.get(`/api/post/get-list?pageIndex=${pagination.current}&pageSize=${pagination.pageSize}&type=${activeKey}`).then(response => {
+        request(`post/get-list?pageIndex=${pagination.current}&pageSize=${pagination.pageSize}&type=${activeKey}`).then(response => {
             bindData(response.data);
         });
     }
@@ -89,7 +85,7 @@ const PostList = () => {
         },
         {
             title: 'Tiêu đề',
-            render: (record: IPost) => <a href={`/post/${record.url}-${record.id}.html`}>{record.title}</a>
+            render: (record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank">{record.title}</a>
         },
         {
             title: 'Lượt xem',
@@ -131,7 +127,7 @@ const PostList = () => {
     ]
 
     return (
-        <div className="p-4 bg-white">
+        <PageContainer>
             <div className="flex justify-between mb-3">
                 <Space>
                     <Input placeholder="Nhập từ khóa..." onChange={(e: any) => setSerchTerm(e.target.value)} />
@@ -142,25 +138,11 @@ const PostList = () => {
                 </Space>
             </div>
             <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey}>
-                <TabPane tab="Mặc định" key="0">
-                    <Table dataSource={posts}
-                        columns={columns}
-                        rowSelection={{
-                            type: 'checkbox',
-                            ...rowSelection,
-                        }}
-                        loading={loading}
-                        rowKey="id"
-                        pagination={pagination}
-                        onChange={handleTableChange}
-                    />
-                </TabPane>
                 <TabPane tab="Trang" key="1">
                     <Table dataSource={posts}
                         columns={columns}
                         rowSelection={{
                             type: 'checkbox',
-                            ...rowSelection,
                         }}
                         loading={loading}
                         rowKey="id"
@@ -173,7 +155,6 @@ const PostList = () => {
                         columns={columns}
                         rowSelection={{
                             type: 'checkbox',
-                            ...rowSelection,
                         }}
                         loading={loading}
                         rowKey="id"
@@ -186,7 +167,6 @@ const PostList = () => {
                         columns={columns}
                         rowSelection={{
                             type: 'checkbox',
-                            ...rowSelection,
                         }}
                         loading={loading}
                         rowKey="id"
@@ -195,7 +175,7 @@ const PostList = () => {
                     />
                 </TabPane>
             </Tabs>
-        </div>
+        </PageContainer>
     )
 }
 

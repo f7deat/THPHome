@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebUI.Extensions;
 
 namespace WebUI.Api
 {
@@ -26,7 +27,7 @@ namespace WebUI.Api
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody] Comment comment)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             comment.CreatedBy = user.Id;
             return Ok(await _commentService.AddAsync(comment));
         }

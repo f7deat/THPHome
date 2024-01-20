@@ -13,6 +13,11 @@ export default defineConfig({
   history: {
     type: 'hash'
   },
+  locale: {
+    default: 'vi-VN',
+    baseSeparator: '-',
+    antd: true,
+  },
   routes: [
     {
       path: '/',

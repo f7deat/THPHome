@@ -18,25 +18,31 @@
                 </a>
                 <ul class="dropdown-menu dropdown-mega">
                     @{
-                        foreach (var mega1 in item.Children)
+                        if (item.Children != null)
                         {
-                            <li>
-                                <a class="header" href="@mega1.Url">
-                                    <i class="ubermenu-icon fa fa-sign-in"></i><span class="ubermenu-target-title ubermenu-target-text text-uppercase">@mega1.Name</span>
-                                </a>
-                                @{
-                                    <ul class="mega-stack">
-                                        @foreach (var mega2 in mega1.Children)
+                            foreach (var mega1 in item.Children)
+                            {
+                                <li>
+                                    <a class="header" href="@mega1.Url">
+                                        <i class="ubermenu-icon fa fa-sign-in"></i><span class="ubermenu-target-title ubermenu-target-text text-uppercase">@mega1.Name</span>
+                                    </a>
+                                    @{
+                                        if (mega1.Children != null)
                                         {
-                                            <li>
-                                                <a href="@mega2.Url">
-                                                    <span class="ubermenu-target-title ubermenu-target-text">@mega2.Name</span>
-                                                </a>
-                                            </li>
+                                            <ul class="mega-stack">
+                                                @foreach (var mega2 in mega1.Children)
+                                                {
+                                                    <li>
+                                                        <a href="@mega2.Url">
+                                                            <span class="ubermenu-target-title ubermenu-target-text">@mega2.Name</span>
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
                                         }
-                                    </ul>
-                                }
-                            </li>
+                                    }
+                                </li>
+                            }
                         }
                     }
 
@@ -46,18 +52,21 @@
         }
         if (item.Mode != MenuMode.Mega)
         {
-            if (item.Children.Count() > 0)
+            if (item.Children != null)
             {
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">@item.Name</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        @foreach (var child in item.Children)
-                        {
-                            <li><a class="dropdown-item" href="@child.Url">@child.Name</a></li>
-                        }
-                    </ul>
-                </li>
-                continue;
+                if (item.Children.Count() > 0)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">@item.Name</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @foreach (var child in item.Children)
+                            {
+                                <li><a class="dropdown-item" href="@child.Url">@child.Name</a></li>
+                            }
+                        </ul>
+                    </li>
+                    continue;
+                }
             }
         }
         <li class="nav-item"><a href="@item.Url" class="nav-link text-white">@item.Name</a></li>

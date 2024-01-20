@@ -1,23 +1,22 @@
 ﻿import { Tabs, Button, Typography, Space, Card, Form, Input, message } from "antd";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router"
 import { IUsePrams } from "../../interfaces/use-params";
 import { UserInterface } from "../../interfaces/user-interfaces";
 import { ChangePassword } from "./components/change-password";
+import { request, useParams } from "@umijs/max";
 
 const { TabPane } = Tabs;
 
 const UserEdit = () => {
 
-    const { id } = useParams<IUsePrams>();
+    const { id } = useParams();
     const [form] = Form.useForm();
     const [user, setUser] = useState<UserInterface>();
 
     useEffect(() => {
         if (id) {
-            axios.get(`/api/user/get/${id}`).then(response => {
-                setUser(response.data);
+            request(`user/get/${id}`).then(response => {
+                setUser(response);
                 form.setFields([
                     {
                         name: 'name',
@@ -33,8 +32,7 @@ const UserEdit = () => {
     }, [id])
 
     const downloadPersonalData = () => {
-        axios({
-            url: `/api/user/download-personal-data`,
+        request(`user/download-personal-data`, {
             responseType: 'blob',
             method: 'POST'
         }).then(response => {
@@ -50,8 +48,10 @@ const UserEdit = () => {
 
     const onFinishProfile = async (values: any) => {
         values.id = id;
-        const response = await axios.post(`/api/user/update`, values);
-        if (response.data.succeeded) {
+        const response = await request(`user/update`, {
+            method: 'POST'
+        });
+        if (response.succeeded) {
             message.success('Thành công!');
         }
     }

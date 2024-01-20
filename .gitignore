@@ -363,3 +363,4 @@ MigrationBackup/
 /WebUI/wwwroot/img
 /Portal/pnpm-lock.yaml
 /WebUI/appsettings.Development.json
+/WebUI/Migrations

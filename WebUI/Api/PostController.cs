@@ -60,7 +60,7 @@ namespace WebUI.Api
             post.Post.ModifiedBy = user.Id;
             if (string.IsNullOrWhiteSpace(post.Post.Thumbnail))
             {
-                post.Post.Thumbnail = "/files/fc7bef56-0a30-4f2e-a369-d4e0419344dd.png";
+                post.Post.Thumbnail = "https://dhhp.edu.vn/files/f4567e2b-ef79-4bd1-86c4-c4a97a79fb19.png";
             }
             var data = await _postService.AddAsync(post.Post);
             if (data.Id > 0)
@@ -79,7 +79,7 @@ namespace WebUI.Api
         public async Task<IActionResult> SetStatusAsync(Post post)
         {
             var data = await _context.Posts.FindAsync(post.Id);
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             var text = post.Status == PostStatus.PUBLISH ? "publish" : "draft";
             if (_webHostEnvironment.IsProduction())
             {
@@ -92,7 +92,7 @@ namespace WebUI.Api
         public async Task<IActionResult> RemoveAsync([FromRoute] long id)
         {
             var post = await _context.Posts.FindAsync(id);
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             if (_webHostEnvironment.IsProduction())
             {
                 _ = Telegram.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
@@ -106,7 +106,7 @@ namespace WebUI.Api
         [HttpPost("update")]
         public async Task<IActionResult> UpdateAsync([FromBody]PostParam post)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             await _postCategoryService.DeleteAsync(post.Post.Id);
             await _postCategoryService.AddAsync(post.ListCategoryId, post.Post.Id);
             await _attachmentService.MapAsync(post.Attachments, post.Post.Id);
@@ -184,7 +184,7 @@ namespace WebUI.Api
         {
             if (User.IsInRole(RoleName.ADMIN))
             {
-                var user = await _userManager.GetUserAsync(User);
+                var user = await _userManager.FindByIdAsync(User.GetId());
                 var data = await _context.Posts.FindAsync(id);
                 if (_webHostEnvironment.IsProduction())
                 {

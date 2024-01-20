@@ -1,5 +1,6 @@
 using ApplicationCore.Constants;
 using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
@@ -26,24 +27,20 @@ namespace WebUI.Api
         }
 
         [Route("get-list/{id}")]
-        public async Task<IActionResult> GetListAsyc(int id)
+        public async Task<IActionResult> GetListAsyc([FromRoute] int id, [FromQuery] Language language)
         {
-            var lang = GetLanguage();
-            return Ok(await _categoryService.GetListAsyc(id, lang));
+            return Ok(await _categoryService.GetListAsyc(id, language));
         }
 
         [Route("get-list")]
-        public async Task<IActionResult> GetListAsync()
+        public async Task<IActionResult> GetListAsync([FromQuery] Language language)
         {
-            var lang = GetLanguage();
-            return Ok(await _categoryService.ListAllAsync(lang));
+            return Ok(await _categoryService.ListAllAsync(language));
         }
 
         [Route("add"), HttpPost]
         public async Task<IActionResult> AddAsync([FromBody]Category category)
         {
-            var lang = GetLanguage();
-            category.Language = lang;
             return CreatedAtAction(nameof(AddAsync), await _categoryService.AddAsync(category));
         }
 

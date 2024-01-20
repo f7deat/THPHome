@@ -1,5 +1,4 @@
 ﻿import { Button, Checkbox, Drawer, Input, message, Modal, Popconfirm, Space, Table, Form } from "antd"
-import axios from "axios"
 import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
@@ -11,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from "@umijs/max";
 import { request } from "@umijs/max";
+import { PageContainer } from "@ant-design/pro-components";
 
 const UserList = () => {
 
@@ -68,15 +68,15 @@ const UserList = () => {
         if (!user) {
             return message.warning('User not found!');
         }
-        axios.post(`/api/user/add-to-role`, {
+        request(`user/add-to-role`, {
             userId: user.id,
             roleName: roleName
         }).then(response => {
-            if (response.data.succeeded) {
+            if (response.succeeded) {
                 message.success('Succeeded!');
                 fetchRole()
             } else {
-                response.data.errors.forEach((value: any) => {
+                response.errors.forEach((value: any) => {
                     message.error(value.description);
                 })
             }
@@ -140,12 +140,14 @@ const UserList = () => {
 
     const handleSetRole = (role: any) => {
         if (role.isInRole) {
-            axios.delete(`/api/user/remove-from-role/${role.name}/${user.id}`).then(response => {
-                if (response.data.succeeded) {
+            request(`user/remove-from-role/${role.name}/${user.id}`, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.succeeded) {
                     message.success('succeeded')
                     fetchRole()
                 } else {
-                    response.data.errors.forEach((value: any) => {
+                    response.errors.forEach((value: any) => {
                         message.error(value.description)
                     })
                 }
@@ -171,7 +173,10 @@ const UserList = () => {
     ];
 
     const onAddUser = async (values: any) => {
-        const response = await axios.post(`/api/user/create`, values);
+        const response = await request(`user/create`, {
+            method: 'POST',
+            data: values
+        });
         if (response.data.succeeded) {
             setDrawerVisible(false);
             fetchUsers();
@@ -180,7 +185,7 @@ const UserList = () => {
     }
 
     return (
-        <div>
+        <PageContainer>
             <div className="bg-white p-4">
                 <div className="flex justify-between mb-3">
                     <Space>
@@ -227,7 +232,7 @@ const UserList = () => {
                     </Form.Item>
                 </Form>
             </Drawer>
-        </div>
+        </PageContainer>
     )
 }
 

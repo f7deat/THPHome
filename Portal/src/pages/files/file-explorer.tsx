@@ -11,8 +11,8 @@ import {
     DeleteTwoTone
 } from '@ant-design/icons';
 import Dragger from "antd/lib/upload/Dragger";
-import axios from "axios";
 import moment from "moment";
+import { request } from "@umijs/max";
 
 export default function FileExplorer(props: FileDrawerProps) {
 
@@ -26,8 +26,8 @@ export default function FileExplorer(props: FileDrawerProps) {
     }, [props.visible])
 
     function fetchDirectories() {
-        axios.get(`/api/file/directories`).then(response => {
-            setDirectories(response.data)
+        request(`file/directories`).then(response => {
+            setDirectories(response)
         })
     }
 
@@ -60,7 +60,10 @@ export default function FileExplorer(props: FileDrawerProps) {
     }
 
     function handleDelete(fullName: string) {
-        axios.post(`/api/file/delete`, { fullName }).then(response => {
+        request(`/api/file/delete`, {
+            method: 'POST',
+            data: { fullName }
+        }).then(response => {
             if (response.data.succeeded) {
                 fetchDirectories();
                 message.success(response.data.message);

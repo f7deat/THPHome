@@ -3,10 +3,14 @@ import { history } from '@umijs/max';
 import { queryCurrentUser } from './services/user';
 import { RequestConfig } from '@umijs/max';
 import { RequestOptions } from '@umijs/max';
-import { message } from 'antd';
+import { Space, message } from 'antd';
 import { RunTimeLayoutConfig } from '@umijs/max';
 import { DefaultFooter } from '@ant-design/pro-components';
 import { GithubOutlined } from '@ant-design/icons';
+import { AvatarDropdown } from './components/right-content/avatar-dropdown';
+import { SelectLang } from '@umijs/max';
+import { Question } from './components/right-content';
+import './style.css';
 // 全局初始化数据配置，用于 Layout 用户信息和权限初始化
 // 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate
 const loginPath = '/accounts/login';
@@ -67,9 +71,16 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         },
       ]} />
     ),
+    rightContentRender: () => (
+      <Space>
+        <Question key="doc" />
+        <SelectLang key="SelectLang" />
+        <AvatarDropdown menu />
+      </Space>
+    ),
     onPageChange: () => {
       const { location } = history;
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      if (!initialState?.name && location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },
@@ -80,7 +91,7 @@ export const request: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       const token = localStorage.getItem('wf_token');
-      config.baseURL = 'https://localhost:58058/api/';
+      config.baseURL = 'https://dhhp.edu.vn/api/';
       config.headers = {
         authorization: `Bearer ${token}`,
       };

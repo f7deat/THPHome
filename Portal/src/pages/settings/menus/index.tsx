@@ -7,9 +7,11 @@ import {
     SaveOutlined,
     ArrowRightOutlined
 } from "@ant-design/icons";
-import axios from "axios";
 import Card from "antd/lib/card/Card";
-import { request } from "@umijs/max";
+import { request, useIntl } from "@umijs/max";
+import { PageContainer, ProFormSelect } from "@ant-design/pro-components";
+import { queryMenuOptions } from "@/services/menu";
+import { language } from "@/utils/format";
 
 const { Option } = Select;
 
@@ -20,6 +22,7 @@ const MenuSetting = () => {
     const [fields, setFields] = useState<any>([]);
     const [currentType, setCurrentType] = useState<string>('1');
     const [menu, setMenu] = useState<any>();
+    const intl = useIntl();
 
     const [form] = Form.useForm();
 
@@ -28,7 +31,7 @@ const MenuSetting = () => {
     }, [currentType, menu])
 
     const fetchData = () => {
-        request(`menu/list?type=${currentType}`).then(response => {
+        request(`menu/list?type=${currentType}&language=${language(intl.locale)}`).then(response => {
             setMenus(response)
         })
     }
@@ -112,6 +115,10 @@ const MenuSetting = () => {
             {
                 name: 'mode',
                 value: record.mode
+            },
+            {
+                name: 'parrentId',
+                value: record.parrentId === 0 ? null : record.parrentId
             }
         ])
         setVisible(true)
@@ -172,7 +179,7 @@ const MenuSetting = () => {
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => {
                         setMenu(record);
                         setVisible(true);
-                    } }></Button>
+                    }}></Button>
                     <Button icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
@@ -204,74 +211,80 @@ const MenuSetting = () => {
     ];
 
     return (
-        <Card title='Menu' extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>}>
-            <Tabs defaultActiveKey="1" items={items} onChange={filterType} type="card" />
-            <Table dataSource={menus} columns={columns} rowKey="id" />
+        <PageContainer>
+            <Card title='Menu' extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>}>
+                <Tabs defaultActiveKey="1" items={items} onChange={filterType} type="card" />
+                <Table dataSource={menus} columns={columns} rowKey="id" />
 
-            <Drawer
-                title="Cài đặt"
-                placement="right"
-                closable={false}
-                onClose={onClose}
-                visible={visible}
-                width={700}
-            >
-                <Form onFinish={onFinish} layout="vertical" fields={fields} form={form}>
-                    <Form.Item hidden={true} name="id"></Form.Item>
-                    <Form.Item hidden={true} name="createdBy"></Form.Item>
-                    <Form.Item hidden={true} name="createdDate"></Form.Item>
-                    <Form.Item hidden={true} name="modifiedBy"></Form.Item>
-                    <Form.Item label="Tên" name="name" rules={[
-                        {
-                            required: true,
-                            message: 'Vui lòng nhập'
-                        }
-                    ]}>
-                        <Input />
-                    </Form.Item>
+                <Drawer
+                    title="Cài đặt"
+                    placement="right"
+                    closable={false}
+                    onClose={onClose}
+                    visible={visible}
+                    width={700}
+                >
+                    <Form onFinish={onFinish} layout="vertical" fields={fields} form={form}>
+                        <Form.Item hidden={true} name="id"></Form.Item>
+                        <Form.Item hidden={true} name="createdBy"></Form.Item>
+                        <Form.Item hidden={true} name="createdDate"></Form.Item>
+                        <Form.Item hidden={true} name="modifiedBy"></Form.Item>
+                        <Form.Item label="Tên" name="name" rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập'
+                            }
+                        ]}>
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item label="Ảnh đại diện" name="thumbnail">
-                        <Input />
-                    </Form.Item>
+                        <ProFormSelect label="Menu cha" name="parrentId" allowClear showSearch request={() => {
+                            return queryMenuOptions(language(intl.locale));
+                        }} />
 
-                    <Form.Item label="Mô tả" name="description">
-                        <Input.TextArea />
-                    </Form.Item>
+                        <Form.Item label="Ảnh đại diện" name="thumbnail">
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item label="Liên kết" name="url">
-                        <Input />
-                    </Form.Item>
+                        <Form.Item label="Mô tả" name="description">
+                            <Input.TextArea />
+                        </Form.Item>
 
-                    <Row gutter={16}>
-                        <Col span={8}>
-                            <Form.Item name="mode" label="Kiểu hiển thị">
-                                <Select>
-                                    <Option value="Flyout">Flyout</Option>
-                                    <Option value="Mega">Mega</Option>
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item label="Thứ tự" name="index">
-                                <InputNumber style={{ width: '100%' }} />
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item label="Icon" name="icon">
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
+                        <Form.Item label="Liên kết" name="url">
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item>
-                        <Space>
-                            <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>Save</Button>
-                            <Button htmlType="button" icon={<ArrowRightOutlined />} onClick={() => setVisible(false)}>Close</Button>
-                        </Space>
-                    </Form.Item>
-                </Form>
-            </Drawer>
-        </Card>
+                        <Row gutter={16}>
+                            <Col span={8}>
+                                <Form.Item name="mode" label="Kiểu hiển thị">
+                                    <Select>
+                                        <Option value="Flyout">Flyout</Option>
+                                        <Option value="Mega">Mega</Option>
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                                <Form.Item label="Thứ tự" name="index">
+                                    <InputNumber style={{ width: '100%' }} />
+                                </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                                <Form.Item label="Icon" name="icon">
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Form.Item>
+                            <Space>
+                                <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>Save</Button>
+                                <Button htmlType="button" icon={<ArrowRightOutlined />} onClick={() => setVisible(false)}>Close</Button>
+                            </Space>
+                        </Form.Item>
+                    </Form>
+                </Drawer>
+            </Card>
+        </PageContainer>
     )
 }
 

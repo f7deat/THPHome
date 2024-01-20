@@ -1,13 +1,14 @@
-﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload } from "antd"
+﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload, Form, Space } from "antd"
 import {
     PlusOutlined,
     SaveOutlined,
     UploadOutlined
 } from '@ant-design/icons';
 import React, { useCallback, useEffect, useState } from "react";
-import axios from "axios";
 import { BANNER_TYPE, LIST_BANNER_TYPE } from "./enums/banner-type";
 import FileExplorer from "../files/file-explorer";
+import { request } from "@umijs/max";
+import { PageContainer } from "@ant-design/pro-components";
 
 const { Option } = Select;
 
@@ -17,14 +18,15 @@ const BannerList = () => {
     const [listBanner, setListBanner] = useState<any>();
     const [bannerType, setBannerType] = useState(BANNER_TYPE.PHOTO)
     const [explorerVisible, setExplorerVisible] = useState<boolean>(false)
+    const [form] = Form.useForm();
 
     const optionList = LIST_BANNER_TYPE.map((value) => (
         <Option value={value.id} key={value.id}>{value.name}</Option>
     ))
 
-    const init = useCallback(() =>  {
-        axios.get(`/api/banner/get-list?type=${bannerType}`).then(response => {
-            setListBanner(response.data);
+    const init = useCallback(() => {
+        request(`banner/get-list?type=${bannerType}`).then(response => {
+            setListBanner(response);
         })
     }, [bannerType])
 
@@ -42,17 +44,24 @@ const BannerList = () => {
     };
 
     const save = () => {
+        banner.image = form.getFieldValue('image');
         if (banner.id) {
-            axios.post(`/api/banner/update`, banner).then(response => {
-                if(response.data.succeeded) {
+            request(`banner/update`, {
+                method: 'POST',
+                data: banner
+            }).then(response => {
+                if (response.succeeded) {
                     init();
                     message.success('succeeded!');
                     setVisible(false);
                 }
             })
         } else {
-            axios.post(`/api/banner/add`, banner).then(response => {
-                if (response.data.succeeded) {
+            request(`banner/add`, {
+                method: 'POST',
+                data: banner
+            }).then(response => {
+                if (response.succeeded) {
                     init();
                     message.success('succeeded!');
                     setVisible(false);
@@ -62,8 +71,10 @@ const BannerList = () => {
     }
 
     function remove(id: number) {
-        axios.post(`/api/banner/delete/${id}`).then(response => {
-            if (response.data.succeeded) {
+        request(`banner/delete/${id}`, {
+            method: 'POST'
+        }).then(response => {
+            if (response.succeeded) {
                 init();
                 message.success('succeeded!');
             }
@@ -72,18 +83,6 @@ const BannerList = () => {
 
     function handleDelete(id: number) {
         remove(id)
-    }
-
-    const handleUpload = (info: any) => {
-        if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-            setBanner((prevState: any) => ({ ...prevState, image: info.file.response.fileUrl }))
-            message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
     }
 
     const handleExplorer = () => {
@@ -95,7 +94,7 @@ const BannerList = () => {
     }
 
     return (
-        <div>
+        <PageContainer>
             <div className="mb-4">
                 <Select defaultValue={bannerType} style={{ width: 120 }} onChange={(value) => setBannerType(value)}>
                     {optionList}
@@ -126,7 +125,7 @@ const BannerList = () => {
                                             Xóa
                                         </div>
                                     </Popconfirm>
-                                    
+
                                 </div>
                             </div>
                         </Col>
@@ -141,29 +140,53 @@ const BannerList = () => {
                 visible={visible}
                 width={700}
             >
-                <img src={banner?.image || "http://placehold.jp/40/0a1c2e/ccd7e3/650x250.png?text=DefZone.Net"} alt="preview" className="object-fit-cover w-full h-40 mb-2" />
-                <div>Name</div>
-                <Input className="mb-2" value={banner?.name} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, name: e.target.value }))} />
-                <div>Image</div>
-                <div className="flex mb-2">
-                    <Input className="flex-grow" value={banner?.image} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, image: e.target.value }))} />
-                    <Upload action="/api/partner/upload" onChange={handleUpload} maxCount={1} showUploadList={false}>
-                        <Button icon={<UploadOutlined />}>Tải lên</Button>
-                    </Upload>
-                    <Button icon={<UploadOutlined />} onClick={handleExplorer}>Duyệt</Button>
-                </div>
-                <div>Url</div>
-                <Input className="mb-2" value={banner?.url} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, url: e.target.value }))} />
-                <div>Display On</div>
-                <Input className="mb-2" value={banner?.displayOn} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, displayOn: Number(e.target.value) }))} />
-                <div>Type</div>
-                <Select defaultValue={banner?.type} style={{ width: '100%' }} onChange={(value) => setBanner((prevState: any) => ({ ...prevState, type: value }))} className="mb-3">
-                    {optionList}
-                </Select>
-                <Button type="primary" icon={<SaveOutlined />} onClick={save}>Lưu</Button>
+                <Form form={form} layout="vertical">
+                    <div>Name</div>
+                    <Input className="mb-2" value={banner?.name} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, name: e.target.value }))} />
+                    <div className="flex mb-2">
+                        <Space>
+                            <Form.Item name="image" label="Image">
+                                <Input />
+                            </Form.Item>
+                            <Upload beforeUpload={(file) => {
+                                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                                if (!isJPG) {
+                                    message.error('You can only upload JPG or PNG file!');
+                                    return false;
+                                } else {
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+                                    request('file/upload', {
+                                        method: 'POST',
+                                        data: formData
+                                    }).then(response => {
+                                        if (!response.succeeded) {
+                                            message.error(response.message);
+                                            return false;
+                                        }
+                                        form.setFieldValue('image', response.url);
+                                    })
+                                    return false;
+                                }
+                            }} maxCount={1} showUploadList={false}>
+                                <Button icon={<UploadOutlined />}>Tải lên</Button>
+                            </Upload>
+                            <Button icon={<UploadOutlined />} onClick={handleExplorer}>Duyệt</Button>
+                        </Space>
+                    </div>
+                    <div>Url</div>
+                    <Input className="mb-2" value={banner?.url} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, url: e.target.value }))} />
+                    <div>Display On</div>
+                    <Input className="mb-2" value={banner?.displayOn} onChange={(e: any) => setBanner((prevState: any) => ({ ...prevState, displayOn: Number(e.target.value) }))} />
+                    <div>Type</div>
+                    <Select defaultValue={banner?.type} style={{ width: '100%' }} onChange={(value) => setBanner((prevState: any) => ({ ...prevState, type: value }))} className="mb-3">
+                        {optionList}
+                    </Select>
+                    <Button type="primary" icon={<SaveOutlined />} onClick={save}>Lưu</Button>
+                </Form>
             </Drawer>
             <FileExplorer visible={explorerVisible} onOk={handleExplorerOk} onCancel={() => setExplorerVisible(false)} />
-        </div>
+        </PageContainer>
     )
 }
 

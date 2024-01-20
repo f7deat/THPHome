@@ -1,11 +1,11 @@
 import { Button, message, Popconfirm, Space, Table, Tag } from "antd"
-import axios from "axios"
 import React, { useEffect, useState } from "react"
 import {
     DeleteOutlined
 } from "@ant-design/icons";
 import { ECommentStatus } from "./types/comment-enum";
 import moment from "moment";
+import { request } from "@umijs/max";
 
 export default function CommentList() {
 
@@ -16,14 +16,16 @@ export default function CommentList() {
     }, [])
 
     function getList() {
-        axios.get(`/api/comment/get-list`).then((response: any) => {
-            setComments(response.data)
+        request(`comment/get-list`).then((response: any) => {
+            setComments(response)
         })
     }
 
     function handleDelete(id:string) {
-        axios.delete(`/api/comment/delete/${id}`).then((response: any) => {
-            if (response.data.succeeded) {
+        request(`comment/delete/${id}`, {
+            method: 'DELETE'
+        }).then((response: any) => {
+            if (response.succeeded) {
                 getList()
             }
         })
@@ -31,12 +33,15 @@ export default function CommentList() {
 
     function handleChangeStatus(record: any) {
         record.status = ECommentStatus.PUBLISHED;
-        axios.post(`/api/comment/change-status`, record).then(response => {
-            if (response.data.succeeded) {
+        request(`/api/comment/change-status`, {
+            method: 'POST',
+            data: record
+        }).then(response => {
+            if (response.succeeded) {
                 getList();
-                message.success(response.data.message)
+                message.success(response.message)
             } else {
-                message.error(response.data.error)
+                message.error(response.error)
             }
         })
     }

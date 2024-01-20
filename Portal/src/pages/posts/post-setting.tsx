@@ -1,5 +1,4 @@
-﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Spin, Upload, UploadProps } from 'antd'
-import axios from 'axios'
+﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Spin, Upload, UploadProps, Image } from 'antd'
 import {
     UploadOutlined,
     InboxOutlined
@@ -8,9 +7,11 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ListPostType } from '../../enum/post-enum'
 import IPost from './interfaces/post-model'
 import MyEditor from '../../components/my-editor';
-import { useParams, history } from '@umijs/max';
+import { useParams, history, useIntl } from '@umijs/max';
 import { request } from '@umijs/max';
 import dayjs from 'dayjs'
+import { PageContainer } from '@ant-design/pro-components';
+import { language } from '@/utils/format';
 
 const { Dragger } = Upload;
 
@@ -26,6 +27,8 @@ const PostSetting = () => {
     const [listCategoryId, setListCategoryId] = useState<any>([])
     const [defaultFileList, setDefaultFileList] = useState<any>([])
     const [loading, setLoading] = useState<boolean>();
+    const [previewImage, setPreviewImage] = useState<string>('');
+    const intl = useIntl();
 
     const initCallback = useCallback(() => {
         if (id) {
@@ -43,8 +46,17 @@ const PostSetting = () => {
                     {
                         name: 'type',
                         value: response.type
+                    },
+                    {
+                        name: 'thumbnail',
+                        value: response.thumbnail
+                    },
+                    {
+                        name: 'language',
+                        value: response.language
                     }
                 ])
+                setPreviewImage(response.thumbnail);
             })
             request(`post/get-list-category-id-in-post/${id}`).then(response => {
                 setListCategoryId(response)
@@ -65,7 +77,7 @@ const PostSetting = () => {
 
     useEffect(() => {
         initCallback()
-        request('category/get-list').then(response => {
+        request(`category/get-list?language=${language(intl.locale)}`).then(response => {
             setListCategory(response);
         })
     }, [initCallback])
@@ -85,7 +97,7 @@ const PostSetting = () => {
             }
         }).then(response => {
             if (response.succeeded) {
-                history.push(`/post/list?type=${post.type}`);
+                history.push(`/post/list?type=${post.type}&language=${language(intl.locale)}`);
             } else {
                 message.error('ERROR');
             }
@@ -108,7 +120,7 @@ const PostSetting = () => {
             }
         }).then(response => {
             if (response.succeeded) {
-                history.push(`/post/list?type=${post.type}`)
+                history.push(`/post/list?type=${post.type}&language=${language(intl.locale)}`)
             } else {
                 message.error('ERROR');
             }
@@ -118,18 +130,6 @@ const PostSetting = () => {
 
     function handleChangeCategory(value: number[]) {
         setListCategoryId(value)
-    }
-
-    const handleUpload = (info: any) => {
-        if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-            setPost({ ...post, thumbnail: info.file.response.fileUrl })
-            message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
     }
 
     const handleRemoveFile = (file: any) => {
@@ -174,6 +174,8 @@ const PostSetting = () => {
         post.content = values.content;
         post.type = values.type;
         post.title = values.title;
+        post.thumbnail = values.thumbnail;
+        post.language = language(intl.locale);
         setLoading(true);
         if (id) {
             handleEdit()
@@ -183,85 +185,111 @@ const PostSetting = () => {
     }
 
     return (
-        <Card title="Bài viết">
-            <Form onFinish={onFinish} layout="vertical" form={form}>
-                <Row gutter={16}>
-                    <Col span={18}>
-                        <Form.Item name="title" label="Tiêu đề" rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập tiêu đề bài viết'
-                            }
-                        ]}>
-                            <Input />
-                        </Form.Item>
-                        <div className="mb-1">Mô tả</div>
-                        <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
+        <PageContainer>
+            <Card title="Bài viết">
+                <Form onFinish={onFinish} layout="vertical" form={form}>
+                    <Row gutter={16}>
+                        <Col span={18}>
+                            <Form.Item name="title" label="Tiêu đề" rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập tiêu đề bài viết'
+                                }
+                            ]}>
+                                <Input />
+                            </Form.Item>
+                            <div className="mb-1">Mô tả</div>
+                            <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
 
-                        <Form.Item name="content" label="Nội dung">
-                            <MyEditor name="content" />
-                        </Form.Item>
-                        <Space>
-                            <Button type="primary" htmlType="submit" loading={loading}>Lưu lại</Button>
-                            <Button onClick={() => history.push('/admin/post/list')}>Hủy</Button>
-                        </Space>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item label="Loại" name="type" rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng chọn loại bài viết'
-                            }
-                        ]}>
-                            <Select options={ListPostType} />
-                        </Form.Item>
+                            <Form.Item name="content" label="Nội dung">
+                                <MyEditor name="content" />
+                            </Form.Item>
+                            <Space>
+                                <Button type="primary" htmlType="submit" loading={loading}>Lưu lại</Button>
+                                <Button onClick={() => history.push('/admin/post/list')}>Hủy</Button>
+                            </Space>
+                        </Col>
+                        <Col span={6}>
+                            <Form.Item label="Loại" name="type" rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng chọn loại bài viết'
+                                }
+                            ]}>
+                                <Select options={ListPostType} />
+                            </Form.Item>
 
-                        <div className="mb-1">Danh mục</div>
-                        <Select
-                            mode="multiple"
-                            allowClear
-                            style={{ width: '100%' }}
-                            placeholder="Vui lòng chọn"
-                            onChange={handleChangeCategory} className="mb-2"
-                            value={listCategoryId} optionFilterProp="children" filterOption={(input, option: any) =>
-                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                            }
-                        >
-                            {
-                                listCategory?.map((category: any) => (
-                                    <Option key={category.id} value={category.id}>{category.name}</Option>
-                                ))
-                            }
-                        </Select>
+                            <div className="mb-1">Danh mục</div>
+                            <Select
+                                mode="multiple"
+                                allowClear
+                                style={{ width: '100%' }}
+                                placeholder="Vui lòng chọn"
+                                onChange={handleChangeCategory} className="mb-2"
+                                value={listCategoryId} optionFilterProp="children" filterOption={(input, option: any) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                {
+                                    listCategory?.map((category: any) => (
+                                        <Option key={category.id} value={category.id}>{category.name}</Option>
+                                    ))
+                                }
+                            </Select>
 
-                        <div className="mb-1">Ảnh đại diện</div>
-                        <div className="mb-2 flex">
-                            <Input value={post?.thumbnail} onChange={(e: any) => setPost({ ...post, thumbnail: e.target.value })} className="flex-grow" />
-                            <Upload action="/api/partner/upload" onChange={handleUpload} maxCount={1} showUploadList={false}>
-                                <Button icon={<UploadOutlined />}>Tải lên</Button>
-                            </Upload>
-                        </div>
-                        <img src={post?.thumbnail || 'https://placehold.jp/350x200.png'} alt="thumbnail" className="w-full object-fit-cover h-64" />
+                            <Space>
+                                <Form.Item label="Ảnh đại diện" name='thumbnail'>
+                                    <Input />
+                                </Form.Item>
+                                <Upload beforeUpload={(file) => {
+                                    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                                    if (!isJPG) {
+                                        message.error('You can only upload JPG or PNG file!');
+                                        return false;
+                                    } else {
+                                        const formData = new FormData();
+                                        formData.append('file', file);
+                                        request('file/upload', {
+                                            method: 'POST',
+                                            data: formData
+                                        }).then(response => {
+                                            if (!response.succeeded) {
+                                                message.error(response.message);
+                                                return false;
+                                            }
+                                            form.setFieldValue('thumbnail', response.url);
+                                            setPreviewImage(response.url)
+                                        })
+                                        return false;
+                                    }
+                                }} maxCount={1} showUploadList={false}>
+                                    <Button icon={<UploadOutlined />}>Tải lên</Button>
+                                </Upload>
+                            </Space>
+                            <div>
+                                <Image src={previewImage} />
+                            </div>
 
-                        <div className="mb-1">Ngày xuất bản</div>
-                        <div className="mb-2">
-                            <DatePicker onChange={(date, dateString) => setPost({ ...post, modifiedDate: date?.toDate() })} value={dayjs(post?.modifiedDate)} />
-                        </div>
+                            <div className="mb-1">Ngày xuất bản</div>
+                            <div className="mb-2">
+                                <DatePicker onChange={(date, dateString) => setPost({ ...post, modifiedDate: date?.toDate() })} value={dayjs(post?.modifiedDate)} />
+                            </div>
 
-                        <div className="mb-1">Tệp tin đính kèm</div>
-                        <div className="mb-2">
-                            <Dragger {...props}>
-                                <p className="ant-upload-drag-icon">
-                                    <InboxOutlined />
-                                </p>
-                                <p className="ant-upload-text">Chọn tệp tin đính kèm</p>
-                                <p className="ant-upload-hint">Lựa chọn tệp tin để tải lên. Hỗ trợ các định dạng thông dụng .docx, .xlsx, .pdf</p>
-                            </Dragger>
-                        </div>
-                    </Col>
-                </Row>
-            </Form>
-        </Card>
+                            <div className="mb-1">Tệp tin đính kèm</div>
+                            <div className="mb-2">
+                                <Dragger {...props}>
+                                    <p className="ant-upload-drag-icon">
+                                        <InboxOutlined />
+                                    </p>
+                                    <p className="ant-upload-text">Chọn tệp tin đính kèm</p>
+                                    <p className="ant-upload-hint">Lựa chọn tệp tin để tải lên. Hỗ trợ các định dạng thông dụng .docx, .xlsx, .pdf</p>
+                                </Dragger>
+                            </div>
+                        </Col>
+                    </Row>
+                </Form>
+            </Card>
+        </PageContainer>
     )
 }
 

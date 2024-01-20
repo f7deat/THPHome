@@ -1,5 +1,4 @@
 ﻿import { Button, Modal, Tabs, Card, Form, Input, message, TableColumnType, Space, InputNumber, Popconfirm, Row, Col, Select, Divider, List, Table } from "antd"
-import axios from "axios";
 import React, { useEffect, useState } from "react"
 import {
     DeleteOutlined, EditOutlined
@@ -52,8 +51,11 @@ const DepartmentDetail: React.FC = () => {
         if (values.id) {
 
         } else {
-            const response = await axios.post(`/api/department/add-detail`, values);
-            if (response.data.succeeded) {
+            const response = await request(`department/add-detail`, {
+                method: 'POST',
+                data: values
+            });
+            if (response.succeeded) {
                 message.success('Thành công!');
                 setOpen(false);
                 fetchData();
@@ -65,7 +67,7 @@ const DepartmentDetail: React.FC = () => {
         try {
             values.departmentId = id;
             if (values.id) {
-                const response = await request(`/api/department/update-user`, {
+                const response = await request(`department/update-user`, {
                     method: 'POST',
                     data: values
                 });

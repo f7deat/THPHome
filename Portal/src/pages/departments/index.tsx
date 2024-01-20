@@ -1,11 +1,11 @@
 ﻿import { Button, Modal, Table, Card, Form, Input, message, TableColumnType, Space, Popconfirm, Tabs, Empty } from "antd"
-import axios from "axios";
 import { useEffect, useState } from "react"
 import {
     FolderOutlined,
     DeleteOutlined
 } from "@ant-design/icons";
 import { history, request } from "@umijs/max";
+import { PageContainer } from "@ant-design/pro-components";
 
 const Department: React.FC = () => {
 
@@ -76,8 +76,8 @@ const Department: React.FC = () => {
     ]
 
     return (
-        <>
-            <Card title="Phòng ban">
+        <PageContainer>
+            <Card>
                 <Tabs
                     items={[
                         {
@@ -128,7 +128,7 @@ const Department: React.FC = () => {
                     </Form.Item>
                 </Form>
             </Modal>
-        </>
+        </PageContainer>
     )
 }
 

@@ -7,8 +7,8 @@ import {
     SaveOutlined,
     ArrowRightOutlined
 } from "@ant-design/icons";
-import axios from "axios";
 import { request } from "@umijs/max";
+import { PageContainer, ProCard } from "@ant-design/pro-components";
 
 const Localization: React.FC = () => {
 
@@ -96,8 +96,10 @@ const Localization: React.FC = () => {
     ]
 
     return (
-        <div>
-            <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
+        <PageContainer>
+            <ProCard>
+                <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
+            </ProCard>
 
             <Drawer
                 title="Cài đặt"
@@ -122,7 +124,7 @@ const Localization: React.FC = () => {
                     </Form.Item>
                 </Form>
             </Drawer>
-        </div>
+        </PageContainer>
     )
 }
 

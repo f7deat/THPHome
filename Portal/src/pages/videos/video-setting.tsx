@@ -7,8 +7,8 @@ import {
     SaveOutlined,
     ArrowRightOutlined
 } from "@ant-design/icons";
-import axios from "axios";
 import { Link, request } from "@umijs/max";
+import { PageContainer } from "@ant-design/pro-components";
 
 const { Option } = Select;
 
@@ -131,7 +131,7 @@ const VideoSetting = () => {
     ]
 
     return (
-        <div>
+        <PageContainer>
             <div className="mb-3">
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
             </div>
@@ -167,7 +167,7 @@ const VideoSetting = () => {
                     </Form.Item>
                 </Form>
             </Drawer>
-        </div>
+        </PageContainer>
     )
 }
 

@@ -1,7 +1,7 @@
 ﻿import { Form, InputProps, message } from "antd";
 import React, { useRef } from "react";
 import { Editor } from '@tinymce/tinymce-react';
-import axios from "axios";
+import { request } from "@umijs/max";
 
 const MyEditor: React.FC<InputProps> = (props) => {
 
@@ -41,14 +41,13 @@ const MyEditor: React.FC<InputProps> = (props) => {
 
                                 const formData = new FormData();
                                 formData.append("file", file);
-                                const response = await axios({
-                                    url: '/api/file/image/upload',
+                                const response = await request('file/image/upload', {
                                     data: formData,
                                     method: 'POST'
                                 });
-                                if (response.data) {
+                                if (response) {
                                     message.success('Tải lên thành công!');
-                                    callback(response.data.url, { alt: 'My alt text' });
+                                    callback(response.url, { alt: 'My alt text' });
                                 }
                             });
 

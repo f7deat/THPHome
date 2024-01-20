@@ -1,17 +1,19 @@
-﻿import { Button, Form, Input, message } from "antd";
-import axios from "axios";
-import React from "react";
+﻿import { request } from "@umijs/max";
+import { Button, Form, Input, message } from "antd";
 
 export const ChangePassword = () => {
     const onFinish = (values: any) => {
         if (values.newPassword !== values.confirmPassword) {
             return message.warning('Password not match')
         }
-        axios.post(`/api/user/change-password`, values).then(response => {
-            if (response.data.succeeded) {
+        request(`user/change-password`, {
+            method: 'POST',
+            data: values
+        }).then(response => {
+            if (response.succeeded) {
                 message.success('succeeded')
             } else {
-                response.data.errors.forEach((value: any) => {
+                response.errors.forEach((value: any) => {
                     message.error(value.description)
                 })
             }
