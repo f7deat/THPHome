@@ -3,7 +3,7 @@
 @if (Model != null)
 {
     <nav class="mb-3">
-        <ol class="flex bg-gray-100 px-4 list-none m-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
             @foreach (var item in Model)
             {
                 <li class="pr-4 py-1" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">

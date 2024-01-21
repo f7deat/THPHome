@@ -8,18 +8,19 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     var breadcrumbs = new List<Breadcrumb>
-{
+    {
         new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" }
     };
     for (int i = 0; i < Model.Categories.Count(); i++)
     {
-        breadcrumbs.Add(new Breadcrumb { Id = i + 2, Name = Model.Categories[i].Name, Url = $"/category/details/{Model.Categories[i].Id}", Icon = "fas fa-folder" });
+        breadcrumbs.Add(new Breadcrumb { Id = i + 2, Name = Model.Categories[i].Name ?? string.Empty, Url = $"/category/details/{Model.Categories[i].Id}", Icon = "fas fa-folder" });
     }
 }
 
 <div class="container">
 
     <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
+
     <div class="md:flex">
         <div class="md:w-8/12 md:mr-1">
             <h1 class="p-2 bg-gray-800 text-white font-bold rounded-t">
@@ -229,16 +230,6 @@
 
 </div>
 
-@{
-    var context = "\"@context\": \"https://schema.org\"";
-    var type = "\"@type\": \"NewsArticle\"";
-    var id = "\"@id\": \"https://google.com/article\"";
-    var type2 = "\"@type\": \"WebPage\"";
-    var type3 = "\"@type\": \"Person\"";
-    var type4 = "\"@type\": \"Organization\"";
-    var type5 = "\"@type\": \"ImageObject\"";
-}
-
 @section scripts {
     <script async charset="utf-8" src="//cdn.embedly.com/widgets/platform.js"></script>
     <script>
@@ -268,35 +259,6 @@
                 document.getElementById('report-modal').classList.add('hidden');
                 document.getElementById('report-thank').classList.remove('hidden');
             })
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-        @Html.Raw(context),
-        @Html.Raw(type),
-        "mainEntityOfPage": {
-        @Html.Raw(type2),
-        @Html.Raw(id)
-        },
-        "headline": "@Model.PageData.Title.Replace("\"", "")",
-        "image": [
-        "@Model.PageData.Thumbnail"
-        ],
-        "datePublished": "@Model.PageData.CreatedDate.ToString("o")",
-        "dateModified": "@Model.PageData.ModifiedDate.ToString("o")",
-        "author": {
-        @Html.Raw(type3),
-        "name": "Đinh Công Tân"
-        },
-        "publisher": {
-        @Html.Raw(type4),
-        "name": "defzone.net",
-        "logo": {
-        @Html.Raw(type5),
-        "url": "https://dhhp.edu.vn/favicon.ico"
-        }
-        },
-        "description": "@Model.PageData.Description?.Replace("\"", "")"
         }
     </script>
 }
