@@ -6,6 +6,8 @@ import './index.css';
 import { Helmet } from "@umijs/max";
 import { ApartmentOutlined, FacebookOutlined, GoogleOutlined } from "@ant-design/icons";
 import { apiLogin } from "@/services/user";
+import { useModel } from "@umijs/max";
+import { flushSync } from "react-dom";
 
 const { Password } = ProFormText;
 const { Content } = Layout;
@@ -13,58 +15,31 @@ const { Content } = Layout;
 const Login: React.FC = () => {
 
     const [loading, setLoading] = useState(false);
-    const formRef = useRef<FormInstance>();
+    const { initialState, setInitialState } = useModel('@@initialState');
 
-    useEffect(() => {
-        const token = localStorage.getItem('def_token');
-        if (true) {
-            history.push('/accounts/login');
-        } else {
-            setLoading(false)
-        }
-        const host = localStorage.getItem('baseURL');
-        if (host) {
-            formRef.current?.setFieldsValue({
-                name: 'host',
-                value: host
+    const fetchUserInfo = async () => {
+        const userInfo = await initialState?.fetchUserInfo?.();
+        if (userInfo) {
+            flushSync(() => {
+                setInitialState((s) => ({
+                    ...s,
+                    currentUser: userInfo,
+                }));
             });
         }
-    }, [])
-
-    function isValidHttpUrl(value: string) {
-        let url;
-
-        try {
-            url = new URL(value);
-        } catch (_) {
-            return false;
-        }
-
-        return url.protocol === "http:" || url.protocol === "https:";
-    }
+    };
 
     const onFinish = async (values: any) => {
-        apiLogin(values).then(response => {
-            if (response.succeeded) {
-                localStorage.setItem('wf_token', response.token || '');
-                history.push('/home')
-            } else {
-                message.error('Username or password incorrect!')
-            }
-        })
-    }
-
-    const handleNexStep = async (values: { host: string }) => {
-        if (isValidHttpUrl(values.host)) {
-            if (values.host.endsWith('/')) {
-                localStorage.setItem('baseURL', values.host + 'api/');
-            } else {
-                localStorage.setItem('baseURL', values.host + '/api/');
-            }
-            return true;
+        const response = await apiLogin(values);
+        if (response.succeeded) {
+            message.success('Đăng nhập thành công!')
+            localStorage.setItem('wf_token', response.token || '');
+            await fetchUserInfo();
+            const urlParams = new URL(window.location.href).searchParams;
+            history.push(urlParams.get('redirect') || '/');
+        } else {
+            message.error('Sai tên đăng nhập hoặc mật khẩu!')
         }
-        message.error('Please input valid URL. e.g: https://example.com');
-        return false;
     }
 
     return (

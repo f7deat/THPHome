@@ -237,11 +237,11 @@ const PostSetting = () => {
                                 }
                             </Select>
 
-                            <Space>
-                                <Form.Item label="Ảnh đại diện" name='thumbnail'>
-                                    <Input />
-                                </Form.Item>
-                                <Upload beforeUpload={(file) => {
+                            <div className='flex gap-2'>
+                                <Form.Item label="Ảnh đại diện" name='thumbnail' style={{
+                                    width: '100%'
+                                }}>
+                                    <Input suffix={<Upload beforeUpload={(file) => {
                                     const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
                                     if (!isJPG) {
                                         message.error('You can only upload JPG or PNG file!');
@@ -249,7 +249,7 @@ const PostSetting = () => {
                                     } else {
                                         const formData = new FormData();
                                         formData.append('file', file);
-                                        request('file/upload', {
+                                        request('file/image/upload', {
                                             method: 'POST',
                                             data: formData
                                         }).then(response => {
@@ -264,8 +264,10 @@ const PostSetting = () => {
                                     }
                                 }} maxCount={1} showUploadList={false}>
                                     <Button icon={<UploadOutlined />}>Tải lên</Button>
-                                </Upload>
-                            </Space>
+                                </Upload>}/>
+                                </Form.Item>
+                                
+                            </div>
                             <div>
                                 <Image src={previewImage} />
                             </div>

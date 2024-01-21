@@ -44,7 +44,7 @@ namespace WebUI.Api
         public async Task<IActionResult> ImageUploadAsync([FromForm] IFormFile file)
         {
             if (file is null) return BadRequest("File not found!");
-            var folder = Guid.NewGuid().ToString();
+            var folder = $"{DateTime.Now.Year}-{DateTime.Now.Month:00}-{DateTime.Now.Day}";
             var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", folder);
             if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
             var filePath = Path.Combine(uploadPath, file.FileName);
@@ -54,7 +54,8 @@ namespace WebUI.Api
                 await file.CopyToAsync(stream);
             }
 
-            return Ok(new { succeeded = true, url = $"/img/{folder}/{file.FileName}" });
+            var host = Request.Host.Value;
+            return Ok(new { succeeded = true, url = $"https://{host}/img/{folder}/{file.FileName}" });
         }
 
         [HttpGet("directories")]

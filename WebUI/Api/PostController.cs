@@ -16,6 +16,7 @@ using ApplicationCore.Helpers;
 using WebUI.Models.Api.Admin;
 using Infrastructure;
 using WebUI.Extensions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebUI.Api
 {
@@ -55,24 +56,36 @@ namespace WebUI.Api
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync([FromBody]PostParam post)
         {
-            var user = await _userManager.FindByIdAsync(User.GetId());
-            post.Post.CreatedBy = user.Id;
-            post.Post.ModifiedBy = user.Id;
-            if (string.IsNullOrWhiteSpace(post.Post.Thumbnail))
+            try
             {
-                post.Post.Thumbnail = "https://dhhp.edu.vn/files/f4567e2b-ef79-4bd1-86c4-c4a97a79fb19.png";
+                var user = await _userManager.FindByIdAsync(User.GetId());
+                if (user is null) return BadRequest("User not found!");
+                post.Post.CreatedBy = user.Id;
+                post.Post.ModifiedBy = user.Id;
+                if (string.IsNullOrWhiteSpace(post.Post.Thumbnail))
+                {
+                    post.Post.Thumbnail = "https://dhhp.edu.vn/files/f4567e2b-ef79-4bd1-86c4-c4a97a79fb19.png";
+                }
+                var data = await _postService.AddAsync(post.Post);
+                if (data.Id > 0)
+                {
+                    await _postCategoryService.AddAsync(post.ListCategoryId, data.Id);
+                    await _attachmentService.MapAsync(post.Attachments, data.Id);
+                }
+                if (_webHostEnvironment.IsProduction())
+                {
+                    _ = Telegram.SendMessageAsync($"{user.UserName} added: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+                }
+                return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
             }
-            var data = await _postService.AddAsync(post.Post);
-            if (data.Id > 0)
+            catch (Exception ex)
             {
-                await _postCategoryService.AddAsync(post.ListCategoryId, data.Id);
-                await _attachmentService.MapAsync(post.Attachments, data.Id);
+                if (_webHostEnvironment.IsProduction())
+                {
+                    _ = Telegram.SendMessageAsync($"CREATE ARTICLE ERROR: {ex}");
+                }
+                return BadRequest(ex.ToString());
             }
-            if (_webHostEnvironment.IsProduction())
-            {
-                _ = Telegram.SendMessageAsync($"{user.UserName} added: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
-            }
-            return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
         }
 
         [HttpPost("set-status")]
