@@ -107,7 +107,7 @@ const UserList = () => {
             title: '',
             render: (record: any) => (
                 <Space>
-                    <Link to={`/user/edit/${record.id}`}><Button icon={<EditOutlined />}></Button></Link>
+                    <Link to={`/users/edit/${record.id}`}><Button icon={<EditOutlined />}></Button></Link>
                     <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)}></Button>
                     <Popconfirm
                         title="Are you sure to delete?"

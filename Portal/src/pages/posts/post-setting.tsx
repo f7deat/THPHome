@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ListPostType } from '../../enum/post-enum'
 import IPost from './interfaces/post-model'
 import MyEditor from '../../components/my-editor';
-import { useParams, history, useIntl } from '@umijs/max';
+import { useParams, history, useIntl, getLocale } from '@umijs/max';
 import { request } from '@umijs/max';
 import dayjs from 'dayjs'
 import { PageContainer } from '@ant-design/pro-components';
@@ -210,14 +210,23 @@ const PostSetting = () => {
                             </Space>
                         </Col>
                         <Col span={6}>
-                            <Form.Item label="Loại" name="type" rules={[
-                                {
-                                    required: true,
-                                    message: 'Vui lòng chọn loại bài viết'
-                                }
-                            ]}>
-                                <Select options={ListPostType} />
-                            </Form.Item>
+                            <Row gutter={16}>
+                                <Col span={12}>
+                                    <Form.Item label="Loại" name="type" rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng chọn loại bài viết'
+                                        }
+                                    ]}>
+                                        <Select options={ListPostType} />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item label="Ngôn ngữ" tooltip="Chuyển ngôn ngữ trên thanh công cụ">
+                                        <Input disabled value={getLocale()} />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
 
                             <div className="mb-1">Danh mục</div>
                             <Select
@@ -242,39 +251,42 @@ const PostSetting = () => {
                                     width: '100%'
                                 }}>
                                     <Input suffix={<Upload beforeUpload={(file) => {
-                                    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-                                    if (!isJPG) {
-                                        message.error('You can only upload JPG or PNG file!');
-                                        return false;
-                                    } else {
-                                        const formData = new FormData();
-                                        formData.append('file', file);
-                                        request('file/image/upload', {
-                                            method: 'POST',
-                                            data: formData
-                                        }).then(response => {
-                                            if (!response.succeeded) {
-                                                message.error(response.message);
-                                                return false;
-                                            }
-                                            form.setFieldValue('thumbnail', response.url);
-                                            setPreviewImage(response.url)
-                                        })
-                                        return false;
-                                    }
-                                }} maxCount={1} showUploadList={false}>
-                                    <Button icon={<UploadOutlined />}>Tải lên</Button>
-                                </Upload>}/>
+                                        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                                        if (!isJPG) {
+                                            message.error('You can only upload JPG or PNG file!');
+                                            return false;
+                                        } else {
+                                            const formData = new FormData();
+                                            formData.append('file', file);
+                                            request('file/image/upload', {
+                                                method: 'POST',
+                                                data: formData
+                                            }).then(response => {
+                                                if (!response.succeeded) {
+                                                    message.error(response.message);
+                                                    return false;
+                                                }
+                                                form.setFieldValue('thumbnail', response.url);
+                                                setPreviewImage(response.url)
+                                            })
+                                            return false;
+                                        }
+                                    }} maxCount={1} showUploadList={false}>
+                                        <Button icon={<UploadOutlined />}>Tải lên</Button>
+                                    </Upload>} />
                                 </Form.Item>
-                                
+
                             </div>
-                            <div>
-                                <Image src={previewImage} />
+                            <div className='mb-4'>
+                                <Image src={previewImage} height={250} wrapperClassName='w-full' style={{
+                                    width: '100%',
+                                    objectFit: 'cover'
+                                }} />
                             </div>
 
                             <div className="mb-1">Ngày xuất bản</div>
                             <div className="mb-2">
-                                <DatePicker onChange={(date, dateString) => setPost({ ...post, modifiedDate: date?.toDate() })} value={dayjs(post?.modifiedDate)} />
+                                <DatePicker onChange={(date) => setPost({ ...post, modifiedDate: date?.toDate() })} value={dayjs(post?.modifiedDate)} />
                             </div>
 
                             <div className="mb-1">Tệp tin đính kèm</div>

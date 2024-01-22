@@ -14,6 +14,10 @@
     justify-content: space-between;
 }
 
+.items-center {
+    align-items: center;
+}
+
 .mb-1 {
     margin-bottom: 0.25rem;
 }
@@ -28,4 +32,12 @@
 
 .mb-4 {
     margin-bottom: 1rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-full {
+    height: 100%;
 }

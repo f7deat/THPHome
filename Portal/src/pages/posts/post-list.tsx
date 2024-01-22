@@ -4,7 +4,6 @@ import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
-    FileExcelTwoTone,
     SearchOutlined
 } from '@ant-design/icons';
 import moment from "moment";
@@ -85,7 +84,7 @@ const PostList = () => {
         },
         {
             title: 'Tiêu đề',
-            render: (record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank">{record.title}</a>
+            render: (record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank" rel="noreferrer">{record.title}</a>
         },
         {
             title: 'Lượt xem',

@@ -1,6 +1,5 @@
 ﻿import { Tabs, Button, Typography, Space, Card, Form, Input, message } from "antd";
 import React, { useEffect, useState } from "react";
-import { IUsePrams } from "../../interfaces/use-params";
 import { UserInterface } from "../../interfaces/user-interfaces";
 import { ChangePassword } from "./components/change-password";
 import { request, useParams } from "@umijs/max";
@@ -20,11 +19,11 @@ const UserEdit = () => {
                 form.setFields([
                     {
                         name: 'name',
-                        value: response.data.name
+                        value: response.name
                     },
                     {
                         name: 'jobTitle',
-                        value: response.data.jobTitle
+                        value: response.jobTitle
                     }
                 ])
             })
@@ -49,7 +48,8 @@ const UserEdit = () => {
     const onFinishProfile = async (values: any) => {
         values.id = id;
         const response = await request(`user/update`, {
-            method: 'POST'
+            method: 'POST',
+            data: values
         });
         if (response.succeeded) {
             message.success('Thành công!');

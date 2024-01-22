@@ -2,7 +2,13 @@ import { defineConfig } from '@umijs/max';
 import defaultSettings from './config/defaultSetting';
 
 export default defineConfig({
-  antd: {},
+  antd: {
+    theme: {
+      token: {
+        colorPrimary: '#00387a'
+      }
+    }
+  },
   access: {},
   model: {},
   initialState: {},
@@ -75,7 +81,23 @@ export default defineConfig({
       icon: 'TeamOutlined',
       name: 'Người dùng',
       path: '/users',
-      component: './users/user-list',
+      routes: [
+        {
+          path: '/users',
+          redirect: '/users/list',
+        },
+        {
+          name: 'Danh sách',
+          path: '/users/list',
+          component: './users/user-list'
+        },
+        {
+          name: 'Chỉnh sửa người dùng',
+          path: '/users/edit/:id',
+          component: './users/user-edit',
+          hideInMenu: true
+        }
+      ]
     },
     {
       icon: 'SolutionOutlined',
