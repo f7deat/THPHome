@@ -257,33 +257,6 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
         }).ToListAsync());
     }
 
-    [HttpGet("init"), AllowAnonymous]
-    public async Task<IActionResult> InitAsync()
-    {
-        var user = new ApplicationUser
-        {
-            Name = "Đinh Công Tân",
-            UserName = "tandc",
-            Email = "defzone.net@gmail.com"
-        };
-        var user2 = new ApplicationUser
-        {
-            Name = "Nguyễn Ngọc Khương",
-            UserName = "khuongnn",
-            Email = "khuongnn@dhhp.edu.vn"
-        };
-        var role = new IdentityRole
-        {
-            Name = RoleName.ADMIN
-        };
-        await _userManager.CreateAsync(user, "Password@123");
-        await _userManager.CreateAsync(user2, "Password@123");
-        await _roleManager.CreateAsync(role);
-        await _userManager.AddToRoleAsync(user, RoleName.ADMIN);
-        await _userManager.AddToRoleAsync(user2, RoleName.ADMIN);
-        return Ok();
-    }
-
     [HttpPost("update")]
     public async Task<IActionResult> UpdateAsync([FromBody] ApplicationUser args)
     {

@@ -10,10 +10,6 @@ using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Interfaces.IRepository;
 using Infrastructure.Repositories;
 using ApplicationCore.Services;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using Microsoft.AspNetCore.Http;
-using System;
-using Microsoft.Net.Http.Headers;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Entities;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -21,17 +17,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebUI.Options;
+using WebUI.Interfaces.IService;
+using WebUI.Services;
 
 namespace WebUI;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-    public Startup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
@@ -63,6 +56,8 @@ public class Startup
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+        services.AddTransient<ITelegramService, TelegramService>();
+
         services.AddControllersWithViews();
         services.Configure<SettingOptions>(Configuration.GetSection(SettingOptions.Settings));
         services.AddCors();
@@ -83,7 +78,7 @@ public class Startup
             ValidateAudience = false
         };
     });
-
+        services.AddHttpClient();
         services.AddSession();
         services.AddRazorPages();
     }
