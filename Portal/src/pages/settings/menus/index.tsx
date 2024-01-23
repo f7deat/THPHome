@@ -126,8 +126,12 @@ const MenuSetting = () => {
 
     const onFinish = (values: any) => {
         let url = '';
-        values.type = Number(currentType)
-        values.parrentId = menu?.id;
+        values.type = Number(currentType);
+        if (!values.parrentId) {
+            values.parrentId = 0;
+        } else {
+            values.parrentId = Number(values.parrentId);
+        }
         if (values.id) {
             url = `menu/update`;
         } else {

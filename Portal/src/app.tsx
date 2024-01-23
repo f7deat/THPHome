@@ -55,6 +55,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     waterMarkProps: {
       content: 'dhhp.edu.vn'
     },
+    token: {
+        sider: {
+          colorMenuBackground: '#00387a',
+          colorBgMenuItemHover: '#D02929',
+          colorTextMenu: '#FFFFFF',
+          colorTextMenuSelected: '#FFFFFF',
+          colorTextMenuItemHover: '#FFFFFF',
+          colorTextMenuActive: '#FFFFFF',
+          colorBgMenuItemSelected: '#D02929',
+          colorTextMenuSecondary: '#FFFFFF',
+          colorTextMenuTitle: '#FFFFFF',
+        },
+    },
     footerRender: () => (
       <DefaultFooter copyright="Produced by Hai Phong University" links={[
         {

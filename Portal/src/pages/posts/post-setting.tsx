@@ -186,7 +186,7 @@ const PostSetting = () => {
 
     return (
         <PageContainer>
-            <Card title="Bài viết">
+            <Card>
                 <Form onFinish={onFinish} layout="vertical" form={form}>
                     <Row gutter={16}>
                         <Col span={18}>
