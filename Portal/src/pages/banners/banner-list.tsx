@@ -1,5 +1,7 @@
-﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload, Form, Space } from "antd"
+﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload, Form, Space, Image } from "antd"
 import {
+    DeleteOutlined,
+    EditOutlined,
     PlusOutlined,
     SaveOutlined,
     UploadOutlined
@@ -8,7 +10,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BANNER_TYPE, LIST_BANNER_TYPE } from "./enums/banner-type";
 import FileExplorer from "../files/file-explorer";
 import { request } from "@umijs/max";
-import { PageContainer } from "@ant-design/pro-components";
+import { PageContainer, ProCard } from "@ant-design/pro-components";
 
 const { Option } = Select;
 
@@ -93,6 +95,13 @@ const BannerList = () => {
         setExplorerVisible(false)
     }
 
+    const absoluteUri = (url: string) => {
+        if (!url.startsWith('http')) {
+            return `https://dhhp.edu.vn${url}`;
+        }
+        return url;
+    }
+
     return (
         <PageContainer>
             <div className="mb-4">
@@ -102,32 +111,30 @@ const BannerList = () => {
             </div>
             <Row gutter={16}>
                 <Col span={6}>
-                    <div className="h-40 w-full bg-white border border-dashed border-gray-500 flex justify-center items-center hover:border-blue-600 cursor-pointer hover:text-blue-600" onClick={() => showDrawer({})}>
+                    <ProCard className="h-full flex items-center justify-center mb-4"  onClick={() => showDrawer({})}>
                         <PlusOutlined />
-                    </div>
+                    </ProCard>
                 </Col>
                 {
                     listBanner && listBanner.map((item: any) => (
                         <Col span={6} key={item.id}>
-                            <div className="relative w-full bg-white border border-dashed border-gray-500 flex justify-center items-center hover:border-blue-600 hover:text-blue-600">
-                                <img src={item.image} alt={item.name} className="object-fit-cover w-full h-40" />
-                                <div className="flex absolute bottom-0 w-full">
-                                    <div className="w-1/2 flex justify-center py-1 bg-white cursor-pointer hover:bg-red-500 hover:text-white" onClick={() => showDrawer(item)}>
-                                        Chi tiết
-                                    </div>
-                                    <Popconfirm
-                                        title="Are you sure to delete?"
-                                        okText="Yes"
-                                        cancelText="No"
-                                        onConfirm={() => handleDelete(item.id)}
-                                    >
-                                        <div className="w-1/2 flex justify-center py-1 bg-white cursor-pointer hover:bg-red-500 hover:text-white">
-                                            Xóa
-                                        </div>
-                                    </Popconfirm>
-
+                            <ProCard className="mb-4" actions={[
+                                <EditOutlined key="edit" onClick={() => showDrawer(item)} />,
+                                <Popconfirm key="delete"
+                                    title="Are you sure to delete?"
+                                    okText="Yes"
+                                    cancelText="No"
+                                    onConfirm={() => handleDelete(item.id)}
+                                >
+                                    <DeleteOutlined />
+                                </Popconfirm>
+                            ]}>
+                                <div className="relative w-full bg-white border border-dashed border-gray-500 flex justify-center items-center hover:border-blue-600 hover:text-blue-600">
+                                    <Image src={absoluteUri(item.image)} alt={item.name} height={200} wrapperClassName="w-full" style={{
+                                        objectFit: 'cover'
+                                    }} />
                                 </div>
-                            </div>
+                            </ProCard>
                         </Col>
                     ))
                 }
