@@ -27,20 +27,22 @@ export const TabContentDepartment: React.FC<TabContentProps> = (props) => {
     useEffect(() => {
         if (activeTab) {
             request(`department/detail/content/${activeTab}`).then(response => {
-                formType.setFields([
-                    {
-                        name: 'id',
-                        value: response.data.id
-                    },
-                    {
-                        name: 'type',
-                        value: response.data.type
-                    },
-                    {
-                        name: 'content',
-                        value: response.data.content
-                    }
-                ])
+                if (response.data) {
+                    formType.setFields([
+                        {
+                            name: 'id',
+                            value: response.data.id
+                        },
+                        {
+                            name: 'type',
+                            value: response.data.type
+                        },
+                        {
+                            name: 'content',
+                            value: response.data.content
+                        }
+                    ])
+                }
             })
         }
     }, [])

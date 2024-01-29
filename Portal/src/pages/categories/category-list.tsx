@@ -9,7 +9,7 @@ import {
     SearchOutlined
 } from "@ant-design/icons";
 import { request, useIntl } from "@umijs/max";
-import { PageContainer, ProTable } from "@ant-design/pro-components";
+import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { language } from "@/utils/format";
 
 const { TextArea } = Input;
@@ -124,10 +124,11 @@ const CategoryList = () => {
         })
     }
 
-    const columns = [
+    const columns : ProColumnType<any>[] = [
         {
             title: "Id",
             dataIndex: "id",
+            search: false
         },
         {
             title: "Tên danh mục",
@@ -154,6 +155,7 @@ const CategoryList = () => {
         },
         {
             title: "",
+            valueType: 'option',
             render: (record: any) => (
                 <Space>
                     <Button

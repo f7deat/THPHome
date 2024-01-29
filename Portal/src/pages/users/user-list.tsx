@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from "@umijs/max";
 import { request } from "@umijs/max";
-import { PageContainer } from "@ant-design/pro-components";
+import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 
 const UserList = () => {
 
@@ -83,7 +83,11 @@ const UserList = () => {
         })
     }
 
-    const columns = [
+    const columns : ProColumnType<any>[] = [
+        {
+            title: '#',
+            valueType: 'indexBorder'
+        },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -105,10 +109,11 @@ const UserList = () => {
         },
         {
             title: '',
+            valueType: 'option',
             render: (record: any) => (
                 <Space>
-                    <Link to={`/users/edit/${record.id}`}><Button icon={<EditOutlined />}></Button></Link>
-                    <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)}></Button>
+                    <Link to={`/users/edit/${record.id}`}><Button icon={<EditOutlined />} size="small"></Button></Link>
+                    <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)} size="small"></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
                         okText="Yes"
@@ -123,7 +128,7 @@ const UserList = () => {
                             }
                         }}
                     >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
+                        <Button type="primary" danger icon={<DeleteOutlined />} size="small"></Button>
                     </Popconfirm>
                 </Space>
             )
@@ -185,16 +190,13 @@ const UserList = () => {
     }
 
     return (
-        <PageContainer>
+        <PageContainer extra={<Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAdd}>Thêm thành viên</Button>}>
             <div className="bg-white p-4">
-                <div className="flex justify-between mb-3">
-                    <Space>
-                        <Input onChange={(e) => setSearchTerm(e.currentTarget.value)} />
-                        <Button icon={<SearchOutlined />} type="primary" onClick={() => fetchUsers()}>Tìm kiếm</Button>
-                    </Space>
-                    <Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAdd}>Thêm thành viên</Button>
-                </div>
-                <Table dataSource={listUser} columns={columns} rowKey="id" />
+                <ProTable
+                search={{
+                    layout: 'vertical'
+                }}
+                dataSource={listUser} columns={columns} rowKey="id" />
             </div>
             <Modal title="Assign Role" visible={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)} bodyStyle={{ padding: 0 }}>
                 <div className="p-2 flex justify-between">

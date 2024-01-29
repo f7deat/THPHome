@@ -1,4 +1,4 @@
-﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Spin, Upload, UploadProps, Image } from 'antd'
+﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Spin, Upload, UploadProps, Image, Empty } from 'antd'
 import {
     UploadOutlined,
     InboxOutlined
@@ -272,16 +272,20 @@ const PostSetting = () => {
                                             return false;
                                         }
                                     }} maxCount={1} showUploadList={false}>
-                                        <Button icon={<UploadOutlined />}>Tải lên</Button>
+                                        <Button icon={<UploadOutlined />} size='small'>Tải lên</Button>
                                     </Upload>} />
                                 </Form.Item>
 
                             </div>
                             <div className='mb-4'>
-                                <Image src={previewImage} height={250} wrapperClassName='w-full' style={{
-                                    width: '100%',
-                                    objectFit: 'cover'
-                                }} />
+                                {
+                                    previewImage ? (
+                                        <Image src={previewImage} height={200} wrapperClassName='w-full' style={{
+                                            width: '100%',
+                                            objectFit: 'cover'
+                                        }} />
+                                    ) : <Empty />
+                                }
                             </div>
 
                             <div className="mb-1">Ngày xuất bản</div>
@@ -296,7 +300,7 @@ const PostSetting = () => {
                                         <InboxOutlined />
                                     </p>
                                     <p className="ant-upload-text">Chọn tệp tin đính kèm</p>
-                                    <p className="ant-upload-hint">Lựa chọn tệp tin để tải lên. Hỗ trợ các định dạng thông dụng .docx, .xlsx, .pdf</p>
+                                    <p className="ant-upload-hint">Hỗ trợ các định dạng thông dụng .docx, .xlsx, .pdf</p>
                                 </Dragger>
                             </div>
                         </Col>
