@@ -2,7 +2,3 @@
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 })
-
-AOS.init({
-    duration: 1000
-});

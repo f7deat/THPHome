@@ -7,7 +7,7 @@
     Layout = null;
 }
 
-<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 md:justify-content-center mb-md-0">
     @foreach (var item in Model.Where(x => x.ParrentId == 0))
     {
         if (item.Mode == MenuMode.Mega)
@@ -24,7 +24,7 @@
                             {
                                 <li>
                                     <a class="header" href="@mega1.Url">
-                                        <i class="ubermenu-icon fa fa-sign-in"></i><span class="ubermenu-target-title ubermenu-target-text text-uppercase">@mega1.Name</span>
+                                        <span class="ubermenu-target-title ubermenu-target-text text-uppercase">@mega1.Name</span>
                                     </a>
                                     @{
                                         if (mega1.Children != null)

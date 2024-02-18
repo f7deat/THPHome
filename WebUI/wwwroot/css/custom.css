@@ -1,5 +1,5 @@
 ﻿:root {
-    --primary: #101c53;
+    --primary: #00387a;
     --danger: #fa5c7c;
     --darka: #005a9c;
     --dark: #00387a;
@@ -158,6 +158,7 @@ input:focus {
     .top-menu a {
         color: #fff;
         font-weight: 500;
+        padding: 0.25rem;
     }
 
         .top-menu a:hover {
@@ -179,7 +180,7 @@ input:focus {
     }
 
 .main-menu .nav-link {
-    padding: 1rem;
+    padding: 0.5rem;
 }
 
     .main-menu .nav-link:hover {
@@ -286,10 +287,22 @@ li.dropdown:hover .dropdown-menu {
     .statistics .des {
         text-align: center;
     }
+.navbar-toggler {
+    --bs-navbar-color: white;
+}
+
+.offcanvas {
+    --bs-offcanvas-width: 250px;
+    --bs-offcanvas-bg: var(--primary);
+}
 
 @media screen and (min-width: 768px) {
     .carousel-item img {
         height: 364px;
+    }
+
+    .main-menu .nav-link {
+        padding: 1rem;
     }
 
     .dropdown-mega.show, li.dropdown:hover .dropdown-mega {
@@ -299,6 +312,10 @@ li.dropdown:hover .dropdown-menu {
 
     .statistics .flex {
         border-right: 4px solid #fff;
+    }
+
+    .top-menu a {
+        padding: 0.5rem 1rem;
     }
 }
 
