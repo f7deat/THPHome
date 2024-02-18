@@ -11,7 +11,7 @@ import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
 import { Link, request, useIntl, useParams, useSearchParams } from "@umijs/max";
 import { language } from "@/utils/format";
-import { PageContainer } from "@ant-design/pro-components";
+import { PageContainer, ProCard } from "@ant-design/pro-components";
 
 const { TabPane } = Tabs;
 
@@ -94,10 +94,10 @@ const PostList = () => {
             title: 'Trạng thái',
             render: (record: IPost) => (
                 <Tooltip title="Nhấp để chuyển trạng thái">
-                    <Tag color={record.status == 1 ? 'cyan' : 'gold'} onClick={() => setActive(record.id || 0)} style={{
+                    <Tag color={record.status === 1 ? 'cyan' : 'gold'} onClick={() => setActive(record.id || 0)} style={{
                         cursor: 'pointer'
                     }}>
-                        {record.status == 1 ? 'xuất bản' : 'chờ duyệt'}
+                        {record.status === 1 ? 'xuất bản' : 'chờ duyệt'}
                     </Tag>
                 </Tooltip>
             )
@@ -111,14 +111,14 @@ const PostList = () => {
             title: '',
             render: (record: IPost) => (
                 <Space>
-                    <Link to={`/post/setting/${record.id}`}><Button type="primary" icon={<EditOutlined />}></Button></Link>
+                    <Link to={`/post/setting/${record.id}`}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>
                     <Popconfirm
                         title="Are you sure to delete?"
                         onConfirm={() => remove(record.id || 0)}
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
+                        <Button type="primary" size="small" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
                 </Space>
             )
@@ -126,54 +126,51 @@ const PostList = () => {
     ]
 
     return (
-        <PageContainer>
-            <div className="flex justify-between mb-3">
-                <Space>
-                    <Input placeholder="Nhập từ khóa..." onChange={(e: any) => setSerchTerm(e.target.value)} />
-                    <Button type="primary" icon={<SearchOutlined />} onClick={initCallback}>Tìm kiếm</Button>
-                </Space>
-                <Space>
-                    <Link to="/post/setting"><Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button></Link>
-                </Space>
-            </div>
-            <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey}>
-                <TabPane tab="Trang" key="1">
-                    <Table dataSource={posts}
-                        columns={columns}
-                        rowSelection={{
-                            type: 'checkbox',
-                        }}
-                        loading={loading}
-                        rowKey="id"
-                        pagination={pagination}
-                        onChange={handleTableChange}
-                    />
-                </TabPane>
-                <TabPane tab="Tin tức" key="2">
-                    <Table dataSource={posts}
-                        columns={columns}
-                        rowSelection={{
-                            type: 'checkbox',
-                        }}
-                        loading={loading}
-                        rowKey="id"
-                        pagination={pagination}
-                        onChange={handleTableChange}
-                    />
-                </TabPane>
-                <TabPane tab="Thông báo" key="3">
-                    <Table dataSource={posts}
-                        columns={columns}
-                        rowSelection={{
-                            type: 'checkbox',
-                        }}
-                        loading={loading}
-                        rowKey="id"
-                        pagination={pagination}
-                        onChange={handleTableChange}
-                    />
-                </TabPane>
-            </Tabs>
+        <PageContainer extra={<Link to="/post/setting"><Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button></Link>}>
+            <ProCard>
+                <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey} type="card"
+                    tabBarExtraContent={<Space>
+                        <Input placeholder="Nhập từ khóa..." onChange={(e: any) => setSerchTerm(e.target.value)} />
+                        <Button type="primary" icon={<SearchOutlined />} onClick={initCallback}>Tìm kiếm</Button>
+                    </Space>}>
+                    <TabPane tab="Trang" key="1">
+                        <Table dataSource={posts}
+                            columns={columns}
+                            rowSelection={{
+                                type: 'checkbox',
+                            }}
+                            loading={loading}
+                            rowKey="id"
+                            pagination={pagination}
+                            onChange={handleTableChange}
+                        />
+                    </TabPane>
+                    <TabPane tab="Tin tức" key="2">
+                        <Table dataSource={posts}
+                            columns={columns}
+                            rowSelection={{
+                                type: 'checkbox',
+                            }}
+                            loading={loading}
+                            rowKey="id"
+                            pagination={pagination}
+                            onChange={handleTableChange}
+                        />
+                    </TabPane>
+                    <TabPane tab="Thông báo" key="3">
+                        <Table dataSource={posts}
+                            columns={columns}
+                            rowSelection={{
+                                type: 'checkbox',
+                            }}
+                            loading={loading}
+                            rowKey="id"
+                            pagination={pagination}
+                            onChange={handleTableChange}
+                        />
+                    </TabPane>
+                </Tabs>
+            </ProCard>
         </PageContainer>
     )
 }

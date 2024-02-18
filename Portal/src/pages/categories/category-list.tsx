@@ -9,7 +9,7 @@ import {
     SearchOutlined
 } from "@ant-design/icons";
 import { request, useIntl } from "@umijs/max";
-import { PageContainer } from "@ant-design/pro-components";
+import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { language } from "@/utils/format";
 
 const { TextArea } = Input;
@@ -124,10 +124,11 @@ const CategoryList = () => {
         })
     }
 
-    const columns = [
+    const columns : ProColumnType<any>[] = [
         {
             title: "Id",
             dataIndex: "id",
+            search: false
         },
         {
             title: "Tên danh mục",
@@ -149,19 +150,22 @@ const CategoryList = () => {
         {
             title: "Status",
             render: (record: any) => (
-                <Switch defaultChecked={record.status === 1} onChange={(e: boolean) => handleChangeStatus(record, e)} />
+                <Switch size="small" defaultChecked={record.status === 1} onChange={(e: boolean) => handleChangeStatus(record, e)} />
             ),
         },
         {
             title: "",
+            valueType: 'option',
             render: (record: any) => (
                 <Space>
                     <Button
                         type="primary"
+                        size="small"
                         icon={<FolderOutlined />}
                         onClick={() => drawPosts(record)}
                     ></Button>
                     <Button
+                        size="small"
                         icon={<EditOutlined />}
                         onClick={() => handleEdit(record)}
                     ></Button>
@@ -171,7 +175,8 @@ const CategoryList = () => {
                         cancelText="No"
                         onConfirm={() => handleRemove(record.id)}
                     >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
+                        <Button type="primary"
+                        size="small" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
                 </Space>
             ),
@@ -210,16 +215,19 @@ const CategoryList = () => {
     }
 
     return (
-        <PageContainer>
-            <Space className="mb-2">
-                <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-                    Tạo mới
-                </Button>
-                <Button icon={<ArrowLeftOutlined />} onClick={() => setId(0)} hidden={id === 0}>
-                    Back
-                </Button>
-            </Space>
-            <Table
+        <PageContainer extra={<Space className="mb-2">
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+                Tạo mới
+            </Button>
+            <Button icon={<ArrowLeftOutlined />} onClick={() => setId(0)} hidden={id === 0}>
+                Back
+            </Button>
+        </Space>}>
+
+            <ProTable
+                search={{
+                    layout: 'vertical'
+                }}
                 dataSource={categories}
                 columns={columns}
                 rowKey="id"
@@ -238,7 +246,7 @@ const CategoryList = () => {
                     <Button type="primary" icon={<SearchOutlined />}></Button>
                 </Space>
                 {
-                    <Table
+                    <ProTable
                         dataSource={posts}
                         columns={postColumns}
                         rowSelection={{}}
