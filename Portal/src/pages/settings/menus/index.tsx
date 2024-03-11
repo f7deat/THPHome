@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import Card from "antd/lib/card/Card";
 import { request, useIntl } from "@umijs/max";
-import { PageContainer, ProFormSelect } from "@ant-design/pro-components";
+import { PageContainer, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { queryMenuOptions } from "@/services/menu";
 import { language } from "@/utils/format";
 
@@ -180,18 +180,18 @@ const MenuSetting = () => {
             title: 'Tác vụ',
             render: (record: any) => (
                 <Space>
-                    <Button type="primary" icon={<PlusOutlined />} onClick={() => {
+                    <Button size="small" type="primary" icon={<PlusOutlined />} onClick={() => {
                         setMenu(record);
                         setVisible(true);
                     }}></Button>
-                    <Button icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
+                    <Button size="small" icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
                         okText="Yes"
                         cancelText="No"
                         onConfirm={() => handleRemove(record.id)}
                     >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
+                        <Button type="primary" danger icon={<DeleteOutlined />} size="small"></Button>
                     </Popconfirm>
                 </Space>
             ),
@@ -225,7 +225,7 @@ const MenuSetting = () => {
                     placement="right"
                     closable={false}
                     onClose={onClose}
-                    visible={visible}
+                    open={visible}
                     width={700}
                 >
                     <Form onFinish={onFinish} layout="vertical" fields={fields} form={form}>
@@ -242,9 +242,31 @@ const MenuSetting = () => {
                             <Input />
                         </Form.Item>
 
-                        <ProFormSelect label="Menu cha" name="parrentId" allowClear showSearch request={() => {
-                            return queryMenuOptions(language(intl.locale));
-                        }} />
+                        <Row gutter={16}>
+                            <Col span={16}>
+                                <ProFormSelect label="Menu cha" name="parrentId" allowClear showSearch request={() => {
+                                    return queryMenuOptions(language(intl.locale));
+                                }} />
+                            </Col>
+                            <Col span={8}>
+                                <ProFormSelect disabled
+                                    options={[
+                                        {
+                                            label: 'Top Menu',
+                                            value: '1'
+                                        },
+                                        {
+                                            label: 'Menu Menu',
+                                            value: '2'
+                                        },
+                                        {
+                                            label: 'Box Menu',
+                                            value: '3'
+                                        }
+                                    ]}
+                                    label="Loại" name="type" initialValue={currentType} />
+                            </Col>
+                        </Row>
 
                         <Form.Item label="Ảnh đại diện" name="thumbnail">
                             <Input />

@@ -1,8 +1,5 @@
-import Guide from '@/components/Guide';
-import { trim } from '@/utils/format';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { request, useModel } from '@umijs/max';
-import styles from './index.less';
+import { FormattedNumber, request, useModel } from '@umijs/max';
 import { Card, Col, List, Row, Statistic } from 'antd';
 import { useEffect, useState } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
@@ -33,7 +30,7 @@ const HomePage: React.FC = () => {
                 className="p-4"
               />
               <div className="border-t px-4 py-2">
-                Số bài viết: {postCount}
+                Số bài viết: <FormattedNumber value={postCount} />
               </div>
             </ProCard>
             <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
@@ -73,7 +70,7 @@ const HomePage: React.FC = () => {
                 dataSource={posts}
                 renderItem={(item: any) => (
                   <List.Item>
-                    <a href={`/post/${item.url}-${item.id}.html`} target="_blank" rel="noreferrer">{item.title}</a> - <span className="text-sm text-gray-400">{item.view} <EyeOutlined /></span>
+                    <a href={`/post/${item.url}-${item.id}.html`} target="_blank" rel="noreferrer">{item.title}</a> - <span className="text-sm text-gray-400">{<FormattedNumber value={item.view} />} <EyeOutlined /></span>
                   </List.Item>
                 )}
               />

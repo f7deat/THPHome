@@ -8,7 +8,7 @@ import {
     ArrowRightOutlined
 } from "@ant-design/icons";
 import { Link, request } from "@umijs/max";
-import { PageContainer } from "@ant-design/pro-components";
+import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 
 const { Option } = Select;
 
@@ -97,10 +97,10 @@ const VideoSetting = () => {
         setVisible(false)
     };
 
-    const columns = [
+    const columns : ProColumnType<any>[] = [
         {
             title: '#',
-            dataIndex: "index"
+            valueType: 'indexBorder'
         },
         {
             title: 'Name',
@@ -116,33 +116,35 @@ const VideoSetting = () => {
             title: '',
             render: (record: any) => (
                 <Space>
-                    <Button icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
+                    <Button size="small" type="primary" icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
                         okText="Yes"
                         cancelText="No"
                         onConfirm={() => handleRemove(record.id)}
                     >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
+                        <Button size="small" type="primary" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
                 </Space>
-            )
+            ),
+            valueType: 'option'
         }
     ]
 
     return (
-        <PageContainer>
-            <div className="mb-3">
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
-            </div>
-            <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
+        <PageContainer extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>}>
+            <ProTable
+                search={{
+                    layout: "vertical"
+                }}
+                dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
 
             <Drawer
                 title="Cài đặt"
                 placement="right"
                 closable={false}
                 onClose={onClose}
-                visible={visible}
+                open={visible}
                 width={700}
             >
                 <Form onFinish={onFinish} layout="vertical" fields={fields} form={form}>

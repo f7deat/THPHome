@@ -5,7 +5,7 @@ const defaultSettings: ProLayoutProps = {
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,
-  title: 'Trường DH Hải Phòng'
+  title: 'Trường ĐH Hải Phòng'
 };
 
 export default defaultSettings;

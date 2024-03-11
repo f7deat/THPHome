@@ -1,4 +1,3 @@
-// 运行时配置
 import { history } from '@umijs/max';
 import { queryCurrentUser } from './services/user';
 import { RequestConfig } from '@umijs/max';
@@ -11,8 +10,6 @@ import { AvatarDropdown } from './components/right-content/avatar-dropdown';
 import { SelectLang } from '@umijs/max';
 import { Question } from './components/right-content';
 import './style.css';
-// 全局初始化数据配置，用于 Layout 用户信息和权限初始化
-// 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate
 const loginPath = '/accounts/login';
 
 export async function getInitialState(): Promise<{
@@ -41,7 +38,7 @@ export async function getInitialState(): Promise<{
   }
   return {
     fetchUserInfo,
-    name: '@umijs/max',
+    name: 'dhhp.edu.vn',
   };
 }
 
@@ -53,7 +50,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
     layout: 'mix',
     waterMarkProps: {
-      content: 'dhhp.edu.vn'
+      content: initialState?.name
     },
     token: {
         sider: {

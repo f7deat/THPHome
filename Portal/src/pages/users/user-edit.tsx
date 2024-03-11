@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { UserInterface } from "../../interfaces/user-interfaces";
 import { ChangePassword } from "./components/change-password";
 import { request, useParams } from "@umijs/max";
+import { PageContainer } from "@ant-design/pro-components";
 
 const { TabPane } = Tabs;
 
@@ -57,7 +58,7 @@ const UserEdit = () => {
     }
 
     return (
-        <div className="bg-white rounded">
+        <PageContainer className="bg-white rounded">
             <Card title={user?.name}>
                 <Tabs defaultActiveKey="1" tabPosition="left">
                     <TabPane tab="Hồ sơ" key="1">
@@ -105,7 +106,7 @@ const UserEdit = () => {
                     </TabPane>
                 </Tabs>
             </Card>
-        </div>
+        </PageContainer>
     )
 }
 

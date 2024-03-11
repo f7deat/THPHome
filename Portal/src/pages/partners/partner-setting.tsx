@@ -10,6 +10,7 @@ import {
     SearchOutlined
 } from "@ant-design/icons";
 import { request } from "@umijs/max";
+import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 
 const PartnerSetting = () => {
 
@@ -116,10 +117,11 @@ const PartnerSetting = () => {
         setVisible(false)
     };
 
-    const columns = [
+    const columns: ProColumnType<any>[] = [
         {
             title: 'STT',
-            dataIndex: "index"
+            valueType: 'indexBorder',
+            width: 40
         },
         {
             title: 'Tên đối tác',
@@ -139,17 +141,18 @@ const PartnerSetting = () => {
             title: '',
             render: (record: any) => (
                 <Space>
-                    <Button icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
+                    <Button size="small" icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
                         okText="Yes"
                         cancelText="No"
                         onConfirm={() => handleRemove(record.id)}
                     >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
+                        <Button size="small" type="primary" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
                 </Space>
-            )
+            ),
+            valueType: 'option'
         }
     ]
 
@@ -166,22 +169,19 @@ const PartnerSetting = () => {
     }
 
     return (
-        <div>
-            <div className="mb-3 flex justify-between">
-                <Space>
-                    <Input />
-                    <Button type="primary" icon={<SearchOutlined />}>Tìm kiếm</Button>
-                </Space>
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>
-            </div>
-            <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
+        <PageContainer>
+            <ProTable 
+            search={{
+                layout: 'vertical'
+            }}
+            dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
 
             <Drawer
                 title="Cài đặt"
                 placement="right"
                 closable={false}
                 onClose={onClose}
-                visible={visible}
+                open={visible}
                 width={700}
             >
                 <Form onFinish={onFinish} layout="vertical" fields={fields} form={form}>
@@ -230,7 +230,7 @@ const PartnerSetting = () => {
                     </Form.Item>
                 </Form>
             </Drawer>
-        </div>
+        </PageContainer>
     )
 }
 

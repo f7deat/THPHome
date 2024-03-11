@@ -1,14 +1,11 @@
 ﻿using ApplicationCore.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ApplicationCore.Models.Filters
+namespace ApplicationCore.Models.Filters;
+
+public class PostFilterOptions : FilterOptions
 {
-    public class PostFilterOptions : FilterOptions
-    {
-        public string SearchTerm { get; set; }
-        public PostType? Type { get; set; }
-        public Language Language { get; set; }
-    }
+    public PostType? Type { get; set; }
+    public Language Language { get; set; }
+    public string? Title { get; set; }
+    public PostStatus? Status { get; set; }
 }

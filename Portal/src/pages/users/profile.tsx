@@ -1,4 +1,4 @@
-﻿import { Col, Empty, Row, Table, Tabs, Typography, Image, Button } from "antd"
+﻿import { Col, Empty, Row, Table, Tabs, Typography, Image, Button, Statistic } from "antd"
 import React, { useEffect, useState } from "react";
 import {
     StarOutlined,
@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import { request, useParams } from "@umijs/max";
 import { Link } from "@umijs/max";
+import { PageContainer, ProCard } from "@ant-design/pro-components";
 
 const { TabPane } = Tabs;
 
@@ -46,11 +47,11 @@ const Profile = () => {
     ]
 
     return (
-        <div>
-            <div className="relative" style={{ marginBottom: '5rem' }}>
+        <PageContainer extra={<Link to={`/users/edit/${profile?.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
+            <ProCard className="mb-4">
                 <div className="h-40 bg-white rounded">
                     <div className="flex justify-end">
-                        <Link to={`/admin/user/edit/${profile?.id}`}><Button type="text" icon={<EditOutlined />}></Button></Link>
+
                     </div>
                 </div>
                 <div className="absolute flex items-center" style={{ top: '5rem', left: '3rem' }}>
@@ -63,58 +64,60 @@ const Profile = () => {
                         <div className="text-gray-400">Join January 2021</div>
                     </div>
                 </div>
-            </div>
-            <Row gutter={16}>
-                <Col span={12}>
-                    <div className="bg-white rounded">
-                        <div className="px-4 py-2">
-                            <Typography.Title level={4}>Activity</Typography.Title>
+            </ProCard>
+            <ProCard>
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <div className="bg-white rounded">
+                            <div className="px-4 py-2">
+                                <Typography.Title level={4}>Activity</Typography.Title>
+                            </div>
+                            <div className="px-4">
+                                <Tabs defaultActiveKey="1">
+                                    <TabPane tab="Post" key="1">
+                                        <Table dataSource={listPost} rowKey="id" columns={columns} pagination={{ pageSize: 5 }} />
+                                    </TabPane>
+                                    <TabPane tab="Comment" key="2">
+                                        <Empty />
+                                    </TabPane>
+                                    <TabPane tab="History" key="3">
+                                        <Empty />
+                                    </TabPane>
+                                </Tabs>
+                            </div>
                         </div>
-                        <div className="px-4">
-                            <Tabs defaultActiveKey="1">
-                                <TabPane tab="Post" key="1">
-                                    <Table dataSource={listPost} rowKey="id" columns={columns} pagination={{ pageSize: 5 }} />
-                                </TabPane>
-                                <TabPane tab="Comment" key="2">
-                                    <Empty />
-                                </TabPane>
-                                <TabPane tab="History" key="3">
-                                    <Empty />
-                                </TabPane>
-                            </Tabs>
+                    </Col>
+                    <Col span={12}>
+                        <div className="bg-white rounded p-4">
+                            <Row gutter={16}>
+                                <Col span={12}>
+                                    <ProCard className="p-4 bg-gray-100 rounded" bordered>
+                                        <div className="flex items-center">
+                                            <CommentOutlined className="text-blue-400 text-xl px-2" />
+                                            <div className="flex-grow px-2">
+                                                <div className="text-gray-400">Comment</div>
+                                                <div className="font-bold text-lg">{commentCount}</div>
+                                            </div>
+                                        </div>
+                                    </ProCard>
+                                </Col>
+                                <Col span={12}>
+                                    <ProCard className="p-4 bg-gray-100 rounded" bordered>
+                                        <div className="flex items-center">
+                                            <StarOutlined className="text-yellow-400 text-xl px-2" />
+                                            <div className="flex-grow px-2">
+                                                <div className="text-gray-400">Post</div>
+                                                <div className="font-bold text-lg">{postCount}</div>
+                                            </div>
+                                        </div>
+                                    </ProCard>
+                                </Col>
+                            </Row>
                         </div>
-                    </div>
-                </Col>
-                <Col span={12}>
-                    <div className="bg-white rounded p-4">
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <div className="p-4 bg-gray-100 rounded">
-                                    <div className="flex items-center">
-                                        <CommentOutlined className="text-blue-400 text-xl px-2" />
-                                        <div className="flex-grow px-2">
-                                            <div className="text-gray-400">Comment</div>
-                                            <div className="font-bold text-lg">{commentCount}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Col>
-                            <Col span={12}>
-                                <div className="p-4 bg-gray-100 rounded">
-                                    <div className="flex items-center">
-                                        <StarOutlined className="text-yellow-400 text-xl px-2" />
-                                        <div className="flex-grow px-2">
-                                            <div className="text-gray-400">Post</div>
-                                            <div className="font-bold text-lg">{postCount}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Col>
-                        </Row>
-                    </div>
-                </Col>
-            </Row>
-        </div>
+                    </Col>
+                </Row>
+            </ProCard>
+        </PageContainer>
     )
 }
 

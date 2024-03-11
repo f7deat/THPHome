@@ -1,44 +1,26 @@
 ﻿import { Button, Empty, Input, message, Modal, Popconfirm, Space, Table, Tabs, Tag } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
-    SearchOutlined
+    ToolOutlined
 } from '@ant-design/icons';
 import moment from "moment";
 import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
-import { Link, request, useIntl, useParams, useSearchParams } from "@umijs/max";
+import { Link, request, useIntl } from "@umijs/max";
 import { language } from "@/utils/format";
-import { PageContainer, ProCard } from "@ant-design/pro-components";
+import { ActionType, PageContainer, ProCard, ProColumnType, ProTable, ProTableProps } from "@ant-design/pro-components";
+import { queryPosts } from "@/services/post";
 
 const { TabPane } = Tabs;
 
 const PostList = () => {
 
-    const [posts, setPosts] = useState();
-    const [loading, setLoading] = useState<boolean>(true);
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-    const [searchTerm, setSerchTerm] = useState<string>('');
     const [activeKey, setActiveKey] = useState<string>('1');
+    const actionRef = useRef<ActionType>();
     const intl = useIntl();
-
-    function bindData(response: any) {
-        setPosts(response.data);
-        setPagination(response.pagination);
-        setLoading(false);
-    }
-
-    const initCallback = useCallback(() => {
-        request(`post/get-list?pageIndex=1&pageSize=10&searchTerm=${searchTerm}&type=${activeKey}&language=${language(intl.locale)}`).then(response => {
-            bindData(response)
-        })
-    }, [searchTerm, activeKey])
-
-    useEffect(() => {
-        initCallback();
-    }, [initCallback])
 
     function remove(id: number) {
         request(`post/remove/${id}`, {
@@ -46,7 +28,7 @@ const PostList = () => {
         }).then(response => {
             if (response.succeeded) {
                 message.success('succeeded!');
-                initCallback();
+                actionRef.current?.reload();
             } else {
                 message.error('error!');
             }
@@ -55,6 +37,7 @@ const PostList = () => {
 
     const onTabChange = (activeKey: string) => {
         setActiveKey(activeKey);
+        actionRef.current?.reload();
     }
 
     function setActive(id: number) {
@@ -62,37 +45,41 @@ const PostList = () => {
             method: 'POST'
         }).then(response => {
             if (response.succeeded) {
-                message.success(response.message)
-                initCallback();
+                message.success(response.message);
+                actionRef.current?.reload();
             } else {
                 message.error(response.message)
             }
         })
     }
 
-    const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-        setLoading(true);
-        request(`post/get-list?pageIndex=${pagination.current}&pageSize=${pagination.pageSize}&type=${activeKey}`).then(response => {
-            bindData(response.data);
-        });
-    }
-
-    const columns = [
+    const columns: ProColumnType<IPost>[] = [
         {
             title: 'STT',
-            render: (text: string, record: IPost, index: number) => index + 1
+            valueType: 'indexBorder'
         },
         {
             title: 'Tiêu đề',
-            render: (record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank" rel="noreferrer">{record.title}</a>
+            dataIndex: 'title',
+            render: (dom, record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank" rel="noreferrer">{record.title}</a>
         },
         {
             title: 'Lượt xem',
-            dataIndex: 'view'
+            dataIndex: 'view',
+            valueType: 'digit',
+            search: false,
+            width: 100,
+            align: 'center'
         },
         {
             title: 'Trạng thái',
-            render: (record: IPost) => (
+            dataIndex: 'status',
+            valueEnum: {
+                0: 'Chờ duyệt',
+                1: 'Đã xuất bản',
+                2: 'Đã xóa'
+            },
+            render: (dom, record: IPost) => (
                 <Tooltip title="Nhấp để chuyển trạng thái">
                     <Tag color={record.status === 1 ? 'cyan' : 'gold'} onClick={() => setActive(record.id || 0)} style={{
                         cursor: 'pointer'
@@ -105,72 +92,63 @@ const PostList = () => {
         {
             title: 'Ngày xuất bản',
             dataIndex: 'modifiedDate',
-            render: (text: Date) => moment(text).format('DD/MM/YYYY hh:mm:ss')
+            valueType: 'fromNow',
+            width: 140
         },
         {
             title: '',
-            render: (record: IPost) => (
-                <Space>
-                    <Link to={`/post/setting/${record.id}`}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>
-                    <Popconfirm
-                        title="Are you sure to delete?"
-                        onConfirm={() => remove(record.id || 0)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <Button type="primary" size="small" danger icon={<DeleteOutlined />}></Button>
-                    </Popconfirm>
-                </Space>
-            )
+            render: (dom, record: IPost) => [
+                <Button key="build" size="small" icon={<ToolOutlined />} hidden={activeKey !== '1'} />,
+                <Link key="edit" to={`/post/setting/${record.id}`}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>,
+                <Popconfirm
+                    key="delete"
+                    title="Are you sure to delete?"
+                    onConfirm={() => remove(record.id || 0)}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button type="primary" size="small" danger icon={<DeleteOutlined />}></Button>
+                </Popconfirm>
+            ],
+            valueType: 'option',
+            width: 120,
+            align: 'center'
         }
-    ]
+    ];
+
+    const TabData = () => (
+        <ProTable
+            actionRef={actionRef}
+            request={(params) => queryPosts({
+                ...params,
+                type: activeKey,
+                language: language(intl.locale),
+                pageIndex: params.current
+            })}
+            search={{
+                layout: 'vertical'
+            }}
+            columns={columns}
+            rowSelection={{
+                type: 'checkbox',
+            }}
+            rowKey="id"
+        />
+    )
 
     return (
         <PageContainer extra={<Link to="/post/setting"><Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button></Link>}>
-            <ProCard>
-                <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey} type="card"
-                    tabBarExtraContent={<Space>
-                        <Input placeholder="Nhập từ khóa..." onChange={(e: any) => setSerchTerm(e.target.value)} />
-                        <Button type="primary" icon={<SearchOutlined />} onClick={initCallback}>Tìm kiếm</Button>
-                    </Space>}>
-                    <TabPane tab="Trang" key="1">
-                        <Table dataSource={posts}
-                            columns={columns}
-                            rowSelection={{
-                                type: 'checkbox',
-                            }}
-                            loading={loading}
-                            rowKey="id"
-                            pagination={pagination}
-                            onChange={handleTableChange}
-                        />
-                    </TabPane>
-                    <TabPane tab="Tin tức" key="2">
-                        <Table dataSource={posts}
-                            columns={columns}
-                            rowSelection={{
-                                type: 'checkbox',
-                            }}
-                            loading={loading}
-                            rowKey="id"
-                            pagination={pagination}
-                            onChange={handleTableChange}
-                        />
-                    </TabPane>
-                    <TabPane tab="Thông báo" key="3">
-                        <Table dataSource={posts}
-                            columns={columns}
-                            rowSelection={{
-                                type: 'checkbox',
-                            }}
-                            loading={loading}
-                            rowKey="id"
-                            pagination={pagination}
-                            onChange={handleTableChange}
-                        />
-                    </TabPane>
-                </Tabs>
-            </ProCard>
+            <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey} type="card">
+                <TabPane tab="Trang" key="1">
+                    <TabData />
+                </TabPane>
+                <TabPane tab="Tin tức" key="2">
+                    <TabData />
+                </TabPane>
+                <TabPane tab="Thông báo" key="3">
+                    <TabData />
+                </TabPane>
+            </Tabs>
         </PageContainer>
     )
 }

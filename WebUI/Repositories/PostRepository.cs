@@ -63,8 +63,7 @@ namespace Infrastructure.Repositories
 
         public async Task<dynamic> GetListAsync(PostFilterOptions filterOptions)
         {
-            var query = _context.Posts.Where(x => (string.IsNullOrEmpty(filterOptions.SearchTerm) || x.Title.Contains(filterOptions.SearchTerm))
-            && (filterOptions.Type == null || x.Type == filterOptions.Type)).OrderByDescending(x => x.ModifiedDate)
+            var query = _context.Posts.Where(x => filterOptions.Type == null || x.Type == filterOptions.Type)
             .Select(x => new
             {
                 x.Id,
@@ -75,12 +74,21 @@ namespace Infrastructure.Repositories
                 x.Status,
                 x.Language
             });
-            query = query.Where(x => x.Language == filterOptions.Language);
+            if (!string.IsNullOrWhiteSpace(filterOptions.Title))
+            {
+                query = query.Where(x => !string.IsNullOrEmpty(x.Title) && x.Title.ToLower().Contains(filterOptions.Title));
+            }
+            if (filterOptions.Status != null)
+            {
+                query = query.Where(x => x.Status == filterOptions.Status);
+            }
+            query = query.Where(x => x.Language == filterOptions.Language).OrderByDescending(x => x.ModifiedDate);
             var total = await query.CountAsync();
             return new
             {
                 pagination = new { current = filterOptions.PageIndex, pageSize = filterOptions.PageSize, total },
-                data = await query.Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync()
+                data = await query.Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
+                total
             };
         }
 

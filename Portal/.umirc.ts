@@ -37,21 +37,33 @@ export default defineConfig({
     },
     {
       icon: 'FormOutlined',
-      name: 'Bài viết',
-      path: '/post/list',
-      component: './posts/post-list',
-    },
-    {
-      name: 'Bài viết',
-      path: '/post/setting',
-      component: './posts/post-setting',
-      hideInMenu: true
-    },
-    {
-      name: 'Bài viết',
-      path: '/post/setting/:id',
-      component: './posts/post-setting',
-      hideInMenu: true
+      name: 'Nội dung',
+      path: '/post',
+      routes: [
+        {
+          name: 'Bài viết',
+          path: '/post/list',
+          component: './posts/post-list'
+        },
+        {
+          name: 'Viết bài',
+          path: '/post/setting',
+          component: './posts/post-setting',
+          hideInMenu: true
+        },
+        {
+          name: 'Chỉnh sửa',
+          path: '/post/setting/:id',
+          component: './posts/post-setting',
+          hideInMenu: true
+        },
+        {
+          name: 'Trang',
+          path: '/post/page/:id',
+          component: './posts/pages',
+          hideInMenu: true
+        }
+      ]
     },
     {
       icon: 'AppstoreAddOutlined',
@@ -95,6 +107,12 @@ export default defineConfig({
           name: 'Chỉnh sửa người dùng',
           path: '/users/edit/:id',
           component: './users/user-edit',
+          hideInMenu: true
+        },
+        {
+          name: 'Hồ sơ',
+          path: '/users/profile/:id',
+          component: './users/profile',
           hideInMenu: true
         }
       ]

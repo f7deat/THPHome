@@ -1,5 +1,5 @@
 ﻿import { Button, Checkbox, Drawer, Input, message, Modal, Popconfirm, Space, Table, Form } from "antd"
-import React, { useEffect, useState } from "react"
+import React, { Fragment, useEffect, useState } from "react"
 import {
     EditOutlined,
     DeleteOutlined,
@@ -98,21 +98,26 @@ const UserList = () => {
         },
         {
             title: 'Email',
-            render: (record: any) => (
-                <Space>
-                    {
-                        record.emailConfirmed ? <CheckCircleTwoTone twoToneColor="#008000" /> : <CheckCircleTwoTone twoToneColor="#ff0000" />
-                    }
-                    <div>{record.email}</div>
-                </Space>
-            )
+            render: (record: any) => {
+                if (!record.email) {
+                    return <Fragment />
+                }
+                return (
+                    <Space>
+                        {
+                            record.emailConfirmed ? <CheckCircleTwoTone twoToneColor="#008000" /> : <CheckCircleTwoTone twoToneColor="#ff0000" />
+                        }
+                        <div>{record.email}</div>
+                    </Space>
+                )
+            }
         },
         {
             title: '',
             valueType: 'option',
             render: (record: any) => (
                 <Space>
-                    <Link to={`/users/edit/${record.id}`}><Button icon={<EditOutlined />} size="small"></Button></Link>
+                    <Link to={`/users/edit/${record.id}`}><Button icon={<EditOutlined />} size="small" type="primary"></Button></Link>
                     <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)} size="small"></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
@@ -198,7 +203,7 @@ const UserList = () => {
                 }}
                 dataSource={listUser} columns={columns} rowKey="id" />
             </div>
-            <Modal title="Assign Role" visible={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)} bodyStyle={{ padding: 0 }}>
+            <Modal title="Assign Role" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)} bodyStyle={{ padding: 0 }}>
                 <div className="p-2 flex justify-between">
                     <Space>
                         <Input />
@@ -208,7 +213,7 @@ const UserList = () => {
                 </div>
                 <Table columns={roleColumns} rowKey="id" dataSource={listRole} />
             </Modal>
-            <Drawer visible={drawerVisible} width={700} onClose={() => setDrawerVisible(false)} title="Người dùng">
+            <Drawer open={drawerVisible} width={700} onClose={() => setDrawerVisible(false)} title="Người dùng">
                 <Form onFinish={onAddUser} layout="vertical">
                     <Form.Item name="name" label="Họ và tên" rules={[
                         {
