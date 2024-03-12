@@ -1,17 +1,16 @@
-﻿import { Button, Empty, Input, message, Modal, Popconfirm, Space, Table, Tabs, Tag } from "antd";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+﻿import { Button, Empty, Input, message, Modal, Popconfirm, Tabs, Tag } from "antd";
+import React, { useRef, useState } from "react";
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
     ToolOutlined
 } from '@ant-design/icons';
-import moment from "moment";
 import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
-import { Link, request, useIntl } from "@umijs/max";
+import { history, Link, request, useIntl } from "@umijs/max";
 import { language } from "@/utils/format";
-import { ActionType, PageContainer, ProCard, ProColumnType, ProTable, ProTableProps } from "@ant-design/pro-components";
+import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { queryPosts } from "@/services/post";
 
 const { TabPane } = Tabs;
@@ -98,7 +97,11 @@ const PostList = () => {
         {
             title: '',
             render: (dom, record: IPost) => [
-                <Button key="build" size="small" icon={<ToolOutlined />} hidden={activeKey !== '1'} />,
+                <Tooltip key="build" title="Page Builder">
+                    <Button size="small" icon={<ToolOutlined />} hidden={activeKey !== '1'} onClick={() => {
+                        history.push(`/post/page/${record.id}`);
+                    }} />
+                </Tooltip>,
                 <Link key="edit" to={`/post/setting/${record.id}`}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>,
                 <Popconfirm
                     key="delete"
@@ -116,12 +119,12 @@ const PostList = () => {
         }
     ];
 
-    const TabData = () => (
+    const TabData = (key: string) => (
         <ProTable
             actionRef={actionRef}
             request={(params) => queryPosts({
                 ...params,
-                type: activeKey,
+                type: key,
                 language: language(intl.locale),
                 pageIndex: params.current
             })}
@@ -140,13 +143,13 @@ const PostList = () => {
         <PageContainer extra={<Link to="/post/setting"><Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button></Link>}>
             <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey} type="card">
                 <TabPane tab="Trang" key="1">
-                    <TabData />
+                    {TabData("1")}
                 </TabPane>
                 <TabPane tab="Tin tức" key="2">
-                    <TabData />
+                    {TabData("2")}
                 </TabPane>
                 <TabPane tab="Thông báo" key="3">
-                    <TabData />
+                    {TabData("3")}
                 </TabPane>
             </Tabs>
         </PageContainer>

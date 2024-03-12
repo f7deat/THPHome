@@ -58,7 +58,7 @@ export default defineConfig({
           hideInMenu: true
         },
         {
-          name: 'Trang',
+          name: 'Page Builder',
           path: '/post/page/:id',
           component: './posts/pages',
           hideInMenu: true
