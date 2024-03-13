@@ -296,10 +296,58 @@ li.dropdown:hover .dropdown-menu {
     --bs-offcanvas-bg: var(--primary);
 }
 
+.h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
 .h2 {
     font-size: 1.25rem;
     color: var(--primary);
     font-weight: bold;
+}
+
+.bg-primary {
+    --bs-primary-rgb: 0, 56, 122;
+}
+
+.text-primary {
+    --bs-primary-rgb: 0, 56, 122;
+}
+
+.or::before,
+.or::after {
+    content: "";
+}
+
+.or--x::before,
+.or--x::after {
+    position: relative;
+    border-top: 2px solid var(--danger);
+    display: inline-block;
+    vertical-align: middle;
+    width: 50%;
+    margin-bottom: 0.15em;
+    overflow: hidden;
+}
+
+.or--x::before {
+    right: 0.5em;
+    margin-left: -50%;
+}
+
+.or--x::after {
+    left: 0.5em;
+    margin-right: -50%;
+}
+
+.TinyMCE td {
+    border: 1px solid #d1d1d1;
+    padding: 0.5rem 1rem;
+}
+
+.divider {
+    margin-bottom: 1rem;
 }
 
 @media screen and (min-width: 768px) {

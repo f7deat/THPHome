@@ -1,0 +1,25 @@
+﻿@model WebUI.Models.Blocks.VideoBlock
+@{
+    var id = Guid.NewGuid();
+}
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+
+@if (Model != null)
+{
+    <div class="video @Model.ClassName">
+        <div class="d-md-flex justify-content-center py-4">
+           <div class="col-md-6">
+                <div class="plyr__video-embed" id="player-@id">
+                    <iframe src="@Model.EmbedUrl?origin=https://dhhp.edu.vn&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+                            allowfullscreen
+                            allowtransparency
+                            allow="autoplay"></iframe>
+                </div>
+           </div>
+        </div>
+    </div>
+}
+<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+<script>
+    const player = new Plyr('#player-@id');
+</script>

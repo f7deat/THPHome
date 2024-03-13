@@ -17,7 +17,7 @@ const MyEditor: React.FC<InputProps> = (props) => {
     return (
         <>
             <Editor
-                onChange={log }
+                onChange={log}
                 onInit={(evt, editor) => editorRef.current = editor}
                 apiKey='mn4nbwhddqp9jr1g1c3w17dkdu96ji7lr2fmolsncez1k3ng'
                 init={{
@@ -52,7 +52,7 @@ const MyEditor: React.FC<InputProps> = (props) => {
                             });
 
                             input.click();
-                            
+
                         }
 
                         // Provide alternative source and posted for the media dialog
@@ -61,7 +61,7 @@ const MyEditor: React.FC<InputProps> = (props) => {
                         }
                     }
                 }}
-                
+
                 initialValue={form.getFieldValue(props.name)}
             />
         </>

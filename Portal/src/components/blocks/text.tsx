@@ -20,6 +20,10 @@ const TextBlock: React.FC<Props> = ({ id }) => {
                     {
                         name: 'value',
                         value: response.value
+                    },
+                    {
+                        name: 'className',
+                        value: response.className
                     }
                 ]);
             })

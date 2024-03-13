@@ -1,0 +1,8 @@
+﻿@model WebUI.Models.Blocks.DividerBlock
+
+@if (Model != null)
+{
+    <div class="divider @Model.ClassName">
+        <div class="or or--x" aria-role="presentation">@Model.Label</div>
+    </div>
+}

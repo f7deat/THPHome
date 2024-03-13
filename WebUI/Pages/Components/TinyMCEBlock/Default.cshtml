@@ -1,0 +1,8 @@
+﻿@model WebUI.Models.Blocks.TinyMCEBlock
+
+@if (Model != null)
+{
+    <div class="TinyMCE @Model.ClassName">
+        @Html.Raw(Model.Raw)
+    </div>
+}

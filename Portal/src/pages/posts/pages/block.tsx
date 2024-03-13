@@ -1,4 +1,4 @@
-import { TextBlock } from "@/components/blocks";
+import { DividerBlock, MajorGeneralBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
@@ -28,14 +28,10 @@ const PageBlock: React.FC = () => {
         }
     }, [id]);
 
-    const onConfirm = async (workId?: string) => {
-        const response = await queryDeleteBlock(workId, id);
-        if (response.succeeded) {
-            message.success('Deleted!');
-            fetchData();
-        } else {
-            message.error(response.errors[0].description);
-        }
+    const onConfirm = async (id?: string) => {
+        await queryDeleteBlock(id);
+        message.success('Deleted!');
+        fetchData();
     };
 
     const onFinish = async (value: any) => {
@@ -44,6 +40,7 @@ const PageBlock: React.FC = () => {
         message.success('Added!');
         setVisible(false);
         fetchData();
+        form.current?.resetFields();
     };
 
     const items: MenuProps['items'] = [
@@ -66,7 +63,7 @@ const PageBlock: React.FC = () => {
     const columns: ProColumns<any>[] = [
         {
             title: '#',
-            dataIndex: 'sort',
+            dataIndex: 'sortOrder',
             className: 'drag-visible'
         },
         {
@@ -127,13 +124,10 @@ const PageBlock: React.FC = () => {
         }
     ];
 
-    const handleDragSortEnd = (newDataSource: any) => {
-        const workIds = newDataSource.map((x: any) => (x.id || ''));
-        querySortOrderBlock(workIds).then(response => {
-            if (response.succeeded) {
-                setDataSource(newDataSource);
-                message.success('Saved!');
-            }
+    const handleDragSortEnd = (beforeIndex: number, afterIndex: number, newDataSource: any) => {
+        querySortOrderBlock(newDataSource).then(response => {
+            setDataSource(newDataSource);
+            message.success('Saved!');
         })
     };
 
@@ -141,6 +135,18 @@ const PageBlock: React.FC = () => {
         if (!block) return <Empty />
         if (block.normalizedName === 'TextBlock') {
             return <TextBlock id={block.id} />
+        }
+        if (block.normalizedName === 'MajorGeneralBlock') {
+            return <MajorGeneralBlock id={block.id} />
+        }
+        if (block.normalizedName === 'VideoBlock') {
+            return <VideoBlock id={block.id} />
+        }
+        if (block.normalizedName === 'DividerBlock') {
+            return <DividerBlock id={block.id} />
+        }
+        if (block.normalizedName === 'TinyMCEBlock') {
+            return <TinyMCEBlock id={block.id} />
         }
         return <Empty />
     }
@@ -173,7 +179,7 @@ const PageBlock: React.FC = () => {
                 columns={columns}
                 pagination={false}
                 dataSource={dataSource}
-                dragSortKey="sort"
+                dragSortKey="sortOrder"
                 onDragSortEnd={handleDragSortEnd}
             />
             <ModalForm open={visible} title='Add component' onOpenChange={setVisible} onFinish={onFinish}>

@@ -1,0 +1,42 @@
+﻿@using System.Web
+@model WebUI.Models.Blocks.MajorGeneralBlock
+
+@if (Model != null)
+{
+    <div class="major-general @Model.ClassName">
+        <div class="row text-white g-0 py-2">
+            <div class="col-md-3">
+                <div class="bg-danger h-100">
+                    <div class="text-uppercase text-lg fw-bold text-center pt-2">THÔNG TIN VỀ NGÀNH</div>
+                    <div class="px-4 py-2">
+                        @Html.Raw(Model.Introduce)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="bg-primary h-100">
+                    <div class="text-uppercase text-lg fw-bold text-center pt-2">ĐỘI NGŨ GIẢNG VIÊN</div>
+                    <div class="px-4 py-2">
+                        @Html.Raw(Model.Lecturer)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="bg-danger h-100">
+                    <div class="text-uppercase text-lg fw-bold text-center pt-2">CƠ HỘI VIỆC LÀM</div>
+                    <div class="px-4 py-2">
+                        @Html.Raw(Model.Career)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="bg-primary h-100">
+                    <div class="text-uppercase text-lg fw-bold text-center pt-2">CƠ HỘI PHÁT TRIỂN</div>
+                    <div class="px-4 py-2">
+                        @Html.Raw(Model.Opportunity)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
