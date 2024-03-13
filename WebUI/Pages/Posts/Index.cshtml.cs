@@ -6,6 +6,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebUI.Foundations;
+using WebUI.Models.Posts;
 
 namespace WebUI.Pages.Posts
 {
@@ -20,6 +21,7 @@ namespace WebUI.Pages.Posts
         public List<Category> Categories = [];
         public List<Attachment> Attachments = [];
         public IEnumerable<CommentInPost> ListComment = new List<CommentInPost>();
+        public List<BlockList> Blocks = new List<BlockList>();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -45,6 +47,19 @@ namespace WebUI.Pages.Posts
 
             Attachments = await _attachmentService.GetListInPostAsync(PageData.Id);
             ListComment = await _commentService.GetListInPostAsync(PageData.Id);
+
+            if (PageData.Type == PostType.PAGE)
+            {
+                Blocks = await (from a in _context.PostBlocks.Where(x => x.PostId == PageData.Id)
+                                join b in _context.Blocks on a.BlockId equals b.Id
+                                where a.Active
+                                orderby a.SortOrder ascending
+                                select new BlockList
+                                {
+                                    Id = a.Id,
+                                    ViewComponent = b.NormalizedName
+                                }).ToListAsync();
+            }
 
             return Page();
         }

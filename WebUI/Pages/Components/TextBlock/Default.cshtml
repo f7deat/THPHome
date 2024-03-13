@@ -1,0 +1,31 @@
+﻿@model WebUI.Models.Blocks.TextBlock
+
+@if (Model != null)
+{
+    <div class="text @Model.ClassName">
+        @if (Model.Type == "h1")
+        {
+            <h1 class="h1">
+                @Model.Value
+            </h1>
+        }
+        @if (Model.Type == "h2")
+        {
+            <h2 class="h2">
+                @Model.Value
+            </h2>
+        }
+        @if (Model.Type == "h3")
+        {
+            <h3 class="h3">
+                @Model.Value
+            </h3>
+        }
+        @if (Model.Type == "paragraph")
+        {
+            <p class="paragraph">
+                @Model.Value
+            </p>
+        }
+    </div>
+}

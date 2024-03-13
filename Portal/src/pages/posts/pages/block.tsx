@@ -1,10 +1,10 @@
 import { TextBlock } from "@/components/blocks";
-import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
+import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
-import { DragSortTable, ModalForm, ProColumns, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
 import { Badge, Button, Dropdown, Empty, MenuProps, Popconfirm, message } from "antd";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 const PageBlock: React.FC = () => {
     const { id } = useParams();
@@ -12,6 +12,7 @@ const PageBlock: React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [block, setBlock] = useState<any>();
+    const form = useRef<ProFormInstance>();
 
     const fetchData = () => {
         if (id) {
@@ -69,7 +70,7 @@ const PageBlock: React.FC = () => {
             className: 'drag-visible'
         },
         {
-            title: 'Block',
+            title: 'Loại',
             dataIndex: 'blockName'
         },
         {
@@ -77,7 +78,7 @@ const PageBlock: React.FC = () => {
             dataIndex: 'name'
         },
         {
-            title: 'Status',
+            title: 'Trạng thái',
             dataIndex: 'active',
             valueEnum: {
                 false: {
@@ -91,7 +92,7 @@ const PageBlock: React.FC = () => {
             },
         },
         {
-            title: 'Action',
+            title: 'Tác vụ',
             valueType: 'option',
             render: (dom, entity) => [
                 <Button
@@ -102,6 +103,7 @@ const PageBlock: React.FC = () => {
                     icon={<EditOutlined />}
                     onClick={() => {
                         setBlock(entity);
+                        form.current?.setFieldValue('id', entity.id);
                         setOpen(true);
                     }}
                 />,
@@ -137,10 +139,18 @@ const PageBlock: React.FC = () => {
 
     const renderSetting = () => {
         if (!block) return <Empty />
-        if (block.normalizedName === 'Text') {
-            return <TextBlock />
+        if (block.normalizedName === 'TextBlock') {
+            return <TextBlock id={block.id} />
         }
         return <Empty />
+    }
+
+    const onSaveBlock = async (values: any) => {
+        if (!block) return;
+        console.log(values)
+        await queryBlockSave(block.id, values);
+        message.success('Saved!');
+        setOpen(false);
     }
 
     return (
@@ -180,7 +190,9 @@ const PageBlock: React.FC = () => {
                     request={queryBlockOptions}
                     name="blockId" label="Block" />
             </ModalForm>
-            <ModalForm open={open} onOpenChange={setOpen} title="Block Configuration">
+            <ModalForm open={open} onOpenChange={setOpen} title="Block Configuration" onFinish={onSaveBlock} formRef={form}>
+                <ProFormText name="id" hidden />
+                <ProFormText name="className" label="Class Name" />
                 {renderSetting()}
             </ModalForm>
         </>

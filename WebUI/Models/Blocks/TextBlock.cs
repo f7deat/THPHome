@@ -1,6 +1,8 @@
-﻿namespace WebUI.Models.Blocks;
+﻿using WebUI.Foundations;
 
-public class TextBlock
+namespace WebUI.Models.Blocks;
+
+public class TextBlock : BaseBlock
 {
     public string Type { get; set; } = "paragraph";
     public string? Value { get; set; }

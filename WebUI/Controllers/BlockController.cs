@@ -40,6 +40,7 @@ public class BlockController(ApplicationDbContext context) : BaseController(cont
                     where b.PostId == postId
                     select new
                     {
+                        b.Id,
                         b.BlockId,
                         b.PostId,
                         BlockName = a.Name,
@@ -65,10 +66,21 @@ public class BlockController(ApplicationDbContext context) : BaseController(cont
         if (string.IsNullOrEmpty(work.Data)) return Ok();
         switch (block.NormalizedName)
         {
-            case "Text": return Ok(JsonConvert.DeserializeObject<TextBlock>(work.Data));
+            case "TextBlock": return Ok(JsonConvert.DeserializeObject<TextBlock>(work.Data));
             default:
                 break;
         }
+        return Ok();
+    }
+
+    [HttpPost("save/{id}")]
+    public async Task<IActionResult> SaveAsync([FromRoute] Guid id, [FromBody] object data)
+    {
+        var work = await _context.PostBlocks.FindAsync(id);
+        if (work is null) return BadRequest();
+        work.Data = data.ToString();
+        _context.PostBlocks.Update(work);
+        await _context.SaveChangesAsync();
         return Ok();
     }
 }

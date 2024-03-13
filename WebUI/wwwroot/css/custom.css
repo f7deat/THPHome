@@ -296,6 +296,12 @@ li.dropdown:hover .dropdown-menu {
     --bs-offcanvas-bg: var(--primary);
 }
 
+.h2 {
+    font-size: 1.25rem;
+    color: var(--primary);
+    font-weight: bold;
+}
+
 @media screen and (min-width: 768px) {
     .carousel-item img {
         height: 364px;
