@@ -1,4 +1,4 @@
-import { DividerBlock, MajorGeneralBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
+import { DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
@@ -147,6 +147,9 @@ const PageBlock: React.FC = () => {
         }
         if (block.normalizedName === 'TinyMCEBlock') {
             return <TinyMCEBlock id={block.id} />
+        }
+        if (block.normalizedName === 'SponsorBlock') {
+            return <SponsorBlock id={block.id} />
         }
         return <Empty />
     }

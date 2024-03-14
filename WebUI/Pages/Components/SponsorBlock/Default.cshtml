@@ -1,0 +1,43 @@
+﻿@model WebUI.Models.Blocks.SponsorBlock
+
+@{
+    var id = Guid.NewGuid();
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+@if (Model != null)
+{
+    <div class="sponsor @Model.ClassName">
+        <div class="swiper-@id">
+            <div class="swiper-wrapper">
+                @foreach (var item in Model.Logos)
+                {
+                    <div class="swiper-slide">
+                        <img src="@item" alt="LOGO" class="logo" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    var swiper = new Swiper(".swiper-@id", {
+        slidesPerView: 10,
+        spaceBetween: 30,
+        breakpoints: {
+            320: {
+                slidesPerView: 2
+            },
+            480: {
+                slidesPerView: 3
+            },
+            640: {
+                slidesPerView: 4
+            },
+            1530: {
+                slidesPerView: 8
+            }
+        }
+    });
+</script>

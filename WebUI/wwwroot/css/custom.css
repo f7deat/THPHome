@@ -1,6 +1,6 @@
 ﻿:root {
     --primary: #00387a;
-    --danger: #fa5c7c;
+    --danger: #dc3545;
     --darka: #005a9c;
     --dark: #00387a;
     --darko: #0e1f4b;
@@ -21,14 +21,6 @@ a {
 input:focus {
     outline: none;
 }
-
-.table table {
-    width: 100%;
-}
-
-    .table table td {
-        border-width: 1px;
-    }
 
 .main-menu {
     background-color: var(--dark);
@@ -211,6 +203,7 @@ input:focus {
 .dropdown {
     position: unset;
 }
+
 li.dropdown:hover .dropdown-menu {
     display: block !important;
 }
@@ -287,6 +280,7 @@ li.dropdown:hover .dropdown-menu {
     .statistics .des {
         text-align: center;
     }
+
 .navbar-toggler {
     --bs-navbar-color: white;
 }
@@ -315,7 +309,6 @@ li.dropdown:hover .dropdown-menu {
     --bs-primary-rgb: 0, 56, 122;
 }
 
-.or::before,
 .or::after {
     content: "";
 }
@@ -337,8 +330,13 @@ li.dropdown:hover .dropdown-menu {
 }
 
 .or--x::after {
-    left: 0.5em;
     margin-right: -50%;
+    display: block;
+    width: 100%;
+}
+
+.TinyMCE {
+    overflow: auto;
 }
 
 .TinyMCE td {
@@ -348,9 +346,40 @@ li.dropdown:hover .dropdown-menu {
 
 .divider {
     margin-bottom: 1rem;
+    text-align: center;
+    color: var(--danger);
+    font-weight: bold;
 }
 
+.sponsor {
+    padding: 1rem 0;
+    overflow: hidden;
+}
+
+    .sponsor .logo {
+        height: 100px;
+        object-fit: contain;
+    }
+
 @media screen and (min-width: 768px) {
+    .divider {
+        font-size: 2rem;
+    }
+
+    .or--x::before, .or--x::after {
+        border-top: 4px solid var(--danger);
+    }
+
+    .or--x::before {
+        content: "";
+    }
+
+    .or--x::after {
+        left: 0.5rem;
+        display: inline-block;
+        width: 50%;
+    }
+
     .carousel-item img {
         height: 364px;
     }

@@ -1,0 +1,8 @@
+﻿@model WebUI.Models.Blocks.HtmlBlock
+
+@if (Model != null)
+{
+    <div class="html @Model.ClassName">
+        @Html.Raw(Model.Value)
+    </div>
+}

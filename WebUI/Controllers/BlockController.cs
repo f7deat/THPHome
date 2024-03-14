@@ -71,10 +71,12 @@ public class BlockController(ApplicationDbContext context) : BaseController(cont
         switch (block.NormalizedName)
         {
             case nameof(DividerBlock): return Ok(JsonConvert.DeserializeObject<DividerBlock>(work.Data));
+            case nameof(HtmlBlock): return Ok(JsonConvert.DeserializeObject<HtmlBlock>(work.Data));
             case nameof(MajorGeneralBlock): return Ok(JsonConvert.DeserializeObject<MajorGeneralBlock>(work.Data));
             case nameof(TextBlock): return Ok(JsonConvert.DeserializeObject<TextBlock>(work.Data));
             case nameof(TinyMCEBlock): return Ok(JsonConvert.DeserializeObject<TinyMCEBlock>(work.Data));
             case nameof(VideoBlock): return Ok(JsonConvert.DeserializeObject<VideoBlock>(work.Data));
+            case nameof(SponsorBlock): return Ok(JsonConvert.DeserializeObject<SponsorBlock>(work.Data));
             default:
                 break;
         }
