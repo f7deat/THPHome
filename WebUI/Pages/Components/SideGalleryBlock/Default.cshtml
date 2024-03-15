@@ -1,0 +1,41 @@
+﻿@model WebUI.Models.Blocks.SideGalleryBlock
+@{
+    var id = Guid.NewGuid();
+}
+
+@if (Model != null)
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <div class="side-gallery @Model.ClassName">
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <div class="text-content">
+                    @Html.Raw(Model.TextContent)
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="swiper swiper-@id">
+                    <div class="swiper-wrapper">
+                        @foreach (var item in Model.Images)
+                        {
+                            <div class="swiper-slide">
+                                <img src="@item" alt="IMG" height="500" />
+                            </div>
+                        }
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    var swiper = new Swiper(".swiper-@id", {
+        pagination: {
+            el: ".swiper-pagination",
+        },
+        autoplay: true,
+        loop: true
+    });
+</script>

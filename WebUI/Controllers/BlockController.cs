@@ -77,6 +77,7 @@ public class BlockController(ApplicationDbContext context) : BaseController(cont
             case nameof(TinyMCEBlock): return Ok(JsonConvert.DeserializeObject<TinyMCEBlock>(work.Data));
             case nameof(VideoBlock): return Ok(JsonConvert.DeserializeObject<VideoBlock>(work.Data));
             case nameof(SponsorBlock): return Ok(JsonConvert.DeserializeObject<SponsorBlock>(work.Data));
+            case nameof(SideGalleryBlock): return Ok(JsonConvert.DeserializeObject<SideGalleryBlock>(work.Data));
             default:
                 break;
         }

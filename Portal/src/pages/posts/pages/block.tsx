@@ -1,9 +1,10 @@
 import { DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
+import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
-import { Badge, Button, Dropdown, Empty, MenuProps, Popconfirm, message } from "antd";
+import { Button, Dropdown, Empty, MenuProps, Popconfirm, message } from "antd";
 import { Fragment, useEffect, useRef, useState } from "react";
 
 const PageBlock: React.FC = () => {
@@ -150,6 +151,9 @@ const PageBlock: React.FC = () => {
         }
         if (block.normalizedName === 'SponsorBlock') {
             return <SponsorBlock id={block.id} />
+        }
+        if (block.normalizedName === 'SideGalleryBlock') {
+            return <SideGalleryBlock id={block.id} />
         }
         return <Empty />
     }
