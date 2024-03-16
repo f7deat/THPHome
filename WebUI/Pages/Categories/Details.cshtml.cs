@@ -19,6 +19,7 @@ namespace WebUI.Pages.Categories
         private readonly ICategoryService _categoryService = categoryService;
 
         public Post PageData { private set; get; } = new Post();
+        public IEnumerable<PostView> ListNotification;
 
         public override async Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context)
         {
@@ -70,6 +71,7 @@ namespace WebUI.Pages.Categories
             ViewData["Description"] = Category.Description;
             Posts = await _postService.GetListInCategoryAsync(Category.Id, SearchTerm, PageIndex);
             Categories = await _categoryService.GetChildCategoriesAsync(Category.Id);
+            ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Language);
             return Page();
         }
     }

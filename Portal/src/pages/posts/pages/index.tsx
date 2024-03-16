@@ -1,16 +1,15 @@
 import { queryPost } from "@/services/post";
-import { LeftOutlined } from "@ant-design/icons";
+import { LeftOutlined, ReloadOutlined } from "@ant-design/icons";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
 import { Button, Col, Empty, Row, message } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PageSetting from "./setting";
 import PageBlock from "./block";
 
 const CustomPage: React.FC = () => {
     const { id } = useParams();
 
-    const [open, setOpen] = useState<boolean>(false);
     const [catalog, setCatalog] = useState<any>();
     const [tab, setTab] = useState('content');
 
@@ -28,13 +27,15 @@ const CustomPage: React.FC = () => {
         setTab(key);
     }
 
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+
     return (
         <PageContainer
             title={catalog?.name}
             extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}><span>Quay lại</span></Button>}
         >
             <Row gutter={16}>
-                <Col span={18}>
+                <Col span={14}>
                     <ProCard
                         tabs={{
                             tabPosition: 'top',
@@ -56,9 +57,28 @@ const CustomPage: React.FC = () => {
                         className='mb-4'
                     />
                 </Col>
-                <Col span={6}>
-                    <ProCard title="Preview" headerBordered>
-                        <Empty />
+                <Col span={10}>
+                    <ProCard title="Xem trước" headerBordered extra={<Button 
+                    onClick={() => {
+                        if (iframeRef.current) {
+                            iframeRef.current.src = `https://dhhp.edu.vn/post/preview-${id}.html`;
+                        }
+                    }}
+                    icon={<ReloadOutlined />} size="small" type="dashed">Tải lại</Button>}>
+                        <div style={{
+                            overflow: 'hidden',
+                            border: '1px solid #eee',
+                            textAlign: 'center',
+                            margin: '0 0.6rem'
+                        }}>
+                            <iframe ref={iframeRef} src={`https://dhhp.edu.vn/post/preview-${id}.html`} style={{
+                                border: '1px solid #ddd',
+                                width: 1920,
+                                height: 2000,
+                                transform: 'scale(0.3)',
+                                transformOrigin: 'top left'
+                            }}></iframe>
+                        </div>
                     </ProCard>
                 </Col>
             </Row>

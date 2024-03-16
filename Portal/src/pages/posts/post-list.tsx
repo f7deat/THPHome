@@ -184,7 +184,7 @@ const PostList = () => {
                     {TabData("3")}
                 </TabPane>
             </Tabs>
-            <CopyPost open={openCopy} onOpenChange={setOpenCopy} data={post} />
+            <CopyPost open={openCopy} onOpenChange={setOpenCopy} data={post} actionRef={actionRef} setOpen={setOpenCopy} />
         </PageContainer>
     )
 }

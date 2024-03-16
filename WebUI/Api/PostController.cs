@@ -9,6 +9,8 @@ using WebUI.Models.Api.Admin;
 using Infrastructure;
 using WebUI.Extensions;
 using WebUI.Interfaces.IService;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebUI.Api;
 
@@ -77,7 +79,7 @@ public class PostController : BaseController
         {
             if (_webHostEnvironment.IsProduction())
             {
-                _ = _telegramService.SendMessageAsync($"CREATE ARTICLE ERROR: {ex}");
+                await _telegramService.SendMessageAsync($"CREATE ARTICLE ERROR: {ex}");
             }
             return BadRequest(ex.ToString());
         }
@@ -91,7 +93,7 @@ public class PostController : BaseController
         var text = post.Status == PostStatus.PUBLISH ? "publish" : "draft";
         if (_webHostEnvironment.IsProduction())
         {
-            _ = _telegramService.SendMessageAsync($"{user.UserName} {text}: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
+            await _telegramService.SendMessageAsync($"{user.UserName} {text}: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
         }
         return Ok(await _postService.SetStatusAsync(post));
     }
@@ -103,7 +105,13 @@ public class PostController : BaseController
         var user = await _userManager.FindByIdAsync(User.GetId());
         if (_webHostEnvironment.IsProduction())
         {
-            _ = _telegramService.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
+            await _telegramService.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
+        }
+        var blocks = await _context.PostBlocks.Where(x => x.PostId == id).ToListAsync();
+        if (!blocks.IsNullOrEmpty())
+        {
+            _context.PostBlocks.RemoveRange(blocks);
+            await _context.SaveChangesAsync();
         }
         return Ok(await _postService.RemoveAsync(id));
     }

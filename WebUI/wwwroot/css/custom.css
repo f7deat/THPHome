@@ -370,6 +370,7 @@ li.dropdown:hover .dropdown-menu {
 @media screen and (min-width: 768px) {
     .divider {
         font-size: 2rem;
+        overflow: hidden;
     }
 
     .or--x::before, .or--x::after {
@@ -378,6 +379,9 @@ li.dropdown:hover .dropdown-menu {
 
     .or--x::before {
         content: "";
+        right: 0.5rem;
+        display: inline-block;
+        width: 50%;
     }
 
     .or--x::after {

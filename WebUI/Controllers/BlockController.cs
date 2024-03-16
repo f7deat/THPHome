@@ -1,16 +1,22 @@
-﻿using Infrastructure;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
+using ApplicationCore.Helpers;
+using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WebUI.Api;
 using WebUI.Entities;
+using WebUI.Extensions;
 using WebUI.Models.Blocks;
 
 namespace WebUI.Controllers;
 
-public class BlockController(ApplicationDbContext context) : BaseController(context)
+public class BlockController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : BaseController(context)
 {
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+
     [HttpGet("options")]
     public async Task<IActionResult> OptionsAsync()
     {
@@ -116,6 +122,64 @@ public class BlockController(ApplicationDbContext context) : BaseController(cont
             block.SortOrder = i;
             i++;
         }
+        await _context.SaveChangesAsync();
+        return Ok(IdentityResult.Success);
+    }
+
+    [HttpPost("copy")]
+    public async Task<IActionResult> CopyAsync([FromBody] Post args)
+    {
+        var source = await _context.Posts.FindAsync(args.Id);
+        if (source is null) return BadRequest("Source not found!");
+        if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Please input title!");
+        var user = await _userManager.FindByIdAsync(User.GetId());
+        var target = new Post
+        {
+            Title = args.Title,
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now,
+            Language = source.Language,
+            Status = PostStatus.DRAFT,
+            Type = source.Type,
+            Description = args.Description,
+            Thumbnail = args.Thumbnail,
+            Url = SeoHelper.ToSeoFriendly(args.Title, args.Title.Length),
+            View = 0,
+            CreatedBy = user?.Id
+        };
+        await _context.Posts.AddAsync(target);
+        await _context.SaveChangesAsync();
+        var blocks = await _context.PostBlocks.Where(x => x.PostId == source.Id).ToListAsync();
+        foreach (var item in blocks)
+        {
+            item.Id = Guid.NewGuid();
+            item.PostId = target.Id;
+            await _context.PostBlocks.AddAsync(item);
+        }
+
+        var categories = await _context.PostCategories.Where(x => x.PostId == source.Id).ToListAsync();
+        foreach (var item in categories)
+        {
+            item.PostId = target.Id;
+            await _context.PostCategories.AddAsync(item);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    [HttpPost("save-info")]
+    public async Task<IActionResult> SaveInfoAsync([FromBody] PostBlock args)
+    {
+        var block = await _context.PostBlocks.FindAsync(args.Id);
+        if (block is null)
+        {
+            return BadRequest("Data not found!");
+        }
+        block.Name = args.Name;
+        block.BlockId = args.BlockId;
+        _context.Update(block);
         await _context.SaveChangesAsync();
         return Ok(IdentityResult.Success);
     }

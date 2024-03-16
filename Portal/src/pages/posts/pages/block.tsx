@@ -1,10 +1,10 @@
 import { DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import SideGalleryBlock from "@/components/blocks/side-gallery";
-import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
-import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
+import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
+import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
 import { DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
-import { Button, Dropdown, Empty, MenuProps, Popconfirm, message } from "antd";
+import { Button, Dropdown, Empty, MenuProps, Popconfirm, Tooltip, message } from "antd";
 import { Fragment, useEffect, useRef, useState } from "react";
 
 const PageBlock: React.FC = () => {
@@ -14,6 +14,7 @@ const PageBlock: React.FC = () => {
     const [visible, setVisible] = useState<boolean>(false);
     const [block, setBlock] = useState<any>();
     const form = useRef<ProFormInstance>();
+    const formBlock = useRef<ProFormInstance>();
 
     const fetchData = () => {
         if (id) {
@@ -37,29 +38,36 @@ const PageBlock: React.FC = () => {
 
     const onFinish = async (value: any) => {
         value.postId = id;
-        await queryBlockAdd(value);
-        message.success('Added!');
+        if (value.id) {
+            await queryBlockSaveInfo(value);
+            message.success('Lưu thành công!');
+        } else {
+            await queryBlockAdd(value);
+            message.success('Thêm thành công!');
+        }
         setVisible(false);
         fetchData();
-        form.current?.resetFields();
+        formBlock.current?.resetFields();
     };
 
-    const items: MenuProps['items'] = [
-        {
-            key: '1',
-            label: 'Show / Hide'
-        },
-    ];
-
-    const onMoreClick = async (event: any, id?: string) => {
-        if (event.key === '1') {
-            const resposne = await queryActiveBlock(id);
-            if (resposne.succeeded) {
-                message.success('Actived!');
-                fetchData();
-            }
+    useEffect(() => {
+        if (block) {
+            formBlock.current?.setFields([
+                {
+                    name: 'id',
+                    value: block.id
+                },
+                {
+                    name: 'name',
+                    value: block.name
+                },
+                {
+                    name: 'blockId',
+                    value: block.blockId
+                }
+            ]);
         }
-    }
+    }, [block]);
 
     const columns: ProColumns<any>[] = [
         {
@@ -88,23 +96,35 @@ const PageBlock: React.FC = () => {
                     status: 'Processing',
                 },
             },
+            width: 80
         },
         {
             title: 'Tác vụ',
             valueType: 'option',
             render: (dom, entity) => [
-                <Button
-                    size="small"
-                    key={1}
-                    type="primary"
-                    disabled={entity.autoGenerateField}
-                    icon={<EditOutlined />}
-                    onClick={() => {
-                        setBlock(entity);
-                        form.current?.setFieldValue('id', entity.id);
-                        setOpen(true);
-                    }}
-                />,
+                <Tooltip
+                    key="setting" title="Cấu hình block">
+                    <Button
+                        size="small"
+                        type="primary"
+                        icon={<ToolOutlined />}
+                        onClick={() => {
+                            setBlock(entity);
+                            form.current?.setFieldValue('id', entity.id);
+                            setOpen(true);
+                        }}
+                    />
+                </Tooltip>,
+                <Tooltip key="edit" title="Chỉnh sửa thông tin">
+                    <Button
+                        size="small"
+                        icon={<EditOutlined />}
+                        onClick={() => {
+                            setBlock(entity);
+                            setVisible(true);
+                        }}
+                    />
+                </Tooltip>,
                 <Popconfirm
                     title="Are you sure?"
                     key={4}
@@ -116,12 +136,9 @@ const PageBlock: React.FC = () => {
                         danger
                         type="primary"
                     ></Button>
-                </Popconfirm>,
-                <Dropdown menu={{ items, onClick: (event) => onMoreClick(event, entity.id) }} key="more">
-                    <Button
-                        size="small" icon={<MoreOutlined />} type='dashed' />
-                </Dropdown>
-            ]
+                </Popconfirm>
+            ],
+            align: 'center'
         }
     ];
 
@@ -189,7 +206,8 @@ const PageBlock: React.FC = () => {
                 dragSortKey="sortOrder"
                 onDragSortEnd={handleDragSortEnd}
             />
-            <ModalForm open={visible} title='Add component' onOpenChange={setVisible} onFinish={onFinish}>
+            <ModalForm open={visible} title='Block' onOpenChange={setVisible} onFinish={onFinish} formRef={formBlock}>
+                <ProFormText name="id" hidden />
                 <ProFormText name="name" label="Name" rules={[
                     {
                         required: true
