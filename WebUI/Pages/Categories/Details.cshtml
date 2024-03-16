@@ -7,7 +7,7 @@
         new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" },
         new Breadcrumb { Id = 2, Name = "Danh mục", Url = "/category", Icon ="fas fa-folder" }
     };
-    if (Model.ParentCategory != null)
+    if (Model.ParentCategory != null && Model.ParentCategory.Id != 0)
     {
         int id = breadcrumbs.Count + 1;
         breadcrumbs.Add(new Breadcrumb { Id = id, Icon = "fas fa-folder-open", Name = Model.ParentCategory.Name, Url = $"/category/details/{Model.ParentCategory.Id}" });

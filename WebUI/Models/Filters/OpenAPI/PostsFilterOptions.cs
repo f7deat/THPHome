@@ -10,4 +10,5 @@ public class PostsFilterOptions
     public int PageSize { get; set; } = 10;
     public PostType Type { get; set; } = PostType.NEWS;
     public Language Language { get; set; } = Language.VI;
+    public int? CategoryId { get; set; }
 }

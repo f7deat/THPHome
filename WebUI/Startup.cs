@@ -54,6 +54,8 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IVideoRepository, VideoRepository>();
         services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+        services.AddScoped<IBlockService, BlockService>();
+
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
         services.AddTransient<ITelegramService, TelegramService>();

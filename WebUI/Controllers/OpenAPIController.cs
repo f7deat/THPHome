@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.OpenAPI;
 using WebUI.Options;
 
@@ -13,12 +14,14 @@ namespace WebUI.Controllers;
 public class OpenAPIController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly IBlockService _blockService;
     public SettingOptions Options { get; }
 
-    public OpenAPIController(ApplicationDbContext context, IOptions<SettingOptions> optionsAccessor)
+    public OpenAPIController(ApplicationDbContext context, IOptions<SettingOptions> optionsAccessor, IBlockService blockService)
     {
         _context = context;
         Options = optionsAccessor.Value;
+        _blockService = blockService;
     }
 
     [HttpGet("posts")]
@@ -47,6 +50,13 @@ public class OpenAPIController : Controller
         }
         query = query.Where(x => x.Language == filterOptions.Language);
         query = query.Where(x => x.Type == filterOptions.Type);
+        if (filterOptions.CategoryId != null)
+        {
+            query = from a in _context.PostCategories
+                    join b in query on a.PostId equals b.Id
+                    where a.CategoryId == filterOptions.CategoryId
+                    select b;
+        }
 
         var data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
 
@@ -104,6 +114,19 @@ public class OpenAPIController : Controller
                                     b.NormalizeName,
                                     a.PostId
                                 }).ToListAsync();
+
+        var blocks = await (from a in _context.PostBlocks
+                            join b in _context.Blocks on a.BlockId equals b.Id
+                            where a.PostId == id && a.Active
+                            orderby a.SortOrder ascending
+                            select new
+                            {
+                                a.Id,
+                                a.Data,
+                                b.NormalizedName,
+                                b.Name
+                            }).ToListAsync();
+
         return Ok(new
         {
             post.Id,
@@ -115,7 +138,14 @@ public class OpenAPIController : Controller
             post.CreatedDate,
             post.ModifiedDate,
             post.Content,
-            categories
+            categories,
+            blocks = blocks.Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.NormalizedName,
+                data = _blockService.DeserializeObject(x.NormalizedName, x.Data)
+            })
         });
     }
 }
