@@ -24,7 +24,11 @@ const VideoBlock: React.FC<Props> = ({ id }) => {
 
     return (
         <>
-            <ProFormText label="Embed URL" name="embedUrl" />
+            <ProFormText label="Embed URL" name="embedUrl" rules={[
+                {
+                    required: true
+                }
+            ]} />
         </>
     )
 }

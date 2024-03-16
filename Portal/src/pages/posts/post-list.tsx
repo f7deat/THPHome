@@ -1,10 +1,12 @@
-﻿import { Button, Empty, Input, message, Modal, Popconfirm, Tabs, Tag } from "antd";
+﻿import { Button, Dropdown, message, Popconfirm, Tabs, Tag } from "antd";
 import React, { useRef, useState } from "react";
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
-    ToolOutlined
+    ToolOutlined,
+    CopyOutlined,
+    TranslationOutlined
 } from '@ant-design/icons';
 import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
@@ -12,6 +14,7 @@ import { history, Link, request, useIntl } from "@umijs/max";
 import { language } from "@/utils/format";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { queryPosts } from "@/services/post";
+import CopyPost from "./components/copy";
 
 const { TabPane } = Tabs;
 
@@ -20,6 +23,8 @@ const PostList = () => {
     const [activeKey, setActiveKey] = useState<string>('1');
     const actionRef = useRef<ActionType>();
     const intl = useIntl();
+    const [openCopy, setOpenCopy] = useState<boolean>(false);
+    const [post, setPost] = useState<any>();
 
     function remove(id: number) {
         request(`post/remove/${id}`, {
@@ -55,7 +60,8 @@ const PostList = () => {
     const columns: ProColumnType<IPost>[] = [
         {
             title: 'STT',
-            valueType: 'indexBorder'
+            valueType: 'indexBorder',
+            width: 50
         },
         {
             title: 'Tiêu đề',
@@ -86,7 +92,8 @@ const PostList = () => {
                         {record.status === 1 ? 'xuất bản' : 'chờ duyệt'}
                     </Tag>
                 </Tooltip>
-            )
+            ),
+            width: 100
         },
         {
             title: 'Ngày xuất bản',
@@ -95,12 +102,37 @@ const PostList = () => {
             width: 140
         },
         {
-            title: '',
+            title: 'Tác vụ',
             render: (dom, record: IPost) => [
                 <Tooltip key="build" title="Page Builder">
                     <Button size="small" icon={<ToolOutlined />} hidden={activeKey !== '1'} onClick={() => {
                         history.push(`/post/page/${record.id}`);
                     }} />
+                </Tooltip>,
+                <Tooltip key="copy" title="Nhân bản">
+                    <Button icon={<CopyOutlined />} size="small" type="dashed" onClick={() => {
+                        setPost(record);
+                        setOpenCopy(true);
+                    }} />
+                </Tooltip>,
+                <Tooltip key="translate" title="Dịch">
+                    <Dropdown menu={{
+                        items: [
+                            {
+                                key: 'vi',
+                                label: 'Tiếng Việt',
+                                disabled: intl.locale === 'vi-VN'
+                            },
+                            {
+                                key: 'en',
+                                label: 'Tiếng Anh',
+                                disabled: intl.locale === 'en-US'
+                            }
+                        ]
+                    }}>
+                        
+                    <Button icon={<TranslationOutlined />} size="small" type="primary"/>
+                    </Dropdown>
                 </Tooltip>,
                 <Link key="edit" to={`/post/setting/${record.id}`}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>,
                 <Popconfirm
@@ -152,6 +184,7 @@ const PostList = () => {
                     {TabData("3")}
                 </TabPane>
             </Tabs>
+            <CopyPost open={openCopy} onOpenChange={setOpenCopy} data={post} />
         </PageContainer>
     )
 }

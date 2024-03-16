@@ -57,7 +57,7 @@ const CustomPage: React.FC = () => {
                     />
                 </Col>
                 <Col span={6}>
-                    <ProCard title="Preview">
+                    <ProCard title="Preview" headerBordered>
                         <Empty />
                     </ProCard>
                 </Col>
