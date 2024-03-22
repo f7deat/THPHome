@@ -2,11 +2,23 @@
 using ApplicationCore.Models.Filters;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Buffers;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Text.Encodings.Web;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.OpenAPI;
 using WebUI.Options;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.VisualStudio.TextTemplating;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using WebUI.ViewComponents;
 
 namespace WebUI.Controllers;
 
@@ -15,13 +27,22 @@ public class OpenAPIController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly IBlockService _blockService;
+    private readonly IViewComponentHelper _viewComponentHelper;
+    private readonly IRazorViewEngine _razorViewEngine;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ITempDataProvider _tempDataProvider;
+
     public SettingOptions Options { get; }
 
-    public OpenAPIController(ApplicationDbContext context, IOptions<SettingOptions> optionsAccessor, IBlockService blockService)
+    public OpenAPIController(ApplicationDbContext context, IOptions<SettingOptions> optionsAccessor, IBlockService blockService, IViewComponentHelper viewComponentHelper, IRazorViewEngine razorViewEngine, IServiceProvider serviceProvider, ITempDataProvider tempDataProvider)
     {
         _context = context;
         Options = optionsAccessor.Value;
         _blockService = blockService;
+        _viewComponentHelper = viewComponentHelper;
+        _razorViewEngine = razorViewEngine;
+        _serviceProvider = serviceProvider;
+        _tempDataProvider = tempDataProvider;
     }
 
     [HttpGet("posts")]
@@ -127,6 +148,18 @@ public class OpenAPIController : Controller
                                 b.Name
                             }).ToListAsync();
 
+        var htmlBlock = string.Empty;
+
+        foreach (var item in blocks)
+        {
+            var data = _blockService.DeserializeObject(item.NormalizedName, item.Data);
+            if (data is null)
+            {
+                continue;
+            }
+            htmlBlock += await RenderToStringAsync(item.NormalizedName, data);
+        }
+
         return Ok(new
         {
             post.Id,
@@ -145,7 +178,41 @@ public class OpenAPIController : Controller
                 x.Name,
                 x.NormalizedName,
                 data = _blockService.DeserializeObject(x.NormalizedName, x.Data)
-            })
+            }),
+            htmlBlock
         });
+    }
+
+    public async Task<string> RenderToStringAsync(string viewName, object model)
+    {
+        var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
+        var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+
+        using (var sw = new StringWriter())
+        {
+            var viewResult = _razorViewEngine.GetView("Pages", $"Pages/Components/{viewName}/Default.cshtml", false);
+
+            if (viewResult.View == null)
+            {
+                throw new ArgumentNullException($"{viewName} does not match any available view");
+            }
+
+            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+            {
+                Model = model
+            };
+
+            var viewContext = new ViewContext(
+                actionContext,
+                viewResult.View,
+                viewDictionary,
+                new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
+                sw,
+                new HtmlHelperOptions()
+            );
+
+            await viewResult.View.RenderAsync(viewContext);
+            return sw.ToString();
+        }
     }
 }
