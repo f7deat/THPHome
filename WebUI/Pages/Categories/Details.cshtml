@@ -21,8 +21,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="mb-2 flex items-center justify-between">
-                <form class="w-3/5 mr-2" action="/category/details" method="get">
-                    <input type="hidden" value="@Model.Category.Id" name="Id" />
+                <form class="w-3/5 mr-2" action="/category/details/@Model.Category.Id" method="get">
                     <div class="relative">
                         <input type="search" name="searchTerm" placeholder="Tìm kiếm..."
                                class="pl-10 border pr-5 appearance-none h-10 w-full rounded-full text-sm focus:outline-none"
@@ -58,16 +57,34 @@
                     var nextDisabled = !Model.Posts.HasNextPage ? "disabled" : "";
                 }
 
-
-                <a asp-action="details" asp-route-searchTerm="@Model.SearchTerm" asp-route-id="@Model.Category.Id"
-                   asp-route-pageIndex="@(Model.PageIndex - 1)" class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white @prevDisabled shadow">
-                    <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
-                </a>
-                <a asp-action="details" asp-route-searchTerm="@Model.SearchTerm" asp-route-id="@Model.Category.Id"
-                   asp-route-pageIndex="@(Model.PageIndex + 1)"
-                   class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white float-right @nextDisabled shadow">
-                    <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
-                </a>
+                @if (Model.Posts.HasPreviousPage)
+                {
+                    <a href="/category/details/@Model.Category.Id?pageIndex=@(Model.PageIndex - 1)&searchTerm=@Model.SearchTerm"
+                       class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white shadow">
+                        <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
+                    </a>
+                }
+                else
+                {
+                    <button
+                        disabled
+                            class="rounded px-4 py-1 bg-gray-800 text-white shadow opacity-75">
+                        <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
+                    </button>
+                }
+                @if (Model.Posts.HasNextPage)
+                {
+                    <a href="/category/details/@Model.Category.Id?pageIndex=@(Model.PageIndex + 1)&searchTerm=@Model.SearchTerm"
+                       class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white float-right shadow">
+                        <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
+                    </a>
+                }
+                else
+                {
+                    <button disabled class="rounded px-4 py-1 bg-gray-800 text-white opacity-75">
+                        <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
+                    </button>
+                }
             </div>
         </div>
         <div class="col-md-4">
