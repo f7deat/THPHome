@@ -25,6 +25,10 @@ const UserEdit = () => {
                     {
                         name: 'jobTitle',
                         value: response.jobTitle
+                    },
+                    {
+                        name: 'avatar',
+                        value: response.avatar
                     }
                 ])
             })

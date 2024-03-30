@@ -1,9 +1,10 @@
-﻿import { Col, Empty, Row, Table, Tabs, Typography, Image, Button, Statistic } from "antd"
+﻿import { Col, Empty, Row, Table, Tabs, Typography, Image, Button, Statistic, Avatar, Space } from "antd"
 import React, { useEffect, useState } from "react";
 import {
     StarOutlined,
     CommentOutlined,
-    EditOutlined
+    EditOutlined,
+    UserOutlined
 } from "@ant-design/icons";
 import { request, useParams } from "@umijs/max";
 import { Link } from "@umijs/max";
@@ -26,9 +27,6 @@ const Profile = () => {
             request(`post/get-count-in-user/${response.id}`).then(post => {
                 setPostCount(post)
             })
-            request(`post/list-in-user/${response.id}`).then(response => {
-                setListPost(response)
-            })
             request(`comment/get-count-in-user/${response.id}`).then(response => {
                 setCommentCount(response)
             })
@@ -48,33 +46,63 @@ const Profile = () => {
 
     return (
         <PageContainer extra={<Link to={`/users/edit/${profile?.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
-            <ProCard className="mb-4">
-                <div className="h-40 bg-white rounded">
-                    <div className="flex justify-end">
-
-                    </div>
-                </div>
-                <div className="absolute flex items-center" style={{ top: '5rem', left: '3rem' }}>
-                    <div className="mr-2">
-                        <Image width={150} src={profile?.avatar} className="rounded-full" />
-                    </div>
-                    <div>
-                        <div className="font-bold text-lg">{profile?.email}</div>
-                        <div className="text-gray-400">UX/UI Desinger</div>
-                        <div className="text-gray-400">Join January 2021</div>
-                    </div>
-                </div>
-            </ProCard>
-            <ProCard>
-                <Row gutter={16}>
-                    <Col span={12}>
+            <Row gutter={16}>
+                <Col md={6}>
+                    <ProCard className="mb-4">
+                        <div className="flex items-center justify-center p-4">
+                            {
+                                profile?.avatar ? (
+                                    <Avatar size={150} src={profile?.avatar} />
+                                ) : (
+                                    <Avatar size={150} icon={<UserOutlined />} />
+                                )
+                            }
+                        </div>
+                        <div className="flex items-center justify-center flex-col">
+                            <Typography.Title level={3}>{profile?.name}</Typography.Title>
+                            <div className="mb-4">{profile?.userName}</div>
+                        </div>
+                        <Space direction="vertical">
+                            <div className="text-gray-400">Email: {profile?.email}</div>
+                            <div className="text-gray-400">Chức vụ:</div>
+                        </Space>
+                    </ProCard>
+                </Col>
+                <Col md={18}>
+                    <ProCard>
+                        <div className="bg-white rounded mb-4">
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <ProCard className="p-4 bg-gray-100 rounded" bordered>
+                                        <div className="flex items-center">
+                                            <CommentOutlined className="text-blue-400 text-xl px-2" />
+                                            <div className="flex-grow px-2">
+                                                <div className="text-gray-400">Comment</div>
+                                                <div className="font-bold text-lg">{commentCount}</div>
+                                            </div>
+                                        </div>
+                                    </ProCard>
+                                </Col>
+                                <Col span={8}>
+                                    <ProCard className="p-4 bg-gray-100 rounded" bordered>
+                                        <div className="flex items-center">
+                                            <StarOutlined className="text-yellow-400 text-xl px-2" />
+                                            <div className="flex-grow px-2">
+                                                <div className="text-gray-400">Bài viết</div>
+                                                <div className="font-bold text-lg">{postCount}</div>
+                                            </div>
+                                        </div>
+                                    </ProCard>
+                                </Col>
+                            </Row>
+                        </div>
                         <div className="bg-white rounded">
                             <div className="px-4 py-2">
-                                <Typography.Title level={4}>Activity</Typography.Title>
+                                <Typography.Title level={4}>Hoạt động</Typography.Title>
                             </div>
                             <div className="px-4">
                                 <Tabs defaultActiveKey="1">
-                                    <TabPane tab="Post" key="1">
+                                    <TabPane tab="Bài viết" key="1">
                                         <Table dataSource={listPost} rowKey="id" columns={columns} pagination={{ pageSize: 5 }} />
                                     </TabPane>
                                     <TabPane tab="Comment" key="2">
@@ -86,37 +114,11 @@ const Profile = () => {
                                 </Tabs>
                             </div>
                         </div>
-                    </Col>
-                    <Col span={12}>
-                        <div className="bg-white rounded p-4">
-                            <Row gutter={16}>
-                                <Col span={12}>
-                                    <ProCard className="p-4 bg-gray-100 rounded" bordered>
-                                        <div className="flex items-center">
-                                            <CommentOutlined className="text-blue-400 text-xl px-2" />
-                                            <div className="flex-grow px-2">
-                                                <div className="text-gray-400">Comment</div>
-                                                <div className="font-bold text-lg">{commentCount}</div>
-                                            </div>
-                                        </div>
-                                    </ProCard>
-                                </Col>
-                                <Col span={12}>
-                                    <ProCard className="p-4 bg-gray-100 rounded" bordered>
-                                        <div className="flex items-center">
-                                            <StarOutlined className="text-yellow-400 text-xl px-2" />
-                                            <div className="flex-grow px-2">
-                                                <div className="text-gray-400">Post</div>
-                                                <div className="font-bold text-lg">{postCount}</div>
-                                            </div>
-                                        </div>
-                                    </ProCard>
-                                </Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-            </ProCard>
+                    </ProCard>
+                </Col>
+            </Row>
+
+
         </PageContainer>
     )
 }

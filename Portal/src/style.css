@@ -57,3 +57,11 @@
 .h-48 {
     height: 12rem;
 }
+
+.flex-col {
+    flex-direction: column;
+}
+
+.p-4 {
+    padding: 1rem;
+}
