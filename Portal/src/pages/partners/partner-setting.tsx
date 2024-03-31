@@ -2,7 +2,8 @@
 import { useRef, useState } from "react"
 import {
     EditOutlined,
-    DeleteOutlined
+    DeleteOutlined,
+    PlusOutlined
 } from "@ant-design/icons";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { apiDeletePartner, apiGetListPartner } from "@/services/partner";
@@ -93,7 +94,10 @@ const PartnerPage = () => {
     ];
 
     return (
-        <PageContainer>
+        <PageContainer extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => {
+            setId(undefined);
+            setOpen(true);
+        }}>Thêm mới</Button>}>
             <ProTable
                 search={{
                     layout: 'vertical'

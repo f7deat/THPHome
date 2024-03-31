@@ -1,3 +1,4 @@
+import FileUpload from "@/components/files/upload";
 import { apiAddPartner, apiGePartner, apiUpdatePartner } from "@/services/partner";
 import { UploadOutlined } from "@ant-design/icons";
 import { DrawerForm, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
@@ -15,6 +16,7 @@ const PartnerSetting: React.FC<Props> = ({ open, setOpen, id, actionRef }) => {
 
     const formRef = useRef<ProFormInstance>();
     const [logo, setLogo] = useState<string>('');
+    const [openUpload, setOpenUpload] = useState<boolean>(false);
 
     useEffect(() => {
         if (id) {
@@ -49,6 +51,7 @@ const PartnerSetting: React.FC<Props> = ({ open, setOpen, id, actionRef }) => {
             })
         } else {
             formRef.current?.resetFields();
+            setLogo('');
         }
     }, [id])
 
@@ -58,9 +61,11 @@ const PartnerSetting: React.FC<Props> = ({ open, setOpen, id, actionRef }) => {
         } else {
             await apiAddPartner(values);
         }
+        formRef.current?.resetFields();
         setOpen(false);
         message.success('Thành công!');
         actionRef.current?.reload();
+        setLogo('');
     };
 
     return (
@@ -87,7 +92,7 @@ const PartnerSetting: React.FC<Props> = ({ open, setOpen, id, actionRef }) => {
                         required: true
                     }
                 ]} fieldProps={{
-                    addonAfter: <span><UploadOutlined /> Upload</span>
+                    addonAfter: <Button icon={<UploadOutlined />} type="text" size="small" onClick={() => setOpenUpload(true)}> Upload</Button>
                 }} />
                 <ProFormTextArea label="Description" name="description" />
                 <ProFormText label="Liên kết" name="url" />
@@ -106,6 +111,10 @@ const PartnerSetting: React.FC<Props> = ({ open, setOpen, id, actionRef }) => {
                     }
                 ]} />
             </DrawerForm>
+            <FileUpload open={openUpload} onCancel={() => setOpenUpload(false)} onFinish={(url: string) => {
+                formRef.current?.setFieldValue('logo', url);
+                setLogo(url);
+            }} />
         </>
     )
 }

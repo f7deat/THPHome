@@ -33,4 +33,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Localization> Localizations { get; set; }
     public virtual DbSet<Block> Blocks { get; set; }
     public virtual DbSet<PostBlock> PostBlocks { get; set; }
+    public virtual DbSet<ApplicationFile> ApplicationFiles { get; set; }
+    public virtual DbSet<ApplicationFolder> ApplicationFolders { get; set; }
 }
