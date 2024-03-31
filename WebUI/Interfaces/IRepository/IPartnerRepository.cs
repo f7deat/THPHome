@@ -1,13 +1,10 @@
 ﻿using ApplicationCore.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using WebUI.Models.Filters.Parners;
+using WebUI.Models.ViewModel;
 
-namespace ApplicationCore.Interfaces.IRepository
+namespace ApplicationCore.Interfaces.IRepository;
+
+public interface IPartnerRepository : IAsyncRepository<Partner>
 {
-    public interface IPartnerRepository : IAsyncRepository<Partner>
-    {
-        Task<IReadOnlyList<Partner>> GetListAsync(int status);
-    }
+    Task<ListResult<Partner>> GetListAsync(PartnerFilterOptions filterOptions);
 }

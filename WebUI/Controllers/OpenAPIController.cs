@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using WebUI.ViewComponents;
+using ApplicationCore.Entities;
 
 namespace WebUI.Controllers;
 
@@ -114,6 +115,15 @@ public class OpenAPIController : Controller
             total = await query.CountAsync(),
             data = result
         });
+    }
+
+    [HttpGet("partners")]
+    public async Task<IActionResult> GetPartners([FromQuery] string apiKey)
+    {
+        if (string.IsNullOrWhiteSpace(apiKey)) return BadRequest("API KEY is required!");
+        if (!apiKey.Equals(Options.OpenApiKey)) return Unauthorized();
+        var query = await _context.Partners.Where(x => x.Status == ParnerStatus.Active).ToListAsync();
+        return Ok(query);
     }
 
     [HttpGet("post/{id}")]

@@ -102,6 +102,12 @@ const PostList = () => {
             width: 140
         },
         {
+            title: 'Đăng bởi',
+            dataIndex: 'createdBy',
+            width: 140,
+            search: false
+        },
+        {
             title: 'Tác vụ',
             render: (dom, record: IPost) => [
                 <Tooltip key="build" title="Page Builder">

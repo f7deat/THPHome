@@ -63,17 +63,20 @@ namespace Infrastructure.Repositories
 
         public async Task<dynamic> GetListAsync(PostFilterOptions filterOptions)
         {
-            var query = _context.Posts.Where(x => filterOptions.Type == null || x.Type == filterOptions.Type)
-            .Select(x => new
-            {
-                x.Id,
-                x.Title,
-                x.View,
-                x.ModifiedDate,
-                x.Url,
-                x.Status,
-                x.Language
-            });
+            var query = from a in _context.Posts.Where(x => filterOptions.Type == null || x.Type == filterOptions.Type)
+                        join b in _context.Users on a.CreatedBy equals b.Id
+                        into ab from b in ab.DefaultIfEmpty()
+                        select new
+                        {
+                            a.Id,
+                            a.Title,
+                            a.View,
+                            a.ModifiedDate,
+                            a.Url,
+                            a.Status,
+                            a.Language,
+                            createdBy = b.UserName
+                        };
             if (!string.IsNullOrWhiteSpace(filterOptions.Title))
             {
                 query = query.Where(x => !string.IsNullOrEmpty(x.Title) && x.Title.ToLower().Contains(filterOptions.Title));

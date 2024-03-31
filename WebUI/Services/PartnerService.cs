@@ -1,9 +1,9 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using WebUI.Models.Filters.Parners;
+using WebUI.Models.ViewModel;
 
 namespace ApplicationCore.Services
 {
@@ -30,25 +30,15 @@ namespace ApplicationCore.Services
         public async Task<dynamic> DeleteAsync(int id)
         {
             var partner = await _partnerRepository.GetByIdAsync(id);
-            await _partnerRepository.DeleteAsync(partner);
-            return new
+            if (partner == null) return IdentityResult.Failed(new IdentityError
             {
-                succeeded = true,
-                data = partner,
-                message = "Succeeded!"
-            };
+                Code = "B",
+                Description = "Partner not found!"
+            });
+            await _partnerRepository.DeleteAsync(partner);
+            return IdentityResult.Success;
         }
 
-        public Task<IReadOnlyList<Partner>> GetListAsync(int status) => _partnerRepository.GetListAsync(status);
-
-        public async Task<dynamic> UpdateAsync(Partner partner)
-        {
-            partner.ModifiedDate = DateTime.Now;
-            return new { 
-                succeeded = true,
-                data = await _partnerRepository.UpdateAsync(partner),
-                message = "Succeeded!"
-            };
-        }
+        public Task<ListResult<Partner>> GetListAsync(PartnerFilterOptions filterOptions) => _partnerRepository.GetListAsync(filterOptions);
     }
 }
