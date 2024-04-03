@@ -47,7 +47,9 @@ public class FileController : BaseController
                         folderName = b.Name,
                         modifiedBy = d.UserName,
                         a.CreatedDate,
-                        a.ModifiedDate
+                        a.ModifiedDate,
+                        a.Size,
+                        a.ContentType
                     };
         query = query.OrderByDescending(x => x.ModifiedDate);
         return Ok(new

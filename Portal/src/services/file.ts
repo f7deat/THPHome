@@ -7,3 +7,5 @@ export const apiFileUpload = (data: any) => request(`file/upload`, {
         'Content-Type': 'multipart/form-data'
     }
 });
+
+export const apiFileList = (params: any) => request(`file/list`, params);

@@ -136,6 +136,12 @@ export default defineConfig({
       component: './banners/banner-list',
     },
     {
+      icon: 'PictureOutlined',
+      name: 'Thư viện ảnh',
+      path: '/gallery',
+      component: './gallery',
+    },
+    {
       icon: 'CommentOutlined',
       name: 'Bình luận',
       path: '/comments',
