@@ -140,6 +140,14 @@ export default defineConfig({
       name: "Thư viện ảnh",
       path: "/gallery",
       component: "./gallery",
+      routes: [
+        {
+          name: 'Hình ảnh',
+          path: '/gallery/photo/:id',
+          component: './gallery/photo',
+          hideInMenu: true
+        }
+      ]
     },
     {
       icon: "CommentOutlined",

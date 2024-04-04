@@ -102,7 +102,7 @@ export const request: RequestConfig = {
     (config: RequestOptions) => {
       const token = localStorage.getItem('wf_token');
       config.baseURL = 'https://dhhp.edu.vn/api/';
-      //config.baseURL = 'https://localhost:58058/api/';
+      // config.baseURL = 'https://localhost:58058/api/';
       config.headers = {
         authorization: `Bearer ${token}`,
       };
