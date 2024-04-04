@@ -187,8 +187,8 @@
                     {
                         <div class="col-6 col-md-3 mb-4">
                             <div class="bg-dark">
-                                <a href="@item.Image" class="image-popup">
-                                    <img src="@item.Image" alt="IMG" class="transition duration-700 hover:opacity-75 w-full md:h-80 h-32" style="object-fit: cover;" />
+                                <a href="@item.Url" class="image-popup">
+                                    <img src="@item.Url" alt="@item.Description" class="transition duration-700 hover:opacity-75 w-full md:h-80 h-32" style="object-fit: cover;" />
                                 </a>
                             </div>
                         </div>
@@ -198,15 +198,6 @@
         </div>
     </div>
 </div>
-
-@* <div class="partner border-t border-b py-2">
-    <div class="my-slider">
-        @foreach (var item in Model.Partners)
-        {
-            <a href="@item.Url" target="_blank" data-bs-toggle="tooltip" title="@item.Name"><img src="@item.Logo" alt="Logo" /></a>
-        }
-    </div>
-</div> *@
 
 @section scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"></script>

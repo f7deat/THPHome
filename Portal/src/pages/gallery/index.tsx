@@ -1,9 +1,9 @@
 import FileExplorer from "@/components/files/explorer";
 import FileUpload from "@/components/files/upload";
-import { apiPhotoAdd, apiPhotoList } from "@/services/file";
-import { FolderOutlined, PlusOutlined, StarOutlined, UploadOutlined } from "@ant-design/icons";
+import { apiPhotoAdd, apiPhotoDelete, apiPhotoList } from "@/services/file";
+import { DeleteOutlined, FolderOutlined, PlusOutlined, StarOutlined, UploadOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProCard, ProList } from "@ant-design/pro-components"
-import { Button, Col, Image, Row, Space, Tag, message } from "antd";
+import { Button, Col, Image, Popconfirm, Row, Space, Tag, message } from "antd";
 import { useRef, useState } from "react";
 
 const GalleryPage: React.FC = () => {
@@ -13,12 +13,15 @@ const GalleryPage: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
   const onFinish = async (values: any) => {
-    console.log(values)
-    const response = await apiPhotoAdd(values);
-    if (response) {
-      message.success('Uploaded!');
-      actionRef.current?.reload();
-    }
+    await apiPhotoAdd(values);
+    message.success('Uploaded!');
+    actionRef.current?.reload();
+  }
+
+  const onConfirm = async (id: string) => {
+    await apiPhotoDelete(id);
+    message.success('Xóa thành công!');
+    actionRef.current?.reload();
   }
 
   return (
@@ -37,8 +40,13 @@ const GalleryPage: React.FC = () => {
         request={apiPhotoList}
         grid={{ gutter: 16, column: 6 }}
         renderItem={(item) => (
-          <div className="bg-white">
+          <div className="bg-white shadow">
             <Image src={item.url} className="w-full object-cover" height={180} wrapperClassName="w-full" />
+            <div className="p-1 flex justify-center">
+              <Popconfirm title="Xác nhận xóa" onConfirm={() => onConfirm(item.id)}>
+                <Button type="text" icon={<DeleteOutlined />} size="small" danger>Xóa</Button>
+              </Popconfirm>
+            </div>
           </div>
         )}
       />

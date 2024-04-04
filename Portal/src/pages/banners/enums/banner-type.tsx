@@ -7,10 +7,6 @@
 
 const LIST_BANNER_TYPE = [
     {
-        id: BANNER_TYPE.DEFAULT,
-        name: 'Default'
-    },
-    {
         id: BANNER_TYPE.SLIDE,
         name: 'Slide'
     },

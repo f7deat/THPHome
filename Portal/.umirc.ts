@@ -131,7 +131,7 @@ export default defineConfig({
     },
     {
       icon: "PictureOutlined",
-      name: "Banner",
+      name: "Slider",
       path: "/banners",
       component: "./banners/banner-list",
     },

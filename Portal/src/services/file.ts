@@ -15,4 +15,8 @@ export const apiPhotoList = (params: any) => request(`gallery/photo/list`, { par
 export const apiPhotoAdd = (data: any) => request(`gallery/photo/add`, {
     method: 'POST',
     data
-})
+});
+
+export const apiPhotoDelete = (id: string) => request(`gallery/photo/${id}`, {
+    method: 'DELETE'
+});

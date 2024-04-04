@@ -111,9 +111,9 @@ const PartnerSetting: React.FC<Props> = ({ open, setOpen, id, actionRef }) => {
                     }
                 ]} />
             </DrawerForm>
-            <FileUpload open={openUpload} onCancel={() => setOpenUpload(false)} onFinish={(url: string) => {
-                formRef.current?.setFieldValue('logo', url);
-                setLogo(url);
+            <FileUpload open={openUpload} onCancel={() => setOpenUpload(false)} onFinish={(values: any) => {
+                formRef.current?.setFieldValue('logo', values.url);
+                setLogo(values.url);
             }} />
         </>
     )

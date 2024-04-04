@@ -126,6 +126,15 @@ public class OpenAPIController : Controller
         return Ok(query);
     }
 
+    [HttpGet("photos")]
+    public async Task<IActionResult> GetPhotos([FromQuery] string apiKey, [FromQuery] Guid? galleryId)
+    {
+        if (string.IsNullOrWhiteSpace(apiKey)) return BadRequest("API KEY is required!");
+        if (!apiKey.Equals(Options.OpenApiKey)) return Unauthorized();
+        var query = await _context.Photos.Where(x => galleryId == null || x.GalleryId == galleryId).OrderByDescending(x => x.CreatedDate).ToListAsync();
+        return Ok(query);
+    }
+
     [HttpGet("post/{id}")]
     public async Task<IActionResult> PostAsync([FromRoute] long id, [FromQuery] string apiKey)
     {

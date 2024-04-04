@@ -46,7 +46,7 @@ public class GalleryController : BaseController
     [HttpGet("photo/list")]
     public async Task<IActionResult> PhotoList([FromQuery] PhotoFilterOptions filterOptions)
     {
-        var photos = _context.Photos.Where(x => filterOptions.GalleryId == null || x.GalleryId == filterOptions.GalleryId);
+        var photos = _context.Photos.Where(x => filterOptions.GalleryId == null || x.GalleryId == filterOptions.GalleryId).OrderByDescending(x => x.CreatedDate);
         return Ok(await ListResult<Photo>.Success(photos, filterOptions));
     }
 

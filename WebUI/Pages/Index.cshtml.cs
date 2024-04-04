@@ -5,6 +5,8 @@ using ApplicationCore.Models.Payload;
 using ApplicationCore.Models.Posts;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebUI.Entities;
 using WebUI.Foundations;
 
 namespace WebUI.Pages;
@@ -19,7 +21,7 @@ public class IndexModel : EntryPageModel
 
     public List<ApplicationCore.Models.Categories.GroupCategory> GroupCategories;
     public IEnumerable<Menu> BoxMenu;
-    public IEnumerable<Banner> Albums;
+    public IEnumerable<Photo> Albums;
     public IEnumerable<Video> Videos;
     public IEnumerable<Partner> Partners;
     public IEnumerable<PostView> ListNews;
@@ -50,7 +52,7 @@ public class IndexModel : EntryPageModel
         });
         //Partners = await _context.Partners.Where(x => x.Status == ParnerStatus.Active).ToListAsync();
         Videos = await _videoService.GetListAsync(5);
-        Albums = await _bannerService.GetListAsync(BannerType.PHOTO, 4);
+        Albums = await _context.Photos.OrderByDescending(x => x.CreatedDate).ToListAsync();
         GroupCategories = await _categoryService.GetGroupCategories(PageData.Language);
         if (!string.IsNullOrWhiteSpace(lang))
         {

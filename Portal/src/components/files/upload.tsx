@@ -42,7 +42,7 @@ const FileUpload: React.FC<Props> = (props) => {
                 return;
             }
             setFileList([]);
-            props.onFinish(response.url);
+            props.onFinish(response);
             props.onCancel();
             return;
         }
@@ -51,8 +51,10 @@ const FileUpload: React.FC<Props> = (props) => {
             return;
         }
         props.onFinish({
-            url
+            url,
+            succeeded: true
         });
+        setUrl('');
         props.onCancel();
     }
 
