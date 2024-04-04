@@ -1,9 +1,10 @@
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import { ActionType, ProCard, ProTable } from "@ant-design/pro-components"
-import { Button, Col, Image, Modal, Row, Space, Tooltip } from "antd";
+import { Button, Col, Empty, Image, Modal, Row, Space, Tooltip } from "antd";
 import FileUpload from "./upload";
 import { useRef, useState } from "react";
 import { apiFileList } from "@/services/file";
+import { humanFileSize } from "@/utils/format";
 
 type Props = {
     open: boolean;
@@ -14,7 +15,7 @@ const FileExplorer: React.FC<Props> = ({ open, setOpen }) => {
 
     const [openUpload, setOpenUpload] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
-    const [thumbnail, setThumbnail] = useState<string>('');
+    const [file, setFile] = useState<any>();
 
     const onUploadFinish = () => {
         actionRef.current?.reload();
@@ -38,7 +39,7 @@ const FileExplorer: React.FC<Props> = ({ open, setOpen }) => {
                                 dataIndex: 'fileName',
                                 render: (dom, entity) => (
                                     <Tooltip title={dom}>
-                                        <Button size="small" onClick={() => setThumbnail(entity.url)} type="text" style={{
+                                        <Button size="small" onClick={() => setFile(entity)} type="text" style={{
                                             maxWidth: 300,
                                             whiteSpace: 'nowrap',
                                             overflow: 'hidden',
@@ -46,6 +47,11 @@ const FileExplorer: React.FC<Props> = ({ open, setOpen }) => {
                                         }}>{dom}</Button>
                                     </Tooltip>
                                 )
+                            },
+                            {
+                                title: 'Size',
+                                dataIndex: 'size',
+                                render: (dom, entity) => humanFileSize(entity.size)
                             },
                             {
                                 title: 'Upload',
@@ -75,11 +81,25 @@ const FileExplorer: React.FC<Props> = ({ open, setOpen }) => {
                 </Col>
                 <Col span={6}>
                     <ProCard
-                        bordered extra actions={<Space>
-                            <Button icon={<UploadOutlined key="setting" />}></Button>
-                            <Button icon={<UploadOutlined key="setting" />}></Button>
-                        </Space>}>
-                        <Image src={thumbnail} />
+                        size="small"
+                        title="Preview"
+                        headerBordered
+                        bordered>
+                        {
+                            file ? (
+                                <>
+                                    <div className="mb-2">
+                                        <Image src={file.url} height={150} style={{
+                                            objectFit: 'contain'
+                                        }} />
+                                    </div>
+                                    <div className="mb-2">
+                                        Size: {humanFileSize(file.size)}
+                                    </div>
+                                    <Button className="w-full" type="primary">Chọn</Button>
+                                </>
+                            ) : (<Empty />)
+                        }
                     </ProCard>
                 </Col>
             </Row>

@@ -78,8 +78,7 @@ public class FileController : BaseController
                 var url = $"https://{host}/files/{file.FileName}";
 
                 var user = await _userManager.FindByIdAsync(User.GetId());
-
-                await _context.ApplicationFiles.AddAsync(new ApplicationFile
+                var applicationFile = new ApplicationFile
                 {
                     ContentType = file.ContentType,
                     Name = file.FileName,
@@ -88,10 +87,11 @@ public class FileController : BaseController
                     ModifiedDate = DateTime.Now,
                     Url = url,
                     CreatedBy = user?.Id
-                });
+                };
+                await _context.ApplicationFiles.AddAsync(applicationFile);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { succeeded = true, url });
+                return Ok(new { succeeded = true, url, applicationFile.Id });
             }
             return Ok(new { succeeded = false, message = "File not found", url = string.Empty });
         }
@@ -105,19 +105,28 @@ public class FileController : BaseController
     [HttpPost("image/upload")]
     public async Task<IActionResult> ImageUploadAsync([FromForm] IFormFile file)
     {
-        if (file is null) return BadRequest("File not found!");
-        var folder = $"{DateTime.Now.Year}-{DateTime.Now.Month:00}-{DateTime.Now.Day}";
-        var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", folder);
-        if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
-        var filePath = Path.Combine(uploadPath, file.FileName);
-
-        using (var stream = System.IO.File.Create(filePath))
+        try
         {
-            await file.CopyToAsync(stream);
-        }
+            if (file is null) return BadRequest("File not found!");
+            var folder = $"{DateTime.Now.Year}-{DateTime.Now.Month:00}-{DateTime.Now.Day}";
+            var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", folder);
+            if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
+            var filePath = Path.Combine(uploadPath, file.FileName);
 
-        var host = Request.Host.Value;
-        return Ok(new { succeeded = true, url = $"https://{host}/img/{folder}/{file.FileName}" });
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var host = Request.Host.Value;
+            var url = $"https://{host}/img/{folder}/{file.FileName}";
+            return Ok(new { succeeded = true, url  });
+        }
+        catch (Exception ex)
+        {
+            await _telegramService.SendMessageAsync(ex.ToString());
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpGet("directories")]

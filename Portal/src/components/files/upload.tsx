@@ -50,7 +50,9 @@ const FileUpload: React.FC<Props> = (props) => {
             message.error('Sorry, URL failed to upload.')
             return;
         }
-        props.onFinish(url);
+        props.onFinish({
+            url
+        });
         props.onCancel();
     }
 

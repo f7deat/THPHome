@@ -8,4 +8,11 @@ export const apiFileUpload = (data: any) => request(`file/upload`, {
     }
 });
 
-export const apiFileList = (params: any) => request(`file/list`, params);
+export const apiFileList = (params: any) => request(`file/list`, { params  });
+
+export const apiPhotoList = (params: any) => request(`gallery/photo/list`, { params });
+
+export const apiPhotoAdd = (data: any) => request(`gallery/photo/add`, {
+    method: 'POST',
+    data
+})
