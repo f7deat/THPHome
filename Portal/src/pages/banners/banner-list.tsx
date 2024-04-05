@@ -1,4 +1,4 @@
-﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload, Form, Image } from "antd"
+﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload, Form, Image, Radio } from "antd"
 import {
     DeleteOutlined,
     EditOutlined,
@@ -151,7 +151,13 @@ const BannerList = () => {
                         fieldProps={{
                             addonAfter: <Button type="text" size="small" icon={<UploadOutlined />} onClick={() => setOpenUpload(true)}>Tải lên</Button>
                         }} />
-                    <ProFormText name="url" label="Liên kết" />
+                    <div className="mb-2">
+                        <Radio.Group defaultValue="post">
+                            <Radio value="post">Bài viết</Radio>
+                            <Radio value="link">Liên kết ngoài</Radio>
+                        </Radio.Group>
+                    </div>
+                    <ProFormText name="url" placeholder="https://" />
                     <Button type="primary" icon={<SaveOutlined />} htmlType="submit">Lưu</Button>
                 </Form>
             </Drawer>

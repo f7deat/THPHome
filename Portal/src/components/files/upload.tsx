@@ -85,8 +85,7 @@ const FileUpload: React.FC<Props> = (props) => {
                 </Dragger>
             </div>
             <div className="text-center">
-                <Button icon={<CloudUploadOutlined />} type="link" size="large">
-                    <b>Choose from your computer</b></Button>
+                <div className="font-medium flex items-center gap-2 justify-center text-blue-500 text-base"> <CloudUploadOutlined /> Choose from your computer</div>
             </div>
             <Divider>or</Divider>
             <Input placeholder="Paste image or URL" onChange={(e) => setUrl(e.currentTarget.value)} />

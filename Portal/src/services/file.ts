@@ -8,7 +8,7 @@ export const apiFileUpload = (data: any) => request(`file/upload`, {
     }
 });
 
-export const apiFileList = (params: any) => request(`file/list`, { params  });
+export const apiFileList = (params: any) => request(`file/list`, { params });
 
 export const apiPhotoList = (params: any) => request(`gallery/photo/list`, { params });
 
@@ -18,5 +18,21 @@ export const apiPhotoAdd = (data: any) => request(`gallery/photo/add`, {
 });
 
 export const apiPhotoDelete = (id: string) => request(`gallery/photo/${id}`, {
+    method: 'DELETE'
+});
+
+export const apiGalleryList = () => request(`gallery/list`);
+
+export const apiGalleryAdd = (data: any) => request(`gallery`, {
+    method: 'POST',
+    data
+})
+
+export const apiGalleryUpdate = (data: any) => request(`gallery`, {
+    method: 'PUT',
+    data
+})
+
+export const apiGalleryDelete = (id: string) => request(`gallery/${id}`, {
     method: 'DELETE'
 });

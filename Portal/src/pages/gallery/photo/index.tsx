@@ -1,9 +1,10 @@
 import FileExplorer from "@/components/files/explorer";
 import FileUpload from "@/components/files/upload";
 import { apiPhotoAdd, apiPhotoDelete, apiPhotoList } from "@/services/file";
-import { DeleteOutlined, FolderOutlined, PlusOutlined, StarOutlined, UploadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, FolderOutlined, LeftOutlined, UploadOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProCard, ProList } from "@ant-design/pro-components"
-import { Button, Col, Image, Popconfirm, Row, Space, Tag, message } from "antd";
+import { history, useParams } from "@umijs/max";
+import { Button, Image, Popconfirm, Row, Space, Tag, message } from "antd";
 import { useRef, useState } from "react";
 
 const PhotoPage: React.FC = () => {
@@ -11,10 +12,13 @@ const PhotoPage: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [openUpload, setOpenUpload] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
+  const { id } = useParams();
 
   const onFinish = async (values: any) => {
+    values.galleryId = id;
+    values.fileId = values.id;
     await apiPhotoAdd(values);
-    message.success('Uploaded!');
+    message.success('Tải lên thành công!');
     actionRef.current?.reload();
   }
 
@@ -27,24 +31,27 @@ const PhotoPage: React.FC = () => {
   return (
     <PageContainer extra={(
       <Space>
-        <Button icon={<FolderOutlined />} onClick={() => setOpen(true)}>File Explorer</Button>
         <Button icon={<UploadOutlined />} type="primary" onClick={() => setOpenUpload(true)}>Tải lên</Button>
+        <Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>
       </Space>
     )}>
       <ProList<any>
         actionRef={actionRef}
         ghost
         pagination={{
-          defaultPageSize: 12,
+          defaultPageSize: 18,
         }}
-        request={apiPhotoList}
+        request={(params) => apiPhotoList({
+            ...params,
+            galleryId: id
+        })}
         grid={{ gutter: 16, column: 6 }}
         renderItem={(item) => (
           <div className="bg-white shadow">
             <Image src={item.url} className="w-full object-cover" height={180} wrapperClassName="w-full" />
             <div className="p-1 flex justify-center">
               <Popconfirm title="Xác nhận xóa" onConfirm={() => onConfirm(item.id)}>
-                <Button type="text" icon={<DeleteOutlined />} size="small" danger>Xóa</Button>
+                <Button type="text" icon={<DeleteOutlined />} size="small" danger></Button>
               </Popconfirm>
             </div>
           </div>

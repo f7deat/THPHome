@@ -38,7 +38,7 @@ namespace ApplicationCore.Services
             post.ModifiedDate = DateTime.Now;
             post.Status = PostStatus.DRAFT;
             post.View = 0;
-            post.Url = SeoHelper.ToSeoFriendly(post.Title, post.Title.Length);
+            post.Url = SeoHelper.ToSeoFriendly(post.Title);
             return await _postRepository.AddAsync(post);
         }
 
@@ -50,7 +50,7 @@ namespace ApplicationCore.Services
             }
             if (post.Type != PostType.PAGE)
             {
-                post.Url = SeoHelper.ToSeoFriendly(post.Title, post.Title.Length);
+                post.Url = SeoHelper.ToSeoFriendly(post.Title);
             }
             post.Title = post.Title.Trim();
             await _postRepository.UpdateAsync(post);

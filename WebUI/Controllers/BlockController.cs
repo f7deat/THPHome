@@ -143,7 +143,7 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
             Type = source.Type,
             Description = args.Description,
             Thumbnail = args.Thumbnail,
-            Url = SeoHelper.ToSeoFriendly(args.Title, args.Title.Length),
+            Url = SeoHelper.ToSeoFriendly(args.Title),
             View = 0,
             CreatedBy = user?.Id
         };

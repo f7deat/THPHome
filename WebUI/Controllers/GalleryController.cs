@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Helpers;
 using ApplicationCore.Models.Filters;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -31,7 +32,8 @@ public class GalleryController : BaseController
                         Name = a.Name,
                         Description = a.Description,
                         ModifiedDate = a.ModifiedDate,
-                        Count = _context.Photos.Count(x => x.GalleryId == a.Id)
+                        Count = _context.Photos.Count(x => x.GalleryId == a.Id),
+                        Thumbnail = _context.Photos.First(x => x.GalleryId == a.Id).Url
                     };
         if (!string.IsNullOrWhiteSpace(filterOptions.Name))
         {
@@ -39,11 +41,13 @@ public class GalleryController : BaseController
         }
         query = query.OrderByDescending(x => x.ModifiedDate);
         var result = await query.ToListAsync();
+        var uncategory = await _context.Photos.FirstOrDefaultAsync(x => x.GalleryId == Guid.Empty);
         result.Insert(0, new GalleryListResponse
         {
             Name = "Chưa phân loại",
             Id = Guid.Empty,
-            Count = await _context.Photos.CountAsync(x => x.GalleryId == null || x.GalleryId == Guid.Empty)
+            Count = await _context.Photos.CountAsync(x => x.GalleryId == Guid.Empty),
+            Thumbnail = uncategory?.Url
         });
         return Ok(result);
     }
@@ -57,7 +61,8 @@ public class GalleryController : BaseController
             CreatedDate = DateTime.Now,
             Description = args.Description,
             Name = args.Name,
-            ModifiedDate = DateTime.Now
+            ModifiedDate = DateTime.Now,
+            NormalizedName = SeoHelper.ToSeoFriendly(args.Name)
         });
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GalleryAddAsync), IdentityResult.Success);
@@ -72,6 +77,7 @@ public class GalleryController : BaseController
         gallery.Name = args.Name;
         gallery.ModifiedBy = User.GetId();
         gallery.Description = args.Description;
+        gallery.NormalizedName = SeoHelper.ToSeoFriendly(args.Name);
         _context.Galleries.Update(gallery);
         await _context.SaveChangesAsync();
         return Ok(IdentityResult.Success);
@@ -118,7 +124,7 @@ public class GalleryController : BaseController
             Description = args.Description,
             Url = args.Url,
             ModifiedDate = DateTime.Now,
-            GalleryId = args.GalleryId,
+            GalleryId = args.GalleryId ?? Guid.Empty,
             FileId = args.FileId
         });
         await _context.SaveChangesAsync();
@@ -128,8 +134,13 @@ public class GalleryController : BaseController
     [HttpGet("photo/list")]
     public async Task<IActionResult> PhotoList([FromQuery] PhotoFilterOptions filterOptions)
     {
-        var photos = _context.Photos.Where(x => filterOptions.GalleryId == null || x.GalleryId == filterOptions.GalleryId).OrderByDescending(x => x.CreatedDate);
-        return Ok(await ListResult<Photo>.Success(photos, filterOptions));
+        var query = _context.Photos.AsQueryable();
+        if (filterOptions.GalleryId != null)
+        {
+            query = query.Where(x => x.GalleryId == filterOptions.GalleryId);
+        }
+        query = query.OrderByDescending(x => x.CreatedDate);
+        return Ok(await ListResult<Photo>.Success(query, filterOptions));
     }
 
     [HttpDelete("photo/{id}")]

@@ -127,11 +127,22 @@ public class OpenAPIController : Controller
     }
 
     [HttpGet("photos")]
-    public async Task<IActionResult> GetPhotos([FromQuery] string apiKey, [FromQuery] Guid? galleryId)
+    public async Task<IActionResult> GetPhotos([FromQuery] PhotoFilterOptions filterOptions)
     {
-        if (string.IsNullOrWhiteSpace(apiKey)) return BadRequest("API KEY is required!");
-        if (!apiKey.Equals(Options.OpenApiKey)) return Unauthorized();
-        var query = await _context.Photos.Where(x => galleryId == null || x.GalleryId == galleryId).OrderByDescending(x => x.CreatedDate).ToListAsync();
+        if (string.IsNullOrWhiteSpace(filterOptions.ApiKey)) return BadRequest("API KEY is required!");
+        if (!filterOptions.ApiKey.Equals(Options.OpenApiKey)) return Unauthorized();
+        var query = await _context.Photos.Where(x => filterOptions.GalleryId == null || x.GalleryId == filterOptions.GalleryId).OrderByDescending(x => x.CreatedDate)
+            .Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
+        return Ok(query);
+    }
+
+    [HttpGet("galleries")]
+    public async Task<IActionResult> GetGalleries([FromQuery] GalleryFilterOptions filterOptions)
+    {
+        if (string.IsNullOrWhiteSpace(filterOptions.ApiKey)) return BadRequest("API KEY is required!");
+        if (!filterOptions.ApiKey.Equals(Options.OpenApiKey)) return Unauthorized();
+        var query = await _context.Galleries.OrderByDescending(x => x.ModifiedDate)
+            .Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
         return Ok(query);
     }
 

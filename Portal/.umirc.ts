@@ -139,8 +139,16 @@ export default defineConfig({
       icon: "PictureOutlined",
       name: "Thư viện ảnh",
       path: "/gallery",
-      component: "./gallery",
       routes: [
+        {
+          path: "/gallery",
+          redirect: "/gallery/list",
+        },
+        {
+          name: "Albums",
+          path: "/gallery/list",
+          component: "./gallery",
+        },
         {
           name: 'Hình ảnh',
           path: '/gallery/photo/:id',

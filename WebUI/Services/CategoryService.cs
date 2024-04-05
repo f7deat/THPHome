@@ -26,7 +26,7 @@ namespace ApplicationCore.Services
         {
             if (string.IsNullOrEmpty(category.NormalizeName))
             {
-                category.NormalizeName = SeoHelper.ToSeoFriendly(category.Name, category.Name.Length);
+                category.NormalizeName = SeoHelper.ToSeoFriendly(category.Name);
             }
             if (await _categoryRepository.IsExistAsync(category.NormalizeName.ToLower()) || await _categoryRepository.IsExistAsync(category.Name.ToLower()))
             {
