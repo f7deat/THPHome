@@ -9,7 +9,6 @@ namespace ApplicationCore.Interfaces.IService
         Task<Banner> AddAsync(Banner banner);
         Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type = null, int pageSize = 10);
         Task<dynamic> DeleteAsync(int id);
-        Task<IEnumerable<Banner>> GetListAsync(long id);
         Task<bool> UpdateAsync(Banner banner);
     }
 }

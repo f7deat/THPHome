@@ -4,7 +4,7 @@ import {
     InboxOutlined
 } from "@ant-design/icons";
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { ListPostType } from '../../enum/post-enum'
+import { ListPostType, PostType } from '../../enum/post-enum'
 import IPost from './interfaces/post-model'
 import MyEditor from '../../components/my-editor';
 import { useParams, history, useIntl, getLocale } from '@umijs/max';
@@ -212,7 +212,7 @@ const PostSetting = () => {
                         <Col span={6}>
                             <Row gutter={16}>
                                 <Col span={12}>
-                                    <Form.Item label="Loại" name="type" rules={[
+                                    <Form.Item label="Loại" name="type" initialValue={PostType.NEWS} rules={[
                                         {
                                             required: true,
                                             message: 'Vui lòng chọn loại bài viết'
@@ -280,11 +280,15 @@ const PostSetting = () => {
                             <div className='mb-4'>
                                 {
                                     previewImage ? (
-                                        <Image src={previewImage} height={200} wrapperClassName='w-full' style={{
+                                        <Image src={previewImage} height={180} wrapperClassName='w-full h-40' style={{
                                             width: '100%',
                                             objectFit: 'cover'
                                         }} />
-                                    ) : <Empty />
+                                    ) : (
+                                        <div className='h-40 border flex items-center justify-center'>
+                                            <Empty />
+                                        </div>
+                                    )
                                 }
                             </div>
 

@@ -30,9 +30,9 @@ public class SeoHelper
         if (result[^1] == '-') result.Remove(result.Length - 1, 1);
         if (removeSign)
         {
-            return RemoveSign4VietnameseString(result.ToString());
+            return RemoveSign4VietnameseString(result.ToString()).ToLower();
         }
-        return result.ToString();
+        return result.ToString().ToLower();
     }
 
     private static readonly string[] VietnameseSigns = new string[]

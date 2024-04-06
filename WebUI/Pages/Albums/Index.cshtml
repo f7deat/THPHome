@@ -1,0 +1,19 @@
+﻿@page
+@model WebUI.Pages.Albums.IndexModel
+@{
+}
+
+<main class="container">
+    <div class="row">
+        @foreach (var item in Model.Galleries)
+        {
+            <div class="col-2 col-md-2">
+                <div class="shadow">
+                    <div class="px-2 py-1">
+                        <a href="#">@item.Name</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</main>

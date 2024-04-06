@@ -63,6 +63,11 @@ export default defineConfig({
           component: "./posts/pages",
           hideInMenu: true,
         },
+        {
+          name: "Slide",
+          path: "/post/banners",
+          component: "./banners/banner-list",
+        },
       ],
     },
     {
@@ -128,12 +133,6 @@ export default defineConfig({
       name: "Tài liệu",
       path: "/files",
       component: "./files/file-explorer",
-    },
-    {
-      icon: "PictureOutlined",
-      name: "Slider",
-      path: "/banners",
-      component: "./banners/banner-list",
     },
     {
       icon: "PictureOutlined",

@@ -6,13 +6,12 @@
     int i = 0;
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/tiny-slider.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
 
 <div class="container">
     <div class="row" data-aos="fade-up">
         <div class="col-md-8 mb-4">
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div id="carouselExampleIndicators" class="carousel slide position-relative" data-bs-ride="carousel">
                 <div class="carousel-indicators">
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -23,6 +22,13 @@
                     {
                         <div class="carousel-item @(i == 0 ? "active" : "")">
                             <img src="@item.Image" class="d-block w-100" alt="...">
+                            <div class="carousel-overlay">
+                                <div class="carousel-caption">
+                                    <a href="@item.Url"><h5>@item.Name</h5></a>
+                                    <div class="carousel__overlay--delimiter"></div>
+                                    <p>@item.Description</p>
+                                </div>
+                            </div>
                         </div>
                         @(i++)
                     }
@@ -182,7 +188,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="row g-2">
+                <div class="row g-2 gallery mb-2">
                     @foreach (var item in Model.Albums)
                     {
                         <div class="col-6 col-md-3 mb-4">
@@ -193,6 +199,9 @@
                             </div>
                         </div>
                     }
+                </div>
+                <div class="d-flex justify-content-center">
+                    <a href="/albums" class="btn btn-outline-primary text-uppercase"><i class="fa-solid fa-arrow-left"></i> Xem tất cả <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>

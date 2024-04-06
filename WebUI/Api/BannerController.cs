@@ -50,6 +50,8 @@ public class BannerController : BaseController
         data.Name = banner.Name;
         data.ModifiedBy = User.GetId();
         data.ModifiedDate = DateTime.Now;
+        data.PostId = banner.PostId;
+        data.Description = banner.Description;
         _context.Banners.Update(data);
         await _context.SaveChangesAsync();
         return Ok(IdentityResult.Success);

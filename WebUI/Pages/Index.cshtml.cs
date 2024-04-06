@@ -6,6 +6,7 @@ using ApplicationCore.Models.Posts;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WebUI.Entities;
 using WebUI.Foundations;
 
@@ -26,7 +27,7 @@ public class IndexModel : EntryPageModel
     public IEnumerable<Partner> Partners;
     public IEnumerable<PostView> ListNews;
     public IEnumerable<PostView> ListNotification;
-    public IEnumerable<Banner> Slides;
+    public List<Banner> Slides = [];
 
     public IndexModel(IPostService postService, IBannerService bannerService, IMenuService menuService, IPartnerService partnerService, IVideoService videoService, ICategoryService categoryService, ApplicationDbContext context) : base(postService, context)
     {
@@ -39,7 +40,21 @@ public class IndexModel : EntryPageModel
 
     public async Task<IActionResult> OnGetAsync(string lang)
     {
-        Slides = await _bannerService.GetListAsync(BannerType.SLIDE);
+        var banners = from slide in _context.Banners
+                      join post in _context.Posts on slide.PostId equals post.Id
+                      into slidePost
+                      from post in slidePost.DefaultIfEmpty()
+                      where slide.Type == BannerType.SLIDE
+                      select new Banner
+                      {
+                          Name = post.Title ?? slide.Name,
+                          Description = post.Description ?? slide.Description,
+                          Id = slide.Id,
+                          Image = slide.Image,
+                          Url = !string.IsNullOrEmpty(post.Url) ? $"/post/{post.Url}-{post.Id}.html" : slide.Url,
+                      };
+        Slides = await banners.ToListAsync();
+
         // Thông báo
         ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Language);
         // Tin tức nổi bật

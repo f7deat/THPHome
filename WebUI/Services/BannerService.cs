@@ -32,8 +32,6 @@ namespace ApplicationCore.Services
 
         public Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type, int pageSize = 10) => _bannerRepository.GetListAsync(type, pageSize);
 
-        public Task<IEnumerable<Banner>> GetListAsync(long id) => _bannerRepository.GetListAsync(id);
-
         public async Task<bool> UpdateAsync(Banner banner)
         {
             banner.ModifiedDate = DateTime.Now;

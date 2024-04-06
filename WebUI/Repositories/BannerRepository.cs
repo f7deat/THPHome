@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,12 +24,10 @@ namespace Infrastructure.Repositories
             return await _context.Banners.Where(x => x.Type == type).OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
         }
 
-        public async Task<IEnumerable<Banner>> GetListAsync(long id) => await _context.Banners.Where(x => x.DisplayOn == id).ToListAsync();
-
         public async Task RemoveRangeAsync(long id)
         {
-            var banners = await _context.Banners.Where(x => x.DisplayOn == id).ToListAsync();
-            if (banners.Count() > 0)
+            var banners = await _context.Banners.Where(x => x.PostId == id).ToListAsync();
+            if (!banners.IsNullOrEmpty())
             {
                 _context.RemoveRange(banners);
                 await _context.SaveChangesAsync();
