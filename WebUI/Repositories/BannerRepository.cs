@@ -2,36 +2,35 @@
 using ApplicationCore.Interfaces.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using WebUI.Helpers;
+using WebUI.Models.Filters.Settings;
+using WebUI.Models.ViewModel;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories;
+
+public class BannerRepository : EfRepository<Banner>, IBannerRepository
 {
-    public class BannerRepository : EfRepository<Banner>, IBannerRepository
+    public BannerRepository(ApplicationDbContext context) : base(context)
     {
-        public BannerRepository(ApplicationDbContext context) : base(context)
-        {
 
-        }
+    }
 
-        public async Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type, int pageSize)
-        {
-            if (type == null || type == BannerType.DEFAULT)
-            {
-                return await _context.Banners.OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
-            }
-            return await _context.Banners.Where(x => x.Type == type).OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
-        }
+    public async Task<ListResult<Banner>> GetListAsync(BannerFilterOptions filterOptions)
+    {
+        var language = LanguageHelper.GetLanguage(filterOptions.Locale);
+        var query = _context.Banners.Where(x => x.Language == language && x.Type == BannerType.SLIDE);
+        query = query.OrderByDescending(x => x.CreatedDate);
 
-        public async Task RemoveRangeAsync(long id)
+        return await ListResult<Banner>.Success(query, filterOptions);
+    }
+
+    public async Task RemoveRangeAsync(long id)
+    {
+        var banners = await _context.Banners.Where(x => x.PostId == id).ToListAsync();
+        if (!banners.IsNullOrEmpty())
         {
-            var banners = await _context.Banners.Where(x => x.PostId == id).ToListAsync();
-            if (!banners.IsNullOrEmpty())
-            {
-                _context.RemoveRange(banners);
-                await _context.SaveChangesAsync();
-            }
+            _context.RemoveRange(banners);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -4,6 +4,8 @@ using ApplicationCore.Interfaces.IService;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebUI.Models.Filters.Settings;
+using WebUI.Models.ViewModel;
 
 namespace ApplicationCore.Services
 {
@@ -30,7 +32,7 @@ namespace ApplicationCore.Services
             return new { succeeded = true };
         }
 
-        public Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type, int pageSize = 10) => _bannerRepository.GetListAsync(type, pageSize);
+        public Task<ListResult<Banner>> GetListAsync(BannerFilterOptions filterOptions) => _bannerRepository.GetListAsync(filterOptions);
 
         public async Task<bool> UpdateAsync(Banner banner)
         {

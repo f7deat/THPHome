@@ -10,4 +10,5 @@ public class FilterOptions : IFilterOptions
 {
     public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 10;
+    public string? Locale { get; set; }
 }

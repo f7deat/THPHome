@@ -44,7 +44,7 @@ public class IndexModel : EntryPageModel
                       join post in _context.Posts on slide.PostId equals post.Id
                       into slidePost
                       from post in slidePost.DefaultIfEmpty()
-                      where slide.Type == BannerType.SLIDE
+                      where slide.Type == BannerType.SLIDE && slide.Language == PageData.Language && slide.Active
                       select new Banner
                       {
                           Name = post.Title ?? slide.Name,
@@ -53,7 +53,7 @@ public class IndexModel : EntryPageModel
                           Image = slide.Image,
                           Url = !string.IsNullOrEmpty(post.Url) ? $"/post/{post.Url}-{post.Id}.html" : slide.Url,
                       };
-        Slides = await banners.Take(8).ToListAsync();
+        Slides = await banners.ToListAsync();
 
         // Thông báo
         ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Language);
@@ -65,9 +65,8 @@ public class IndexModel : EntryPageModel
             Language = PageData.Language,
             Type = MenuType.BOX
         });
-        //Partners = await _context.Partners.Where(x => x.Status == ParnerStatus.Active).ToListAsync();
         Videos = await _videoService.GetListAsync(5);
-        Albums = await _context.Photos.OrderByDescending(x => x.CreatedDate).ToListAsync();
+        Albums = await _context.Photos.OrderByDescending(x => x.CreatedDate).Take(8).ToListAsync();
         GroupCategories = await _categoryService.GetGroupCategories(PageData.Language);
         if (!string.IsNullOrWhiteSpace(lang))
         {

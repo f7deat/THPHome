@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebUI.Api;
 using WebUI.Extensions;
+using WebUI.Helpers;
 using WebUI.Models.Filters.Settings;
 using WebUI.Models.ViewModel;
 
@@ -20,14 +21,7 @@ public class LocalizationController : BaseController
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] LocalizationFilterOptions filterOptions)
     {
-        var lang = Language.VI;
-        if (!string.IsNullOrEmpty(filterOptions.Locale))
-        {
-            if (filterOptions.Locale == "en-US")
-            {
-                lang = Language.EN;
-            }
-        }
+        var lang = LanguageHelper.GetLanguage(filterOptions.Locale);
         var query = _context.Localizations.Where(x => x.Language == lang).OrderBy(x => x.Key);
         return Ok(await ListResult<Localization>.Success(query, filterOptions));
     }

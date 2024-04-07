@@ -1,4 +1,4 @@
-﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload, Form, Image, Radio } from "antd"
+﻿import { Row, Col, Drawer, Input, Button, message, Select, Popconfirm, Upload, Form, Image, Radio, Switch } from "antd"
 import {
     DeleteOutlined,
     EditOutlined,
@@ -8,10 +8,12 @@ import {
 } from '@ant-design/icons';
 import React, { useCallback, useEffect, useState } from "react";
 import { BANNER_TYPE } from "./enums/banner-type";
-import { request } from "@umijs/max";
+import { request, useIntl } from "@umijs/max";
 import { PageContainer, ProCard, ProFormSelect, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
 import FileUpload from "@/components/files/upload";
 import { apiPostOptions } from "@/services/post";
+import { getLanguage } from "@/utils/helper";
+import { apiBannerActive, apiBannerList } from "@/services/setting";
 
 const BannerList = () => {
     const [visible, setVisible] = useState(false);
@@ -20,10 +22,15 @@ const BannerList = () => {
     const [openUpload, setOpenUpload] = useState<boolean>(false);
     const [extraType, setExtraType] = useState<string>('post');
     const [banner, setBanner] = useState<any>();
+    const intl = useIntl();
 
     const init = useCallback(() => {
-        request(`banner/get-list?type=${BANNER_TYPE.SLIDE}`).then(response => {
-            setListBanner(response);
+        apiBannerList({
+            locale: intl.locale,
+            pageIndex: 1,
+            pageSize: 20
+        }).then(response => {
+            setListBanner(response.data);
         })
     }, [])
 
@@ -61,17 +68,14 @@ const BannerList = () => {
             ])
         }
     }, [banner]);
-
-    const showDrawer = (item: any) => {
-
-        setVisible(true);
-    };
+    
     const onClose = () => {
         setVisible(false);
     };
 
     const save = (values: any) => {
         values.type = BANNER_TYPE.SLIDE;
+        values.language = getLanguage(intl.locale);
         if (values.id) {
             request(`banner/update`, {
                 method: 'POST',
@@ -115,7 +119,7 @@ const BannerList = () => {
     }
 
     const absoluteUri = (url: string) => {
-        if (!url.startsWith('http')) {
+        if (url && !url.startsWith('http')) {
             return `https://dhhp.edu.vn${url}`;
         }
         return url;
@@ -127,13 +131,19 @@ const BannerList = () => {
         }
     }
 
+    const onActive = async (id: string) => {
+        await apiBannerActive(id);
+        message.success('Chuyển trạng thái thành công!');
+        init();
+    }
+
     return (
         <PageContainer extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => setVisible(true)}>Thêm mới</Button>}>
             <Row gutter={16}>
                 {
                     listBanner && listBanner.map((item: any) => (
                         <Col span={6} key={item.id}>
-                            <ProCard className="mb-4" actions={[
+                            <ProCard className="mb-4" extra={<Switch size="small" checked={item.active} onChange={() => onActive(item.id)} />} actions={[
                                 <EditOutlined key="edit" onClick={() => {
                                     setBanner(item);
                                     setVisible(true);

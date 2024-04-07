@@ -12,9 +12,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WebUI.Api;
 using WebUI.Extensions;
+using WebUI.Models.Filters.Settings;
 
-namespace WebUI.Api;
+namespace WebUI.Controllers;
 
 public class BannerController : BaseController
 {
@@ -28,20 +30,21 @@ public class BannerController : BaseController
         _webHostEnvironment = webHostEnvironment;
     }
 
-    [Route("get-list")]
-    public async Task<IActionResult> GetListAsync(BannerType? type) => Ok(await _bannerService.GetListAsync(type));
+    [HttpGet("list")]
+    public async Task<IActionResult> GetListAsync(BannerFilterOptions filterOptions) => Ok(await _bannerService.GetListAsync(filterOptions));
 
     [Route("add"), HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody]Banner banner)
+    public async Task<IActionResult> AddAsync([FromBody] Banner banner)
     {
         banner.CreatedBy = _userManager.GetUserId(User);
-        banner.ModifiedBy = _userManager.GetUserId(User);
+        banner.CreatedDate = DateTime.Now;
+        banner.Active = true;
         await _bannerService.AddAsync(banner);
         return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
     }
 
     [Route("update"), HttpPost]
-    public async Task<IActionResult> UpdateAsync([FromBody]Banner banner)
+    public async Task<IActionResult> UpdateAsync([FromBody] Banner banner)
     {
         var data = await _context.Banners.FindAsync(banner.Id);
         if (data is null) return BadRequest("Banner not found!");
@@ -82,5 +85,18 @@ public class BannerController : BaseController
             return Ok(new { succeeded = true, fileUrl = $"/files/{fileName}" });
         }
         return Ok(new { succeeded = false, fileUrl = "" });
+    }
+
+    [HttpPost("active/{id}")]
+    public async Task<IActionResult> ActiveAsync([FromRoute] int id)
+    {
+        var banner = await _context.Banners.FindAsync(id);
+        if (banner == null) return BadRequest("Data not found!");
+        banner.Active = !banner.Active;
+        banner.ModifiedDate = DateTime.Now;
+        banner.ModifiedBy = User.GetId();
+        _context.Banners.Update(banner);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 }

@@ -1,9 +1,11 @@
 ﻿using ApplicationCore.Entities;
+using WebUI.Models.Filters.Settings;
+using WebUI.Models.ViewModel;
 
 namespace ApplicationCore.Interfaces.IRepository;
 
 public interface IBannerRepository : IAsyncRepository<Banner>
 {
-    Task<IReadOnlyList<Banner>> GetListAsync(BannerType? type, int pageSize);
+    Task<ListResult<Banner>> GetListAsync(BannerFilterOptions filterOptions);
     Task RemoveRangeAsync(long id);
 }

@@ -3,19 +3,18 @@ import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
     DeleteOutlined,
-    PlusOutlined,
     SaveOutlined,
     ArrowRightOutlined
 } from "@ant-design/icons";
-import { request } from "@umijs/max";
-import { PageContainer, ProCard } from "@ant-design/pro-components";
+import { request, useIntl } from "@umijs/max";
+import { PageContainer, ProCard, ProColumnType, ProTable } from "@ant-design/pro-components";
 
 const Localization: React.FC = () => {
 
     const [menus, setMenus] = useState<any>([])
     const [visible, setVisible] = useState(false)
     const [fields, setFields] = useState<any>([]);
-    const [locale, setLocale] = useState<any>();
+    const intl = useIntl();
 
     const [form] = Form.useForm();
 
@@ -24,7 +23,11 @@ const Localization: React.FC = () => {
     }, [])
 
     const fetchData = () => {
-        request(`localization/list`).then(response => {
+        request(`localization/list`, {
+            params: {
+                locale: intl.locale
+            }
+        }).then(response => {
             setMenus(response.data)
         })
     }
@@ -53,7 +56,6 @@ const Localization: React.FC = () => {
                 value: record.value
             }
         ])
-        setLocale(record);
         setVisible(true)
     }
 
@@ -68,7 +70,7 @@ const Localization: React.FC = () => {
         })
     };
 
-    const columns = [
+    const columns : ProColumnType<any>[] = [
         {
             title: 'Key',
             dataIndex: 'key'
@@ -78,27 +80,38 @@ const Localization: React.FC = () => {
             dataIndex: "value"
         },
         {
+            title: 'Cập nhật lúc',
+            dataIndex: 'modifiedDate',
+            valueType: 'dateTime',
+            search: false
+        },
+        {
             title: '',
             render: (record: any) => (
                 <Space>
-                    <Button icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
+                    <Button size="small" icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
                         okText="Yes"
                         cancelText="No"
                         onConfirm={() => handleRemove(record.id)}
                     >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
+                        <Button size="small" type="primary" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
                 </Space>
-            )
+            ),
+            valueType: 'option'
         }
     ]
 
     return (
         <PageContainer>
             <ProCard>
-                <Table dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
+                <ProTable 
+                search={{
+                    layout: 'vertical'
+                }}
+                dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
             </ProCard>
 
             <Drawer
