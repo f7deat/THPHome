@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ApplicationCore.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApplicationCore.Entities;
@@ -14,6 +15,8 @@ public class Banner : BaseEntity<int>
     public BannerStatus Status { get; set; }
     public BannerType Type { get; set; }
     public string? Description { get; set; }
+    public Language Language { get; set; }
+    public bool Active { get; set; }
 
     [ForeignKey(nameof(Post))]
     public long? PostId { get; set; }
