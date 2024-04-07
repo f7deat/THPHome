@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebUI.Api;
 using WebUI.Extensions;
+using WebUI.Helpers;
 using WebUI.Models.Filters.Settings;
 
 namespace WebUI.Controllers;
@@ -43,7 +45,7 @@ public class BannerController : BaseController
         return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
     }
 
-    [Route("update"), HttpPost]
+    [HttpPost("update")]
     public async Task<IActionResult> UpdateAsync([FromBody] Banner banner)
     {
         var data = await _context.Banners.FindAsync(banner.Id);
@@ -98,5 +100,25 @@ public class BannerController : BaseController
         _context.Banners.Update(banner);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+
+    [HttpGet("logo")]
+    public async Task<IActionResult> GetLogoAsync([FromQuery] string locale)
+    {
+        var language = LanguageHelper.GetLanguage(locale);
+        var logo = await _context.Banners.FirstOrDefaultAsync(x => x.Active && x.Language == language && x.Type == BannerType.LOGO);
+        if (logo is null)
+        {
+            logo = new Banner
+            {
+                Image = "https://dhhp.edu.vn/img/logo.png",
+                Language = language,
+                Active = true,
+                Type = BannerType.LOGO
+            };
+            await _context.Banners.AddAsync(logo);
+            await _context.SaveChangesAsync();
+        }
+        return Ok(logo);
     }
 }

@@ -9,4 +9,6 @@ export default {
     'general.status': 'Trạng thái',
     'general.preview': 'Xem trước',
     'general.phoneNumber': 'Điện thoại',
+    'general.view': 'Lượt xem',
+    'general.change': 'Thay đổi'
   };

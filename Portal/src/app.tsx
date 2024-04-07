@@ -46,7 +46,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     logo: 'https://dhhp.edu.vn/favicon.ico',
     menu: {
-      locale: false,
+      locale: true,
     },
     layout: 'mix',
     waterMarkProps: {
@@ -101,8 +101,8 @@ export const request: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       const token = localStorage.getItem('wf_token');
-      // config.baseURL = 'https://dhhp.edu.vn/api/';
-      config.baseURL = 'https://localhost:58058/api/';
+      config.baseURL = 'https://dhhp.edu.vn/api/';
+      // config.baseURL = 'https://localhost:58058/api/';
       config.headers = {
         authorization: `Bearer ${token}`,
       };

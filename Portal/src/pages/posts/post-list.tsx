@@ -15,6 +15,7 @@ import { language } from "@/utils/format";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { queryPosts } from "@/services/post";
 import CopyPost from "./components/copy";
+import { FormattedMessage } from "@umijs/max";
 
 const { TabPane } = Tabs;
 
@@ -69,7 +70,7 @@ const PostList = () => {
             render: (dom, record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank" rel="noreferrer">{record.title}</a>
         },
         {
-            title: 'Lượt xem',
+            title: <FormattedMessage id='general.view' />,
             dataIndex: 'view',
             valueType: 'digit',
             search: false,
