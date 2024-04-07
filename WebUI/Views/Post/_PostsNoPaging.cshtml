@@ -10,8 +10,8 @@
                     <img src="@item.Thumbnail" class="w-full transition-opacity duration-700 ease-in-out hover:opacity-50 object-fit-cover" alt="@item.Title" title="@item.Title" style="height: 150px" />
                 </a>
                 <div class="flex-1 p-2">
-                    <a href="@item.Url" title="@item.Title"><b>@item.Title</b></a>
-                    <div class="text-gray-500">
+                    <a href="@item.Url" title="@item.Title" class="line-clamp-2"><b>@item.Title</b></a>
+                    <div class="text-gray-500 line-clamp-3">
                         @if (item.Description?.Length > 155)
                         {
                             @string.Format("{0}{1}", item.Description?.Substring(0, 155), "...")

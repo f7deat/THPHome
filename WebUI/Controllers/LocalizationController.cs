@@ -1,70 +1,60 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
-using ApplicationCore.Models.Filters;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 using WebUI.Api;
+using WebUI.Extensions;
+using WebUI.Models.Filters.Settings;
+using WebUI.Models.ViewModel;
 
-namespace WebUI.Controllers
+namespace WebUI.Controllers;
+
+public class LocalizationController : BaseController
 {
-    public class LocalizationController : BaseController
+    public LocalizationController(ApplicationDbContext context) : base(context)
     {
-        public LocalizationController(ApplicationDbContext context) : base(context)
-        {
-        }
+    }
 
-        [HttpGet("list")]
-        public async Task<IActionResult> ListAsync()
+    [HttpGet("list")]
+    public async Task<IActionResult> ListAsync([FromQuery] LocalizationFilterOptions filterOptions)
+    {
+        var lang = Language.VI;
+        if (!string.IsNullOrEmpty(filterOptions.Locale))
         {
-            Request.Cookies.TryGetValue("locale", out string locale);
-            var lang = Language.VI;
-            if (!string.IsNullOrEmpty(locale))
+            if (filterOptions.Locale == "en-US")
             {
-                if (locale == "en-US")
-                {
-                    lang = Language.EN;
-                }
+                lang = Language.EN;
             }
-
-            var query = _context.Localizations.Where(x => x.Language == lang).OrderBy(x => x.Key);
-
-            return Ok(new
-            {
-                data = await query.ToListAsync(),
-                total = await query.CountAsync()
-            });
         }
+        var query = _context.Localizations.Where(x => x.Language == lang).OrderBy(x => x.Key);
+        return Ok(await ListResult<Localization>.Success(query, filterOptions));
+    }
 
-        [HttpPost("update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] Localization localization)
+    [HttpPost("update")]
+    public async Task<IActionResult> UpdateAsync([FromBody] Localization localization)
+    {
+        var locale = await _context.Localizations.FindAsync(localization.Id);
+        if (locale is null)
         {
-            var locale = await _context.Localizations.FindAsync(localization.Id);
-            if (locale is null)
-            {
-                return BadRequest("Data not found!");
-            }
-            locale.Value = localization.Value;
-            locale.ModifiedDate = DateTime.Now;
-            _context.Update(locale);
-            await _context.SaveChangesAsync();
-            return Ok();
+            return BadRequest("Data not found!");
         }
+        locale.Value = localization.Value;
+        locale.ModifiedDate = DateTime.Now;
+        locale.ModifiedBy = User.GetId();
+        _context.Update(locale);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 
-        [HttpPost("delete/{id}")]
-        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
-        {
-            var locale = await _context.Localizations.FindAsync(id);
-            if (locale is null)
-            {
-                return BadRequest("Data not found!");
-            }
-            _context.Remove(locale);
-            await _context.SaveChangesAsync();
-            return Ok();
-        }
+    [HttpPost("delete/{id}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+    {
+        var locale = await _context.Localizations.FindAsync(id);
+        if (locale is null) return BadRequest("Data not found!");
+        _context.Remove(locale);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 }

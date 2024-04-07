@@ -1,10 +1,11 @@
-﻿namespace ApplicationCore.Enums
+﻿namespace ApplicationCore.Enums;
+
+public enum Language
 {
-    public enum Language
-    {
-        DEFAULT,
-        VI,
-        EN,
-        ZH
-    }
+    DEFAULT,
+    VI,
+    EN,
+    ZH,
+    JP,
+    KR
 }

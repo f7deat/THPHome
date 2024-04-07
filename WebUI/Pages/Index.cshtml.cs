@@ -53,7 +53,7 @@ public class IndexModel : EntryPageModel
                           Image = slide.Image,
                           Url = !string.IsNullOrEmpty(post.Url) ? $"/post/{post.Url}-{post.Id}.html" : slide.Url,
                       };
-        Slides = await banners.ToListAsync();
+        Slides = await banners.Take(8).ToListAsync();
 
         // Thông báo
         ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Language);
