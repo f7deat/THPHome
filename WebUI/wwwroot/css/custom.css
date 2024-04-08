@@ -109,9 +109,9 @@ input:focus {
     border: 1px solid #e1e1e1;
     border-radius: 0.25rem;
     text-align: center;
-    padding: 1rem;
+    padding: 0.5rem;
     font-weight: 500;
-    height: 100px;
+    height: 115px;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -128,11 +128,6 @@ input:focus {
 .carousel-item img {
     height: 200px;
     object-fit: cover;
-}
-
-.my-slider img {
-    height: 80px;
-    object-fit: contain;
 }
 
 .nav-brand {
@@ -468,7 +463,7 @@ li.dropdown:hover .dropdown-menu {
     }
 
     .carousel-item img {
-        height: 364px;
+        height: 410px;
     }
 
     .main-menu .nav-link {

@@ -4,6 +4,7 @@
 @using ApplicationCore.Models.Posts;
 @{
     int i = 0;
+    int j = 0;
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
@@ -15,7 +16,8 @@
                 <div class="carousel-indicators">
                     @foreach (var item in Model.Slides)
                     {
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="active" aria-current="true" aria-label="Slide @i"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@j" class="@(j == 0 ? "active" : "")" aria-label="Slide @j" @(j == 0 ? "aria-current='true'" : "")></button>
+                        j++;
                     }
                 </div>
                 <div class="carousel-inner">
@@ -34,7 +36,7 @@
                                 </div>
                             }
                         </div>
-                        @(i++)
+                        i++;
                     }
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -213,20 +215,8 @@
 </div>
 
 @section scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js" integrity="sha256-P93G0oq6PBPWTP1IR8Mz/0jHHUpaWL0aBJTKauisG7Q=" crossorigin="anonymous"></script>
     <script src="~/js/album/album.js"></script>
-    <script>
-        var slider = tns({
-            container: '.my-slider',
-            items: 6,
-            slideBy: 'page',
-            autoplay: true,
-            gutter: 16,
-            controls: false,
-            autoplayButtonOutput: false
-        });
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/3.0.1/jquery.waypoints.js"></script>
     <script src="https://bfintal.github.io/Counter-Up/jquery.counterup.min.js"></script>
     <script>
