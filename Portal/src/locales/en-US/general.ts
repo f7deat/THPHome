@@ -9,4 +9,6 @@ export default {
     'general.status': 'Status',
     'general.phoneNumber': 'Phone number',
     'general.preview': 'Preview',
+    'general.view': 'View',
+    'general.change': 'Change'
   };

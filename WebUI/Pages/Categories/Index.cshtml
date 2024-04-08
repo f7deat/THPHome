@@ -19,11 +19,11 @@
                 <div class="bg-gray-800 text-white relative">
                     @if (string.IsNullOrEmpty(item.Thumbnail))
                     {
-                        <img src="https://placehold.jp/1b1b28/1f1f29/350x200.png?text=No%20Image" class="w-full object-fit-cover h-48" alt="no image" />
+                        <img src="https://placehold.jp/1b1b28/1f1f29/350x200.png?text=No%20Image" class="w-full object-cover h-48" alt="no image" />
                     }
                     else
                     {
-                        <img src="@item.Thumbnail" class="w-full object-fit-cover h-48" alt="@item.Name">
+                        <img src="@item.Thumbnail" class="w-full object-cover h-48" alt="@item.Name">
                     }
                     <div class="absolute p-4 top-0">
                         <h5 class="font-bold">
