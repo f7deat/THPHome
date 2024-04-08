@@ -72,15 +72,10 @@
     </div>
 </div>
 
-<div class="container mb-2">
-    <div class="row" data-aos="fade-up">
-        <div class="col-md-12">
-            <a href="https://tuyensinh.dhhp.edu.vn">
-                <img src="https://dhhp.edu.vn/img/banner4.png" alt="Admission" class="w-100" />
-            </a>
-        </div>
-    </div>
-</div>
+@foreach (var item in Model.Blocks)
+{
+    @await Component.InvokeAsync(item.ViewComponent, item.Id)
+}
 
 <div class="container">
     <div class="row" data-aos="fade-up">

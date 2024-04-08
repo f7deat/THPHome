@@ -9,7 +9,7 @@
 
     public enum PostType
     {
-        DEFAULT,
+        Entry,
         PAGE,
         NEWS,
         NOTIFICATION

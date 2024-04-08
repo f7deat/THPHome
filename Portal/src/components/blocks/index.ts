@@ -4,3 +4,4 @@ export { default as VideoBlock } from './video';
 export { default as DividerBlock } from './divider';
 export { default as TinyMCEBlock } from './tinyMCE';
 export { default as SponsorBlock } from './sponsor';
+export { default as BannerBlock } from './banner';

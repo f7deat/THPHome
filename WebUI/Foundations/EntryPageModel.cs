@@ -4,45 +4,35 @@ using ApplicationCore.Interfaces.IService;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Threading.Tasks;
+using WebUI.Helpers;
 
-namespace WebUI.Foundations
+namespace WebUI.Foundations;
+
+public class EntryPageModel : PageModel
 {
-    public class EntryPageModel : PageModel
+    protected readonly IPostService _postService;
+    protected readonly ApplicationDbContext _context;
+
+    public EntryPageModel(IPostService postService, ApplicationDbContext context)
     {
-        protected readonly IPostService _postService;
-        protected readonly ApplicationDbContext _context;
+        _postService = postService;
+        _context = context;
+    }
 
-        public EntryPageModel(IPostService postService, ApplicationDbContext context)
-        {
-            _postService = postService;
-            _context = context;
-        }
+    public Post PageData { private set; get; } = new Post();
 
-        public Post PageData { private set; get; } = new Post();
+    public override async Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context)
+    {
+        var page = context.RouteData.Values["page"]?.ToString();
+        if (string.IsNullOrEmpty(page)) return;
 
-        public override async Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context)
-        {
-            var page = context.RouteData.Values["page"]?.ToString();
-            if (string.IsNullOrEmpty(page))
-            {
-                return;
-            }
-            Request.Cookies.TryGetValue("locale", out string locale);
-            var lang = Language.VI;
-            if (!string.IsNullOrEmpty(locale))
-            {
-                if (locale == "en-US")
-                {
-                    lang = Language.EN;
-                }
-            }
-            var catalog = await _postService.EnsureDataAsync(page.ToLower(), PostType.PAGE, lang);
-            PageData = catalog;
-            ViewData["Title"] = catalog.Title;
-            ViewData["Description"] = catalog.Description;
-            ViewData["Image"] = catalog.Thumbnail;
-            RouteData.Values.TryAdd(nameof(Post), catalog);
-        }
+        Request.Cookies.TryGetValue("locale", out string? locale);
+        var lang = LanguageHelper.GetLanguage(locale);
+        var catalog = await _postService.EnsureDataAsync(page.ToLower(), PostType.Entry, lang);
+        PageData = catalog;
+        ViewData["Title"] = catalog.Title;
+        ViewData["Description"] = catalog.Description;
+        ViewData["Image"] = catalog.Thumbnail;
+        RouteData.Values.TryAdd(nameof(Post), catalog);
     }
 }

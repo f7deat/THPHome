@@ -269,4 +269,23 @@ public class PostController : BaseController
     {
         return Ok(await _attachmentService.DeleteAsync(id));
     }
+
+    [HttpPost("page-builder/update")]
+    public async Task<IActionResult> PageBuilderUpdateAsync([FromBody] Post args)
+    {
+        var page = await _context.Posts.FindAsync(args.Id);
+        if (page is null) return BadRequest("Data not found!");
+        page.Title = args.Title;
+        page.Description = args.Description;
+        if (page.Type != PostType.Entry)
+        {
+            page.Url = SeoHelper.ToSeoFriendly(page.Title);
+        }
+        page.Thumbnail = args.Thumbnail;
+        page.ModifiedDate = DateTime.Now;
+        page.ModifiedBy = User.GetId();
+        _context.Posts.Update(page);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 }

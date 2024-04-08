@@ -103,7 +103,7 @@ import {
             key: 'settings',
             icon: <SettingOutlined />,
             label: intl.formatMessage({
-              id: 'menu.settings',
+              id: 'menu.setting',
             }),
           },
           {

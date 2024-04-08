@@ -112,12 +112,12 @@ const PostList = () => {
             title: 'Tác vụ',
             render: (dom, record: IPost) => [
                 <Tooltip key="build" title="Page Builder">
-                    <Button size="small" icon={<ToolOutlined />} hidden={activeKey !== '1'} onClick={() => {
+                    <Button size="small" icon={<ToolOutlined />} hidden={activeKey !== '1' && activeKey !== '0'} onClick={() => {
                         history.push(`/post/page/${record.id}`);
                     }} />
                 </Tooltip>,
                 <Tooltip key="copy" title="Nhân bản">
-                    <Button icon={<CopyOutlined />} size="small" type="dashed" onClick={() => {
+                    <Button icon={<CopyOutlined />} size="small" type="dashed" hidden={activeKey === '0'} onClick={() => {
                         setPost(record);
                         setOpenCopy(true);
                     }} />
@@ -137,11 +137,11 @@ const PostList = () => {
                             }
                         ]
                     }}>
-                        
-                    <Button icon={<TranslationOutlined />} size="small" type="primary"/>
+
+                        <Button icon={<TranslationOutlined />} size="small" type="primary" />
                     </Dropdown>
                 </Tooltip>,
-                <Link key="edit" to={`/post/setting/${record.id}`}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>,
+                <Link key="edit" to={`/post/setting/${record.id}`}  hidden={activeKey === '0'}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>,
                 <Popconfirm
                     key="delete"
                     title="Are you sure to delete?"
@@ -149,12 +149,12 @@ const PostList = () => {
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button type="primary" size="small" danger icon={<DeleteOutlined />}></Button>
+                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={activeKey === '0'}></Button>
                 </Popconfirm>
             ],
             valueType: 'option',
             width: 120,
-            align: 'center'
+            align: 'justify'
         }
     ];
 
@@ -181,6 +181,9 @@ const PostList = () => {
     return (
         <PageContainer extra={<Link to="/post/setting"><Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button></Link>}>
             <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey} type="card">
+                <TabPane tab="Entry" key="0">
+                    {TabData("0")}
+                </TabPane>
                 <TabPane tab="Trang" key="1">
                     {TabData("1")}
                 </TabPane>

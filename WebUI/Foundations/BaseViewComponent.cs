@@ -15,7 +15,7 @@ public class BaseViewComponent<T>(ApplicationDbContext context) : ViewComponent
         var block = await _context.PostBlocks.FindAsync(id);
         if (block == null || string.IsNullOrEmpty(block.Data))
         {
-            return View();
+            return View("/Pages/Components/EmptyBlock/Default.cshtml", new EmptyBlock());
         }
         var data = JsonConvert.DeserializeObject<T>(block.Data);
         return View(data);

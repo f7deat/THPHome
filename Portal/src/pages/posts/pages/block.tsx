@@ -1,4 +1,4 @@
-import { DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
+import { BannerBlock, DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
@@ -73,7 +73,9 @@ const PageBlock: React.FC = () => {
         {
             title: '#',
             dataIndex: 'sortOrder',
-            className: 'drag-visible'
+            className: 'drag-visible',
+            width: 50,
+            align: 'center'
         },
         {
             title: 'Loại',
@@ -138,7 +140,8 @@ const PageBlock: React.FC = () => {
                     ></Button>
                 </Popconfirm>
             ],
-            align: 'center'
+            align: 'center',
+            width: 100
         }
     ];
 
@@ -172,6 +175,9 @@ const PageBlock: React.FC = () => {
         if (block.normalizedName === 'SideGalleryBlock') {
             return <SideGalleryBlock id={block.id} />
         }
+        if (block.normalizedName === 'BannerBlock') {
+            return <BannerBlock id={block.id} />
+        }
         return <Empty />
     }
 
@@ -198,6 +204,7 @@ const PageBlock: React.FC = () => {
                 </Button>
             </div>
             <DragSortTable
+                ghost
                 search={false}
                 rowKey="id"
                 columns={columns}
@@ -213,11 +220,13 @@ const PageBlock: React.FC = () => {
                         required: true
                     }
                 ]} />
-                <ProFormSelect rules={[
-                    {
-                        required: true
-                    }
-                ]}
+                <ProFormSelect
+                    showSearch
+                    rules={[
+                        {
+                            required: true
+                        }
+                    ]}
                     request={queryBlockOptions}
                     name="blockId" label="Block" />
             </ModalForm>

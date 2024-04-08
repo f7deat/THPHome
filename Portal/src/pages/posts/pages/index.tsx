@@ -1,11 +1,12 @@
 import { queryPost } from "@/services/post";
-import { LeftOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DesktopOutlined, LeftOutlined, MobileOutlined, ReloadOutlined } from "@ant-design/icons";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
-import { Button, Col, Empty, Row, message } from "antd";
+import { Alert, Button, Col, Empty, Row, Space, Tooltip, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 import PageSetting from "./setting";
 import PageBlock from "./block";
+import { FormattedMessage } from "@umijs/max";
 
 const CustomPage: React.FC = () => {
     const { id } = useParams();
@@ -32,7 +33,9 @@ const CustomPage: React.FC = () => {
     return (
         <PageContainer
             title={catalog?.name}
-            extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}><span>Quay lại</span></Button>}
+            extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}><span>
+                <FormattedMessage id='general.back' />
+                </span></Button>}
         >
             <Row gutter={16}>
                 <Col span={14}>
@@ -58,18 +61,30 @@ const CustomPage: React.FC = () => {
                     />
                 </Col>
                 <Col span={10}>
-                    <ProCard title="Xem trước" headerBordered extra={<Button 
-                    onClick={() => {
-                        if (iframeRef.current) {
-                            iframeRef.current.src = `https://dhhp.edu.vn/post/preview-${id}.html`;
+                    <ProCard title={<FormattedMessage id='general.preview' />} headerBordered extra={(
+                        <Space>
+                            <Tooltip title="Giao diện máy tính">
+                                <Button size="small" type="primary" icon={<DesktopOutlined />} />
+                            </Tooltip>
+                            <Tooltip title="Giao diện điện thoại">
+                                <Button size="small" type="dashed" icon={<MobileOutlined />} />
+                            </Tooltip>
+                            <Button
+                                onClick={() => {
+                                    if (iframeRef.current) {
+                                        iframeRef.current.src = `https://dhhp.edu.vn/post/preview-${id}.html`;
+                                    }
+                                }}
+                                icon={<ReloadOutlined />} size="small" type="dashed">Tải lại</Button>
+                        </Space>
+                    )}>
+                        {
+                            catalog?.type === 0 && (<Alert type="warning" message="Xem trước chưa khả dụng với Entry" showIcon className="mb-4" />)
                         }
-                    }}
-                    icon={<ReloadOutlined />} size="small" type="dashed">Tải lại</Button>}>
                         <div style={{
                             overflow: 'hidden',
                             border: '1px solid #eee',
-                            textAlign: 'center',
-                            margin: '0 0.6rem'
+                            textAlign: 'center'
                         }}>
                             <iframe ref={iframeRef} src={`https://dhhp.edu.vn/post/preview-${id}.html`} style={{
                                 border: '1px solid #ddd',
