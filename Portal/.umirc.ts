@@ -72,7 +72,7 @@ export default defineConfig({
     },
     {
       icon: "AppstoreAddOutlined",
-      name: "Danh mục",
+      name: "category",
       path: "/category/list",
       component: "./categories/category-list",
     },
@@ -130,9 +130,9 @@ export default defineConfig({
     },
     {
       icon: "DownloadOutlined",
-      name: "Tài liệu",
+      name: "fileManager",
       path: "/files",
-      component: "./files/file-explorer",
+      component: "./files",
     },
     {
       icon: "PictureOutlined",
@@ -164,21 +164,26 @@ export default defineConfig({
     },
     {
       icon: "SettingOutlined",
-      name: "Cài đặt",
+      name: "setting",
       path: "/settings",
       routes: [
+        {
+          name: "general",
+          path: "/settings/general",
+          component: "./settings/general",
+        },
         {
           name: "Menu",
           path: "/settings/menus",
           component: "./settings/menus",
         },
         {
-          name: "Ngôn ngữ",
+          name: "language",
           path: "/settings/localizations",
           component: "./settings/localizations",
         },
         {
-          name: "Quyền",
+          name: "roles",
           path: "/settings/roles",
           component: "./roles/role-list",
         },

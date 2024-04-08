@@ -14,10 +14,6 @@ a {
     color: var(--ueni);
 }
 
-.object-fit-cover {
-    object-fit: cover;
-}
-
 input:focus {
     outline: none;
 }
@@ -56,15 +52,9 @@ input:focus {
     font-size: small;
 }
 
-.inline {
-    display: inline-block;
-    margin: 2px;
-    vertical-align: middle;
-}
-
-.footer svg, .title svg {
-    display: unset;
-}
+    .footer svg, .title svg {
+        display: unset;
+    }
 
 .footer-divide {
     border-top: 1px solid #979797;
@@ -146,6 +136,9 @@ input:focus {
         color: #fff;
         font-weight: 500;
         padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
     }
 
         .top-menu a:hover {
