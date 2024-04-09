@@ -1,12 +1,14 @@
-﻿@model ApplicationCore.Helpers.PaginatedList<ApplicationCore.Models.Posts.PostView>
+﻿@page
+@model WebUI.Pages.Search.IndexModel
+@{
+}
 @using WebUI.Models.ComponentModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
     var breadcrumbs = new List<Breadcrumb>
     {
         new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" },
         new Breadcrumb { Id = 2, Name = "Tìm kiếm", Url = "/search", Icon ="fas fa-search" },
-        new Breadcrumb { Id = 3, Name = (ViewData["Title"] ?? "").ToString(), Url = $"/search?searchTerm={ViewData["Title"]}",
+        new Breadcrumb { Id = 3, Name = Model.SearchTerm, Url = $"/search?searchTerm={Model.SearchTerm}",
         Icon ="fas fa-tag", IsActive = true }
     };
 }
@@ -15,16 +17,12 @@
     <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
     <div class="md:flex md:-px-1">
         <div class="md:w-8/12 px-1">
-            <form class="flex mb-2" action="/search/index" method="get">
+            <form class="flex mb-2" method="get">
                 <div class="flex mr-2">
                     <div class="px-4 py-2 bg-gray-100 rounded-l border border-r-0"><i class="fa fa-tag"></i></div>
                     <input type="text" name="searchTerm" class="border rounded-r px-4 py-2" placeholder="Từ khóa"
-                           value="@ViewData["Title"]" required>
+                           value="@Model.SearchTerm" required>
                 </div>
-
-                <select name="Id" asp-items="ViewBag.Id" class="border rounded px-4 py-2 mr-2">
-                    <option value="">- Danh mục -</option>
-                </select>
 
                 <button type="submit"
                         class="py-2 px-4 rounded bg-blue-500 hover:bg-blue-600 text-white hover:text-white mr-1">
@@ -42,7 +40,7 @@
             </div>
 
             <div class="mb-3">
-                @if (Model == null || Model.Count == 0)
+                @if (Model.Posts == null || Model.Posts.Count == 0)
                 {
                     <partial name="/Views/Components/_Empty.cshtml" />
                 }
@@ -52,8 +50,8 @@
 
                     <div class="flex justify-between">
                         @{
-                            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                            var prevDisabled = !Model.Posts.HasPreviousPage ? "disabled" : "";
+                            var nextDisabled = !Model.Posts.HasNextPage ? "disabled" : "";
                         }
                         <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-keyword="@ViewData["Title"]"
                            class="px-4 py-1 bg-gray-800 text-white hover:bg-gray-900 hover:text-white rounded @prevDisabled shadow">
@@ -68,7 +66,7 @@
             </div>
         </div>
         <div class="md:w-4/12 px-1">
-            <partial name="/Views/Shared/_RandomPost.cshtml" model="ViewBag.RandomPosts" />
+            <partial name="/Views/Shared/_RandomPost.cshtml" model="Model.RandomPosts" />
         </div>
     </div>
 </div>
