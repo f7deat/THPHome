@@ -55,6 +55,8 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddScoped<IBlockService, BlockService>();
+        services.AddScoped<IGalleryService, GalleryService>();
+        services.AddScoped<ILocalizeService, LocalizeService>();
 
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
