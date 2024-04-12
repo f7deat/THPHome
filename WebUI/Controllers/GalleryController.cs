@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -52,7 +53,7 @@ public class GalleryController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> GalleryAddAsync([FromBody] Gallery args)
+    public async Task<IActionResult> GalleryAddAsync([FromBody] GalleryArgs args)
     {
         await _context.Galleries.AddAsync(new Gallery
         {
@@ -62,6 +63,18 @@ public class GalleryController : BaseController
             Name = args.Name,
             ModifiedDate = DateTime.Now,
             NormalizedName = SeoHelper.ToSeoFriendly(args.Name)
+        });
+        await _context.Posts.AddAsync(new Post
+        {
+            Title = args.Name,
+            Description = args.Description,
+            Language = args.Language,
+            Status = PostStatus.PUBLISH,
+            Url = args.NormalizedName,
+            Type = PostType.GALLERY,
+            CreatedBy = User.GetId(),
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now
         });
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GalleryAddAsync), IdentityResult.Success);

@@ -1,17 +1,17 @@
-﻿namespace ApplicationCore.Enums
-{
-    public enum PostStatus
-    {
-        DRAFT,
-        PUBLISH,
-        TRASH
-    }
+﻿namespace ApplicationCore.Enums;
 
-    public enum PostType
-    {
-        Entry,
-        PAGE,
-        NEWS,
-        NOTIFICATION
-    }
+public enum PostStatus
+{
+    DRAFT,
+    PUBLISH,
+    TRASH
+}
+
+public enum PostType
+{
+    Entry,
+    PAGE,
+    NEWS,
+    NOTIFICATION,
+    GALLERY
 }

@@ -24,7 +24,8 @@ public class GalleryService : IGalleryService
                         Description = a.Description,
                         ModifiedDate = a.ModifiedDate,
                         Count = _context.Photos.Count(x => x.GalleryId == a.Id),
-                        Thumbnail = _context.Photos.First(x => x.GalleryId == a.Id).Url
+                        Thumbnail = _context.Photos.First(x => x.GalleryId == a.Id).Url,
+                        NormalizedName = a.NormalizedName
                     };
         if (!string.IsNullOrWhiteSpace(filterOptions.Name))
         {
@@ -38,7 +39,8 @@ public class GalleryService : IGalleryService
             Name = "Chưa phân loại",
             Id = Guid.Empty,
             Count = await _context.Photos.CountAsync(x => x.GalleryId == Guid.Empty),
-            Thumbnail = uncategory?.Url
+            Thumbnail = uncategory?.Url,
+            NormalizedName = "uncategorized"
         });
         return result;
     }
