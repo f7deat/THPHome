@@ -1,9 +1,8 @@
-﻿using WebUI.Entities;
+﻿using ApplicationCore.Entities;
 
 namespace WebUI.Models.Galleries;
 
-public class GalleryListResponse : Gallery
+public class GalleryListResponse : Post
 {
     public int Count { get; set; }
-    public string? Thumbnail { get; set; }
 }

@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using WebUI.Api;
 using WebUI.Entities;
 using WebUI.Extensions;
+using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.Files;
 using WebUI.Models.Galleries;
+using WebUI.Models.Posts;
 using WebUI.Models.ViewModel;
 
 namespace WebUI.Controllers;
@@ -17,61 +19,26 @@ namespace WebUI.Controllers;
 public class GalleryController : BaseController
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    public GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : base(context)
+    private readonly IGalleryService _galleryService;
+    public GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IGalleryService galleryService) : base(context)
     {
         _userManager = userManager;
+        _galleryService = galleryService;
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> GalleryListAsync([FromQuery] GalleryFilterOptions filterOptions)
-    {
-        var query = from a in _context.Galleries
-                    select new GalleryListResponse
-                    {
-                        Id = a.Id,
-                        Name = a.Name,
-                        Description = a.Description,
-                        ModifiedDate = a.ModifiedDate,
-                        Count = _context.Photos.Count(x => x.GalleryId == a.Id),
-                        Thumbnail = _context.Photos.First(x => x.GalleryId == a.Id).Url
-                    };
-        if (!string.IsNullOrWhiteSpace(filterOptions.Name))
-        {
-            query = query.Where(x => x.Name.ToLower().Contains(filterOptions.Name.ToLower()));
-        }
-        query = query.OrderByDescending(x => x.ModifiedDate);
-        var result = await query.ToListAsync();
-        var uncategory = await _context.Photos.FirstOrDefaultAsync(x => x.GalleryId == Guid.Empty);
-        result.Insert(0, new GalleryListResponse
-        {
-            Name = "Chưa phân loại",
-            Id = Guid.Empty,
-            Count = await _context.Photos.CountAsync(x => x.GalleryId == Guid.Empty),
-            Thumbnail = uncategory?.Url,
-            NormalizedName = "chua-phan-loai"
-        });
-        return Ok(result);
-    }
+    public async Task<IActionResult> GalleryListAsync([FromQuery] GalleryFilterOptions filterOptions) => Ok(await _galleryService.GalleryListAsync(filterOptions));
 
     [HttpPost]
-    public async Task<IActionResult> GalleryAddAsync([FromBody] GalleryArgs args)
+    public async Task<IActionResult> GalleryAddAsync([FromBody] PostArgs args)
     {
-        await _context.Galleries.AddAsync(new Gallery
-        {
-            CreatedBy = User.GetId(),
-            CreatedDate = DateTime.Now,
-            Description = args.Description,
-            Name = args.Name,
-            ModifiedDate = DateTime.Now,
-            NormalizedName = SeoHelper.ToSeoFriendly(args.Name)
-        });
         await _context.Posts.AddAsync(new Post
         {
-            Title = args.Name,
+            Title = args.Title,
             Description = args.Description,
             Language = args.Language,
             Status = PostStatus.PUBLISH,
-            Url = args.NormalizedName,
+            Url = args.Url,
             Type = PostType.GALLERY,
             CreatedBy = User.GetId(),
             CreatedDate = DateTime.Now,
@@ -82,16 +49,16 @@ public class GalleryController : BaseController
     }
 
     [HttpPut]
-    public async Task<IActionResult> GalleryUpdateAsync([FromBody] Gallery args)
+    public async Task<IActionResult> GalleryUpdateAsync([FromBody] Post args)
     {
-        var gallery = await _context.Galleries.FindAsync(args.Id);
+        var gallery = await _context.Posts.FindAsync(args.Id);
         if (gallery is null) return BadRequest("Gallery not found!");
         gallery.ModifiedDate = DateTime.Now;
-        gallery.Name = args.Name;
+        gallery.Title = args.Title;
         gallery.ModifiedBy = User.GetId();
         gallery.Description = args.Description;
-        gallery.NormalizedName = SeoHelper.ToSeoFriendly(args.Name);
-        _context.Galleries.Update(gallery);
+        gallery.Url = SeoHelper.ToSeoFriendly(args.Title);
+        _context.Posts.Update(gallery);
         await _context.SaveChangesAsync();
         return Ok(IdentityResult.Success);
     }
@@ -99,23 +66,23 @@ public class GalleryController : BaseController
     [HttpGet("options")]
     public async Task<IActionResult> GalleryOptionsAsync()
     {
-        return Ok(await _context.Galleries.OrderBy(x => x.Name).Select(x => new
+        return Ok(await _context.Posts.Where(x => x.Type == PostType.GALLERY).OrderBy(x => x.Url).Select(x => new
         {
-            label = x.Name,
+            label = x.Title,
             value = x.Id
         }).ToListAsync());
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> GalleryDeleteAsync([FromRoute] Guid id)
+    public async Task<IActionResult> GalleryDeleteAsync([FromRoute] long id)
     {
-        var gallery = await _context.Galleries.FindAsync(id);
+        var gallery = await _context.Posts.FindAsync(id);
         if (gallery is null) return BadRequest("Gallery not found!");
-        if (await _context.Photos.AnyAsync(x => x.GalleryId == id))
+        if (await _context.Photos.AnyAsync(x => x.PostId == id))
         {
             return BadRequest("Không thể xóa Gallery chứa hình ảnh!");
         }
-        _context.Galleries.Remove(gallery);
+        _context.Posts.Remove(gallery);
         await _context.SaveChangesAsync();
         return NoContent();
     }
@@ -125,7 +92,7 @@ public class GalleryController : BaseController
     {
         if (args.GalleryId != null)
         {
-            var gallery = await _context.Galleries.FindAsync(args.GalleryId);
+            var gallery = await _context.Posts.FindAsync(args.PostId);
             if (gallery is null) return BadRequest("Gallery not found!");
         }
         var user = await _userManager.FindByIdAsync(User.GetId());
@@ -137,7 +104,7 @@ public class GalleryController : BaseController
             Description = args.Description,
             Url = args.Url,
             ModifiedDate = DateTime.Now,
-            GalleryId = args.GalleryId ?? Guid.Empty,
+            PostId = args.PostId,
             FileId = args.FileId
         });
         await _context.SaveChangesAsync();
@@ -148,9 +115,9 @@ public class GalleryController : BaseController
     public async Task<IActionResult> PhotoList([FromQuery] PhotoFilterOptions filterOptions)
     {
         var query = _context.Photos.AsQueryable();
-        if (filterOptions.GalleryId != null)
+        if (filterOptions.PostId != null)
         {
-            query = query.Where(x => x.GalleryId == filterOptions.GalleryId);
+            query = query.Where(x => x.PostId == filterOptions.PostId);
         }
         query = query.OrderByDescending(x => x.CreatedDate);
         return Ok(await ListResult<Photo>.Success(query, filterOptions));

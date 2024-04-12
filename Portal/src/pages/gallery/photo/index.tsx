@@ -16,7 +16,7 @@ const PhotoPage: React.FC = () => {
   const { id } = useParams();
 
   const onFinish = async (values: any) => {
-    values.galleryId = id;
+    values.postId = id;
     values.fileId = values.id;
     await apiPhotoAdd(values);
     message.success('Tải lên thành công!');
@@ -48,7 +48,7 @@ const PhotoPage: React.FC = () => {
             }}
             request={(params) => apiPhotoList({
               ...params,
-              galleryId: id
+              postId: id
             })}
             grid={{ gutter: 16, column: 6 }}
             renderItem={(item) => (

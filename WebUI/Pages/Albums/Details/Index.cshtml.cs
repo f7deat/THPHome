@@ -19,12 +19,9 @@ public class IndexModel : DynamicPageModel
     public List<Photo> Photos { get; set; } = [];
     public Gallery? Gallery { get; set; } = new();
 
-    public async Task<IActionResult> OnGetAsync(string normalizedName, long postId)
+    public async Task<IActionResult> OnGetAsync()
     {
-        Gallery = await _context.Galleries.FirstOrDefaultAsync(x => x.NormalizedName == normalizedName);
-        if (Gallery == null) return NotFound();
-        ViewData["Title"] = Gallery.Name;
-        Photos = await _context.Photos.Where(x => x.GalleryId == Gallery.Id).ToListAsync();
+        Photos = await _context.Photos.Where(x => x.PostId == PageData.Id).ToListAsync();
         return Page();
     }
 }

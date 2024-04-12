@@ -16,32 +16,23 @@ public class GalleryService : IGalleryService
 
     public async Task<List<GalleryListResponse>> GalleryListAsync(GalleryFilterOptions filterOptions)
     {
-        var query = from a in _context.Galleries
+        var query = from a in _context.Posts
+                    where a.Type == ApplicationCore.Enums.PostType.GALLERY && a.Language == filterOptions.Language
                     select new GalleryListResponse
                     {
                         Id = a.Id,
-                        Name = a.Name,
+                        Title = a.Title,
                         Description = a.Description,
                         ModifiedDate = a.ModifiedDate,
-                        Count = _context.Photos.Count(x => x.GalleryId == a.Id),
-                        Thumbnail = _context.Photos.First(x => x.GalleryId == a.Id).Url,
-                        NormalizedName = a.NormalizedName
+                        Count = _context.Photos.Count(x => x.PostId == a.Id),
+                        Thumbnail = _context.Photos.First(x => x.PostId == a.Id).Url,
+                        Url = a.Url
                     };
         if (!string.IsNullOrWhiteSpace(filterOptions.Name))
         {
-            query = query.Where(x => x.Name.ToLower().Contains(filterOptions.Name.ToLower()));
+            query = query.Where(x => x.Title.ToLower().Contains(filterOptions.Name.ToLower()));
         }
         query = query.OrderByDescending(x => x.ModifiedDate);
-        var result = await query.ToListAsync();
-        var uncategory = await _context.Photos.FirstOrDefaultAsync(x => x.GalleryId == Guid.Empty);
-        result.Insert(0, new GalleryListResponse
-        {
-            Name = "Chưa phân loại",
-            Id = Guid.Empty,
-            Count = await _context.Photos.CountAsync(x => x.GalleryId == Guid.Empty),
-            Thumbnail = uncategory?.Url,
-            NormalizedName = "uncategorized"
-        });
-        return result;
+        return await query.ToListAsync();
     }
 }

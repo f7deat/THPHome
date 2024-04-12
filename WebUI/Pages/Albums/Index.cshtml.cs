@@ -1,4 +1,5 @@
 using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Models.Filters;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace WebUI.Pages.Albums
 
         public async Task OnGetAsync()
         {
+            FilterOptions.Language = PageData.Language;
             Galleries = await _galleryService.GalleryListAsync(FilterOptions);
         }
     }

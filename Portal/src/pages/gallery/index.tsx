@@ -2,7 +2,7 @@ import FileUpload from "@/components/files/upload";
 import { apiGalleryAdd, apiGalleryDelete, apiGalleryList, apiGalleryUpdate, apiPhotoAdd, apiPhotoDelete } from "@/services/file";
 import { DeleteOutlined, EditOutlined, FolderOutlined, PlusOutlined, StarOutlined, UploadOutlined } from "@ant-design/icons";
 import { ModalForm, PageContainer, ProCard, ProFormInstance, ProFormText, ProFormTextArea, ProList } from "@ant-design/pro-components"
-import { Link } from "@umijs/max";
+import { Link, useIntl } from "@umijs/max";
 import { Button, Col, Empty, Image, Popconfirm, Row, Space, Tag, Tooltip, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 
@@ -13,6 +13,7 @@ const GalleryPage: React.FC = () => {
   const [dataSource, setDataSource] = useState<any[]>([]);
   const formRef = useRef<ProFormInstance>();
   const [gallery, setGallery] = useState<any>();
+  const intl = useIntl();
 
   useEffect(() => {
     if (gallery) {
@@ -22,8 +23,8 @@ const GalleryPage: React.FC = () => {
           value: gallery.id
         },
         {
-          name: 'name',
-          value: gallery.name
+          name: 'title',
+          value: gallery.title
         },
         {
           name: 'description',
@@ -34,7 +35,7 @@ const GalleryPage: React.FC = () => {
   }, [gallery]);
 
   const onUpload = async (values: any) => {
-    values.galleryId = gallery.id;
+    values.postId = gallery.id;
     values.fileId = values.id;
     await apiPhotoAdd(values);
     message.success('Tải lên thành công!');
@@ -48,7 +49,9 @@ const GalleryPage: React.FC = () => {
   }
 
   const fetchData = () => {
-    apiGalleryList().then(response => {
+    apiGalleryList({
+      locale: intl.locale
+    }).then(response => {
       setDataSource(response);
     })
   }
@@ -58,6 +61,7 @@ const GalleryPage: React.FC = () => {
   }, []);
 
   const onFinish = async (values: any) => {
+    values.locale = intl.locale;
     if (values.id) {
       await apiGalleryUpdate(values);
     } else {
@@ -80,7 +84,7 @@ const GalleryPage: React.FC = () => {
             <div key={item.id}>
               <ProCard
                 size="small"
-                title={item.name}
+                title={item.title}
                 headerBordered
                 extra={<Tag color="blue">{item.count} ảnh</Tag>}
                 actions={[
@@ -121,7 +125,7 @@ const GalleryPage: React.FC = () => {
       <FileUpload open={openUpload} onCancel={() => setOpenUpload(false)} onFinish={onUpload} />
       <ModalForm open={open} onOpenChange={setOpen} title="Cài đặt" onFinish={onFinish} formRef={formRef}>
         <ProFormText name="id" hidden />
-        <ProFormText name="name" label="Tên Album" rules={[
+        <ProFormText name="title" label="Tên Album" rules={[
           {
             required: true
           }

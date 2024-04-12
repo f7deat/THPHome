@@ -131,7 +131,7 @@ public class OpenAPIController : Controller
     {
         if (string.IsNullOrWhiteSpace(filterOptions.ApiKey)) return BadRequest("API KEY is required!");
         if (!filterOptions.ApiKey.Equals(Options.OpenApiKey)) return Unauthorized();
-        var query = await _context.Photos.Where(x => filterOptions.GalleryId == null || x.GalleryId == filterOptions.GalleryId).OrderByDescending(x => x.CreatedDate)
+        var query = await _context.Photos.Where(x => filterOptions.PostId == null || x.PostId == filterOptions.PostId).OrderByDescending(x => x.CreatedDate)
             .Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
         return Ok(query);
     }
@@ -141,7 +141,7 @@ public class OpenAPIController : Controller
     {
         if (string.IsNullOrWhiteSpace(filterOptions.ApiKey)) return BadRequest("API KEY is required!");
         if (!filterOptions.ApiKey.Equals(Options.OpenApiKey)) return Unauthorized();
-        var query = await _context.Galleries.OrderByDescending(x => x.ModifiedDate)
+        var query = await _context.Posts.Where(x => x.Type == PostType.GALLERY).OrderByDescending(x => x.ModifiedDate)
             .Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
         return Ok(query);
     }

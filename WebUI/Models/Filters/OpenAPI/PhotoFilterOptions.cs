@@ -1,8 +1,6 @@
-﻿using ApplicationCore.Models.Filters;
-
-namespace WebUI.Models.Filters.OpenAPI;
+﻿namespace WebUI.Models.Filters.OpenAPI;
 
 public class PhotoFilterOptions : OpenApiFilterOptions
 {
-    public Guid? GalleryId { get; set; }
+    public long? PostId { get; set; }
 }
