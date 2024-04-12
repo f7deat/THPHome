@@ -13,7 +13,10 @@ public class Photo : BaseEntity<Guid>
 
     [ForeignKey(nameof(Gallery))]
     public Guid? GalleryId { get; set; }
+    [ForeignKey(nameof(Post))]
+    public long? PostId { get; set; }
 
     public Gallery? Gallery { get; set; }
     public ApplicationFile? File { get; set; }
+    public Post? Post { get; set; }
 }

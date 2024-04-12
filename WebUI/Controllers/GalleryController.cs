@@ -47,7 +47,8 @@ public class GalleryController : BaseController
             Name = "Chưa phân loại",
             Id = Guid.Empty,
             Count = await _context.Photos.CountAsync(x => x.GalleryId == Guid.Empty),
-            Thumbnail = uncategory?.Url
+            Thumbnail = uncategory?.Url,
+            NormalizedName = "chua-phan-loai"
         });
         return Ok(result);
     }

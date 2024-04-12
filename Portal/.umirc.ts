@@ -146,7 +146,7 @@ export default defineConfig({
         {
           name: "Albums",
           path: "/gallery/list",
-          component: "./gallery",
+          component: "./gallery"
         },
         {
           name: 'Hình ảnh',
