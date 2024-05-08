@@ -32,13 +32,14 @@ public class GalleryController : BaseController
     [HttpPost]
     public async Task<IActionResult> GalleryAddAsync([FromBody] PostArgs args)
     {
+        if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Vui lòng nhập tên album");
         await _context.Posts.AddAsync(new Post
         {
             Title = args.Title,
             Description = args.Description,
             Language = args.Language,
             Status = PostStatus.PUBLISH,
-            Url = args.Url,
+            Url = SeoHelper.ToSeoFriendly(args.Title),
             Type = PostType.GALLERY,
             CreatedBy = User.GetId(),
             CreatedDate = DateTime.Now,
