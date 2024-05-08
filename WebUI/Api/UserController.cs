@@ -276,13 +276,14 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     [HttpPost("create")]
     public async Task<IActionResult> CreateAsync([FromBody] ApplicationUser args)
     {
+        if (string.IsNullOrWhiteSpace(args.PasswordHash)) return BadRequest("Vui lòng nhập mật khẩu");
         var user = new ApplicationUser
         {
             UserName = args.UserName,
             Email = args.Email,
             Name = args.Name
         };
-        return Ok(await _userManager.CreateAsync(user));
+        return Ok(await _userManager.CreateAsync(user, args.PasswordHash));
     }
 
     [HttpPost("password-sign-in"), AllowAnonymous]

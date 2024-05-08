@@ -41,40 +41,43 @@ const UserList = () => {
 
     function openRolePanel(record: any) {
         setUser(record)
-        fetchRole()
+        setIsModalVisible(true)
     }
 
-    function fetchRole() {
-        request('role/get-list').then(response => {
-            if (!user) {
-                return;
-            }
-            request(`user/roles/${user.id}`).then(responseRoleInUser => {
-                response.map((value: any) => {
-                    let isInRole = responseRoleInUser.find((x: any) => x === value.name)
-                    if (isInRole) {
-                        value.isInRole = true
-                    } else {
-                        value.isInRole = false
-                    }
+    useEffect(() => {
+        if (isModalVisible && user?.id) {
+            request('role/get-list').then(response => {
+                if (!user) {
+                    return;
+                }
+                request(`user/roles/${user.id}`).then(responseRoleInUser => {
+                    response.map((value: any) => {
+                        let isInRole = responseRoleInUser.find((x: any) => x === value.name)
+                        if (isInRole) {
+                            value.isInRole = true
+                        } else {
+                            value.isInRole = false
+                        }
+                    })
+                    setListRole(response)
                 })
-                setListRole(response)
-                setIsModalVisible(true)
             })
-        })
-    }
+        }
+    }, [isModalVisible, user]);
 
     function addToRole(roleName: string) {
         if (!user) {
             return message.warning('User not found!');
         }
         request(`user/add-to-role`, {
-            userId: user.id,
-            roleName: roleName
-        }).then(response => {
+            data: {
+                userId: user.id,
+                roleName: roleName
+            },
+            method: 'POST'
+        }).then((response: any) => {
             if (response.succeeded) {
                 message.success('Succeeded!');
-                fetchRole()
             } else {
                 response.errors.forEach((value: any) => {
                     message.error(value.description);
@@ -115,7 +118,7 @@ const UserList = () => {
         {
             title: '',
             valueType: 'option',
-            render: (record: any) => (
+            render: (dom, record: any) => (
                 <Space>
                     <Link to={`/users/edit/${record.id}`}><Button icon={<EditOutlined />} size="small" type="primary"></Button></Link>
                     <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)} size="small"></Button>
@@ -187,7 +190,7 @@ const UserList = () => {
             method: 'POST',
             data: values
         });
-        if (response.data.succeeded) {
+        if (response.succeeded) {
             setDrawerVisible(false);
             fetchUsers();
             message.success('Thêm thành công!');
@@ -203,7 +206,7 @@ const UserList = () => {
                 }}
                 dataSource={listUser} columns={columns} rowKey="id" />
             </div>
-            <Modal title="Assign Role" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)} bodyStyle={{ padding: 0 }}>
+            <Modal title="Assign Role" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)}>
                 <div className="p-2 flex justify-between">
                     <Space>
                         <Input />
@@ -233,6 +236,9 @@ const UserList = () => {
                     </Form.Item>
                     <Form.Item name="email" label="Email">
                         <Input />
+                    </Form.Item>
+                    <Form.Item name="passwordHash" label="Mật khẩu">
+                        <Input.Password />
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit">Tạo thành viên</Button>
