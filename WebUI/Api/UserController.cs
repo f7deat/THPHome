@@ -21,6 +21,8 @@ using Microsoft.Extensions.Configuration;
 using System.Configuration;
 using Infrastructure;
 using WebUI.Extensions;
+using WebUI.Models.Filters.Users;
+using WebUI.Models.ViewModel;
 
 namespace WebUI.Api;
 
@@ -48,15 +50,32 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> GetList([FromQuery] string searchTerm)
+    public async Task<IActionResult> GetList([FromQuery] UserFilterOptions filterOptions)
     {
-        searchTerm = searchTerm ?? string.Empty;
-        searchTerm = searchTerm.Trim().ToLower();
-        return Ok(await _userManager.Users.Where(x => string.IsNullOrEmpty(searchTerm)
-     || x.UserName.ToLower().Contains(searchTerm) || (
-     !string.IsNullOrEmpty(x.Name) &&
-     x.Name.ToLower().Contains(searchTerm)
-     )).ToListAsync());
+        var query = _userManager.Users.Select(x => new ApplicationUser
+        {
+            Email = x.Email,
+            Id = x.Id,
+            Name = x.Name,
+            Avatar = x.Avatar,
+            EmailConfirmed = x.EmailConfirmed,
+            PhoneNumber = x.PhoneNumber,
+            UserName = x.UserName,
+            PhoneNumberConfirmed = x.PhoneNumberConfirmed
+        });
+        if (!string.IsNullOrWhiteSpace(filterOptions.UserName))
+        {
+            query = query.Where(x => !string.IsNullOrEmpty(x.UserName) && x.UserName.ToLower().Contains(filterOptions.UserName.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(filterOptions.Name))
+        {
+            query = query.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(filterOptions.Email))
+        {
+            query = query.Where(x => !string.IsNullOrEmpty(x.Email) && x.Email.ToLower().Contains(filterOptions.Email.ToLower()));
+        }
+        return Ok(await ListResult<ApplicationUser>.Success(query, filterOptions));
     }
 
     [HttpPost("add-to-role")]
@@ -80,12 +99,13 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     public async Task<IActionResult> GetUsersInRole([FromRoute] string roleName) => Ok(await _userManager.GetUsersInRoleAsync(roleName));
 
     [Route("is-authenticated"), AllowAnonymous]
-    public IActionResult IsAuthenticated() => Ok(User.Identity.IsAuthenticated);
+    public IActionResult IsAuthenticated() => Ok(User.Identity?.IsAuthenticated ?? false);
 
     [HttpDelete("remove-from-role/{role}/{id}")]
     public async Task<IActionResult> DeleteA([FromRoute] string role, [FromRoute] string id)
     {
         var user = await _userManager.FindByIdAsync(id);
+        if (user is null) return BadRequest("User not found!");
         return Ok(await _userManager.RemoveFromRoleAsync(user, role));
     }
 
@@ -108,6 +128,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
         if (result.Succeeded)
         {
             var user = await _userManager.FindByEmailAsync(login.UserName);
+            if (user is null) return BadRequest("User not found!");
             var token = await _userManager.GetAuthenticationTokenAsync(user, "", "DefToken");
             return Ok(token);
         }
@@ -119,6 +140,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var user = await _userManager.FindByEmailAsync("f7deat@gmail.com");
+        if (user is null) return BadRequest("User not found!");
         var key = Encoding.ASCII.GetBytes(Guid.NewGuid().ToString());
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -235,6 +257,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     public async Task<IActionResult> SetPasswordAsync([FromQuery] SetPasswordModel args)
     {
         var user = await _userManager.FindByNameAsync(args.UserName);
+        if (user is null) return BadRequest("User not found!");
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
         var result = await _userManager.ResetPasswordAsync(user, token, args.Password);
         return Ok(result);
@@ -340,6 +363,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     public async Task<IActionResult> GetRolesAsync([FromRoute] string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) return BadRequest("User not found!");
         return Ok(await _userManager.GetRolesAsync(user));
     }
     #endregion

@@ -1,5 +1,5 @@
 ﻿import { Button, Checkbox, Drawer, Input, message, Modal, Popconfirm, Space, Table, Form } from "antd"
-import React, { Fragment, useEffect, useState } from "react"
+import React, { Fragment, useEffect, useRef, useState } from "react"
 import {
     EditOutlined,
     DeleteOutlined,
@@ -10,34 +10,16 @@ import {
 } from "@ant-design/icons";
 import { Link } from "@umijs/max";
 import { request } from "@umijs/max";
-import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
+import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
+import { queryUserList } from "@/services/user";
 
 const UserList = () => {
 
-    const [listUser, setListUser] = useState<any>([])
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [listRole, setListRole] = useState<any>([])
     const [user, setUser] = useState<any>()
     const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
-    const [searchTerm, setSearchTerm] = useState<string>('');
-
-    const fetchUsers = () => {
-        request('user/list', {
-            params: {
-                searchTerm
-            }
-        }).then(response => {
-            if (response.status === 401) {
-                setListUser([])
-            } else {
-                setListUser(response);
-            }
-        })
-    }
-
-    useEffect(() => {
-        fetchUsers();
-    }, [])
+    const actionRef = useRef<ActionType>();
 
     function openRolePanel(record: any) {
         setUser(record)
@@ -89,14 +71,16 @@ const UserList = () => {
     const columns : ProColumnType<any>[] = [
         {
             title: '#',
-            valueType: 'indexBorder'
+            valueType: 'indexBorder',
+            width: 40,
+            align: 'center'
         },
         {
-            title: 'Name',
+            title: 'Họ và tên',
             dataIndex: 'name',
         },
         {
-            title: 'User name',
+            title: 'Tài khoản',
             dataIndex: 'userName'
         },
         {
@@ -116,6 +100,10 @@ const UserList = () => {
             }
         },
         {
+            title: 'Số điện thoại',
+            dataIndex: 'phoneNumber'
+        },
+        {
             title: '',
             valueType: 'option',
             render: (dom, record: any) => (
@@ -132,14 +120,15 @@ const UserList = () => {
                             });
                             if (response.data) {
                                 message.success('Xóa thành công!');
-                                fetchUsers();
+                                actionRef.current?.reload();
                             }
                         }}
                     >
                         <Button type="primary" danger icon={<DeleteOutlined />} size="small"></Button>
                     </Popconfirm>
                 </Space>
-            )
+            ),
+            width: 100
         }
     ];
 
@@ -158,7 +147,6 @@ const UserList = () => {
             }).then(response => {
                 if (response.succeeded) {
                     message.success('succeeded')
-                    fetchRole()
                 } else {
                     response.errors.forEach((value: any) => {
                         message.error(value.description)
@@ -192,7 +180,7 @@ const UserList = () => {
         });
         if (response.succeeded) {
             setDrawerVisible(false);
-            fetchUsers();
+            actionRef.current?.reload();
             message.success('Thêm thành công!');
         }
     }
@@ -201,10 +189,13 @@ const UserList = () => {
         <PageContainer extra={<Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAdd}>Thêm thành viên</Button>}>
             <div className="bg-white p-4">
                 <ProTable
+                ghost
                 search={{
                     layout: 'vertical'
                 }}
-                dataSource={listUser} columns={columns} rowKey="id" />
+                actionRef={actionRef}
+                request={queryUserList}
+                columns={columns} rowKey="id" />
             </div>
             <Modal title="Assign Role" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)}>
                 <div className="p-2 flex justify-between">

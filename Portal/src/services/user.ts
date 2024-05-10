@@ -10,3 +10,5 @@ export async function apiLogin(data: any) {
 export async function queryCurrentUser() {
     return request(`user`);
 }
+
+export const queryUserList = (params: any) => request(`user/list`, { params });

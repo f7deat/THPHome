@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ApplicationCore.Entities
+namespace ApplicationCore.Entities;
+
+public class ApplicationUser : IdentityUser
 {
-    public class ApplicationUser : IdentityUser
-    {
-        public string? Name { get; set; }
-        public string? Avatar { get; set; }
-    }
+    public string? Name { get; set; }
+    public string? Avatar { get; set; }
 }
