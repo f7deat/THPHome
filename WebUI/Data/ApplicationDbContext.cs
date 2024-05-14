@@ -37,4 +37,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<ApplicationFolder> ApplicationFolders { get; set; }
     public virtual DbSet<Gallery> Galleries { get; set; }
     public virtual DbSet<Photo> Photos { get; set; }
+    public virtual DbSet<QaGroup> QaGroups { get; set; }
+    public virtual DbSet<QaItem> QaItems { get; set; }
 }

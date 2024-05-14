@@ -14,6 +14,7 @@ const SideGalleryBlock: React.FC<Props> = ({ id }) => {
 
     const [images, setImages] = useState<string[]>([]);
     const [fileList, setFileList] = useState<any>([]);
+    const [dataSource, setDataSource] = useState<any>();
 
     const form = ProForm.useFormInstance();
     useEffect(() => {
@@ -33,6 +34,7 @@ const SideGalleryBlock: React.FC<Props> = ({ id }) => {
                         value: response.className
                     }
                 ]);
+                setDataSource(response);
                 if (response.images) {
                     setImages(response.images);
                 } else {
@@ -41,7 +43,7 @@ const SideGalleryBlock: React.FC<Props> = ({ id }) => {
             });
         }
     }, [id]);
-    
+
     useEffect(() => {
         setFileList([]);
     }, [form, id]);
@@ -49,9 +51,7 @@ const SideGalleryBlock: React.FC<Props> = ({ id }) => {
     return (
         <>
             <ProFormText name="images" hidden />
-            <ProForm.Item name="textContent" label="Nội dung">
-                <MyEditor name="textContent" />
-            </ProForm.Item>
+            <MyEditor name="textContent" label="Nội dung" initialValue={dataSource?.textContent} />
             <div className="flex gap-4" style={{
                 gap: 8,
                 flexWrap: 'wrap'

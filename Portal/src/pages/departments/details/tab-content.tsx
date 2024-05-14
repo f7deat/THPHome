@@ -1,5 +1,5 @@
 ﻿import { Button, Form, Input, message, Popconfirm } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MyEditor from "../../../components/my-editor";
 import { request } from "@umijs/max";
 
@@ -13,6 +13,7 @@ export const TabContentDepartment: React.FC<TabContentProps> = (props) => {
     const { activeTab, fetchData } = props;
 
     const [formType] = Form.useForm();
+    const [dataSource, setDataSource] = useState<any>();
 
     const onFinishType = async (values: any) => {
         const response = await request(`department/update-detail`, {
@@ -41,7 +42,8 @@ export const TabContentDepartment: React.FC<TabContentProps> = (props) => {
                             name: 'content',
                             value: response.data.content
                         }
-                    ])
+                    ]);
+                    setDataSource(response.data);
                 }
             })
         }
@@ -68,9 +70,7 @@ export const TabContentDepartment: React.FC<TabContentProps> = (props) => {
             <Form.Item name="type" label="Tiêu đề" required>
                 <Input />
             </Form.Item>
-            <Form.Item name="content" label="Nội dung" required>
-                <MyEditor name="content" />
-            </Form.Item>
+            <MyEditor name="content" label="Nội dung" required initialValue={dataSource?.content} />
             <div className="flex justify-end gap-4">
                 <Button type="primary" htmlType="submit">Lưu lại</Button>
                 <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeContent()}>

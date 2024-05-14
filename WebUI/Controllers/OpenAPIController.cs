@@ -141,9 +141,18 @@ public class OpenAPIController : Controller
     {
         if (string.IsNullOrWhiteSpace(filterOptions.ApiKey)) return BadRequest("API KEY is required!");
         if (!filterOptions.ApiKey.Equals(Options.OpenApiKey)) return Unauthorized();
-        var query = await _context.Posts.Where(x => x.Type == PostType.GALLERY).OrderByDescending(x => x.ModifiedDate)
-            .Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
-        return Ok(query);
+        var query = _context.Posts.Where(x => x.Type == PostType.GALLERY)
+            .Select(x => new {
+                x.Id,
+                x.Description,
+                x.Title,
+                x.Url,
+                x.CreatedDate,
+                x.ModifiedDate,
+                thumbnail = _context.Photos.Where(p => p.PostId == x.Id).Select(p => p.Url).FirstOrDefault()
+            });
+        var data = await query.OrderByDescending(x => x.ModifiedDate).Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
+        return Ok(data);
     }
 
     [HttpGet("post/{id}")]
@@ -245,4 +254,27 @@ public class OpenAPIController : Controller
             return sw.ToString();
         }
     }
+
+    #region Q&A
+    [HttpGet("all-qa")]
+    public async Task<IActionResult> AllQaAsync()
+    {
+        var groups = await _context.QaGroups.Where(x => x.Active).OrderBy(x => x.SortOrder).ToListAsync();
+        return Ok(groups.Select(x => new
+        {
+            x.Id,
+            x.Title,
+            x.CreatedDate,
+            x.ModifiedDate,
+            items = _context.QaItems.Where(i => i.QaGroupId == x.Id).OrderBy(i => i.SortOrder).Select(i => new
+            {
+                i.Id,
+                i.Answer,
+                i.Question,
+                i.CreatedDate,
+                i.ModifiedDate
+            }).ToList()
+        }));
+    }
+    #endregion
 }

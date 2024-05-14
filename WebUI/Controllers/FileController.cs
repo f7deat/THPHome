@@ -4,10 +4,12 @@ using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WebUI.Api;
 using WebUI.Entities;
 using WebUI.Extensions;
 using WebUI.Interfaces.IService;
+using WebUI.Models.Args.Files;
 using WebUI.Models.Filters.Files;
 using WebUI.Models.ViewModel;
 
@@ -57,6 +59,67 @@ public class FileController : BaseController
             data = await query.Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
             total = await query.CountAsync()
         });
+    }
+
+    [HttpPost("upload-multi")]
+    public async Task<IActionResult> UploadMultiAsync([FromForm] UploadMultiArgs args)
+    {
+        try
+        {
+            if (args.Files.IsNullOrEmpty() || args.Files is null) return BadRequest("Không tìm thấy tệp tin!");
+            var rootPath = Path.Combine(_webHostEnvironment.WebRootPath, "files");
+            var applicationFiles = new List<ApplicationFile>();
+            foreach (var file in args.Files)
+            {
+                var folder = Guid.NewGuid().ToString();
+                var folderPath = Path.Combine(rootPath, folder);
+                if (Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var filePath = Path.Combine(folderPath, file.FileName);
+
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                var host = Request.Host.Value;
+                var url = $"https://{host}/files/{file.FileName}";
+
+                var user = await _userManager.FindByIdAsync(User.GetId());
+                var applicationFile = new ApplicationFile
+                {
+                    ContentType = file.ContentType,
+                    Name = file.FileName,
+                    Size = file.Length,
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    Url = url,
+                    CreatedBy = user?.Id,
+                    FolderId = args.FolderId
+                };
+                applicationFiles.Add(applicationFile);
+            }
+            await _context.ApplicationFiles.AddRangeAsync(applicationFiles);
+            await _context.SaveChangesAsync();
+
+            return Ok(applicationFiles.Select(x => new
+            {
+                x.Id,
+                x.CreatedDate,
+                x.ContentType,
+                x.Url,
+                x.Name,
+                x.Size,
+                x.FolderId
+            }));
+        }
+        catch (Exception ex)
+        {
+            await _telegramService.SendMessageAsync(ex.ToString());
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("upload")]

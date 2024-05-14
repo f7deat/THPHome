@@ -1,10 +1,7 @@
 import { queryBlock } from "@/services/block";
-import { ProForm, ProFormText } from "@ant-design/pro-components";
-import { useEffect, useRef, useState } from "react";
+import { ProForm } from "@ant-design/pro-components";
+import { useEffect, useState } from "react";
 import MyEditor from "../my-editor";
-import { message } from "antd";
-import { request } from "@umijs/max";
-import { Editor } from "@tinymce/tinymce-react";
 
 type Props = {
     id: string;
@@ -13,6 +10,7 @@ type Props = {
 const TinyMCEBlock: React.FC<Props> = ({ id }) => {
 
     const form = ProForm.useFormInstance();
+    const [dataSource, setDataSource] = useState<any>();
 
     useEffect(() => {
         if (id) {
@@ -27,14 +25,15 @@ const TinyMCEBlock: React.FC<Props> = ({ id }) => {
                         value: response.className
                     }
                 ]);
-            })
+                setDataSource(response);
+            });
         }
     }, [id])
 
     return (
-        <ProForm.Item name="raw" label="Nội dung">
-            <MyEditor name="raw" />
-        </ProForm.Item>
+        <>
+            <MyEditor name="raw" label="Nội dung" initialValue={dataSource?.raw} />
+        </>
     )
 }
 

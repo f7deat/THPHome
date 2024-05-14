@@ -68,6 +68,17 @@ export default defineConfig({
           path: "/post/banners",
           component: "./banners/banner-list",
         },
+        {
+          name: "Câu hỏi thường gặp",
+          path: "/post/qa",
+          component: "./posts/qa",
+        },
+        {
+          name: "Danh sách câu hỏi",
+          path: "/post/qa/item/:id",
+          component: "./posts/qa/item",
+          hideInMenu: true,
+        },
       ],
     },
     {

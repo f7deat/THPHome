@@ -1,4 +1,4 @@
-﻿import { Button, Modal, Tabs, Card, Form, Input, message, TableColumnType, Space, InputNumber, Popconfirm, Row, Col, Select, Divider, List, Table } from "antd"
+﻿import { Button, Modal, Tabs, Card, Form, Input, message, TableColumnType, Space, InputNumber, Popconfirm, Row, Col, Select, Divider, Table } from "antd"
 import React, { useEffect, useState } from "react"
 import {
     DeleteOutlined, EditOutlined
@@ -233,9 +233,7 @@ const DepartmentDetail: React.FC = () => {
                     ]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Nội dung" name="content" required>
-                        <MyEditor name='content' />
-                    </Form.Item>
+                    <MyEditor name='content' label="Nội dung" />
                     <Form.Item label="Thứ tự" name="sortOrder" required>
                         <InputNumber />
                     </Form.Item>

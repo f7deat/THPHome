@@ -1,9 +1,9 @@
-﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Spin, Upload, UploadProps, Image, Empty } from 'antd'
+﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Upload, UploadProps, Image, Empty } from 'antd'
 import {
     UploadOutlined,
     InboxOutlined
 } from "@ant-design/icons";
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ListPostType, PostType } from '../../enum/post-enum'
 import IPost from './interfaces/post-model'
 import MyEditor from '../../components/my-editor';
@@ -201,9 +201,7 @@ const PostSetting = () => {
                             <div className="mb-1">Mô tả</div>
                             <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
 
-                            <Form.Item name="content" label="Nội dung">
-                                <MyEditor name="content" />
-                            </Form.Item>
+                            <MyEditor name="content" label="Nội dung" initialValue={post?.content} />
                             <Space>
                                 <Button type="primary" htmlType="submit" loading={loading}>Lưu lại</Button>
                                 <Button onClick={() => history.push('/admin/post/list')}>Hủy</Button>
