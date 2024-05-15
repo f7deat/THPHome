@@ -256,25 +256,29 @@ public class OpenAPIController : Controller
     }
 
     #region Q&A
-    [HttpGet("all-qa")]
-    public async Task<IActionResult> AllQaAsync()
+    [HttpGet("qa-groups")]
+    public async Task<IActionResult> AllQaGroupAsync()
     {
-        var groups = await _context.QaGroups.Where(x => x.Active).OrderBy(x => x.SortOrder).ToListAsync();
-        return Ok(groups.Select(x => new
+        return Ok(await _context.QaGroups.Where(x => x.Active).OrderBy(x => x.SortOrder).Select(x => new
         {
             x.Id,
             x.Title,
             x.CreatedDate,
-            x.ModifiedDate,
-            items = _context.QaItems.Where(i => i.QaGroupId == x.Id).OrderBy(i => i.SortOrder).Select(i => new
-            {
-                i.Id,
-                i.Answer,
-                i.Question,
-                i.CreatedDate,
-                i.ModifiedDate
-            }).ToList()
-        }));
+            x.ModifiedDate
+        }).ToListAsync());
+    }
+
+    [HttpGet("qa-items/{id}")]
+    public async Task<IActionResult> GetQaItemsAsync([FromRoute] Guid id)
+    {
+        return Ok(await _context.QaItems.Where(i => i.QaGroupId == id).OrderBy(i => i.SortOrder).Select(i => new
+        {
+            i.Id,
+            i.Answer,
+            i.Question,
+            i.CreatedDate,
+            i.ModifiedDate
+        }).ToListAsync());
     }
     #endregion
 }
