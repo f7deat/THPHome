@@ -55,14 +55,15 @@ const QaPage : React.FC = () => {
             align: 'center'
         },
         {
-            title: 'Tiêu đề',
+            title: 'Nhóm câu hỏi',
             dataIndex: 'title'
         },
         {
             title: 'Thứ tự',
             dataIndex: 'sortOrder',
             width: 100,
-            align: 'center'
+            align: 'center',
+            search: false
         },
         {
             title: 'Ngày tạo',

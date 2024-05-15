@@ -69,7 +69,8 @@ const QaItemPage: React.FC = () => {
             title: 'Thứ tự',
             dataIndex: 'sortOrder',
             width: 100,
-            align: 'center'
+            align: 'center',
+            search: false
         },
         {
             title: 'Ngày tạo',
