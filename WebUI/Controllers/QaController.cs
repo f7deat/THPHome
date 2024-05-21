@@ -80,6 +80,7 @@ public class QaController : BaseController
         if (data == null) return BadRequest("Data not found!");
         data.Answer = args.Answer;
         data.Question = args.Question;
+        data.SortOrder = args.SortOrder;
         data.ModifiedDate = DateTime.Now;
         data.ModifiedBy = User.GetId();
         _context.QaItems.Update(data);
