@@ -28,7 +28,6 @@ public class QaController : BaseController
         var data = await _context.QaGroups.FindAsync(args.Id);
         if (data == null) return BadRequest("Data not found!");
         data.Title = args.Title;
-        data.Active = args.Active;
         data.ModifiedDate = DateTime.Now;
         data.ModifiedBy = User.GetId();
         data.SortOrder = args.SortOrder;
