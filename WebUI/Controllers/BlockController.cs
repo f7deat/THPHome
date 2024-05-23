@@ -85,6 +85,7 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
             case nameof(SponsorBlock): return Ok(JsonConvert.DeserializeObject<SponsorBlock>(work.Data));
             case nameof(SideGalleryBlock): return Ok(JsonConvert.DeserializeObject<SideGalleryBlock>(work.Data));
             case nameof(BannerBlock): return Ok(JsonConvert.DeserializeObject<BannerBlock>(work.Data));
+            case nameof(PopupBlock): return Ok(JsonConvert.DeserializeObject<PopupBlock>(work.Data));
             default:
                 break;
         }

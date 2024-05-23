@@ -1,0 +1,12 @@
+﻿@model WebUI.Models.Blocks.PopupBlock
+
+@if (Model != null)
+{
+    <div class="modal fade show" tabindex="-1" id="popupModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <img src="@Model.Image" alt="POPUP BANNER" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+}

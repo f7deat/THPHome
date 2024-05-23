@@ -30,7 +30,8 @@ public enum BannerType
     SLIDE,
     POST,
     PHOTO,
-    LOGO
+    LOGO,
+    POPUP
 }
 
 public enum BannerStatus
