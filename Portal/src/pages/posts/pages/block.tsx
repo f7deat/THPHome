@@ -1,11 +1,11 @@
 import { BannerBlock, DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
-import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
-import { DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { DeleteOutlined, EditOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
+import { ActionType, DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
-import { Button, Dropdown, Empty, MenuProps, Popconfirm, Tooltip, message } from "antd";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Button, Empty, Popconfirm, Switch, Tooltip, message } from "antd";
+import { useEffect, useRef, useState } from "react";
 
 const PageBlock: React.FC = () => {
     const { id } = useParams();
@@ -15,6 +15,7 @@ const PageBlock: React.FC = () => {
     const [block, setBlock] = useState<any>();
     const form = useRef<ProFormInstance>();
     const formBlock = useRef<ProFormInstance>();
+    const actionRef = useRef<ActionType>();
 
     const fetchData = () => {
         if (id) {
@@ -88,17 +89,15 @@ const PageBlock: React.FC = () => {
         {
             title: 'Trạng thái',
             dataIndex: 'active',
-            valueEnum: {
-                false: {
-                    text: 'Draft',
-                    status: 'Default',
-                },
-                true: {
-                    text: 'Active',
-                    status: 'Processing',
-                },
-            },
-            width: 80
+            width: 80,
+            render: (dom, entity) => (
+                <Switch size="small" checked={entity.active} onChange={async () => {
+                    await queryActiveBlock(entity.id);
+                    message.success('Thao tác thành công!');
+                    actionRef.current?.reload();
+                }} />
+            ),
+            align: 'center'
         },
         {
             title: 'Tác vụ',
@@ -146,7 +145,7 @@ const PageBlock: React.FC = () => {
     ];
 
     const handleDragSortEnd = (beforeIndex: number, afterIndex: number, newDataSource: any) => {
-        querySortOrderBlock(newDataSource).then(response => {
+        querySortOrderBlock(newDataSource).then(() => {
             setDataSource(newDataSource);
             message.success('Saved!');
         })
@@ -183,7 +182,6 @@ const PageBlock: React.FC = () => {
 
     const onSaveBlock = async (values: any) => {
         if (!block) return;
-        console.log(values)
         await queryBlockSave(block.id, values);
         message.success('Saved!');
         setOpen(false);
@@ -205,6 +203,7 @@ const PageBlock: React.FC = () => {
             </div>
             <DragSortTable
                 ghost
+                actionRef={actionRef}
                 search={false}
                 rowKey="id"
                 columns={columns}

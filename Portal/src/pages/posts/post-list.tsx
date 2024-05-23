@@ -1,5 +1,5 @@
 ﻿import { Button, Dropdown, message, Popconfirm, Tabs, Tag } from "antd";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
     EditOutlined,
     DeleteOutlined,
@@ -30,7 +30,7 @@ const PostList = () => {
     function remove(id: number) {
         request(`post/remove/${id}`, {
             method: 'POST'
-        }).then(response => {
+        }).then((response: any) => {
             if (response.succeeded) {
                 message.success('succeeded!');
                 actionRef.current?.reload();
@@ -48,7 +48,7 @@ const PostList = () => {
     function setActive(id: number) {
         request(`post/active/${id}`, {
             method: 'POST'
-        }).then(response => {
+        }).then((response: any) => {
             if (response.succeeded) {
                 message.success(response.message);
                 actionRef.current?.reload();
@@ -97,10 +97,11 @@ const PostList = () => {
             width: 100
         },
         {
-            title: 'Ngày xuất bản',
+            title: 'Cập nhật lúc',
             dataIndex: 'modifiedDate',
             valueType: 'fromNow',
-            width: 140
+            width: 140,
+            search: false
         },
         {
             title: 'Đăng bởi',
@@ -171,9 +172,6 @@ const PostList = () => {
                 layout: 'vertical'
             }}
             columns={columns}
-            rowSelection={{
-                type: 'checkbox',
-            }}
             rowKey="id"
         />
     )

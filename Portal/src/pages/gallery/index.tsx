@@ -1,9 +1,9 @@
 import FileUpload from "@/components/files/upload";
-import { apiGalleryAdd, apiGalleryDelete, apiGalleryList, apiGalleryUpdate, apiPhotoAdd, apiPhotoDelete } from "@/services/file";
-import { DeleteOutlined, EditOutlined, FolderOutlined, PlusOutlined, StarOutlined, UploadOutlined } from "@ant-design/icons";
-import { ModalForm, PageContainer, ProCard, ProFormInstance, ProFormText, ProFormTextArea, ProList } from "@ant-design/pro-components"
+import { apiGalleryAdd, apiGalleryDelete, apiGalleryList, apiGalleryUpdate, apiPhotoAdd } from "@/services/file";
+import { DeleteOutlined, EditOutlined, FolderOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { ModalForm, PageContainer, ProCard, ProFormInstance, ProFormText, ProFormTextArea } from "@ant-design/pro-components"
 import { Link, useIntl } from "@umijs/max";
-import { Button, Col, Empty, Image, Popconfirm, Row, Space, Tag, Tooltip, message } from "antd";
+import { Button, Empty, Popconfirm, Space, Tag, Tooltip, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 
 const GalleryPage: React.FC = () => {
@@ -34,6 +34,15 @@ const GalleryPage: React.FC = () => {
     }
   }, [gallery]);
 
+
+  const fetchData = () => {
+    apiGalleryList({
+      locale: intl.locale
+    }).then((response: any) => {
+      setDataSource(response);
+    })
+  }
+
   const onUpload = async (values: any) => {
     values.postId = gallery.id;
     values.fileId = values.id;
@@ -46,14 +55,6 @@ const GalleryPage: React.FC = () => {
     await apiGalleryDelete(id);
     message.success('Xóa thành công!');
     fetchData();
-  }
-
-  const fetchData = () => {
-    apiGalleryList({
-      locale: intl.locale
-    }).then(response => {
-      setDataSource(response);
-    })
   }
 
   useEffect(() => {
@@ -84,7 +85,7 @@ const GalleryPage: React.FC = () => {
             <div key={item.id}>
               <ProCard
                 size="small"
-                title={item.title}
+                title={<div className="line-clamp-1"><Tooltip title={item.title}>{item.title}</Tooltip></div>}
                 headerBordered
                 extra={<Tag color="blue">{item.count} ảnh</Tag>}
                 actions={[

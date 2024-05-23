@@ -1,5 +1,5 @@
-import { Button, Checkbox, Col, Drawer, Empty, Form, Input, message, Modal, Popconfirm, Row, Select, Space, Switch, Table, } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button, Checkbox, Col, Drawer, Empty, Form, Input, message, Modal, Popconfirm, Row, Select, Space, Switch } from "antd";
+import { useEffect, useState } from "react";
 import {
     EditOutlined,
     DeleteOutlined,
@@ -114,7 +114,11 @@ const CategoryList = () => {
     }
 
     function handleChangeStatus(record: any, checked: boolean) {
-        checked ? record.status = 1 : record.status = 0;
+        if (checked) {
+            record.status = 1;
+        } else {
+            record.status = 0;
+        }
         request(`category/active`, {
             method: 'POST',
             data: record
@@ -124,37 +128,26 @@ const CategoryList = () => {
         })
     }
 
-    const columns : ProColumnType<any>[] = [
+    const columns: ProColumnType<any>[] = [
         {
-            title: "Id",
-            dataIndex: "id",
-            search: false
+            title: "#",
+            valueType: 'indexBorder',
+            width: 50
         },
         {
             title: "Tên danh mục",
-            render: (record: any) => (
-                <div>
-                    <div onClick={() => setId(record.id)} className="font-bold cursor-pointer">
-                        {record.name}
-                    </div>
-                    <div className="text-gray-500">
-                        {record.description}
-                    </div>
-                </div>
-            )
+            dataIndex: 'name'
         },
         {
-            title: 'Normalized Name',
-            dataIndex: 'normalizeName'
-        },
-        {
-            title: "Status",
+            title: "Trạng thái",
             render: (record: any) => (
                 <Switch size="small" defaultChecked={record.status === 1} onChange={(e: boolean) => handleChangeStatus(record, e)} />
             ),
+            width: 100,
+            align: 'center'
         },
         {
-            title: "",
+            title: "Tác vụ",
             valueType: 'option',
             render: (record: any) => (
                 <Space>
@@ -176,10 +169,11 @@ const CategoryList = () => {
                         onConfirm={() => handleRemove(record.id)}
                     >
                         <Button type="primary"
-                        size="small" danger icon={<DeleteOutlined />}></Button>
+                            size="small" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
                 </Space>
             ),
+            width: 100
         },
     ];
 
@@ -220,7 +214,7 @@ const CategoryList = () => {
                 Tạo mới
             </Button>
             <Button icon={<ArrowLeftOutlined />} onClick={() => setId(0)} hidden={id === 0}>
-                Back
+                Quay lại
             </Button>
         </Space>}>
 
@@ -231,7 +225,6 @@ const CategoryList = () => {
                 dataSource={categories}
                 columns={columns}
                 rowKey="id"
-                rowSelection={{}}
             />
             <Drawer
                 title={category?.name}

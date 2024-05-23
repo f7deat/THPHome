@@ -16,7 +16,7 @@ const PageSetting: React.FC = () => {
 
     useEffect(() => {
         if (id) {
-            queryPost(id).then(response => {
+            queryPost(id).then((response: any) => {
                 if (response) {
                     form.setFields([
                         {
@@ -51,6 +51,7 @@ const PageSetting: React.FC = () => {
 
     const onFinish = async (values: any) => {
         await apiPageBuilderUpdate(values);
+        setThumbnail(values.thumbnail);
         message.success('Lưu thành công!');
     }
 

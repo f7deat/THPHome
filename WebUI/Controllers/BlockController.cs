@@ -185,4 +185,18 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
         await _context.SaveChangesAsync();
         return Ok(IdentityResult.Success);
     }
+
+    [HttpPost("active/{id}")]
+    public async Task<IActionResult> ActiveAsync([FromRoute] Guid id)
+    {
+        var block = await _context.PostBlocks.FindAsync(id);
+        if (block is null)
+        {
+            return BadRequest("Data not found!");
+        }
+        block.Active = !block.Active;
+        _context.Update(block);
+        await _context.SaveChangesAsync();
+        return Ok(IdentityResult.Success);
+    }
 }
