@@ -1,21 +1,22 @@
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { FormattedNumber, request, useModel } from '@umijs/max';
+import { FormattedNumber, request } from '@umijs/max';
 import { Card, Col, List, Row, Statistic } from 'antd';
 import { useEffect, useState } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
 
 const HomePage: React.FC = () => {
-  const { name } = useModel('global');
   const [postCount, setPostCount] = useState(0);
   const [fileCount, setFileCount] = useState(0);
   const [postView, setPostView] = useState(0);
   const [posts, setPosts] = useState<any>([]);
+  const [totalStudent, setTotalStudent] = useState<number>(0);
 
   useEffect(() => {
     request('post/get-total').then(response => setPostCount(response));
     request('post/get-view').then(response => setPostView(response));
     request('post/get-list-popular').then(response => setPosts(response));
     request('file/total').then(response => setFileCount(response));
+    request('https://dkxtdev.dhhp.edu.vn/api/student/total').then(response => setTotalStudent(response));
   }, [])
 
   return (
@@ -35,18 +36,18 @@ const HomePage: React.FC = () => {
             </ProCard>
             <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
               <Statistic
-                title="Tệp tin"
-                value={fileCount}
+                title="Tuyển sinh"
+                value={totalStudent}
                 className="p-4"
               />
               <div className="border-t px-4 py-2">
-                Đang chờ: 0
+                Số đơn ĐKXT: {totalStudent}
               </div>
             </ProCard>
             <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
               <Statistic
-                title="Bình luận"
-                value={0}
+                title="Tệp tin"
+                value={fileCount}
                 className="p-4"
               />
               <div className="border-t px-4 py-2">
