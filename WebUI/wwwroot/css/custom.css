@@ -49,6 +49,18 @@ input:focus {
     padding: 0;
 }
 
+.post p {
+    margin: 0.5rem 0;
+}
+
+.post ul {
+    list-style: disc;
+    padding: 0 40px;
+}
+
+.post ul ul {
+    list-style: circle;
+}
 
 .masonry {
     column-count: 1;
