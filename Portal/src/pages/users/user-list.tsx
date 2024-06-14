@@ -33,7 +33,7 @@ const UserList = () => {
                     return;
                 }
                 request(`user/roles/${user.id}`).then(responseRoleInUser => {
-                    response.map((value: any) => {
+                    response.forEach((value: any) => {
                         let isInRole = responseRoleInUser.find((x: any) => x === value.name)
                         if (isInRole) {
                             value.isInRole = true
@@ -108,7 +108,7 @@ const UserList = () => {
             valueType: 'option',
             render: (dom, record: any) => (
                 <Space>
-                    <Link to={`/users/edit/${record.id}`}><Button icon={<EditOutlined />} size="small" type="primary"></Button></Link>
+                    <Link to={`/user/edit/${record.id}`}><Button icon={<EditOutlined />} size="small" type="primary"></Button></Link>
                     <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)} size="small"></Button>
                     <Popconfirm
                         title="Are you sure to delete?"

@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import Card from "antd/lib/card/Card";
 import { request, useIntl } from "@umijs/max";
-import { PageContainer, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { PageContainer, ProFormRadio, ProFormSelect } from "@ant-design/pro-components";
 import { queryMenuOptions } from "@/services/menu";
 import { language } from "@/utils/format";
 
@@ -20,15 +20,12 @@ const MenuSetting = () => {
     const [menus, setMenus] = useState<any>([])
     const [visible, setVisible] = useState(false)
     const [fields, setFields] = useState<any>([]);
-    const [currentType, setCurrentType] = useState<string>('1');
+    const [currentType, setCurrentType] = useState<number>(1);
     const [menu, setMenu] = useState<any>();
     const intl = useIntl();
+    const [linkOption, setLinkOption] = useState<string>('internal');
 
     const [form] = Form.useForm();
-
-    useEffect(() => {
-        fetchData();
-    }, [currentType, menu])
 
     const fetchData = () => {
         request(`menu/list?type=${currentType}&language=${language(intl.locale)}`).then(response => {
@@ -36,8 +33,12 @@ const MenuSetting = () => {
         })
     }
 
+    useEffect(() => {
+        fetchData();
+    }, [currentType, menu])
+
     const filterType = (value: string) => {
-        setCurrentType(value)
+        setCurrentType(Number(value))
     }
 
     function handleAdd() {
@@ -217,7 +218,7 @@ const MenuSetting = () => {
     return (
         <PageContainer>
             <Card title='Menu' extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>}>
-                <Tabs defaultActiveKey="1" items={items} onChange={filterType} type="card" />
+                <Tabs defaultActiveKey={1 as any} items={items} onChange={filterType} type="card" />
                 <Table dataSource={menus} columns={columns} rowKey="id" />
 
                 <Drawer
@@ -253,15 +254,15 @@ const MenuSetting = () => {
                                     options={[
                                         {
                                             label: 'Top Menu',
-                                            value: '1'
+                                            value: 1
                                         },
                                         {
                                             label: 'Menu Menu',
-                                            value: '2'
+                                            value: 2
                                         },
                                         {
                                             label: 'Box Menu',
-                                            value: '3'
+                                            value: 3
                                         }
                                     ]}
                                     label="Loại" name="type" initialValue={currentType} />
@@ -275,14 +276,33 @@ const MenuSetting = () => {
                         <Form.Item label="Mô tả" name="description">
                             <Input.TextArea />
                         </Form.Item>
-
+                        {/* <ProFormRadio.Group
+                            label="Liên kết"
+                            radioType="button"
+                            className="w-full"
+                            fieldProps={{
+                                value: linkOption,
+                                onChange: (e) => setLinkOption(e.target.value),
+                            }}
+                            options={[
+                                {
+                                    label: 'Nội bộ',
+                                    value: 'internal'
+                                },
+                                {
+                                    label: 'Ngoài trang',
+                                    value: 'external'
+                                }
+                            ]}
+                        /> */}
+                        {/* <ProFormSelect name="url" label="Liên kết" hidden={linkOption === 'external'} /> */}
                         <Form.Item label="Liên kết" name="url">
                             <Input />
                         </Form.Item>
 
                         <Row gutter={16}>
                             <Col span={8}>
-                                <Form.Item name="mode" label="Kiểu hiển thị">
+                                <Form.Item name="mode" label="Kiểu hiển thị" initialValue="Flyout">
                                     <Select>
                                         <Option value="Flyout">Flyout</Option>
                                         <Option value="Mega">Mega</Option>

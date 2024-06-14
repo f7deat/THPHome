@@ -83,7 +83,7 @@ const UserEdit = () => {
                             </Form>
                         </div>
                     </TabPane>
-                    <TabPane tab="Password" key="2">
+                    <TabPane tab="Mật khẩu" key="2">
                         <div className="p-4">
                             <ChangePassword />
                         </div>

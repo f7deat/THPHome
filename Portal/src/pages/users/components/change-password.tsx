@@ -22,40 +22,37 @@ export const ChangePassword = () => {
     return (
         <div>
             <Form
-                name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
                 onFinish={onFinish}
                 autoComplete="off"
                 layout="vertical"
             >
 
                 <Form.Item
-                    label="Current password"
+                    label="Mật khẩu cũ"
                     name="currentPassword"
-                    rules={[{ required: true, message: 'Please input your current password!' }]}
-                >
-                    <Input.Password />
-                </Form.Item>
-                 
-                <Form.Item
-                    label="New password"
-                    name="newPassword"
-                    rules={[{ required: true, message: 'Please input your new password!' }]}
+                    rules={[{ required: true }]}
                 >
                     <Input.Password />
                 </Form.Item>
 
                 <Form.Item
-                    label="Confirm password"
+                    label="Mật khẩu mới"
+                    name="newPassword"
+                    rules={[{ required: true }]}
+                >
+                    <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                    label="Nhập lại mật khẩu"
                     name="confirmPassword"
-                    rules={[{ required: true, message: 'Please confirm your password!' }]}
+                    rules={[{ required: true }]}
                 >
                     <Input.Password />
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">Save changes</Button>
+                    <Button type="primary" htmlType="submit">Đổi mật khẩu</Button>
                 </Form.Item>
             </Form>
         </div>

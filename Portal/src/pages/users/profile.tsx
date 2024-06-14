@@ -1,4 +1,4 @@
-﻿import { Col, Empty, Row, Table, Tabs, Typography, Image, Button, Statistic, Avatar, Space } from "antd"
+﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space } from "antd"
 import React, { useEffect, useState } from "react";
 import {
     StarOutlined,
@@ -18,7 +18,6 @@ const Profile = () => {
 
     const [profile, setProfile] = useState<any>()
     const [postCount, setPostCount] = useState<number>(0)
-    const [listPost, setListPost] = useState<any>([])
     const [commentCount, setCommentCount] = useState<number>(0)
 
     useEffect(() => {
@@ -45,7 +44,7 @@ const Profile = () => {
     ]
 
     return (
-        <PageContainer extra={<Link to={`/users/edit/${profile?.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
+        <PageContainer extra={<Link to={`/user/edit/${profile?.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
             <Row gutter={16}>
                 <Col md={6}>
                     <ProCard className="mb-4">
@@ -103,7 +102,7 @@ const Profile = () => {
                             <div className="px-4">
                                 <Tabs defaultActiveKey="1">
                                     <TabPane tab="Bài viết" key="1">
-                                        <Table dataSource={listPost} rowKey="id" columns={columns} pagination={{ pageSize: 5 }} />
+                                        <Table rowKey="id" columns={columns} pagination={{ pageSize: 5 }} />
                                     </TabPane>
                                     <TabPane tab="Comment" key="2">
                                         <Empty />
