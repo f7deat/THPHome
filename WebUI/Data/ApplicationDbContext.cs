@@ -39,4 +39,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Photo> Photos { get; set; }
     public virtual DbSet<QaGroup> QaGroups { get; set; }
     public virtual DbSet<QaItem> QaItems { get; set; }
+    public virtual DbSet<ApplicationSetting> ApplicationSettings { get; set; }
 }

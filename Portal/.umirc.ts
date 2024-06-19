@@ -180,6 +180,11 @@ export default defineConfig({
           component: './settings/general',
         },
         {
+          name: 'application',
+          path: '/settings/application',
+          component: './settings/app'
+        },
+        {
           name: 'Menu',
           path: '/settings/menus',
           component: './settings/menus',

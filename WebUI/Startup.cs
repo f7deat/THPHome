@@ -19,6 +19,8 @@ using System.Text;
 using WebUI.Options;
 using WebUI.Interfaces.IService;
 using WebUI.Services;
+using WebUI.Interfaces.IRepository;
+using WebUI.Repositories;
 
 namespace WebUI;
 
@@ -57,6 +59,8 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IBlockService, BlockService>();
         services.AddScoped<IGalleryService, GalleryService>();
         services.AddScoped<ILocalizeService, LocalizeService>();
+        services.AddScoped<ISettingRepository, SettingRepository>();
+        services.AddScoped<ISettingService, SettingService>();
 
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
@@ -77,7 +81,7 @@ public class Startup(IConfiguration configuration)
         options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new TokenValidationParameters()
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"] ?? string.Empty)),
             ValidateIssuer = false,
             ValidateAudience = false
         };

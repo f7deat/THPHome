@@ -68,6 +68,7 @@ export default {
     'menu.component.wordPressLister': 'WordPress Lister',
     'menu.setting.language': 'Ngôn ngữ',
     'menu.setting.roles': 'Quyền',
+    'menu.setting.application': 'Ứng dụng',
     'menu.help.logs': 'Lịch sử',
     'menu.users': 'Người dùng',
     'menu.users.profile': 'Hồ sơ',

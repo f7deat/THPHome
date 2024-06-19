@@ -23,6 +23,7 @@ using Infrastructure;
 using WebUI.Extensions;
 using WebUI.Models.Filters.Users;
 using WebUI.Models.ViewModel;
+using WebUI.Foundations;
 
 namespace WebUI.Api;
 

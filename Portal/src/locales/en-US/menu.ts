@@ -66,6 +66,7 @@ export default {
     'menu.settings.localization': 'Localization',
     'menu.setting.language': 'Language',
     'menu.setting.roles': 'Roles',
+    'menu.setting.application': 'Application',
     'menu.users': 'Users',
     'menu.users.list': 'Users List',
     'menu.users.profile': 'Profile',

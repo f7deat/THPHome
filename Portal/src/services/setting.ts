@@ -16,3 +16,10 @@ export const apiLogo = (locale: string) => request(`banner/logo`, {
         locale
     }
 });
+
+export const apiSettingList = () => request(`setting/list`);
+
+export const apiSaveZalo = (data: any) => request(`setting/zalo`, {
+    method: 'POST',
+    data
+});
