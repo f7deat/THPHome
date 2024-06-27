@@ -23,3 +23,5 @@ export const apiSaveZalo = (data: any) => request(`setting/zalo`, {
     method: 'POST',
     data
 });
+
+export const apiGetZalo = () => request(`setting/zalo`);

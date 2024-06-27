@@ -13,6 +13,8 @@ using WebUI.Extensions;
 using WebUI.Models.Api.Admin;
 using WebUI.Interfaces.IService;
 using WebUI.Foundations;
+using WebUI.ExternalAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebUI.Controllers;
 
@@ -26,8 +28,9 @@ public class PostController : BaseController
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IAttachmentService _attachmentService;
     private readonly ITelegramService _telegramService;
+    private readonly IZaloAPI _zaloAPI;
 
-    public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, ITelegramService telegramService) : base(context)
+    public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, ITelegramService telegramService, IZaloAPI zaloAPI) : base(context)
     {
         _postService = postService;
         _postCategoryService = postCategoryService;
@@ -36,6 +39,7 @@ public class PostController : BaseController
         _roleManager = roleManager;
         _attachmentService = attachmentService;
         _telegramService = telegramService;
+        _zaloAPI = zaloAPI;
     }
 
     [Route("post/tag")]
@@ -286,6 +290,15 @@ public class PostController : BaseController
         page.ModifiedBy = User.GetId();
         _context.Posts.Update(page);
         await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpPost("zalo/share/{id}"), AllowAnonymous]
+    public async Task<IActionResult> CreateZaloArticeAsync([FromRoute] long id)
+    {
+        var post = await _context.Posts.FindAsync(id);
+        if (post is null) return BadRequest("Data not found!");
+        await _zaloAPI.CreateArticle(post);
         return Ok();
     }
 }

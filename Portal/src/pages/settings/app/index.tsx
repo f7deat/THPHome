@@ -1,13 +1,31 @@
-import { apiSaveZalo, apiSettingList } from "@/services/setting";
+import { apiGetZalo, apiSaveZalo, apiSettingList } from "@/services/setting";
 import { SettingOutlined } from "@ant-design/icons";
-import { ModalForm, PageContainer, ProCard, ProFormText } from "@ant-design/pro-components"
-import { Button, message } from "antd";
-import { useEffect, useState } from "react";
+import { ModalForm, PageContainer, ProCard, ProFormDateTimePicker, ProFormInstance, ProFormText } from "@ant-design/pro-components"
+import { Alert, Button, Col, Row, message } from "antd";
+import dayjs from "dayjs";
+import { useEffect, useRef, useState } from "react";
 
 const AppPage: React.FC = () => {
 
     const [data, setData] = useState<any[]>([]);
     const [open, setOpen] = useState<boolean>(false);
+    const formRef = useRef<ProFormInstance>();
+
+    useEffect(() => {
+        if (!open) return;
+        apiGetZalo().then(response => {
+            formRef.current?.setFields([
+                {
+                    name: 'refreshToken',
+                    value: response.refreshToken
+                },
+                {
+                    name: 'expiredDate',
+                    value: dayjs(response.expiredDate)
+                }
+            ])
+        })
+    }, [open]);
 
     useEffect(() => {
         apiSettingList().then((response: any) => {
@@ -37,17 +55,20 @@ const AppPage: React.FC = () => {
                     ))
                 }
             </div>
-            <ModalForm open={open} onOpenChange={setOpen} title="Cài đặt" onFinish={onFinish}>
-                <ProFormText.Password name="accessToken" label="Access Token" rules={[
-                    {
-                        required: true
-                    }
-                ]} />
-                <ProFormText.Password name="refreshToken" label="Refresh Token" rules={[
-                    {
-                        required: true
-                    }
-                ]} />
+            <ModalForm open={open} onOpenChange={setOpen} title="Cài đặt" onFinish={onFinish} formRef={formRef}>
+                <Alert type="warning" message="Mỗi 3 tháng cần vào https://developers.zalo.me/tools/explorer lấy refresh token một lần." className="mb-4" showIcon />
+                <Row gutter={16}>
+                    <Col span={18}>
+                        <ProFormText.Password name="refreshToken" label="Refresh Token" rules={[
+                            {
+                                required: true
+                            }
+                        ]} />
+                    </Col>
+                    <Col span={6}>
+                        <ProFormDateTimePicker name="expiredDate" disabled label="Ngày hết hạn" sho />
+                    </Col>
+                </Row>
             </ModalForm>
         </PageContainer>
     )

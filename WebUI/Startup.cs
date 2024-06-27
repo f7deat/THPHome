@@ -21,6 +21,8 @@ using WebUI.Interfaces.IService;
 using WebUI.Services;
 using WebUI.Interfaces.IRepository;
 using WebUI.Repositories;
+using WebUI.ExternalAPI.Interfaces;
+using WebUI.ExternalAPI;
 
 namespace WebUI;
 
@@ -65,6 +67,7 @@ public class Startup(IConfiguration configuration)
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
         services.AddTransient<ITelegramService, TelegramService>();
+        services.AddTransient<IZaloAPI, ZaloAPI>();
 
         services.AddControllersWithViews();
         services.Configure<SettingOptions>(Configuration.GetSection(SettingOptions.Settings));
