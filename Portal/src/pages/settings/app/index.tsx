@@ -66,7 +66,7 @@ const AppPage: React.FC = () => {
                         ]} />
                     </Col>
                     <Col span={6}>
-                        <ProFormDateTimePicker name="expiredDate" disabled label="Ngày hết hạn" sho />
+                        <ProFormDateTimePicker name="expiredDate" disabled label="Ngày hết hạn" />
                     </Col>
                 </Row>
             </ModalForm>
