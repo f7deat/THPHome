@@ -296,9 +296,18 @@ public class PostController : BaseController
     [HttpPost("zalo/share/{id}"), AllowAnonymous]
     public async Task<IActionResult> CreateZaloArticeAsync([FromRoute] long id)
     {
-        var post = await _context.Posts.FindAsync(id);
-        if (post is null) return BadRequest("Data not found!");
-        await _zaloAPI.CreateArticle(post);
-        return Ok();
+        try
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post is null || string.IsNullOrEmpty(post.Title)) return BadRequest("Data not found!");
+            if (post.Title.Length > 150) return BadRequest("Tiêu đề bài viết không được vượt quá 150 ký tự");
+            var response = await _zaloAPI.CreateArticle(post);
+            if (string.IsNullOrEmpty(response)) return Ok();
+            return BadRequest(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 }

@@ -2,12 +2,10 @@
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Web;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
 using WebUI.Models.Settings;
-using ZaloDotNetSDK;
-using ZaloDotNetSDK.entities;
-
 namespace WebUI.ExternalAPI;
 
 public class ZaloAPI : IZaloAPI
@@ -38,9 +36,9 @@ public class ZaloAPI : IZaloAPI
         var content = new FormUrlEncodedContent(
         [
             new KeyValuePair<string, string>("refresh_token", zalo.RefreshToken),
-                new KeyValuePair<string, string>("app_id", app_id),
-                new KeyValuePair<string, string>("grant_type", "refresh_token"),
-            ]);
+            new KeyValuePair<string, string>("app_id", app_id),
+            new KeyValuePair<string, string>("grant_type", "refresh_token"),
+        ]);
 
         var response = await _client.PostAsync("https://oauth.zaloapp.com/v4/oa/access_token", content);
         if (!response.IsSuccessStatusCode) return string.Empty;
@@ -57,31 +55,55 @@ public class ZaloAPI : IZaloAPI
         return data.AccessToken;
     }
 
-    public async Task CreateArticle(Post post)
+    public async Task<string> CreateArticle(Post post)
     {
         try
         {
             var author = await _context.Users.FindAsync(post.CreatedBy);
             var accessToken = await GetAccessTokenAsync();
-            if (string.IsNullOrEmpty(accessToken)) return;
+            if (string.IsNullOrEmpty(accessToken)) return "Không lấy được access token";
+            if (string.IsNullOrEmpty(post.Thumbnail)) return "Cover không hợp lệ";
+            if (string.IsNullOrEmpty(post.Description)) return "Mô tả không được để trống";
+            if (string.IsNullOrEmpty(post.Content)) return "Nội dung không được để trống";
+            var imageName = post.Thumbnail.Split('/').Last();
+            var photo_url = post.Thumbnail.Replace(imageName, Uri.EscapeDataString(imageName));
 
-            var client = new ZaloClient(accessToken);
-            var response = client.createArticle(new Article
+            _client.DefaultRequestHeaders.Add("access_token", accessToken);
+
+            var api = "https://openapi.zalo.me/v2.0/article/create";
+
+            var content = new
             {
-                Title = post.Title,
-                Status = ArticleStatus.HIDE,
-                Description = post.Description,
-                Cover = new CoverPhoto(post.Thumbnail, ArticleStatus.SHOW),
-                Author = author?.Name ?? author?.UserName,
-                Body =
-                [
-                    new ParagraphText(post.Content)
-                ]
-            });
+                type = "normal",
+                title = post.Title,
+                author = author?.Name,
+                description = post.Description,
+                status = "hide",
+                body = new[]
+                {
+                    new
+                    {
+                        type = "text",
+                        content = post.Content
+                    }
+                },
+                cover = new
+                {
+                    cover_type = "photo",
+                    photo_url,
+                    status = "show"
+                }
+            };
+
+            var response = await _client.PostAsJsonAsync(api, content);
+            var result = JsonConvert.DeserializeObject<ZaloArticleResponse>(await response.Content.ReadAsStringAsync());
+            if (result is null) return "Chia sẻ thất bại";
+            if (result.Error != 0) return result.Message ?? string.Empty;
+            return string.Empty;
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            return ex.ToString();
         }
     }
 }

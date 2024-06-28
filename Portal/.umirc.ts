@@ -41,15 +41,29 @@ export default defineConfig({
       path: '/post',
       routes: [
         {
-          name: 'Bài viết',
-          path: '/post/list',
-          component: './posts/post-list',
+          name: 'Entry',
+          path: '/post/entry',
+          component: './posts/entry',
         },
         {
-          name: 'Viết bài',
+          name: 'Bài viết',
+          path: '/post/article',
+          component: './posts/article',
+        },
+        {
+          name: 'Thông báo',
+          path: '/post/notification',
+          component: './posts/notification',
+        },
+        {
+          name: 'Trang',
+          path: '/post/page',
+          component: './posts/pages/list',
+        },
+        {
+          name: 'Bài viết mới',
           path: '/post/setting',
-          component: './posts/post-setting',
-          hideInMenu: true,
+          component: './posts/post-setting'
         },
         {
           name: 'Chỉnh sửa',
@@ -62,11 +76,6 @@ export default defineConfig({
           path: '/post/page/:id',
           component: './posts/pages',
           hideInMenu: true,
-        },
-        {
-          name: 'Slide',
-          path: '/post/banners',
-          component: './banners/banner-list',
         },
         {
           name: 'Câu hỏi thường gặp',
@@ -193,6 +202,11 @@ export default defineConfig({
           name: 'language',
           path: '/settings/localizations',
           component: './settings/localizations',
+        },
+        {
+          name: 'Slide',
+          path: '/settings/banners',
+          component: './banners/banner-list',
         },
         {
           name: 'roles',

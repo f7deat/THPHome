@@ -1,13 +1,14 @@
-﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Space, Upload, UploadProps, Image, Empty } from 'antd'
+﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Upload, UploadProps, Image, Empty } from 'antd'
 import {
     UploadOutlined,
-    InboxOutlined
+    InboxOutlined,
+    SaveOutlined
 } from "@ant-design/icons";
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ListPostType, PostType } from '../../enum/post-enum'
 import IPost from './interfaces/post-model'
 import MyEditor from '../../components/my-editor';
-import { useParams, history, useIntl, getLocale } from '@umijs/max';
+import { useParams, useIntl, getLocale } from '@umijs/max';
 import { request } from '@umijs/max';
 import dayjs from 'dayjs'
 import { PageContainer } from '@ant-design/pro-components';
@@ -97,7 +98,7 @@ const PostSetting = () => {
             }
         }).then(response => {
             if (response.succeeded) {
-                history.push(`/post/list?type=${post.type}&language=${language(intl.locale)}`);
+                message.success('Lưu thành công!');
             } else {
                 message.error('ERROR');
             }
@@ -120,7 +121,7 @@ const PostSetting = () => {
             }
         }).then(response => {
             if (response.succeeded) {
-                history.push(`/post/list?type=${post.type}&language=${language(intl.locale)}`)
+                message.success('Lưu thành công!');
             } else {
                 message.error('ERROR');
             }
@@ -202,10 +203,7 @@ const PostSetting = () => {
                             <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
 
                             <MyEditor name="content" label="Nội dung" initialValue={post?.content} />
-                            <Space>
-                                <Button type="primary" htmlType="submit" loading={loading}>Lưu lại</Button>
-                                <Button onClick={() => history.push('/admin/post/list')}>Hủy</Button>
-                            </Space>
+                            <Button type="primary" htmlType="submit" loading={loading} icon={<SaveOutlined />}>Lưu lại</Button>
                         </Col>
                         <Col span={6}>
                             <Row gutter={16}>
@@ -292,7 +290,7 @@ const PostSetting = () => {
 
                             <div className="mb-1">Ngày xuất bản</div>
                             <div className="mb-2">
-                                <DatePicker onChange={(date) => setPost({ ...post, modifiedDate: date?.toDate() })} value={dayjs(post?.modifiedDate)} />
+                                <DatePicker onChange={(date) => setPost({ ...post, modifiedDate: date?.toDate() })} value={dayjs(post?.modifiedDate)} className='w-full' />
                             </div>
 
                             <div className="mb-1">Tệp tin đính kèm</div>

@@ -1,4 +1,4 @@
-﻿import { Button, Dropdown, message, Popconfirm, Tabs, Tag } from "antd";
+﻿import { Button, Dropdown, message, Popconfirm, Spin, Tag } from "antd";
 import { useRef, useState } from "react";
 import {
     EditOutlined,
@@ -6,26 +6,29 @@ import {
     PlusOutlined,
     ToolOutlined,
     CopyOutlined,
-    TranslationOutlined
+    TranslationOutlined,
+    MoreOutlined,
+    SendOutlined
 } from '@ant-design/icons';
 import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
 import { history, Link, request, useIntl } from "@umijs/max";
 import { language } from "@/utils/format";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
-import { queryPosts } from "@/services/post";
+import { apiShareZaloOA, queryPosts } from "@/services/post";
 import CopyPost from "./components/copy";
 import { FormattedMessage } from "@umijs/max";
+import { PostType } from "@/enum/post-enum";
 
-const { TabPane } = Tabs;
+const PostList: React.FC<{
+    type: PostType
+}> = ({ type }) => {
 
-const PostList = () => {
-
-    const [activeKey, setActiveKey] = useState<string>('1');
     const actionRef = useRef<ActionType>();
     const intl = useIntl();
     const [openCopy, setOpenCopy] = useState<boolean>(false);
     const [post, setPost] = useState<any>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     function remove(id: number) {
         request(`post/remove/${id}`, {
@@ -38,11 +41,6 @@ const PostList = () => {
                 message.error('error!');
             }
         })
-    }
-
-    const onTabChange = (activeKey: string) => {
-        setActiveKey(activeKey);
-        actionRef.current?.reload();
     }
 
     function setActive(id: number) {
@@ -58,11 +56,25 @@ const PostList = () => {
         })
     }
 
+    const onMoreClick = (info: any, entity: any) => {
+        if (info.key === 'copy') {
+            setPost(entity);
+            setOpenCopy(true);
+        }
+        if (info.key === 'zalo') {
+            apiShareZaloOA(entity.id).then(() => {
+                setLoading(false);
+                message.success('Chia sẻ thành công!');
+            });
+        }
+    }
+
     const columns: ProColumnType<IPost>[] = [
         {
             title: 'STT',
             valueType: 'indexBorder',
-            width: 50
+            width: 40,
+            align: 'center'
         },
         {
             title: 'Tiêu đề',
@@ -113,86 +125,68 @@ const PostList = () => {
             title: 'Tác vụ',
             render: (dom, record: IPost) => [
                 <Tooltip key="build" title="Page Builder">
-                    <Button size="small" icon={<ToolOutlined />} hidden={activeKey !== '1' && activeKey !== '0'} onClick={() => {
+                    <Button size="small" icon={<ToolOutlined />} hidden={type !== PostType.DEFAULT && type !== PostType.PAGE} onClick={() => {
                         history.push(`/post/page/${record.id}`);
                     }} />
                 </Tooltip>,
-                <Tooltip key="copy" title="Nhân bản">
-                    <Button icon={<CopyOutlined />} size="small" type="dashed" hidden={activeKey === '0'} onClick={() => {
-                        setPost(record);
-                        setOpenCopy(true);
-                    }} />
-                </Tooltip>,
-                <Tooltip key="translate" title="Dịch">
-                    <Dropdown menu={{
-                        items: [
-                            {
-                                key: 'vi',
-                                label: 'Tiếng Việt',
-                                disabled: intl.locale === 'vi-VN'
-                            },
-                            {
-                                key: 'en',
-                                label: 'Tiếng Anh',
-                                disabled: intl.locale === 'en-US'
-                            }
-                        ]
-                    }}>
-
-                        <Button icon={<TranslationOutlined />} size="small" type="primary" />
-                    </Dropdown>
-                </Tooltip>,
-                <Link key="edit" to={`/post/setting/${record.id}`}  hidden={activeKey === '0'}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>,
+                <Link key="edit" to={`/post/setting/${record.id}`} hidden={type === PostType.DEFAULT}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>,
                 <Popconfirm
                     key="delete"
-                    title="Are you sure to delete?"
+                    title="Bạn có chắc chắn muốn xóa?"
                     onConfirm={() => remove(record.id || 0)}
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={activeKey === '0'}></Button>
-                </Popconfirm>
+                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={type === PostType.DEFAULT}></Button>
+                </Popconfirm>,
+                <Dropdown
+                    key="more" menu={{
+                        items: [
+                            {
+                                label: 'Chia sẻ lên Zalo OA',
+                                key: 'zalo',
+                                icon: <SendOutlined />
+                            },
+                            {
+                                label: 'Nhân bản',
+                                key: 'copy',
+                                icon: <CopyOutlined />
+                            },
+                            {
+                                label: 'Dịch sang ngôn ngữ khác',
+                                key: 'translate',
+                                icon: <TranslationOutlined />
+                            }
+                        ],
+                        onClick: (info) => onMoreClick(info, record)
+                    }}>
+                    <Button size="small" icon={<MoreOutlined />} />
+                </Dropdown>
             ],
             valueType: 'option',
-            width: 120,
-            align: 'justify'
+            width: 100,
+            align: 'center'
         }
     ];
 
-    const TabData = (key: string) => (
-        <ProTable
-            actionRef={actionRef}
-            request={(params) => queryPosts({
-                ...params,
-                type: key,
-                language: language(intl.locale),
-                pageIndex: params.current
-            })}
-            search={{
-                layout: 'vertical'
-            }}
-            columns={columns}
-            rowKey="id"
-        />
-    )
-
     return (
         <PageContainer extra={<Link to="/post/setting"><Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button></Link>}>
-            <Tabs defaultActiveKey={activeKey} onChange={onTabChange} activeKey={activeKey} type="card">
-                <TabPane tab="Entry" key="0">
-                    {TabData("0")}
-                </TabPane>
-                <TabPane tab="Trang" key="1">
-                    {TabData("1")}
-                </TabPane>
-                <TabPane tab="Tin tức" key="2">
-                    {TabData("2")}
-                </TabPane>
-                <TabPane tab="Thông báo" key="3">
-                    {TabData("3")}
-                </TabPane>
-            </Tabs>
+            <ProTable
+                actionRef={actionRef}
+                request={(params) => queryPosts({
+                    ...params,
+                    type: type,
+                    language: language(intl.locale),
+                    pageIndex: params.current
+                })}
+                search={{
+                    layout: 'vertical'
+                }}
+                columns={columns}
+                rowKey="id"
+            />
             <CopyPost open={openCopy} onOpenChange={setOpenCopy} data={post} actionRef={actionRef} setOpen={setOpenCopy} />
+            <Spin spinning={loading} fullscreen />
         </PageContainer>
     )
 }

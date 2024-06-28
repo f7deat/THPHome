@@ -114,8 +114,10 @@ export const request: RequestConfig = {
     },
   ],
   errorConfig: {
-    errorHandler: error => {
-      message.error(error.message)
+    errorHandler: (error: any) => {
+      if (error.response.data) {
+        message.error(error.response.data)
+      }
     }
   },
 };

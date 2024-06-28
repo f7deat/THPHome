@@ -28,7 +28,6 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
-		<PackageReference Include="vng.zalo.ZaloDotNetSDK" Version="2.1.2" />
 	</ItemGroup>
 
 </Project>
