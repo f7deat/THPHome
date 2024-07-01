@@ -1,41 +1,38 @@
-﻿import { Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Upload, UploadProps, Image, Empty } from 'antd'
+﻿import { Button, Col, Form, Input, message, Row, Upload, UploadProps, Image, Empty } from 'antd'
 import {
     UploadOutlined,
     InboxOutlined,
-    SaveOutlined
+    LeftOutlined
 } from "@ant-design/icons";
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ListPostType, PostType } from '../../enum/post-enum'
 import IPost from './interfaces/post-model'
 import MyEditor from '../../components/my-editor';
-import { useParams, useIntl, getLocale } from '@umijs/max';
+import { useParams, useIntl, getLocale, history } from '@umijs/max';
 import { request } from '@umijs/max';
-import dayjs from 'dayjs'
-import { PageContainer } from '@ant-design/pro-components';
+import { PageContainer, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProFormTreeSelect } from '@ant-design/pro-components';
 import { language } from '@/utils/format';
+import { apiCategoryTreeData } from '@/services/categoy';
 
 const { Dragger } = Upload;
 
 const PostSetting = () => {
 
-    const { Option } = Select;
-    const [form] = Form.useForm();
+    const form = useRef<ProFormInstance>();
 
     const { id } = useParams<any>();
 
     const [post, setPost] = useState<IPost>({})
-    const [listCategory, setListCategory] = useState<any>()
-    const [listCategoryId, setListCategoryId] = useState<any>([])
     const [defaultFileList, setDefaultFileList] = useState<any>([])
-    const [loading, setLoading] = useState<boolean>();
     const [previewImage, setPreviewImage] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
     const intl = useIntl();
 
     const initCallback = useCallback(() => {
         if (id) {
             request(`post/get/${id}`).then(response => {
                 setPost(response);
-                form.setFields([
+                form.current?.setFields([
                     {
                         name: 'content',
                         value: response.content
@@ -53,14 +50,18 @@ const PostSetting = () => {
                         value: response.thumbnail
                     },
                     {
-                        name: 'language',
-                        value: response.language
+                        name: 'modifiedDate',
+                        value: response.modifiedDate
+                    },
+                    {
+                        name: 'description',
+                        value: response.description
                     }
                 ])
                 setPreviewImage(response.thumbnail);
             })
             request(`post/get-list-category-id-in-post/${id}`).then(response => {
-                setListCategoryId(response)
+                form.current?.setFieldValue('categories', response);
             })
             request(`post/attachment-list-in-post/${id}`).then(response => {
                 let mapData = response.map(function (x: any) {
@@ -77,13 +78,10 @@ const PostSetting = () => {
     }, [id])
 
     useEffect(() => {
-        initCallback()
-        request(`category/get-list?language=${language(intl.locale)}`).then(response => {
-            setListCategory(response);
-        })
-    }, [initCallback])
+        initCallback();
+    }, []);
 
-    const handleAdd = () => {
+    const handleAdd = (values: any) => {
         let attachments = defaultFileList.map(function (x: any) {
             return {
                 id: x.uid
@@ -93,7 +91,7 @@ const PostSetting = () => {
             method: 'POST',
             data: {
                 post,
-                listCategoryId,
+                listCategoryId: values.categories,
                 attachments
             }
         }).then(response => {
@@ -106,7 +104,7 @@ const PostSetting = () => {
         })
     }
 
-    const handleEdit = () => {
+    const handleEdit = (values: any) => {
         let attachments = defaultFileList.map(function (x: any) {
             return {
                 id: x.uid
@@ -116,7 +114,7 @@ const PostSetting = () => {
             method: 'POST',
             data: {
                 post,
-                listCategoryId,
+                listCategoryId: values.categories,
                 attachments
             }
         }).then(response => {
@@ -127,10 +125,6 @@ const PostSetting = () => {
             }
             setLoading(false);
         })
-    }
-
-    function handleChangeCategory(value: number[]) {
-        setListCategoryId(value)
     }
 
     const handleRemoveFile = (file: any) => {
@@ -177,18 +171,20 @@ const PostSetting = () => {
         post.title = values.title;
         post.thumbnail = values.thumbnail;
         post.language = language(intl.locale);
+        post.description = values.description;
+        post.modifiedDate = values.modifiedDate;
         setLoading(true);
         if (id) {
-            handleEdit()
+            handleEdit(values);
         } else {
-            handleAdd()
+            handleAdd(values);
         }
     }
 
     return (
-        <PageContainer>
-            <Card>
-                <Form onFinish={onFinish} layout="vertical" form={form}>
+        <PageContainer extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
+            <ProCard>
+                <ProForm onFinish={onFinish} layout="vertical" formRef={form} loading={loading}>
                     <Row gutter={16}>
                         <Col span={18}>
                             <Form.Item name="title" label="Tiêu đề" rules={[
@@ -199,80 +195,83 @@ const PostSetting = () => {
                             ]}>
                                 <Input />
                             </Form.Item>
-                            <div className="mb-1">Mô tả</div>
-                            <Input.TextArea value={post.description} onChange={(e: any) => setPost({ ...post, description: e.target.value })} className="mb-2" />
+                            <ProFormTextArea label="Mô tả" name="description" rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập mô tả bài viết'
+                                },
+                                {
+                                    max: 150,
+                                    message: 'Mô tả tối đa 150 ký tự'
+                                }
+                            ]} />
 
-                            <MyEditor name="content" label="Nội dung" initialValue={post?.content} />
-                            <Button type="primary" htmlType="submit" loading={loading} icon={<SaveOutlined />}>Lưu lại</Button>
+                            <MyEditor name="content" label="Nội dung" initialValue={post?.content} rules={[{
+                                required: true,
+                                message: 'Vui lòng nhập nội dung bài viết'
+                            }]} />
                         </Col>
                         <Col span={6}>
                             <Row gutter={16}>
                                 <Col span={12}>
-                                    <Form.Item label="Loại" name="type" initialValue={PostType.NEWS} rules={[
+                                    <ProFormSelect allowClear={false} label="Loại" name="type" initialValue={PostType.NEWS} rules={[
                                         {
                                             required: true,
                                             message: 'Vui lòng chọn loại bài viết'
                                         }
-                                    ]}>
-                                        <Select options={ListPostType} />
-                                    </Form.Item>
+                                    ]} options={ListPostType} />
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item label="Ngôn ngữ" tooltip="Chuyển ngôn ngữ trên thanh công cụ">
-                                        <Input disabled value={getLocale()} />
-                                    </Form.Item>
+                                    <ProFormText label="Ngôn ngữ" tooltip="Chuyển ngôn ngữ trên thanh công cụ" initialValue={getLocale()} name="language" disabled />
                                 </Col>
                             </Row>
 
-                            <div className="mb-1">Danh mục</div>
-                            <Select
-                                mode="multiple"
-                                allowClear
-                                style={{ width: '100%' }}
-                                placeholder="Vui lòng chọn"
-                                onChange={handleChangeCategory} className="mb-2"
-                                value={listCategoryId} optionFilterProp="children" filterOption={(input, option: any) =>
-                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                }
-                            >
+                            <ProFormTreeSelect label="Danh mục" name="categories"
+                                request={(params) => apiCategoryTreeData({
+                                    ...params,
+                                    language: language(intl.locale)
+                                })}
+                                fieldProps={{
+                                    showSearch: true,
+                                    filterTreeNode: (input, treeNode: any) =>
+                                        (treeNode.label as string)?.toLowerCase().includes(input.toLowerCase()),
+                                    multiple: true
+                                    
+                                }}
+                            />
+
+                            <ProFormText label="Ảnh đại diện" name='thumbnail' rules={[
                                 {
-                                    listCategory?.map((category: any) => (
-                                        <Option key={category.id} value={category.id}>{category.name}</Option>
-                                    ))
+                                    required: true,
+                                    message: 'Vui lòng chọn ảnh đại diện'
                                 }
-                            </Select>
+                            ]} fieldProps={{
+                                suffix: <Upload beforeUpload={(file) => {
+                                    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                                    if (!isJPG) {
+                                        message.error('You can only upload JPG or PNG file!');
+                                        return false;
+                                    } else {
+                                        const formData = new FormData();
+                                        formData.append('file', file);
+                                        request('file/image/upload', {
+                                            method: 'POST',
+                                            data: formData
+                                        }).then(response => {
+                                            if (!response.succeeded) {
+                                                message.error(response.message);
+                                                return false;
+                                            }
+                                            form.current?.setFieldValue('thumbnail', response.url);
+                                            setPreviewImage(response.url)
+                                        })
+                                        return false;
+                                    }
+                                }} maxCount={1} showUploadList={false}>
+                                    <Button icon={<UploadOutlined />} size='small' type='dashed'>Tải lên</Button>
+                                </Upload>
+                            }} />
 
-                            <div className='flex gap-2'>
-                                <Form.Item label="Ảnh đại diện" name='thumbnail' style={{
-                                    width: '100%'
-                                }}>
-                                    <Input suffix={<Upload beforeUpload={(file) => {
-                                        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-                                        if (!isJPG) {
-                                            message.error('You can only upload JPG or PNG file!');
-                                            return false;
-                                        } else {
-                                            const formData = new FormData();
-                                            formData.append('file', file);
-                                            request('file/image/upload', {
-                                                method: 'POST',
-                                                data: formData
-                                            }).then(response => {
-                                                if (!response.succeeded) {
-                                                    message.error(response.message);
-                                                    return false;
-                                                }
-                                                form.setFieldValue('thumbnail', response.url);
-                                                setPreviewImage(response.url)
-                                            })
-                                            return false;
-                                        }
-                                    }} maxCount={1} showUploadList={false}>
-                                        <Button icon={<UploadOutlined />} size='small'>Tải lên</Button>
-                                    </Upload>} />
-                                </Form.Item>
-
-                            </div>
                             <div className='mb-4'>
                                 {
                                     previewImage ? (
@@ -287,11 +286,7 @@ const PostSetting = () => {
                                     )
                                 }
                             </div>
-
-                            <div className="mb-1">Ngày xuất bản</div>
-                            <div className="mb-2">
-                                <DatePicker onChange={(date) => setPost({ ...post, modifiedDate: date?.toDate() })} value={dayjs(post?.modifiedDate)} className='w-full' />
-                            </div>
+                            <ProFormDatePicker name="modifiedDate" label="Ngày xuất bản" width="xl" />
 
                             <div className="mb-1">Tệp tin đính kèm</div>
                             <div className="mb-2">
@@ -305,8 +300,8 @@ const PostSetting = () => {
                             </div>
                         </Col>
                     </Row>
-                </Form>
-            </Card>
+                </ProForm>
+            </ProCard>
         </PageContainer>
     )
 }

@@ -101,11 +101,7 @@ public class PostController : BaseController
                 await _postCategoryService.AddAsync(post.ListCategoryId, data.Id);
                 await _attachmentService.MapAsync(post.Attachments, data.Id);
             }
-            if (_webHostEnvironment.IsProduction())
-            {
-                await _telegramService.SendMessageAsync($"{user.UserName} added: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
-            }
-            return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
+            return CreatedAtAction(nameof(AddAsync), IdentityResult.Success);
         }
         catch (Exception ex)
         {

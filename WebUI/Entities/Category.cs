@@ -16,19 +16,17 @@ namespace ApplicationCore.Entities
         public string? Description { get; set; }
         [StringLength(300)]
         public string? Thumbnail { get; set; }
-        public int? Status { get; set; }
+        public CategoryStatus? Status { get; set; }
         public int Index { get; set; }
         public bool IsDisplayOnHome { get; set; }
         public string? Icon { get; set; }
         public Language Language { get; set; }
 
     }
-    public enum CategoryType
+
+    public enum CategoryStatus
     {
-        Post = 0,
-        Product = 1,
-        Video = 2,
-        Image = 3,
-        Trip = 4
+        Draft = 0,
+        Active = 1
     }
 }

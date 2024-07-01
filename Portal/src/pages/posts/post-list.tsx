@@ -109,9 +109,9 @@ const PostList: React.FC<{
             width: 100
         },
         {
-            title: 'Cập nhật lúc',
+            title: 'Ngày xuất bản',
             dataIndex: 'modifiedDate',
-            valueType: 'fromNow',
+            valueType: 'date',
             width: 140,
             search: false
         },
