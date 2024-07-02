@@ -1,15 +1,18 @@
 ﻿using ApplicationCore.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using WebUI.Entities;
+using WebUI.Foundations.Interfaces;
 
 namespace Infrastructure;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    private readonly ICurrentUser _currentUser;
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser currentUser) : base(options)
     {
-
+        _currentUser = currentUser;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -40,4 +43,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<QaGroup> QaGroups { get; set; }
     public virtual DbSet<QaItem> QaItems { get; set; }
     public virtual DbSet<ApplicationSetting> ApplicationSettings { get; set; }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var entries = ChangeTracker.Entries().Where(e => e.Entity is IBaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                ((IBaseEntity)entry.Entity).CreatedDate = DateTime.Now;
+                ((IBaseEntity)entry.Entity).CreatedBy = _currentUser.GetId();
+            }
+            if (entry.State == EntityState.Modified)
+            {
+                ((IBaseEntity)entry.Entity).ModifiedDate = DateTime.Now;
+                ((IBaseEntity)entry.Entity).ModifiedBy = _currentUser.GetId();
+            }
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
+    }
 }

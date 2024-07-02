@@ -22,14 +22,21 @@ public class SettingController : BaseController
     [HttpPost("zalo")]
     public async Task<IActionResult> ZaloSaveAsync([FromBody] ZaloSetting args)
     {
-        var zalo = await _context.ApplicationSettings.FirstOrDefaultAsync(x => x.Key == "ZALO");
-        if (zalo is null) return BadRequest("Zalo setting not found!");
-        // https://developers.zalo.me/docs/official-account/bat-dau/xac-thuc-va-uy-quyen-cho-ung-dung-new
-        args.ExpiredDate = DateTime.Now.AddMonths(3);
-        zalo.Value = JsonConvert.SerializeObject(args);
-        _context.ApplicationSettings.Update(zalo);
-        await _context.SaveChangesAsync();
-        return Ok();
+        try
+        {
+            var zalo = await _context.ApplicationSettings.FirstOrDefaultAsync(x => x.Key == "ZALO");
+            if (zalo is null) return BadRequest("Zalo setting not found!");
+            // https://developers.zalo.me/docs/official-account/bat-dau/xac-thuc-va-uy-quyen-cho-ung-dung-new
+            args.ExpiredDate = DateTime.Now.AddMonths(3);
+            zalo.Value = JsonConvert.SerializeObject(args);
+            _context.ApplicationSettings.Update(zalo);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpGet("zalo")]

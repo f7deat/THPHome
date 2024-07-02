@@ -1,8 +1,7 @@
 import { apiGetZalo, apiSaveZalo, apiSettingList } from "@/services/setting";
 import { SettingOutlined } from "@ant-design/icons";
-import { ModalForm, PageContainer, ProCard, ProFormDateTimePicker, ProFormInstance, ProFormText } from "@ant-design/pro-components"
-import { Alert, Button, Col, Row, message } from "antd";
-import dayjs from "dayjs";
+import { ModalForm, PageContainer, ProCard, ProFormInstance, ProFormText } from "@ant-design/pro-components"
+import { Alert, Button, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 
 const AppPage: React.FC = () => {
@@ -18,10 +17,6 @@ const AppPage: React.FC = () => {
                 {
                     name: 'refreshToken',
                     value: response.refreshToken
-                },
-                {
-                    name: 'expiredDate',
-                    value: dayjs(response.expiredDate)
                 }
             ])
         })
@@ -57,18 +52,11 @@ const AppPage: React.FC = () => {
             </div>
             <ModalForm open={open} onOpenChange={setOpen} title="Cài đặt" onFinish={onFinish} formRef={formRef}>
                 <Alert type="warning" message="Mỗi 3 tháng cần vào https://developers.zalo.me/tools/explorer lấy refresh token một lần." className="mb-4" showIcon />
-                <Row gutter={16}>
-                    <Col span={18}>
-                        <ProFormText.Password name="refreshToken" label="Refresh Token" rules={[
-                            {
-                                required: true
-                            }
-                        ]} />
-                    </Col>
-                    <Col span={6}>
-                        <ProFormDateTimePicker name="expiredDate" disabled label="Ngày hết hạn" />
-                    </Col>
-                </Row>
+                <ProFormText.Password name="refreshToken" label="Refresh Token" rules={[
+                    {
+                        required: true
+                    }
+                ]} />
             </ModalForm>
         </PageContainer>
     )
