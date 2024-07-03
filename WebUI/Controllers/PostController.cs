@@ -295,8 +295,9 @@ public class PostController : BaseController
         try
         {
             var post = await _context.Posts.FindAsync(id);
-            if (post is null || string.IsNullOrEmpty(post.Title)) return BadRequest("Data not found!");
-            if (post.Title.Length > 150) return BadRequest("Tiêu đề bài viết không được vượt quá 150 ký tự");
+            if (post is null || string.IsNullOrEmpty(post.Title) || string.IsNullOrEmpty(post.Description)) return BadRequest("Data not found!");
+            if (post.Description.Length > 150) return BadRequest("Mô tả bài viết không được vượt quá 150 ký tự");
+            if (await _context.ZaloArticles.AnyAsync(x => x.PostId == id)) return BadRequest("Đã chia sẻ lên Zalo OA");
             var response = await _zaloAPI.CreateArticle(post);
             if (string.IsNullOrEmpty(response)) return Ok();
             return BadRequest(response);

@@ -25,3 +25,9 @@ export const apiSaveZalo = (data: any) => request(`setting/zalo`, {
 });
 
 export const apiGetZalo = () => request(`setting/zalo`);
+
+export const apiGetZaloArtices = (params: any) => request(`setting/zalo/articles`, { params });
+
+export const apiVerifyZaloArticle = (id: string) => request(`setting/zalo/article/verify/${id}`, {
+    method: 'POST'
+});

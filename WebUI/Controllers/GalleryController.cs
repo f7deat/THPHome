@@ -10,7 +10,6 @@ using WebUI.Extensions;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.Files;
-using WebUI.Models.Galleries;
 using WebUI.Models.Posts;
 using WebUI.Models.ViewModel;
 
@@ -40,10 +39,7 @@ public class GalleryController : BaseController
             Language = args.Language,
             Status = PostStatus.PUBLISH,
             Url = SeoHelper.ToSeoFriendly(args.Title),
-            Type = PostType.GALLERY,
-            CreatedBy = User.GetId(),
-            CreatedDate = DateTime.Now,
-            ModifiedDate = DateTime.Now
+            Type = PostType.GALLERY
         });
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GalleryAddAsync), IdentityResult.Success);
@@ -54,9 +50,7 @@ public class GalleryController : BaseController
     {
         var gallery = await _context.Posts.FindAsync(args.Id);
         if (gallery is null) return BadRequest("Gallery not found!");
-        gallery.ModifiedDate = DateTime.Now;
         gallery.Title = args.Title;
-        gallery.ModifiedBy = User.GetId();
         gallery.Description = args.Description;
         gallery.Url = SeoHelper.ToSeoFriendly(args.Title);
         _context.Posts.Update(gallery);
@@ -100,11 +94,8 @@ public class GalleryController : BaseController
         if (user == null) return BadRequest("User not found!");
         await _context.Photos.AddAsync(new Photo
         {
-            CreatedBy = user.Id,
-            CreatedDate = DateTime.Now,
             Description = args.Description,
             Url = args.Url,
-            ModifiedDate = DateTime.Now,
             PostId = args.PostId,
             FileId = args.FileId
         });

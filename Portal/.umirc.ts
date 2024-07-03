@@ -46,7 +46,7 @@ export default defineConfig({
           component: './posts/entry',
         },
         {
-          name: 'Bài viết',
+          name: 'Tin tức',
           path: '/post/article',
           component: './posts/article',
         },
@@ -63,7 +63,8 @@ export default defineConfig({
         {
           name: 'Bài viết mới',
           path: '/post/setting',
-          component: './posts/post-setting'
+          component: './posts/post-setting',
+          hideInMenu: true,
         },
         {
           name: 'Chỉnh sửa',
@@ -76,6 +77,11 @@ export default defineConfig({
           path: '/post/page/:id',
           component: './posts/pages',
           hideInMenu: true,
+        },
+        {
+          name: 'Tuyển sinh',
+          path: '/post/admission/:id',
+          component: './posts/admission',
         },
         {
           name: 'Câu hỏi thường gặp',
@@ -213,6 +219,12 @@ export default defineConfig({
           path: '/settings/roles',
           component: './roles/role-list',
         },
+        {
+          name: 'Bài viết trên Zalo OA',
+          path: '/settings/application/zalo-article',
+          component: './settings/app/zalo/article',
+          hideInMenu: true
+        }
       ],
     },
     {

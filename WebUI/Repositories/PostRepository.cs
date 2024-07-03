@@ -53,7 +53,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                return await _context.Posts.Where(x => x.ModifiedDate.Year == DateTime.Now.Year).GroupBy(x => x.ModifiedDate.Month).Select(y => new { y.Key, Count = y.Count() }).ToListAsync();
+                return await _context.Posts.Where(x => x.CreatedDate.Year == DateTime.Now.Year).GroupBy(x => x.CreatedDate.Month).Select(y => new { y.Key, Count = y.Count() }).ToListAsync();
             }
             catch (Exception)
             {

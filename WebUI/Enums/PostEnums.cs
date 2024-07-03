@@ -13,5 +13,6 @@ public enum PostType
     PAGE,
     NEWS,
     NOTIFICATION,
-    GALLERY
+    GALLERY,
+    ADMISSION
 }

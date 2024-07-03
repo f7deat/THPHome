@@ -23,6 +23,8 @@ using WebUI.Interfaces.IRepository;
 using WebUI.Repositories;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI;
+using WebUI.Foundations.Interfaces;
+using WebUI.Foundations;
 
 namespace WebUI;
 
@@ -68,6 +70,8 @@ public class Startup(IConfiguration configuration)
 
         services.AddTransient<ITelegramService, TelegramService>();
         services.AddTransient<IZaloAPI, ZaloAPI>();
+
+        services.AddTransient<ICurrentUser, CurrentUser>();
 
         services.AddControllersWithViews();
         services.Configure<SettingOptions>(Configuration.GetSection(SettingOptions.Settings));

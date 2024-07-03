@@ -1,8 +1,9 @@
 ﻿using ApplicationCore.Entities;
+using Azure.Core;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Web;
+using WebUI.Entities.Articles;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
 using WebUI.Models.Settings;
@@ -27,11 +28,11 @@ public class ZaloAPI : IZaloAPI
         if (setting == null) return string.Empty;
         var zalo = JsonConvert.DeserializeObject<ZaloSetting>(setting.Value);
         if (zalo == null) return string.Empty;
-
+        var http = new HttpClient();
         var app_id = _configuration.GetSection("Zalo:app_id")?.Value ?? string.Empty;
         var secret_key = _configuration.GetSection("Zalo:secret_key")?.Value ?? string.Empty;
-        _client.DefaultRequestHeaders.Add("secret_key", secret_key);
-        _client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/x-www-form-urlencoded");
+        http.DefaultRequestHeaders.Add("secret_key", secret_key);
+        http.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/x-www-form-urlencoded");
 
         var content = new FormUrlEncodedContent(
         [
@@ -40,7 +41,7 @@ public class ZaloAPI : IZaloAPI
             new KeyValuePair<string, string>("grant_type", "refresh_token"),
         ]);
 
-        var response = await _client.PostAsync("https://oauth.zaloapp.com/v4/oa/access_token", content);
+        var response = await http.PostAsync("https://oauth.zaloapp.com/v4/oa/access_token", content);
         if (!response.IsSuccessStatusCode) return string.Empty;
 
         var data = JsonConvert.DeserializeObject<ZaloTokenResponse>(await response.Content.ReadAsStringAsync());
@@ -68,7 +69,8 @@ public class ZaloAPI : IZaloAPI
             var imageName = post.Thumbnail.Split('/').Last();
             var photo_url = post.Thumbnail.Replace(imageName, Uri.EscapeDataString(imageName));
 
-            _client.DefaultRequestHeaders.Add("access_token", accessToken);
+            var http = new HttpClient();
+            http.DefaultRequestHeaders.Add("access_token", accessToken);
 
             var api = "https://openapi.zalo.me/v2.0/article/create";
 
@@ -84,7 +86,7 @@ public class ZaloAPI : IZaloAPI
                     new
                     {
                         type = "text",
-                        content = post.Content
+                        content =" post.Content"
                     }
                 },
                 cover = new
@@ -95,11 +97,45 @@ public class ZaloAPI : IZaloAPI
                 }
             };
 
-            var response = await _client.PostAsJsonAsync(api, content);
+            var response = await http.PostAsJsonAsync(api, content);
             var result = JsonConvert.DeserializeObject<ZaloArticleResponse>(await response.Content.ReadAsStringAsync());
             if (result is null) return "Chia sẻ thất bại";
             if (result.Error != 0) return result.Message ?? string.Empty;
-            return string.Empty;
+            if (string.IsNullOrEmpty(result.Data?.Token)) return "Token không trả về!";
+
+            var verifyResult = await Verify(result.Data.Token, accessToken);
+            if (string.IsNullOrEmpty(verifyResult))
+            {
+                await _context.ZaloArticles.AddAsync(new ZaloArticle
+                {
+                    PostId = post.Id,
+                    Token = result.Data?.Token
+                });
+                await _context.SaveChangesAsync();
+                return string.Empty;
+            }
+
+            return verifyResult;
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
+
+    public async Task<string?> Verify(string token, string accessToken = "")
+    {
+        try
+        {
+            var http = new HttpClient();
+            http.DefaultRequestHeaders.Add("access_token", accessToken);
+            var api = "https://openapi.zalo.me/v2.0/article/verify";
+            var response = await http.PostAsJsonAsync(api, new
+            {
+                token
+            });
+            var result = JsonConvert.DeserializeObject<ZaloArticleResponse>(await response.Content.ReadAsStringAsync());
+            return result?.Message;
         }
         catch (Exception ex)
         {

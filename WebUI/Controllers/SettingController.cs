@@ -1,10 +1,12 @@
-﻿using Infrastructure;
+﻿using ApplicationCore.Models.Filters;
+using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Settings;
+using WebUI.Models.ViewModel;
 
 namespace WebUI.Controllers;
 
@@ -45,5 +47,22 @@ public class SettingController : BaseController
         var zalo = await _context.ApplicationSettings.FirstOrDefaultAsync(x => x.Key == "ZALO");
         if (zalo is null) return BadRequest("Zalo setting not found!");
         return Ok(JsonConvert.DeserializeObject<ZaloSetting>(zalo.Value));
+    }
+
+    [HttpGet("zalo/articles")]
+    public async Task<IActionResult> GetZaloArticleAsync([FromQuery] FilterOptions filterOptions)
+    {
+        var query = from a in _context.Posts
+                    join b in _context.ZaloArticles on a.Id equals b.PostId
+                    orderby b.ModifiedDate descending
+                    select new
+                    {
+                        b.Id,
+                        a.Title,
+                        a.Url,
+                        b.CreatedDate,
+                        b.ModifiedDate
+                    };
+        return Ok(await ListResult<dynamic>.Success(query, filterOptions));
     }
 }

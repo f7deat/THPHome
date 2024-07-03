@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using WebUI.Entities;
+using WebUI.Entities.Articles;
 using WebUI.Foundations.Interfaces;
 
 namespace Infrastructure;
@@ -43,6 +44,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<QaGroup> QaGroups { get; set; }
     public virtual DbSet<QaItem> QaItems { get; set; }
     public virtual DbSet<ApplicationSetting> ApplicationSettings { get; set; }
+    public virtual DbSet<ZaloArticle> ZaloArticles { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

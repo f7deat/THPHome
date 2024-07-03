@@ -10,7 +10,7 @@ public abstract class BaseEntity<T> : IBaseEntity
     [Key]
     public T Id { get; set; } = default!;
     public DateTime CreatedDate { get; set; }
-    public DateTime ModifiedDate { get; set; }
+    public DateTime? ModifiedDate { get; set; }
     [StringLength(450)]
     public string? ModifiedBy { get; set; }
     [StringLength(450)]

@@ -7,7 +7,7 @@ namespace ApplicationCore.Entities;
 public class Post: BaseEntity<long>
 {
     [StringLength(500)]
-    public string? Title { get; set; }
+    public string Title { get; set; } = default!;
     [StringLength(500), Required]
     public string Url { get; set; } = default!;
     [StringLength(500)]

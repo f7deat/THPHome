@@ -1,7 +1,8 @@
 import { apiGetZalo, apiSaveZalo, apiSettingList } from "@/services/setting";
-import { SettingOutlined } from "@ant-design/icons";
+import { HistoryOutlined, SettingOutlined } from "@ant-design/icons";
 import { ModalForm, PageContainer, ProCard, ProFormInstance, ProFormText } from "@ant-design/pro-components"
-import { Alert, Button, message } from "antd";
+import { Link } from "@umijs/max";
+import { Alert, Button, Tooltip, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 
 const AppPage: React.FC = () => {
@@ -39,7 +40,15 @@ const AppPage: React.FC = () => {
             <div className="grid md:grid-cols-4 gap-4">
                 {
                     data.map((app: any) => (
-                        <ProCard key={app.id} title={app.name} headerBordered extra={<Button icon={<SettingOutlined />} type="text" size="small" onClick={() => setOpen(true)} />}>
+                        <ProCard
+                            actions={[
+                                <Tooltip title="Xem lịch sử chia sẻ" key="history">
+                                    <Link to='/settings/application/zalo-article'>
+                                        <HistoryOutlined />
+                                    </Link>
+                                </Tooltip>
+                            ]}
+                            key={app.id} title={app.name} headerBordered extra={<Button icon={<SettingOutlined />} type="text" size="small" onClick={() => setOpen(true)} />}>
                             <div className="flex gap-4">
                                 <div className="md:w-20">
                                     <img src={app.icon} alt="icon" className="w-full" />

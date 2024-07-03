@@ -2,7 +2,9 @@
     DEFAULT,
     PAGE,
     NEWS,
-    NOTIFICATION
+    NOTIFICATION,
+    GALLERY,
+    ADMISSION
 }
 
 export const ListPostType = [
@@ -17,5 +19,9 @@ export const ListPostType = [
     {
         value: PostType.NOTIFICATION,
         label: 'Thông báo'
+    },
+    {
+        value: PostType.ADMISSION,
+        label: 'Tuyển sinh'
     }
 ]
