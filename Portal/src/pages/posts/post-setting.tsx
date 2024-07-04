@@ -1,4 +1,4 @@
-﻿import { Button, Col, Form, Input, message, Row, Upload, UploadProps, Image, Empty } from 'antd'
+﻿import { Button, Col, Form, Input, message, Row, Upload, UploadProps, Image, Empty, Switch } from 'antd'
 import {
     UploadOutlined,
     InboxOutlined,
@@ -13,6 +13,7 @@ import { request } from '@umijs/max';
 import { PageContainer, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProFormTreeSelect } from '@ant-design/pro-components';
 import { language } from '@/utils/format';
 import { apiCategoryTreeData } from '@/services/categoy';
+import { PostStatus } from '@/utils/enum';
 
 const { Dragger } = Upload;
 
@@ -24,7 +25,7 @@ const PostSetting = () => {
 
     const [post, setPost] = useState<IPost>({})
     const [defaultFileList, setDefaultFileList] = useState<any>([])
-    const [previewImage, setPreviewImage] = useState<string>('');
+    const [previewImage, setPreviewImage] = useState<string>('https://dhhp.edu.vn/files/1a5acea5-4941-4140-a8f5-56a1d5e4eabd.jpg');
     const [loading, setLoading] = useState<boolean>(false);
     const intl = useIntl();
 
@@ -56,6 +57,10 @@ const PostSetting = () => {
                     {
                         name: 'description',
                         value: response.description
+                    },
+                    {
+                        name: 'status',
+                        value: response.status
                     }
                 ])
                 setPreviewImage(response.thumbnail);
@@ -97,6 +102,18 @@ const PostSetting = () => {
         }).then(response => {
             if (response.succeeded) {
                 message.success('Lưu thành công!');
+                if (values.type === PostType.NEWS) {
+                    history.push(`/post/article`);
+                }
+                if (values.type === PostType.NOTIFICATION) {
+                    history.push(`/post/notification`);
+                }
+                if (values.type === PostType.PAGE) {
+                    history.push(`/post/page`);
+                }
+                if (values.type === PostType.ADMISSION) {
+                    history.push(`/post/admission`);
+                }
             } else {
                 message.error('ERROR');
             }
@@ -173,6 +190,7 @@ const PostSetting = () => {
         post.language = language(intl.locale);
         post.description = values.description;
         post.modifiedDate = values.modifiedDate;
+        post.status = values.status;
         setLoading(true);
         if (id) {
             handleEdit(values);
@@ -236,11 +254,11 @@ const PostSetting = () => {
                                     filterTreeNode: (input, treeNode: any) =>
                                         (treeNode.label as string)?.toLowerCase().includes(input.toLowerCase()),
                                     multiple: true
-                                    
+
                                 }}
                             />
 
-                            <ProFormText label="Ảnh đại diện" name='thumbnail' rules={[
+                            <ProFormText label="Ảnh đại diện" name='thumbnail' initialValue="https://dhhp.edu.vn/files/1a5acea5-4941-4140-a8f5-56a1d5e4eabd.jpg" rules={[
                                 {
                                     required: true,
                                     message: 'Vui lòng chọn ảnh đại diện'
@@ -286,10 +304,30 @@ const PostSetting = () => {
                                     )
                                 }
                             </div>
-                            <ProFormDatePicker name="modifiedDate" label="Ngày xuất bản" width="xl" />
-
+                            <Row gutter={16}>
+                                <Col md={12}>
+                                    <ProFormDatePicker name="modifiedDate" label="Ngày xuất bản" width="xl" />
+                                </Col>
+                                <Col md={12}>
+                                    <ProFormSelect name="status" label="Trạng thái"
+                                        required
+                                        initialValue={PostStatus.DRAFT}
+                                        allowClear={false}
+                                        options={[
+                                            {
+                                                label: 'Bản nháp',
+                                                value: PostStatus.DRAFT
+                                            },
+                                            {
+                                                label: 'Xuất bản',
+                                                value: PostStatus.PUBLISH
+                                            }
+                                        ]}
+                                    />
+                                </Col>
+                            </Row>
                             <div className="mb-1">Tệp tin đính kèm</div>
-                            <div className="mb-2">
+                            <div className="mb-4">
                                 <Dragger {...props}>
                                     <p className="ant-upload-drag-icon">
                                         <InboxOutlined />
@@ -298,6 +336,7 @@ const PostSetting = () => {
                                     <p className="ant-upload-hint">Hỗ trợ các định dạng thông dụng .docx, .xlsx, .pdf</p>
                                 </Dragger>
                             </div>
+                            <div className='flex gap-2 items-center'><Switch checked /> Chia sẻ lên Zalo OA</div>
                         </Col>
                     </Row>
                 </ProForm>

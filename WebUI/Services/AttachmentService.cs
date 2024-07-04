@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,17 +46,15 @@ namespace ApplicationCore.Services
             return _attachmentRepository.GetListInPostAsync(id);
         }
 
-        public async Task MapAsync(List<Attachment> attachments, long id)
+        public async Task MapAsync(List<Attachment>? attachments, long id)
         {
-            if (attachments != null)
+            if (attachments is null) return;
+            foreach (var item in attachments)
             {
-                foreach (var item in attachments)
-                {
-                    var attach = await _attachmentRepository.FindAsync(item.Id);
-                    attach.PostId = id;
-                }
-                await _attachmentRepository.SaveChangesAsync();
+                var attach = await _attachmentRepository.FindAsync(item.Id);
+                attach.PostId = id;
             }
+            await _attachmentRepository.SaveChangesAsync();
         }
     }
 }

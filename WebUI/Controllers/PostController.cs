@@ -89,11 +89,16 @@ public class PostController : BaseController
         {
             var user = await _userManager.FindByIdAsync(User.GetId());
             if (user is null) return BadRequest("User not found!");
+            if (post.Post is null) return BadRequest("Dữ liệu không hợp lệ!");
             post.Post.CreatedBy = user.Id;
             post.Post.ModifiedBy = user.Id;
+            if (post.Post.ModifiedDate == null)
+            {
+                post.Post.ModifiedDate = DateTime.Now;
+            }
             if (string.IsNullOrWhiteSpace(post.Post.Thumbnail))
             {
-                post.Post.Thumbnail = "https://dhhp.edu.vn/files/f4567e2b-ef79-4bd1-86c4-c4a97a79fb19.png";
+                post.Post.Thumbnail = "https://dhhp.edu.vn/files/1a5acea5-4941-4140-a8f5-56a1d5e4eabd.jpg";
             }
             var data = await _postService.AddAsync(post.Post);
             if (data.Id > 0)
@@ -161,6 +166,8 @@ public class PostController : BaseController
     [HttpPost("update")]
     public async Task<IActionResult> UpdateAsync([FromBody] PostParam post)
     {
+        if (post.Post is null) return BadRequest("Dữ liệu không hợp lệ.");
+
         var user = await _userManager.FindByIdAsync(User.GetId());
         await _postCategoryService.DeleteAsync(post.Post.Id);
         await _postCategoryService.AddAsync(post.ListCategoryId, post.Post.Id);
@@ -173,10 +180,6 @@ public class PostController : BaseController
         data.Thumbnail = post.Post.Thumbnail;
         data.Type = post.Post.Type;
         data.ModifiedDate = post.Post.ModifiedDate;
-        if (_webHostEnvironment.IsProduction())
-        {
-            _ = _telegramService.SendMessageAsync($"{user.UserName} updated: {post.Post.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
-        }
         return Ok(await _postService.EditAsync(data));
     }
 

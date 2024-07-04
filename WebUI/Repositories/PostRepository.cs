@@ -75,7 +75,8 @@ namespace Infrastructure.Repositories
                             a.Url,
                             a.Status,
                             a.Language,
-                            createdBy = b.UserName
+                            createdBy = b.UserName,
+                            a.CreatedDate
                         };
             if (!string.IsNullOrWhiteSpace(filterOptions.Title))
             {

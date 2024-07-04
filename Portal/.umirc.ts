@@ -80,7 +80,7 @@ export default defineConfig({
         },
         {
           name: 'Tuyển sinh',
-          path: '/post/admission/:id',
+          path: '/post/admission',
           component: './posts/admission',
         },
         {
