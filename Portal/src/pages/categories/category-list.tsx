@@ -1,49 +1,29 @@
-import { Button, Checkbox, Col, Drawer, Empty, Form, Input, message, Modal, Popconfirm, Row, Select, Space, Switch } from "antd";
-import { useEffect, useState } from "react";
+import { Button, Checkbox, Col, Drawer, Empty, Form, Input, message, Modal, Popconfirm, Row, Space, Switch } from "antd";
+import { useRef, useState } from "react";
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
     FolderOutlined,
-    ArrowLeftOutlined,
-    SearchOutlined
+    ArrowLeftOutlined
 } from "@ant-design/icons";
-import { request, useIntl } from "@umijs/max";
-import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
+import { Link, request, useIntl } from "@umijs/max";
+import { ActionType, PageContainer, ProColumnType, ProFormSelect, ProTable } from "@ant-design/pro-components";
 import { language } from "@/utils/format";
+import { apiGetCategories, apiGetParentCategoryOptions, apiGetPostsCategory } from "@/services/categoy";
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 const CategoryList = () => {
-    const [categories, setCategories] = useState<any>([]);
     const [visible, setVisible] = useState(false);
-    const [posts, setPosts] = useState();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [id, setId] = useState(0);
     const [category, setCategory] = useState<any>();
     const [displayOnHome, setDisplayOnHome] = useState<boolean>(false);
+    const actionRef = useRef<ActionType>();
+    const postActionRef = useRef<ActionType>();
 
     const intl = useIntl();
-
-    const getList = (id: number) => {
-        request(`category/get-list/${id}?language=${language(intl.locale)}`).then((response) => {
-            setCategories(response);
-        });
-    }
-
-    useEffect(() => {
-        getList(id)
-    }, [id]);
-
-    function drawPosts(record: any) {
-        setCategory(record);
-        request(`post/get-in-category/${record.id}`)
-            .then((response) => {
-                setPosts(response);
-                setVisible(!visible);
-            });
-    }
 
     function update(item: any) {
         request(`category/update`, {
@@ -51,7 +31,7 @@ const CategoryList = () => {
             method: 'POST'
         }).then(response => {
             message.success(response.message);
-            getList(id);
+            actionRef.current?.reload();
             setIsModalVisible(false);
         })
     }
@@ -68,7 +48,7 @@ const CategoryList = () => {
             }).then((response) => {
                 if (response.succeeded) {
                     message.success(response.message);
-                    getList(id);
+                    actionRef.current?.reload();
                     setIsModalVisible(false);
                 } else {
                     message.error(response.message);
@@ -94,7 +74,7 @@ const CategoryList = () => {
             method: 'POST'
         }).then(response => {
             if (response.succeeded) {
-                getList(0);
+                actionRef.current?.reload();
                 message.success('Success!');
             } else {
                 message.error(response.message)
@@ -124,19 +104,22 @@ const CategoryList = () => {
             data: record
         }).then(response => {
             message.success(response.message);
-            getList(id);
+            actionRef.current?.reload();
         })
     }
 
     const columns: ProColumnType<any>[] = [
         {
-            title: "#",
-            valueType: 'indexBorder',
-            width: 50
-        },
-        {
             title: "Tên danh mục",
             dataIndex: 'name'
+        },
+        {
+            title: "Số bài đăng",
+            dataIndex: 'count',
+            search: false,
+            width: 100,
+            align: 'right',
+            valueType: 'digit'
         },
         {
             title: "Trạng thái",
@@ -144,18 +127,23 @@ const CategoryList = () => {
                 <Switch size="small" defaultChecked={record.status === 1} onChange={(e: boolean) => handleChangeStatus(record, e)} />
             ),
             width: 100,
-            align: 'center'
+            align: 'center',
+            search: false
         },
         {
             title: "Tác vụ",
             valueType: 'option',
-            render: (record: any) => (
+            render: (dom, record) => (
                 <Space>
                     <Button
                         type="primary"
                         size="small"
                         icon={<FolderOutlined />}
-                        onClick={() => drawPosts(record)}
+                        onClick={() => {
+                            setCategory(record);
+                            setVisible(true);
+                            postActionRef.current?.reload();
+                        }}
                     ></Button>
                     <Button
                         size="small"
@@ -177,36 +165,33 @@ const CategoryList = () => {
         },
     ];
 
-    const postColumns = [
+    const postColumns: ProColumnType<any>[] = [
         {
-            title: "Id",
-            dataIndex: "id",
+            title: "#",
+            valueType: 'indexBorder',
+            width: 50
         },
         {
-            title: "Title",
+            title: "Bài đăng",
             dataIndex: "title",
         },
         {
-            title: "",
-            render: (record: any) => (
-                <Space>
-                    <Button type="primary" icon={<EditOutlined />}></Button>
-                    <Popconfirm
-                        title="Are you sure to delete from this category?"
-                        okText="Yes"
-                        cancelText="No"
-                        onConfirm={() => handleRemoveFromCategory(id, record.id)}
-                    >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
-                    </Popconfirm>
-                </Space>
-            ),
+            title: "Tác vụ",
+            render: (dom, record: any) => [
+                <Link key="edit" to={`/post/setting/${record.id}`}>
+                <Button type="primary" icon={<EditOutlined />} size="small"></Button>
+                </Link>,
+                <Popconfirm
+                    key="delete"
+                    title="Xác nhận xóa?"
+                    onConfirm={() => handleRemoveFromCategory(id, record.id)}
+                >
+                    <Button type="primary" danger icon={<DeleteOutlined />} size="small"></Button>
+                </Popconfirm>
+            ],
+            valueType: 'option'
         },
     ];
-
-    function onChange(value: any) {
-        setCategory((prevState: any) => ({ ...prevState, parrentId: value }));
-    }
 
     return (
         <PageContainer extra={<Space className="mb-2">
@@ -222,34 +207,39 @@ const CategoryList = () => {
                 search={{
                     layout: 'vertical'
                 }}
-                dataSource={categories}
                 columns={columns}
                 rowKey="id"
+                request={(params) => apiGetCategories({
+                    ...params,
+                    language: language(intl.locale)
+                })}
             />
             <Drawer
                 title={category?.name}
                 placement="right"
                 closable={false}
                 onClose={() => setVisible(!visible)}
-                visible={visible}
+                open={visible}
                 width={960}
             >
-                <Space className="mb-3">
-                    <Input />
-                    <Button type="primary" icon={<SearchOutlined />}></Button>
-                </Space>
-                {
-                    <ProTable
-                        dataSource={posts}
-                        columns={postColumns}
-                        rowSelection={{}}
-                        rowKey="id"
-                    />
-                }
+                <ProTable
+                    ghost
+                    search={{
+                        layout: 'vertical'
+                    }}
+                    actionRef={postActionRef}
+                    request={(params) => apiGetPostsCategory({
+                        ...params,
+                        language: language(intl.locale),
+                        categoryId: category?.id
+                    })}
+                    columns={postColumns}
+                    rowKey="id"
+                />
             </Drawer>
             <Modal
-                title={category?.name || "New Category"}
-                visible={isModalVisible}
+                title={category?.name || "Danh mục"}
+                open={isModalVisible}
                 onOk={handleOk}
                 onCancel={() => setIsModalVisible(false)}
                 width={600}
@@ -269,25 +259,12 @@ const CategoryList = () => {
                             ]}>
                                 <Input className="mb-2" value={category?.url} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, normalizeName: e.target.value }))} />
                             </Form.Item>
-                            <div>Danh mục cha:</div>
-                            <Select
-                                showSearch
-                                placeholder="Select category"
-                                optionFilterProp="children"
-                                onChange={onChange}
-                                className="w-full mb-2"
-                                value={category?.parrentId}
-                                allowClear
-                            >
-                                <Option value={-1} key={-1}>Trống</Option>
-                                {
-                                    categories && categories?.map((value: any) => (
-                                        <Option value={value.id} key={value.id}>
-                                            {value.name}
-                                        </Option>
-                                    ))
-                                }
-                            </Select>
+                            <ProFormSelect label="Danh mục cha" name="parentId"
+                                request={(params) => apiGetParentCategoryOptions({
+                                    ...params,
+                                    language: language(intl.locale)
+                                })}
+                            />
                             <div>Mô tả:</div>
                             <TextArea className="mb-2" value={category?.description} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, description: e.target.value }))} />
                         </Col>

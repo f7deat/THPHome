@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
 using ApplicationCore.Models.Filters;
+using WebUI.Models.ViewModel;
+using WebUI.Models.Categories;
 
 namespace ApplicationCore.Interfaces.IRepository
 {
@@ -16,7 +18,7 @@ namespace ApplicationCore.Interfaces.IRepository
         Task<IEnumerable<Post>> GetTopViewAsync(int pageSize);
         Task<dynamic> GetDataBarChartAsync();
         Task<dynamic> GetListAsync(PostFilterOptions filterOptions);
-        Task<IEnumerable<Post>> GetInCategoryAsync(int id);
+        Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions);
         Task<bool> IsExistInCategory(int id);
         Task<dynamic> AddRangeAsync(List<Post> posts);
         Task<dynamic> SetStatusAsync(Post post);

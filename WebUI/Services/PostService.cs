@@ -5,6 +5,8 @@ using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Filters;
 using ApplicationCore.Models.Posts;
+using WebUI.Models.Categories;
+using WebUI.Models.ViewModel;
 
 namespace ApplicationCore.Services;
 
@@ -68,7 +70,7 @@ public class PostService : IPostService
 
     public Task<dynamic> GetDataBarChartAsync() => _postRepository.GetDataBarChartAsync();
 
-    public Task<IEnumerable<Post>> GetInCategoryAsync(int id) => _postRepository.GetInCategoryAsync(id);
+    public Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions) => _postRepository.GetInCategoryAsync(filterOptions);
 
     public Task<dynamic> GetListAsync(PostFilterOptions filterOptions) => _postRepository.GetListAsync(filterOptions);
 

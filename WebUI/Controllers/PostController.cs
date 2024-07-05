@@ -73,9 +73,6 @@ public class PostController : BaseController
         return Ok(await _postService.GetListAsync(filterOptions));
     }
 
-    [Route("get-in-category/{id}")]
-    public async Task<IActionResult> GetInCategoryAsync(int id) => Ok(await _postService.GetInCategoryAsync(id));
-
     [HttpPost("export")]
     public async Task<IActionResult> ExportAsync() => File(await _postService.ExportAsync(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 

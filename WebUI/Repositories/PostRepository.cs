@@ -9,6 +9,8 @@ using System;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
 using ApplicationCore.Models.Filters;
+using WebUI.Models.ViewModel;
+using WebUI.Models.Categories;
 
 namespace Infrastructure.Repositories
 {
@@ -96,14 +98,14 @@ namespace Infrastructure.Repositories
             };
         }
 
-        public async Task<IEnumerable<Post>> GetInCategoryAsync(int id)
+        public async Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions)
         {
-            var query = from a in _context.PostCategories.Where(x => x.CategoryId == id)
+            var query = from a in _context.PostCategories.Where(x => x.CategoryId == filterOptions.CategoryId)
                         join b in _context.Posts on a.PostId equals b.Id
-                        where b.Status == PostStatus.PUBLISH
+                        where b.Language == filterOptions.Language
                         orderby b.ModifiedDate descending
                         select b;
-            return await query.ToListAsync();
+            return await ListResult<dynamic>.Success(query, filterOptions);
         }
 
         public async Task<bool> IsExistInCategory(int id) => await _context.PostCategories.AnyAsync(x => x.CategoryId == id);
