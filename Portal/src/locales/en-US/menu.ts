@@ -6,7 +6,6 @@ export default {
     'menu.article.home': 'Articles',
     'menu.article.list': 'Article list',
     'menu.catalog': 'Catalog',
-    'menu.comments': 'Comments',
     'menu.ecommerce': 'E-Commerce',
     'menu.ecommerce.order': 'Orders',
     'menu.ecommerce.newOrder': 'New order',

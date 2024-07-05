@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Entities;
-using Azure.Core;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -56,7 +55,7 @@ public class ZaloAPI : IZaloAPI
         return data.AccessToken;
     }
 
-    public async Task<string> CreateArticle(Post post)
+    public async Task<string?> CreateArticle(Post post)
     {
         try
         {
@@ -86,7 +85,7 @@ public class ZaloAPI : IZaloAPI
                     new
                     {
                         type = "text",
-                        content =" post.Content"
+                        content = post.Content
                     }
                 },
                 cover = new
@@ -104,17 +103,14 @@ public class ZaloAPI : IZaloAPI
             if (string.IsNullOrEmpty(result.Data?.Token)) return "Token không trả về!";
 
             var verifyResult = await Verify(result.Data.Token, accessToken);
-            if (string.IsNullOrEmpty(verifyResult))
-            {
-                await _context.ZaloArticles.AddAsync(new ZaloArticle
-                {
-                    PostId = post.Id,
-                    Token = result.Data?.Token
-                });
-                await _context.SaveChangesAsync();
-                return string.Empty;
-            }
 
+            await _context.ZaloArticles.AddAsync(new ZaloArticle
+            {
+                PostId = post.Id,
+                Token = result.Data?.Token,
+                Message = verifyResult
+            });
+            await _context.SaveChangesAsync();
             return verifyResult;
         }
         catch (Exception ex)

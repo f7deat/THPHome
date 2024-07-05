@@ -300,7 +300,7 @@ public class PostController : BaseController
             var post = await _context.Posts.FindAsync(id);
             if (post is null || string.IsNullOrEmpty(post.Title) || string.IsNullOrEmpty(post.Description)) return BadRequest("Data not found!");
             if (post.Description.Length > 150) return BadRequest("Mô tả bài viết không được vượt quá 150 ký tự");
-            if (await _context.ZaloArticles.AnyAsync(x => x.PostId == id)) return BadRequest("Đã chia sẻ lên Zalo OA");
+            if (await _context.ZaloArticles.AnyAsync(x => x.PostId == id)) return BadRequest("Đã chia sẻ lên Zalo OA. Vui lòng kiểm tra lịch sử chia sẻ");
             var response = await _zaloAPI.CreateArticle(post);
             if (string.IsNullOrEmpty(response)) return Ok();
             return BadRequest(response);
@@ -309,5 +309,33 @@ public class PostController : BaseController
         {
             return BadRequest(ex.ToString());
         }
+    }
+
+    [HttpGet("chart-post-created-in-year")]
+    public async Task<IActionResult> GetPostCreatedInYearAsync()
+    {
+        var xAsis = new List<string> { "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12" };
+        var series = new List<int>();
+        var query = await _context.Posts
+            .Where(x => x.CreatedDate.Year == DateTime.Now.Year)
+            .Select(x => new
+        {
+            x.Id,
+            x.CreatedDate
+        }).GroupBy(x => x.CreatedDate.Month)
+        .Select(x => new
+        {
+            Month = x.Key,
+            Data = x.Count()
+        }).ToListAsync();
+        for (int i = 1; i < 13; i++)
+        {
+            series.Add(query.FirstOrDefault(x => x.Month == i)?.Data ?? 0);
+        }
+        return Ok(new
+        {
+            series,
+            xAsis
+        });
     }
 }

@@ -6,7 +6,6 @@ export default {
     'menu.catalog.tag': 'Tag',
     'menu.catalog.tagCenter': 'Chi tiết',
     'menu.catalog.page': 'Trang',
-    'menu.comments': 'Bình luận',
     'menu.ecommerce': 'E-Commerce',
     'menu.ecommerce.center': 'Chi tiết',
     'menu.ecommerce.order': 'Đơn hàng',

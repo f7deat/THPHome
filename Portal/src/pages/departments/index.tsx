@@ -1,27 +1,19 @@
-﻿import { Button, Modal, Table, Card, Form, Input, message, TableColumnType, Space, Popconfirm, Tabs, Empty } from "antd"
-import { useEffect, useState } from "react"
+﻿import { Button, Modal, Form, Input, message, Popconfirm, Tabs, Empty } from "antd"
+import { useRef, useState } from "react"
 import {
     FolderOutlined,
-    DeleteOutlined
+    DeleteOutlined,
+    PlusOutlined
 } from "@ant-design/icons";
 import { history, request } from "@umijs/max";
-import { PageContainer } from "@ant-design/pro-components";
+import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
+import { apiGetDepartmentList } from "@/services/department";
 
 const Department: React.FC = () => {
 
     const [open, setOpen] = useState<boolean>(false);
-    const [dataSource, setDataSource] = useState<any>([]);
     const [form] = Form.useForm();
-
-    const fetchData = () => {
-        request(`department/list`).then(response => {
-            setDataSource(response.data);
-        });
-    }
-
-    useEffect(() => {
-        fetchData();
-    }, [])
+    const actionRef = useRef<ActionType>()
 
     const onFinish = async (values: any) => {
         if (values.id) {
@@ -34,7 +26,7 @@ const Department: React.FC = () => {
             if (response.data.succeeded) {
                 message.success('Đã lưu!');
                 setOpen(false);
-                fetchData();
+                actionRef.current?.reload();
             }
         }
     }
@@ -43,16 +35,17 @@ const Department: React.FC = () => {
         const response = await request(`department/remove/${id}`, {
             method: 'POST'
         });
-        if (response.data) {
+        if (response.succeeded) {
             message.success('Xóa thành công!');
-            fetchData();
+            actionRef.current?.reload();
         }
     }
 
-    const columns: TableColumnType<any>[] = [
+    const columns: ProColumnType<any>[] = [
         {
             title: '#',
-            render: (value, record, index) => index + 1
+            valueType: 'indexBorder',
+            width: 50
         },
         {
             title: 'Tên Khoa - Viện',
@@ -60,51 +53,59 @@ const Department: React.FC = () => {
         },
         {
             title: 'Mô tả',
-            dataIndex: 'description'
+            dataIndex: 'description',
+            search: false
         },
         {
             title: 'Tác vụ',
-            render: (value, record) => (
-                <Space>
-                    <Button type="primary" icon={<FolderOutlined />} onClick={() => history.push(`/department/detail/${record.id}`)}></Button>
-                    <Popconfirm title="Xóa bản ghi?" onConfirm={() => onConfirm(record.id)}>
-                        <Button type="primary" danger icon={<DeleteOutlined />} />
-                    </Popconfirm>
-                </Space>
-            )
+            valueType: 'option',
+            render: (value, record) => [
+                <Button size="small" type="primary" key="detail" icon={<FolderOutlined />} onClick={() => history.push(`/department/detail/${record.id}`)}></Button>,
+                <Popconfirm title="Xóa bản ghi?" key="delete" onConfirm={() => onConfirm(record.id)}>
+                    <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
+                </Popconfirm>
+            ],
+            width: 100
         }
     ]
 
     return (
         <PageContainer>
-            <Card>
-                <Tabs
-                    items={[
-                        {
-                            key: 'faculty',
-                            label: 'Khoa - Viện',
-                            children: (
-                                <Card title="Phòng ban" extra={<Button type="primary" onClick={() => {
-                                    form.resetFields();
-                                    setOpen(true);
-                                }}>Thêm mới</Button>}>
-                                    <Table dataSource={dataSource} rowKey="id" columns={columns} />
-                                </Card>
-                            )
-                        },
-                        {
-                            key: 'function',
-                            label: 'Ban chức năng',
-                            children: <Empty description="Sắp có" />
-                        },
-                        {
-                            key: 'center',
-                            label: 'Trung tâm',
-                            children: <Empty description="Sắp có" />
-                        }
-                    ]}
-                />
-            </Card>
+            <Tabs
+                items={[
+                    {
+                        key: 'faculty',
+                        label: 'Khoa - Viện',
+                        children: (
+                            <>
+                                <div className="flex justify-end mb-4">
+                                    <Button type="primary" onClick={() => {
+                                        form.resetFields();
+                                        setOpen(true);
+                                    }} icon={<PlusOutlined />}>Thêm mới</Button>
+                                </div>
+                                <ProTable
+                                    actionRef={actionRef}
+                                    search={{
+                                        layout: 'vertical'
+                                    }}
+                                    request={apiGetDepartmentList}
+                                    rowKey="id" columns={columns} />
+                            </>
+                        )
+                    },
+                    {
+                        key: 'function',
+                        label: 'Ban chức năng',
+                        children: <Empty description="Sắp có" />
+                    },
+                    {
+                        key: 'center',
+                        label: 'Trung tâm',
+                        children: <Empty description="Sắp có" />
+                    }
+                ]}
+            />
             <Modal title="Khoa - Viện" open={open} onCancel={() => {
                 setOpen(false)
             }} footer={false}>

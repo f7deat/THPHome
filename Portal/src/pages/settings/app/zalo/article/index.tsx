@@ -1,10 +1,10 @@
 import { apiGetZaloArtices, apiVerifyZaloArticle } from "@/services/setting";
-import { ReloadOutlined } from "@ant-design/icons";
+import { EyeOutlined, ReloadOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
-import { Button, message } from "antd";
+import { Button, message, Tooltip } from "antd";
 import { useRef } from "react";
 
-const ZaloArticlePage : React.FC = () => {
+const ZaloArticlePage: React.FC = () => {
 
     const actionRef = useRef<ActionType>();
 
@@ -20,18 +20,28 @@ const ZaloArticlePage : React.FC = () => {
             dataIndex: 'title'
         },
         {
+            title: 'Ghi chú',
+            dataIndex: 'message'
+        },
+        {
             title: 'Tác vụ',
             valueType: 'option',
             render: (dom, entity) => [
-                <Button type="primary" icon={<ReloadOutlined />} key="reload" size="small" onClick={() => {
-                    apiVerifyZaloArticle(entity.id).then(response => {
-                        if (response.succeecced) {
-                            message.success('Kiểm tra thành công!');
-                        }
-                        actionRef.current?.reload();
-                    })
-                }} />
-            ]
+                <Tooltip title="Chia sẻ lại" key="reload">
+                    <Button type="primary" icon={<ReloadOutlined />} size="small" onClick={() => {
+                        apiVerifyZaloArticle(entity.id).then(response => {
+                            if (response.succeecced) {
+                                message.success('Kiểm tra thành công!');
+                            }
+                            actionRef.current?.reload();
+                        })
+                    }} />
+                </Tooltip>,
+                <Tooltip key="check" title="Kiểm tra tiến trình chia sẻ">
+                    <Button icon={<EyeOutlined />} size="small" />
+                </Tooltip>
+            ],
+            width: 100
         }
     ]
 
@@ -41,6 +51,9 @@ const ZaloArticlePage : React.FC = () => {
                 actionRef={actionRef}
                 request={apiGetZaloArtices}
                 columns={columns}
+                search={{
+                    layout: 'vertical'
+                }}
             />
         </PageContainer>
     )

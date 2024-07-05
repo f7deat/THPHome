@@ -179,12 +179,6 @@ export default defineConfig({
       ],
     },
     {
-      icon: 'CommentOutlined',
-      name: 'Bình luận',
-      path: '/comments',
-      component: './comments/comment-list',
-    },
-    {
       icon: 'SettingOutlined',
       name: 'setting',
       path: '/settings',

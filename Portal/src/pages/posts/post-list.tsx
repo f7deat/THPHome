@@ -94,25 +94,31 @@ const PostList: React.FC<{
             dataIndex: 'status',
             valueEnum: {
                 0: 'Chờ duyệt',
-                1: 'Đã xuất bản',
-                2: 'Đã xóa'
+                1: 'Đã xuất bản'
             },
             render: (dom, record: IPost) => (
                 <Tooltip title="Nhấp để chuyển trạng thái">
                     <Tag color={record.status === 1 ? 'cyan' : 'gold'} onClick={() => setActive(record.id || 0)} style={{
                         cursor: 'pointer'
                     }}>
-                        {record.status === 1 ? 'xuất bản' : 'chờ duyệt'}
+                        {record.status === 1 ? 'Xuất bản' : 'Chờ duyệt'}
                     </Tag>
                 </Tooltip>
             ),
             width: 100
         },
         {
-            title: 'Ngày xuất bản',
+            title: 'Ngày tạo',
+            dataIndex: 'createdDate',
+            valueType: 'date',
+            width: 100,
+            search: false
+        },
+        {
+            title: 'Ngày cập nhật',
             dataIndex: 'modifiedDate',
             valueType: 'date',
-            width: 140,
+            width: 110,
             search: false
         },
         {

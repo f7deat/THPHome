@@ -14,3 +14,5 @@ export const apiPageBuilderUpdate = (data: any) => request(`post/page-builder/up
 export const apiShareZaloOA = (id: number) => request(`post/zalo/share/${id}`, {
     method: 'POST'
 });
+
+export const apiGetChartPostCreatedInYear = () => request(`post/chart-post-created-in-year`);
