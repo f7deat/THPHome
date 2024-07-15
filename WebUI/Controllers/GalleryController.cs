@@ -41,7 +41,7 @@ public class GalleryController : BaseController
             Url = SeoHelper.ToSeoFriendly(args.Title),
             Type = PostType.GALLERY
         });
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(true);
         return CreatedAtAction(nameof(GalleryAddAsync), IdentityResult.Success);
     }
 
@@ -54,7 +54,7 @@ public class GalleryController : BaseController
         gallery.Description = args.Description;
         gallery.Url = SeoHelper.ToSeoFriendly(args.Title);
         _context.Posts.Update(gallery);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(true);
         return Ok(IdentityResult.Success);
     }
 

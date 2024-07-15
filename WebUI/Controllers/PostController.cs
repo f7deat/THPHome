@@ -169,7 +169,7 @@ public class PostController : BaseController
         await _postCategoryService.DeleteAsync(post.Post.Id);
         await _postCategoryService.AddAsync(post.ListCategoryId, post.Post.Id);
         await _attachmentService.MapAsync(post.Attachments, post.Post.Id);
-        post.Post.ModifiedBy = user.Id;
+        post.Post.ModifiedBy = user?.Id;
         var data = await _postService.FindAsync(post.Post.Id);
         data.Description = post.Post.Description;
         data.Title = post.Post.Title;

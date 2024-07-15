@@ -46,24 +46,27 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<ApplicationSetting> ApplicationSettings { get; set; }
     public virtual DbSet<ZaloArticle> ZaloArticles { get; set; }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public Task<int> SaveChangesAsync(bool audit)
     {
-        var entries = ChangeTracker.Entries().Where(e => e.Entity is IBaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+        if (audit) return base.SaveChangesAsync();
+
+        var entries = ChangeTracker.Entries<IBaseEntity>().Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
         foreach (var entry in entries)
         {
             if (entry.State == EntityState.Added)
             {
-                ((IBaseEntity)entry.Entity).CreatedDate = DateTime.Now;
-                ((IBaseEntity)entry.Entity).CreatedBy = _currentUser.GetId();
+                entry.Entity.CreatedDate = DateTime.Now;
+                entry.Entity.ModifiedDate = DateTime.Now;
+                entry.Entity.CreatedBy = _currentUser.GetId();
             }
             if (entry.State == EntityState.Modified)
             {
-                ((IBaseEntity)entry.Entity).ModifiedDate = DateTime.Now;
-                ((IBaseEntity)entry.Entity).ModifiedBy = _currentUser.GetId();
+                entry.Entity.ModifiedDate = DateTime.Now;
+                entry.Entity.ModifiedBy = _currentUser.GetId();
             }
         }
 
-        return base.SaveChangesAsync(cancellationToken);
+        return base.SaveChangesAsync();
     }
 }
