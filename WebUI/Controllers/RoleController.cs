@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebUI.Api
+namespace WebUI.Controllers
 {
     [Authorize, Route("api/[controller]")]
     public class RoleController : Controller
@@ -36,7 +36,7 @@ namespace WebUI.Api
         }
 
         [Route("delete/{roleId}"), HttpPost]
-        public async Task<IActionResult> DeleteAsync([FromRoute]string roleId)
+        public async Task<IActionResult> DeleteAsync([FromRoute] string roleId)
         {
             var role = await _roleManager.FindByIdAsync(roleId);
             return Ok(await _roleManager.DeleteAsync(role));

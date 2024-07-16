@@ -1,15 +1,10 @@
-﻿using ApplicationCore.Constants;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using WebUI.Models.Api.Admin.Roles;
 using WebUI.Models.Api.Admin.Users;
 using Newtonsoft.Json;
@@ -17,23 +12,23 @@ using Microsoft.AspNetCore.WebUtilities;
 using WebUI.Models.Api.Admin.User;
 using ApplicationCore.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
 using Infrastructure;
 using WebUI.Extensions;
 using WebUI.Models.Filters.Users;
 using WebUI.Models.ViewModel;
 using WebUI.Foundations;
+using WebUI.ExternalAPI.Interfaces;
+using NuGet.Protocol.Plugins;
 
-namespace WebUI.Api;
+namespace WebUI.Controllers;
 
 [Route("api/[controller]"), Authorize]
-public class UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, ApplicationDbContext context) : BaseController(context)
+public class UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
-    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
     private readonly IConfiguration _configuration = configuration;
+    private readonly ITHPAuthen _thpAuthen = thpAuthen;
 
     [Route("get/{id?}")]
     public async Task<IActionResult> GetAsync([FromRoute] string id)
@@ -41,10 +36,13 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
         if (string.IsNullOrEmpty(id))
         {
             var user = await _userManager.FindByIdAsync(User.GetId());
-            var result = new ApplicationUser();
-            result.Email = user.Email;
-            result.Id = user.Id;
-            result.UserName = user.UserName;
+            if (user is null) return BadRequest("User not found!");
+            var result = new ApplicationUser
+            {
+                Email = user.Email,
+                Id = user.Id,
+                UserName = user.UserName
+            };
             return Ok(result);
         }
         return Ok(await _userManager.FindByIdAsync(id));
@@ -232,7 +230,6 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
             personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");
         }
 
-        Response.Headers.Add("Content-Disposition", "attachment; filename=PersonalData.json");
         return new FileContentResult(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(personalData)), "text/json");
     }
 
@@ -321,18 +318,21 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
             var userRoles = await _userManager.GetRolesAsync(user);
 
             var authClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String),
-            new Claim(ClaimTypes.Name, user.UserName, ClaimValueTypes.String),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        };
+            {
+                new(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String),
+                new(ClaimTypes.Name, user.UserName ?? string.Empty, ClaimValueTypes.String),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
 
             foreach (var userRole in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole, ClaimValueTypes.String));
             }
 
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var secretCode = _configuration["JWT:Secret"];
+            if (string.IsNullOrEmpty(secretCode)) return BadRequest($"Secret code not found!");
+
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretCode));
 
             var token = new JwtSecurityToken(
                 expires: DateTime.Now.AddDays(7),
@@ -353,11 +353,50 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCurrentUserAsync()
-    {
-        return Ok(await _userManager.FindByIdAsync(User.GetId()));
-    }
+    public async Task<IActionResult> GetCurrentUserAsync() => Ok(await _userManager.FindByIdAsync(User.GetId()));
 
+    [HttpPost("sso")]
+    public async Task<IActionResult> SSOAsync([FromBody] LoginModel args)
+    {
+        var thpUser = await _thpAuthen.LoginAsync(args.UserName, args.Password);
+        if (thpUser is null) return BadRequest("Tài khoản hoặc mật khẩu không đúng!");
+        var user = await _userManager.FindByNameAsync(args.UserName);
+        if (user is null)
+        {
+            user = new ApplicationUser
+            {
+                UserName = args.UserName
+            };
+            await _userManager.CreateAsync(user);
+        }
+
+        var authClaims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String),
+                new(ClaimTypes.Name, user.UserName ?? string.Empty, ClaimValueTypes.String),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+        var secretCode = _configuration["JWT:Secret"];
+        if (string.IsNullOrEmpty(secretCode)) return BadRequest($"Secret code not found!");
+
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretCode));
+
+        var token = new JwtSecurityToken(
+            expires: DateTime.Now.AddDays(7),
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
+
+        var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return Ok(new
+        {
+            token = generatedToken,
+            expiration = token.ValidTo,
+            succeeded = true
+        });
+    }
 
     #region Role
     [HttpGet("roles/{userId}")]

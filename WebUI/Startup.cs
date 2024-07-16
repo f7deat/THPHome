@@ -73,6 +73,8 @@ public class Startup(IConfiguration configuration)
 
         services.AddTransient<ICurrentUser, CurrentUser>();
 
+        services.AddHttpClient<ITHPAuthen, ThpAuthen>();
+
         services.AddControllersWithViews();
         services.Configure<SettingOptions>(Configuration.GetSection(SettingOptions.Settings));
         services.AddCors();

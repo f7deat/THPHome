@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebUI.Extensions;
 
-namespace WebUI.Api
+namespace WebUI.Controllers
 {
     [Route("api/[controller]"), Authorize]
     public class CommentController : Controller

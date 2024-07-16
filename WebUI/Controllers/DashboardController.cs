@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebUI.Foundations;
 
-namespace WebUI.Api
+namespace WebUI.Controllers
 {
     public class DashboardController : BaseController
     {

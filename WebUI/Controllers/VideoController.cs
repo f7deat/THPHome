@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebUI.Api
+namespace WebUI.Controllers
 {
     [Route("api/[controller]"), Authorize]
     public class VideoController : Controller

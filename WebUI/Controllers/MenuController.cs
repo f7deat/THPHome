@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using WebUI.Extensions;
 using WebUI.Foundations;
 
-namespace WebUI.Api
+namespace WebUI.Controllers
 {
     public class MenuController : BaseController
     {
