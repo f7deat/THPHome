@@ -355,7 +355,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     [HttpGet]
     public async Task<IActionResult> GetCurrentUserAsync() => Ok(await _userManager.FindByIdAsync(User.GetId()));
 
-    [HttpPost("sso")]
+    [HttpPost("sso"), AllowAnonymous]
     public async Task<IActionResult> SSOAsync([FromBody] LoginModel args)
     {
         var thpUser = await _thpAuthen.LoginAsync(args.UserName, args.Password);
@@ -365,7 +365,10 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
         {
             user = new ApplicationUser
             {
-                UserName = args.UserName
+                UserName = args.UserName,
+                Name = $"{thpUser.FirstName} {thpUser.LastName}",
+                Email = thpUser.Email,
+                PhoneNumber = thpUser.PhoneNumber
             };
             await _userManager.CreateAsync(user);
         }

@@ -219,8 +219,8 @@ const PostSetting = () => {
                                     message: 'Vui lòng nhập mô tả bài viết'
                                 },
                                 {
-                                    max: 150,
-                                    message: 'Mô tả tối đa 150 ký tự'
+                                    max: 300,
+                                    message: 'Mô tả tối đa 300 ký tự'
                                 }
                             ]} />
 

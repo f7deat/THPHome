@@ -1,10 +1,10 @@
 import { ModalForm, ProCard, ProFormText } from "@ant-design/pro-components";
 import { history } from "@umijs/max";
-import { Button, Col, Divider, Form, Layout, Row, message } from "antd";
+import { Alert, Button, Col, Divider, Form, Layout, Row, message } from "antd";
 import './index.css';
 import { Helmet } from "@umijs/max";
-import { FacebookOutlined, GoogleOutlined, LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
-import { apiLogin } from "@/services/user";
+import { FacebookOutlined, LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
+import { apiLogin, apiLoginSSO } from "@/services/user";
 import { useModel } from "@umijs/max";
 import { flushSync } from "react-dom";
 import { useState } from "react";
@@ -16,6 +16,7 @@ const Login: React.FC = () => {
 
     const { initialState, setInitialState } = useModel('@@initialState');
     const [open, setOpen] = useState<boolean>(false);
+    const [openSSO, setOpenSSO] = useState<boolean>(false);
 
     const fetchUserInfo = async () => {
         const userInfo = await initialState?.fetchUserInfo?.();
@@ -76,8 +77,9 @@ const Login: React.FC = () => {
                                         <Button type="link" size="small" onClick={() => setOpen(true)}>Quên mật khẩu?</Button>
                                     </div>
                                     <Divider>Hoặc</Divider>
+                                    <Alert type="warning" showIcon message="Từ ngày 17/07/2024 có thể đăng nhập SSO bằng tài khoản QLDT" />
                                     <div className="login-social">
-                                        <Button size="large" className="w-full mb-2" icon={<GoogleOutlined />}>Đăng nhập với Gooogle</Button>
+                                        <Button size="large" className="w-full mb-2" icon={<LoginOutlined />} onClick={() => setOpenSSO(true)}>Đăng nhập SSO</Button>
                                         <Button type="primary" size="large" className="w-full" icon={<FacebookOutlined />}>Đăng nhập với Facebook</Button>
                                     </div>
                                 </div>
@@ -97,6 +99,25 @@ const Login: React.FC = () => {
                     {
                         type: 'email'
                     },
+                    {
+                        required: true
+                    }
+                ]} />
+            </ModalForm>
+            <ModalForm open={openSSO} onOpenChange={setOpenSSO} title="Đăng nhập SSO" onFinish={async (values: any) => {
+                const response = await apiLoginSSO(values);
+                message.success('Đăng nhập thành công!')
+                localStorage.setItem('wf_token', response.token || '');
+                await fetchUserInfo();
+                const urlParams = new URL(window.location.href).searchParams;
+                history.push(urlParams.get('redirect') || '/');
+            }}>
+                <ProFormText name="userName" label="Tài khoản" rules={[
+                    {
+                        required: true
+                    }
+                ]} />
+                <ProFormText.Password name="password" label="Mật khẩu" rules={[
                     {
                         required: true
                     }
