@@ -1,9 +1,11 @@
 ﻿using ApplicationCore.Enums;
+using ApplicationCore.Models.Filters;
 
 namespace WebUI.Models.Filters;
 
-public class CategoryFilterOptions
+public class CategoryFilterOptions : FilterOptions
 {
+    public string? Name { get; set; }
 }
 
 public class CategorySelectFilterOptions

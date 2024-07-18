@@ -26,7 +26,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Category> Categories { get; set; }
     public virtual DbSet<Banner> Banners { get; set; }
     public virtual DbSet<PostCategory> PostCategories { get; set; }
-    public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<Menu> Menus { get; set; }
     public virtual DbSet<Partner> Partners { get; set; }
     public virtual DbSet<Video> Videos { get; set; }

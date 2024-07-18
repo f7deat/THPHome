@@ -1,27 +1,65 @@
-import { Button, Checkbox, Col, Drawer, Empty, Form, Input, message, Modal, Popconfirm, Row, Space, Switch } from "antd";
-import { useRef, useState } from "react";
+import { Button, Col, Drawer, Empty, Image, message, Popconfirm, Row, Space, Switch, Tooltip } from "antd";
+import { useEffect, useRef, useState } from "react";
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
     FolderOutlined,
-    ArrowLeftOutlined
+    ArrowLeftOutlined,
+    CheckOutlined
 } from "@ant-design/icons";
 import { Link, request, useIntl } from "@umijs/max";
-import { ActionType, PageContainer, ProColumnType, ProFormSelect, ProTable } from "@ant-design/pro-components";
+import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormCheckbox, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
 import { language } from "@/utils/format";
-import { apiGetCategories, apiGetParentCategoryOptions, apiGetPostsCategory } from "@/services/categoy";
-
-const { TextArea } = Input;
+import { apiGetCategories, apiGetCategory, apiGetParentCategoryOptions, apiGetPostsCategory } from "@/services/categoy";
 
 const CategoryList = () => {
     const [visible, setVisible] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [id, setId] = useState(0);
+    const [id, setId] = useState<number>(0);
     const [category, setCategory] = useState<any>();
-    const [displayOnHome, setDisplayOnHome] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const postActionRef = useRef<ActionType>();
+    const formRef = useRef<ProFormInstance>();
+    const [thumbnail, setThumbnail] = useState<string>('');
+
+    useEffect(() => {
+        if (id) {
+            apiGetCategory(id).then(response => {
+                formRef.current?.setFields([
+                    {
+                        name: 'id',
+                        value: response.id
+                    },
+                    {
+                        name: 'name',
+                        value: response.name
+                    },
+                    {
+                        name: 'icon',
+                        value: response.icon
+                    },
+                    {
+                        name: 'description',
+                        value: response.description
+                    },
+                    {
+                        name: 'parentId',
+                        value: response.description
+                    },
+                    {
+                        name: 'thumbnail',
+                        value: response.thumbnail
+                    },
+                    {
+                        name: 'isDisplayOnHome',
+                        value: response.isDisplayOnHome
+                    }
+                ]);
+                setThumbnail(response.thumbnail);
+            });
+        }
+    }, [id]);
 
     const intl = useIntl();
 
@@ -36,15 +74,14 @@ const CategoryList = () => {
         })
     }
 
-    const handleOk = () => {
-        category.language = language(intl.locale)
-        category.isDisplayOnHome = displayOnHome;
-        if (category.id) {
-            update(category);
+    const handleOk = async (values: any) => {
+        values.language = language(intl.locale)
+        if (values.id) {
+            update(values);
         } else {
             request(`category/add`, {
                 method: 'POST',
-                data: category
+                data: values
             }).then((response) => {
                 if (response.succeeded) {
                     message.success(response.message);
@@ -58,15 +95,8 @@ const CategoryList = () => {
     };
 
     const handleAdd = () => {
-        setDisplayOnHome(false)
         setIsModalVisible(true);
         setCategory({})
-    };
-
-    const handleEdit = (category: any) => {
-        setDisplayOnHome(category.isDisplayOnHome)
-        setCategory(category);
-        setIsModalVisible(true);
     };
 
     function handleRemove(id: number) {
@@ -114,6 +144,14 @@ const CategoryList = () => {
             dataIndex: 'name'
         },
         {
+            title: "Hiển thị trên trang chủ",
+            dataIndex: 'isDisplayOnHome',
+            render: (dom, entity) => entity.isDisplayOnHome ? <CheckOutlined /> : '',
+            width: 180,
+            align: 'center',
+            search: false
+        },
+        {
             title: "Số bài đăng",
             dataIndex: 'count',
             search: false,
@@ -133,8 +171,8 @@ const CategoryList = () => {
         {
             title: "Tác vụ",
             valueType: 'option',
-            render: (dom, record) => (
-                <Space>
+            render: (dom, record) => [
+                <Tooltip key="detail" title="Chi tiết">
                     <Button
                         type="primary"
                         size="small"
@@ -145,22 +183,28 @@ const CategoryList = () => {
                             postActionRef.current?.reload();
                         }}
                     ></Button>
+                </Tooltip>,
+                <Tooltip key="edit" title="Chỉnh sửa">
                     <Button
                         size="small"
                         icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
+                        onClick={() => {
+                            setId(record.id);
+                            setIsModalVisible(true);
+                        }}
                     ></Button>
-                    <Popconfirm
-                        title="Are you sure to delete?"
-                        okText="Yes"
-                        cancelText="No"
-                        onConfirm={() => handleRemove(record.id)}
-                    >
-                        <Button type="primary"
-                            size="small" danger icon={<DeleteOutlined />}></Button>
-                    </Popconfirm>
-                </Space>
-            ),
+                </Tooltip>,
+                <Popconfirm
+                    key="delete"
+                    title="Are you sure to delete?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={() => handleRemove(record.id)}
+                >
+                    <Button type="primary"
+                        size="small" danger icon={<DeleteOutlined />}></Button>
+                </Popconfirm>
+            ],
             width: 100
         },
     ];
@@ -179,7 +223,7 @@ const CategoryList = () => {
             title: "Tác vụ",
             render: (dom, record: any) => [
                 <Link key="edit" to={`/post/setting/${record.id}`}>
-                <Button type="primary" icon={<EditOutlined />} size="small"></Button>
+                    <Button type="primary" icon={<EditOutlined />} size="small"></Button>
                 </Link>,
                 <Popconfirm
                     key="delete"
@@ -237,58 +281,46 @@ const CategoryList = () => {
                     rowKey="id"
                 />
             </Drawer>
-            <Modal
-                title={category?.name || "Danh mục"}
+            <ModalForm
+                formRef={formRef}
+                title="Danh mục"
                 open={isModalVisible}
-                onOk={handleOk}
-                onCancel={() => setIsModalVisible(false)}
-                width={600}
+                onFinish={handleOk}
+                onOpenChange={setIsModalVisible}
             >
-                <Form layout="vertical">
-                    <Row gutter={16}>
-                        <Col span={12}>
-                            <div>Tên danh mục:</div>
-                            <Input className="mb-2" value={category?.name} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, name: e.target.value }))} />
-                            <div>Icon:</div>
-                            <Input className="mb-2" value={category?.icon} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, icon: e.target.value }))} />
-                            <Form.Item label="Normalize Name" tooltip="Dùng làm key cho đa ngôn ngữ" rules={[
-                                {
-                                    required: true,
-                                    message: 'Vui lòng nhập!'
-                                }
-                            ]}>
-                                <Input className="mb-2" value={category?.url} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, normalizeName: e.target.value }))} />
-                            </Form.Item>
-                            <ProFormSelect label="Danh mục cha" name="parentId"
-                                request={(params) => apiGetParentCategoryOptions({
-                                    ...params,
-                                    language: language(intl.locale)
-                                })}
+                <ProFormText name="id" hidden />
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <ProFormText label="Tên danh mục" name="name" rules={[
+                            {
+                                required: true
+                            }
+                        ]} />
+                        <ProFormText label="Icon" name="icon" />
+                        <ProFormSelect label="Danh mục cha" name="parentId"
+                            request={(params) => apiGetParentCategoryOptions({
+                                ...params,
+                                language: language(intl.locale)
+                            })}
+                        />
+                        <ProFormTextArea label="Mô tả" name='description' />
+                    </Col>
+                    <Col span={12}>
+                        <ProFormText label="Ảnh đại diện" name="thumbnail" />
+                        {thumbnail ? (
+                            <Image
+                                src={thumbnail}
+                                className="w-full object-fit-cover"
+                                height={138}
                             />
-                            <div>Mô tả:</div>
-                            <TextArea className="mb-2" value={category?.description} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, description: e.target.value }))} />
-                        </Col>
-                        <Col span={12}>
-                            <div>Thumbnail:</div>
-                            <Input className="mb-2" value={category?.thumbnail} onChange={(e: any) => setCategory((prevState: any) => ({ ...prevState, thumbnail: e.target.value }))} />
-                            {category?.thumbnail ? (
-                                <img
-                                    src={category?.thumbnail}
-                                    alt={category?.name}
-                                    className="w-full object-fit-cover"
-                                    height={138}
-                                />
-                            ) : (
-                                <Empty />
-                            )}
-                            <div>
-                                <Checkbox onChange={(e) => setDisplayOnHome(e.target.checked)} checked={displayOnHome}>Hiển thị trên trang chủ</Checkbox>
-                            </div>
+                        ) : (
+                            <Empty />
+                        )}
+                        <ProFormCheckbox name="isDisplayOnHome" label="Hiển thị trên trang chủ" />
 
-                        </Col>
-                    </Row>
-                </Form>
-            </Modal>
+                    </Col>
+                </Row>
+            </ModalForm>
         </PageContainer>
     );
 };

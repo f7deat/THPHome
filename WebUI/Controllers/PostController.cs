@@ -116,17 +116,7 @@ public class PostController : BaseController
     }
 
     [HttpPost("set-status")]
-    public async Task<IActionResult> SetStatusAsync(Post post)
-    {
-        var data = await _context.Posts.FindAsync(post.Id);
-        var user = await _userManager.FindByIdAsync(User.GetId());
-        var text = post.Status == PostStatus.PUBLISH ? "publish" : "draft";
-        if (_webHostEnvironment.IsProduction())
-        {
-            await _telegramService.SendMessageAsync($"{user.UserName} {text}: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
-        }
-        return Ok(await _postService.SetStatusAsync(post));
-    }
+    public async Task<IActionResult> SetStatusAsync(Post post) => Ok(await _postService.SetStatusAsync(post));
 
     [HttpPost("remove/{id}")]
     public async Task<IActionResult> RemoveAsync([FromRoute] long id)

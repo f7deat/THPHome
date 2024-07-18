@@ -94,59 +94,6 @@
                     </div>
                 }
 
-                <div class="px-4 py-2 bg-gray-800 text-white font-bold rounded-t"><i class="fas fa-comment mr-2 text-sm"></i>Bình luận</div>
-                <div class="mb-3">
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <div class="px-4 py-2 bg-gray-100 mb-3">
-                            <textarea class="p-4 w-full border mb-2 bg-white" id="txtCommentContent"></textarea>
-                            <button class="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded" type="button" onclick="addComment()">Gửi bình luận</button>
-                        </div>
-                        <script>
-                            async function addComment() {
-                                const rawResponse = await fetch('/api/comment/add', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Accept': 'application/json',
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({ content: document.getElementById('txtCommentContent').value, postId: @Model.PageData.Id })
-                                });
-                                const content = await rawResponse.json();
-                                if (content.succeeded) {
-                                    location.reload();
-                                } else {
-                                    console.log(content)
-                                }
-                            }
-                        </script>
-                    }
-                    else
-                    {
-                        <div class="bg-gray-100 mb-2 px-4 py-2">
-                            <a class="mr-1" href="/Identity/Account/Login?returnUrl=@Model.Url" )">Đăng ký / Đăng nhập</a><span>để gửi bình luận</span>
-                        </div>
-                    }
-                    @if (Model.ListComment.Count() > 0)
-                    {
-                        foreach (var item in Model.ListComment)
-                        {
-                            <div class="px-4 py-2 bg-gray-100 flex items-center justify-between border-t border-l border-r">
-                                <div class="font-bold"><i class="fas fa-user text-sm mr-2"></i>@item.UserName</div>
-                                <div class="text-gray-700"><i class="fas fa-calendar text-sm mr-1"></i> @item.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss")</div>
-                            </div>
-                            <div class="px-4 py-2 border-b border-l border-r">
-                                @item.Content
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="mt-1 border text-center p-2 text-sm">Chưa có bình luận. Hãy là người đầu tiên</div>
-                    }
-                </div>
-
-
                 @if (Model.RelatedPosts != null)
                 {
                     <div class="related mb-4">

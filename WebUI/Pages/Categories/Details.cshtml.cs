@@ -61,7 +61,7 @@ namespace WebUI.Pages.Categories
             }
             if (Category.ParrentId != null)
             {
-                ParentCategory = await _categoryService.GetParrentAsync(Category.ParrentId ?? 0);
+                ParentCategory = await _categoryService.GetParentAsync(Category.ParrentId ?? 0) ?? new Category();
             }
             ViewData["Title"] = Category.Name;
             if (!string.IsNullOrEmpty(SearchTerm))

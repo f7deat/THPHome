@@ -27,6 +27,7 @@ public class IndexModel : EntryPageModel
     public IEnumerable<PostView> ListNotification = [];
     public List<Banner> Slides = [];
     public List<BlockList> Blocks = [];
+    public IEnumerable<PostView> PressTalks = [];
 
     public IndexModel(IPostService postService, IMenuService menuService, IVideoService videoService, ICategoryService categoryService, ApplicationDbContext context) : base(postService, context)
     {
@@ -79,6 +80,24 @@ public class IndexModel : EntryPageModel
                             Id = a.Id,
                             ViewComponent = b.NormalizedName
                         }).ToListAsync();
+
+        var pressTalks = from a in _context.Posts
+                     join b in _context.PostCategories on a.Id equals b.PostId
+                     where b.CategoryId == 551
+                         orderby a.CreatedDate descending
+                     select new PostView
+                     {
+                         Id = a.Id,
+                         Description = a.Description,
+                         ModifiedDate = a.ModifiedDate ?? a.CreatedDate,
+                         Thumbnail = a.Thumbnail,
+                         Title = a.Title,
+                         Url = a.Url,
+                         View = a.View
+                     };
+
+        PressTalks = await pressTalks.Take(3).ToListAsync();
+
         return Page();
     }
 }

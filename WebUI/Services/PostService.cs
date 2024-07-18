@@ -33,7 +33,6 @@ public class PostService : IPostService
     {
         post.CreatedDate = DateTime.Now;
         post.ModifiedDate = DateTime.Now;
-        post.Status = PostStatus.DRAFT;
         post.View = 0;
         post.Url = SeoHelper.ToSeoFriendly(post.Title);
         return await _postRepository.AddAsync(post);

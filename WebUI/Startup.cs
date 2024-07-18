@@ -50,8 +50,6 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IPostCategoryService, PostCategoryService>();
         services.AddScoped<IBannerRepository, BannerRepository>();
         services.AddScoped<IBannerService, BannerService>();
-        services.AddScoped<ICommentService, CommentService>();
-        services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<IMenuService, MenuService>();
         services.AddScoped<IMenuRepository, MenuRepository>();
         services.AddScoped<IPartnerService, PartnerService>();

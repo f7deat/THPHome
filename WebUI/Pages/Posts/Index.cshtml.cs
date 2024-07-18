@@ -10,17 +10,15 @@ using WebUI.Models.Posts;
 
 namespace WebUI.Pages.Posts
 {
-    public class IndexModel(ApplicationDbContext context, ICategoryService categoryService, IPostService postService, IAttachmentService attachmentService, ICommentService commentService) : DynamicPageModel(context)
+    public class IndexModel(ApplicationDbContext context, ICategoryService categoryService, IPostService postService, IAttachmentService attachmentService) : DynamicPageModel(context)
     {
         private readonly ICategoryService _categoryService = categoryService;
         private readonly IPostService _postService = postService;
         private readonly IAttachmentService _attachmentService = attachmentService;
-        private readonly ICommentService _commentService = commentService;
         public IEnumerable<PostView> RandomPosts = new List<PostView>();
         public IEnumerable<Post> RelatedPosts = new List<Post>();
         public List<Category> Categories = [];
         public List<Attachment> Attachments = [];
-        public IEnumerable<CommentInPost> ListComment = new List<CommentInPost>();
         public List<BlockList> Blocks = new List<BlockList>();
 
         public async Task<IActionResult> OnGetAsync()
@@ -46,7 +44,6 @@ namespace WebUI.Pages.Posts
             }
 
             Attachments = await _attachmentService.GetListInPostAsync(PageData.Id);
-            ListComment = await _commentService.GetListInPostAsync(PageData.Id);
 
             if (PageData.Type == PostType.PAGE)
             {

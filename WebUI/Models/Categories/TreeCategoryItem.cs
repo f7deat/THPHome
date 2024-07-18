@@ -10,5 +10,6 @@ public class TreeCategoryItem
     public CategoryStatus? Status { get; set; }
     public int Count { get; set; }
     public int? ParentId { get; set; }
+    public bool IsDisplayOnHome { get; set; }
     public IEnumerable<TreeCategoryItem>? Children { get; set; }
 }

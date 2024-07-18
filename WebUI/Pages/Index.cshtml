@@ -5,13 +5,15 @@
 @{
     int i = 0;
     int j = 0;
+    int e = 0;
+    int f = 0;
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
 
 <div class="container">
     <div class="row">
-        <div class="col-md-8 mb-2">
+        <div class="col-md-8 mb-4">
             <div id="carouselExampleIndicators" class="carousel slide position-relative">
                 <div class="carousel-indicators">
                     @foreach (var item in Model.Slides)
@@ -49,7 +51,7 @@
                 </button>
             </div>
         </div>
-        <div class="col-md-4 mb-2">
+        <div class="col-md-4  mb-4">
             <div class="title">
                 <localize key="operator" />
             </div>
@@ -67,6 +69,76 @@
                         </a>
                     </div>
                 }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <a href="https://tuyensinh.dhhp.edu.vn/">
+                <img src="https://dhhp.edu.vn/files/Banner web VNS.png" alt="Banner" class="w-100" loading="lazy" style="height: 100%; object-fit: contain">
+            </a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="title mb-1" style="text-transform: uppercase">
+                Báo chí nói về chúng tôi
+            </div>
+            <div id="carouselPressTalks" class="carousel slide h-full">
+                <div class="carousel-indicators">
+                    @foreach (var item in Model.PressTalks)
+                    {
+                        <button type="button" data-bs-target="#carouselPressTalks" data-bs-slide-to="@f" class="@(f == 0 ? "active" : "")" aria-label="Slide @f" @(f == 0 ? "aria-current='true'" : "")></button>
+                        f++;
+                    }
+                </div>
+                <div class="carousel-inner h-full">
+                    @foreach (var item in Model.PressTalks)
+                    {
+                        <div class="carousel-item @(e == 0 ? "active" : "")" style="height: calc(100% - 40px)">
+                            <div class="flex flex-col rounded border border-gray-100 h-full">
+                                <a href="@item.Url" title="@item.Title" class="bg-black">
+                                    <img src="@item.Thumbnail" class="w-full transition-opacity duration-700 ease-in-out hover:opacity-50 object-cover" alt="@item.Title" title="@item.Title" style="height: 180px" />
+                                </a>
+                                <div class="flex-1 p-2">
+                                    <a href="@item.Url" title="@item.Title" class="line-clamp-2 font-bold">@item.Title</a>
+                                    <div class="text-gray-500 line-clamp-3">
+                                        @item.Description
+                                    </div>
+                                </div>
+                                <div class="bg-gray-100 rounded-b text-gray-600 flex justify-between p-1 items-center">
+                                    <div class="post-info">
+                                        <small class="mr-2">
+                                            <i class="fas fa-clock"></i>
+                                            @item.ModifiedDate
+                                        </small>
+                                        <small>
+                                            <i class="fa fa-eye"></i> @(item.View.ToString("N0"))
+                                        </small>
+                                    </div>
+                                    <div class="relative">
+                                        <button type="button" class="bg-white w-10 h-10 flex justify-center items-center rounded-full border hover:bg-gray-900 hover:text-white transtion duration-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-share-alt"></i></button>
+                                        <ul class="hidden absolute top-10 z-10 p-0 m-0">
+                                            <li class="w-10 h-10 flex bg-blue-300 text-white items-center justify-center rounded-full cursor-pointer hover:bg-blue-400"><a data-title="Twitter" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-twitter"></i></a></li>
+                                            <li class="w-10 h-10 flex bg-blue-500 text-white items-center justify-center rounded-full cursor-pointer hover:bg-blue-600"><a data-title="Facebook" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-facebook"></i></a></li>
+                                            <li class="w-10 h-10 flex bg-red-500 text-white items-center justify-center rounded-full cursor-pointer hover:bg-red-600"><a data-title="Pinterest" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-pinterest"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        e++;
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
         </div>
     </div>

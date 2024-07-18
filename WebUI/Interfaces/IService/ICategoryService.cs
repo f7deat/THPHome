@@ -19,7 +19,7 @@ namespace ApplicationCore.Interfaces.IService
         Task<IEnumerable<Category>> GetChildCategoriesAsync(int parentId);
         Task<dynamic> AddAsync(Category category);
         Task<dynamic> DeleteAsync(int id);
-        Task<Category> GetParrentAsync(int categoryId);
+        Task<Category?> GetParentAsync(int categoryId);
         Task<List<Category>> GetListInPostAsync(long postId);
         Task<dynamic> UpdateAsync(Category category);
         Task<List<GroupCategory>> GetGroupCategories(Language language);

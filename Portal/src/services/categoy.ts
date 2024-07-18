@@ -7,3 +7,5 @@ export const apiGetCategories = (params: any) => request(`category/list`, { para
 export const apiGetParentCategoryOptions = (params: any) => request(`category/parent/options`, { params });
 
 export const apiGetPostsCategory = (params: any) => request(`category/posts`, { params });
+
+export const apiGetCategory = (id: number) => request(`category/${id}`);

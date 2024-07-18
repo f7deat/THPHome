@@ -18,7 +18,7 @@ import {
   export const AvatarName = () => {
     const { initialState } = useModel('@@initialState');
     const { currentUser } = initialState || {};
-    return <span className="anticon">{currentUser?.userName}</span>;
+    return <span className="anticon">{currentUser?.name}</span>;
   };
   
   const AvatarLogo = () => {
@@ -127,6 +127,7 @@ import {
           onClick: onMenuClick,
           items: menuItems,
         }}
+        arrow
       >
         <Space className='cursor-pointer'>
           <AvatarLogo />

@@ -37,10 +37,12 @@ public class CategoryController : BaseController
     public async Task<IActionResult> GetPostsAsync([FromQuery] PostInCategoryFilterOptions filterOptions) => Ok(await _postService.GetInCategoryAsync(filterOptions));
 
     [HttpGet("list")]
-    public async Task<IActionResult> GetListAsync([FromQuery] Language language)
+    public async Task<IActionResult> GetListAsync([FromQuery] CategoryFilterOptions filterOptions)
     {
         var result = new List<TreeCategoryItem>();
-        var raw = await _context.Categories.Where(x => x.Status == CategoryStatus.Active).Where(x => x.Language == language)
+        var raw = await _context.Categories
+            .Where(x => x.Language == filterOptions.Language)
+            .Where(x => string.IsNullOrEmpty(filterOptions.Name) || (!string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower())))
             .Select(x => new TreeCategoryItem
             {
                 ParentId = x.ParrentId,
@@ -48,7 +50,8 @@ public class CategoryController : BaseController
                 Id = x.Id,
                 Description = x.Description,
                 Status = x.Status,
-                Count = _context.PostCategories.Count(c => c.CategoryId == x.Id)
+                Count = _context.PostCategories.Count(c => c.CategoryId == x.Id),
+                IsDisplayOnHome = x.IsDisplayOnHome
             }).ToListAsync();
         var categories = raw.Where(x => x.ParentId == null || x.ParentId == 0)
             .Select(x => new TreeCategoryItem
@@ -58,7 +61,8 @@ public class CategoryController : BaseController
                 Id = x.Id,
                 Description = x.Description,
                 Status = x.Status,
-                Count = x.Count
+                Count = x.Count,
+                IsDisplayOnHome = x.IsDisplayOnHome
             });
         foreach (var category in categories)
         {
@@ -69,7 +73,8 @@ public class CategoryController : BaseController
                 Description = category.Description,
                 Children = GetTreeDataItem(category.Id, raw),
                 Status = category.Status,
-                Count = category.Count
+                Count = category.Count,
+                IsDisplayOnHome = category.IsDisplayOnHome
             });
         }
         return Ok(new
@@ -79,13 +84,10 @@ public class CategoryController : BaseController
         });
     }
 
-    [Route("add"), HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody] Category category)
-    {
-        return CreatedAtAction(nameof(AddAsync), await _categoryService.AddAsync(category));
-    }
+    [HttpPost("add")]
+    public async Task<IActionResult> AddAsync([FromBody] Category category) => CreatedAtAction(nameof(AddAsync), await _categoryService.AddAsync(category));
 
-    [Route("delete/{id}"), HttpPost]
+    [HttpPost("delete/{id}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] int id)
     {
         var category = await _context.Categories.FindAsync(id);
@@ -177,5 +179,25 @@ public class CategoryController : BaseController
             });
         }
         return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAsync([FromRoute] int id)
+    {
+        var category = await _context.Categories.FindAsync(id);
+        if (category is null) return BadRequest("Data not found!");
+        return Ok(new
+        {
+            category.Id,
+            category.Name,
+            category.Description,
+            category.Status,
+            category.Language,
+            ParentId = category.ParrentId,
+            category.NormalizeName,
+            category.IsDisplayOnHome,
+            category.Icon,
+            category.Thumbnail
+        });
     }
 }

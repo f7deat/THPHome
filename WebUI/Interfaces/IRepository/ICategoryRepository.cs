@@ -14,7 +14,7 @@ namespace ApplicationCore.Interfaces.IRepository
         IQueryable<Category> ListByParrentId(int? parrentId);
         Task<IEnumerable<Category>> GetChildAsync(int parentId);
         Task<IEnumerable<PostView>> GetRandomPostsAsync(int categoryId, int pageSize);
-        Task<Category> GetParrentAsync(int categoryId);
+        Task<Category?> GetParrentAsync(int categoryId);
         Task<IEnumerable<Category>> GetListAsyc(int id, Language lang);
         Task<List<Category>> GetListInPostAsync(long postId);
         Task<bool> IsExistAsync(string normalizeName);
