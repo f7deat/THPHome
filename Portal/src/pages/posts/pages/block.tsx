@@ -1,4 +1,5 @@
 import { BannerBlock, DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
+import HtmlBlock from "@/components/blocks/html";
 import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
@@ -176,6 +177,9 @@ const PageBlock: React.FC = () => {
         }
         if (block.normalizedName === 'BannerBlock') {
             return <BannerBlock id={block.id} />
+        }
+        if (block.normalizedName === 'HtmlBlock') {
+            return <HtmlBlock id={block.id} />
         }
         return <Empty />
     }
