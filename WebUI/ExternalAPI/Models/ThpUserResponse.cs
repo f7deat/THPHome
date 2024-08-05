@@ -20,4 +20,6 @@ public class ThpUserResponse
     public string? Email { get; set; }
     [JsonProperty("address")]
     public string? Address { get; set; }
+    [JsonProperty("userType")]
+    public int? UserType { get; set; }
 }

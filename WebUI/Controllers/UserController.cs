@@ -360,6 +360,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
     {
         var thpUser = await _thpAuthen.LoginAsync(args.UserName, args.Password);
         if (thpUser is null) return BadRequest("Tài khoản hoặc mật khẩu không đúng!");
+        if (thpUser.UserType == 0) return BadRequest("Bạn không có quyền truy cập vào hệ thống!");
         var user = await _userManager.FindByNameAsync(args.UserName);
         if (user is null)
         {
