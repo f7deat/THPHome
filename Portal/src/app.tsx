@@ -52,6 +52,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     waterMarkProps: {
       content: initialState?.name
     },
+    locale: 'vi-VN' as any,
     token: {
         sider: {
           colorMenuBackground: '#00387a',
