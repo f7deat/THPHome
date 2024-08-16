@@ -222,6 +222,12 @@ export default defineConfig({
       ],
     },
     {
+      path: '/onboard',
+      name: 'Nhập học',
+      icon: 'LoginOutlined',
+      component: './onboard'
+    },
+    {
       path: '/accounts',
       layout: false,
       routes: [

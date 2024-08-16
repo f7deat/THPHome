@@ -1,14 +1,13 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://api.onboard.dhhp.edu.vn/api', // your API base URL
-  timeout: 10000, // request timeout
+  baseURL: 'https://api.onboard.dhhp.edu.vn/api/'
 });
 
 // Request Interceptor 1: Add Authorization Token
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('wf_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
