@@ -30,7 +30,7 @@ const HomePage: React.FC = () => {
     <PageContainer ghost>
       <div>
         <Row gutter={16} className="mb-4">
-          <Col md={6}>
+          <Col xs={12} md={6}>
             <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
               <Statistic
                 title="Lượt xem"
@@ -42,7 +42,7 @@ const HomePage: React.FC = () => {
               </div>
             </ProCard>
           </Col>
-          <Col md={6}>
+          <Col xs={12} md={6}>
             <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
               <Statistic
                 title="Tuyển sinh"
@@ -54,7 +54,7 @@ const HomePage: React.FC = () => {
               </div>
             </ProCard>
           </Col>
-          <Col md={6}>
+          <Col xs={12} md={6}>
             <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
               <Statistic
                 title="Tệp tin"
@@ -66,7 +66,7 @@ const HomePage: React.FC = () => {
               </div>
             </ProCard>
           </Col>
-          <Col md={6}>
+          <Col xs={12} md={6}>
             <ProCard className="bg-white rounded">
               <Statistic
                 title="Giảng viên"

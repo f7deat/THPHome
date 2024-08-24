@@ -65,6 +65,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
           colorTextMenuSecondary: '#FFFFFF',
           colorTextMenuTitle: '#FFFFFF',
         },
+        pageContainer: {
+          paddingInlinePageContainerContent: 16
+        }
     },
     footerRender: () => (
       <DefaultFooter copyright="Produced by Hai Phong University" links={[

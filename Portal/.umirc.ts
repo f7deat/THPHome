@@ -223,9 +223,20 @@ export default defineConfig({
     },
     {
       path: '/onboard',
-      name: 'Nhập học',
+      name: 'Onboard',
       icon: 'LoginOutlined',
-      component: './onboard'
+      routes: [
+        {
+          name: 'Chuyên ngành',
+          path: '/onboard/major',
+          component: './onboard/major'
+        },
+        {
+          name: 'Đơn đăng ký',
+          path: '/onboard/form',
+          component: './onboard'
+        }
+      ]
     },
     {
       path: '/accounts',

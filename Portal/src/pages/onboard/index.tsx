@@ -31,7 +31,7 @@ const OnboardPage: React.FC = () => {
         {
             title: '#',
             valueType: 'indexBorder',
-            width: 50
+            width: 40
         },
         {
             title: 'Mã sinh viên',
@@ -43,7 +43,7 @@ const OnboardPage: React.FC = () => {
         },
         {
             title: 'Chuyên ngành',
-            dataIndex: 'programId',
+            dataIndex: 'majorId',
             render: (_, entity) => entity.programName,
             valueType: 'select',
             fieldProps: {
@@ -123,14 +123,16 @@ const OnboardPage: React.FC = () => {
 
     return (
         <PageContainer extra={<Button type="primary" icon={<FileExcelOutlined />}>Xuất Excel</Button>}>
-            <ProTable
-                actionRef={actionRef}
-                search={{
-                    layout: 'vertical'
-                }}
-                columns={columns}
-                request={apiProgramListApproval}
-            />
+            <div className="overflow-auto">
+                <ProTable
+                    actionRef={actionRef}
+                    search={{
+                        layout: 'vertical'
+                    }}
+                    columns={columns}
+                    request={apiProgramListApproval}
+                />
+            </div>
             <ModalForm open={openReject} onOpenChange={setOpenReject} title="Từ chối" formRef={formRef} onFinish={async (values) => {
                 await apiProgramReject(values);
                 message.success('Từ chối thành công!');
