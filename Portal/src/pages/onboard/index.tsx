@@ -1,8 +1,9 @@
 import { apiProgramApprove, apiProgramListApproval, apiProgramOptions, apiProgramReject } from "@/services/onboard/program";
-import { CheckOutlined, DeleteOutlined, FileExcelOutlined } from "@ant-design/icons";
-import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormInstance, ProFormTextArea, ProTable } from "@ant-design/pro-components"
+import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
+import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormInstance, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components"
 import { Button, message, Popconfirm, Tooltip } from "antd";
 import { useEffect, useRef, useState } from "react";
+import ExportUserMajor from "./user-major/export";
 
 const OnboardPage: React.FC = () => {
 
@@ -122,7 +123,7 @@ const OnboardPage: React.FC = () => {
     ]
 
     return (
-        <PageContainer extra={<Button type="primary" icon={<FileExcelOutlined />}>Xuất Excel</Button>}>
+        <PageContainer extra={<ExportUserMajor />}>
             <div className="overflow-auto">
                 <ProTable
                     actionRef={actionRef}
@@ -139,6 +140,7 @@ const OnboardPage: React.FC = () => {
                 actionRef.current?.reload();
                 setOpenReject(false)
             }}>
+                <ProFormText name="id" hidden />
                 <ProFormTextArea label="Lý do" name="rejectReason" rules={[
                     {
                         required: true
