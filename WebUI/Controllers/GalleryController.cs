@@ -31,31 +31,45 @@ public class GalleryController : BaseController
     [HttpPost]
     public async Task<IActionResult> GalleryAddAsync([FromBody] PostArgs args)
     {
-        if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Vui lòng nhập tên album");
-        await _context.Posts.AddAsync(new Post
+        try
         {
-            Title = args.Title,
-            Description = args.Description,
-            Language = args.Language,
-            Status = PostStatus.PUBLISH,
-            Url = SeoHelper.ToSeoFriendly(args.Title),
-            Type = PostType.GALLERY
-        });
-        await _context.SaveChangesAsync(true);
-        return CreatedAtAction(nameof(GalleryAddAsync), IdentityResult.Success);
+            if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Vui lòng nhập tên album");
+            await _context.Posts.AddAsync(new Post
+            {
+                Title = args.Title,
+                Description = args.Description,
+                Language = args.Language,
+                Status = PostStatus.PUBLISH,
+                Url = SeoHelper.ToSeoFriendly(args.Title),
+                Type = PostType.GALLERY
+            });
+            await _context.SaveChangesAsync(true);
+            return CreatedAtAction(nameof(GalleryAddAsync), IdentityResult.Success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPut]
     public async Task<IActionResult> GalleryUpdateAsync([FromBody] Post args)
     {
-        var gallery = await _context.Posts.FindAsync(args.Id);
-        if (gallery is null) return BadRequest("Gallery not found!");
-        gallery.Title = args.Title;
-        gallery.Description = args.Description;
-        gallery.Url = SeoHelper.ToSeoFriendly(args.Title);
-        _context.Posts.Update(gallery);
-        await _context.SaveChangesAsync(true);
-        return Ok(IdentityResult.Success);
+        try
+        {
+            var gallery = await _context.Posts.FindAsync(args.Id);
+            if (gallery is null) return BadRequest("Gallery not found!");
+            gallery.Title = args.Title;
+            gallery.Description = args.Description;
+            gallery.Url = SeoHelper.ToSeoFriendly(args.Title);
+            _context.Posts.Update(gallery);
+            await _context.SaveChangesAsync(true);
+            return Ok(IdentityResult.Success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpGet("options")]

@@ -22,4 +22,6 @@ public class ThpUserResponse
     public string? Address { get; set; }
     [JsonProperty("userType")]
     public int? UserType { get; set; }
+    [JsonProperty("departmentId")]
+    public int? DepartmentId { get; set; }
 }
