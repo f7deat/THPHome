@@ -18,7 +18,6 @@ using WebUI.Models.Filters.Users;
 using WebUI.Models.ViewModel;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
-using NuGet.Protocol.Plugins;
 
 namespace WebUI.Controllers;
 
@@ -369,9 +368,21 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
                 UserName = args.UserName,
                 Name = $"{thpUser.FirstName} {thpUser.LastName}",
                 Email = thpUser.Email,
-                PhoneNumber = thpUser.PhoneNumber
+                PhoneNumber = thpUser.PhoneNumber,
+                DepartmentId = thpUser.DepartmentId,
+                UserType = thpUser.UserType,
+                Address = thpUser.Address
             };
             await _userManager.CreateAsync(user);
+        }
+        else
+        {
+            user.DepartmentId = thpUser.DepartmentId;
+            user.UserType = thpUser.UserType;
+            user.PhoneNumber = thpUser.PhoneNumber;
+            user.Email = thpUser.Email;
+            user.Address = thpUser.Address;
+            await _userManager.UpdateAsync(user);
         }
 
         var authClaims = new List<Claim>
