@@ -232,9 +232,14 @@ export default defineConfig({
           component: './onboard/major'
         },
         {
-          name: 'Đơn đăng ký',
+          name: 'Đăng ký chuyên ngành',
           path: '/onboard/form',
           component: './onboard'
+        },
+        {
+          name: 'Tuần CDSV',
+          path: '/onboard/fist-week',
+          component: './onboard/fist-week'
         }
       ]
     },
