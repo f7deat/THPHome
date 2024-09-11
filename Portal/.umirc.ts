@@ -227,6 +227,15 @@ export default defineConfig({
       icon: 'LoginOutlined',
       routes: [
         {
+          path: '/onboard',
+          redirect: '/onboard/dashboard'
+        },
+        {
+          name: 'Dashboard',
+          path: '/onboard/dashboard',
+          component: './onboard/dashboard'
+        },
+        {
           name: 'Chuyên ngành',
           path: '/onboard/major',
           component: './onboard/major'
@@ -240,6 +249,11 @@ export default defineConfig({
           name: 'Tuần CDSV',
           path: '/onboard/fist-week',
           component: './onboard/fist-week'
+        },
+        {
+          name: 'Lịch sử',
+          path: '/onboard/history',
+          component: './onboard/history'
         }
       ]
     },

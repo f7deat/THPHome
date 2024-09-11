@@ -1,8 +1,8 @@
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { FormattedNumber, request } from '@umijs/max';
+import { FormattedNumber, Link, request } from '@umijs/max';
 import { Col, List, Row, Statistic } from 'antd';
 import { useEffect, useState } from 'react';
-import { EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined, FolderOpenOutlined, LoginOutlined } from '@ant-design/icons';
 import { apiGetChartPostCreatedInYear } from '@/services/post';
 import EChartsReact from 'echarts-for-react';
 
@@ -29,9 +29,9 @@ const HomePage: React.FC = () => {
   return (
     <PageContainer ghost>
       <div>
-        <Row gutter={16} className="mb-4">
+        <Row gutter={16}>
           <Col xs={12} md={6}>
-            <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
+            <ProCard className="bg-white rounded mb-4">
               <Statistic
                 title="Lượt xem"
                 value={postView}
@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
             </ProCard>
           </Col>
           <Col xs={12} md={6}>
-            <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
+            <ProCard className="bg-white rounded mb-4">
               <Statistic
                 title="Tuyển sinh"
                 value={totalStudent}
@@ -55,7 +55,7 @@ const HomePage: React.FC = () => {
             </ProCard>
           </Col>
           <Col xs={12} md={6}>
-            <ProCard className="bg-white rounded" style={{ marginBottom: 23 }}>
+            <ProCard className="bg-white rounded mb-4">
               <Statistic
                 title="Tệp tin"
                 value={fileCount}
@@ -79,15 +79,56 @@ const HomePage: React.FC = () => {
             </ProCard>
           </Col>
         </Row>
-        <ProCard>
-          <Row gutter={16}>
-            <Col md={16}>
+        <Row gutter={16}>
+          <Col md={16} className='mb-4'>
+            <ProCard title="Ứng dụng" headerBordered className='h-full'>
+              <div className='grid md:grid-cols-4 gap-4'>
+                <Link to={`/onboard`}>
+                  <div className='border p-4 rounded hover:border-blue-500'>
+                    <div className='font-semibold uppercase mb-2 flex gap-2 items-center'>
+                      <div className='h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white'><LoginOutlined /></div>
+                      <div className='text-base'>Onboard</div>
+                    </div>
+                    <div className='text-gray-500'>Giúp sinh viên mới làm quen, tiếp xúc với môi trường, văn hóa ĐHHP.</div>
+                  </div>
+                </Link>
+                <a href='https://qlvb.dhhp.edu.vn'>
+                  <div className='border p-4 rounded hover:border-blue-500'>
+                    <div className='font-semibold uppercase mb-2 flex gap-2 items-center'>
+                      <div className='h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white'><FolderOpenOutlined /></div>
+                      <div className='text-base'>Văn bản nội sinh</div>
+                    </div>
+                    <div className='text-gray-500'>Tối ưu quy trình làm việc bằng văn bản, đảm bảo tính nhất quán và chính xác của thông tin</div>
+                  </div>
+                </a>
+              </div>
+            </ProCard>
+          </Col>
+          <Col md={8} className='mb-4'>
+            <ProCard title="Truy cập nhiều" headerBordered>
+              <List
+                dataSource={posts}
+                renderItem={(item: any) => (
+                  <List.Item>
+                    <a href={`${item.url}-${item.id}.html`} target="_blank" rel="noreferrer">{item.title}</a> - <span className="text-sm text-gray-400">{<FormattedNumber value={item.view} />} <EyeOutlined /></span>
+                  </List.Item>
+                )}
+              />
+            </ProCard>
+          </Col>
+          <Col md={24}>
+            <ProCard title="Hoạt động trong năm" headerBordered>
               <EChartsReact
-                className='w-full h-full'
                 option={{
                   xAxis: {
                     type: 'category',
                     data: chartData?.xAsis
+                  },
+                  grid: {
+                    left: 30,
+                    top: 30,
+                    right: 0,
+                    bottom: 30
                   },
                   yAxis: {
                     type: 'value'
@@ -99,28 +140,15 @@ const HomePage: React.FC = () => {
                       name: 'Bài đăng'
                     }
                   ],
-                  title: {
-                    text: 'Bài đăng trong năm'
-                  },
                   tooltip: {}
                 }}
                 style={{
                   height: 350
                 }}
               />
-            </Col>
-            <Col md={8}>
-              <List header={<div className='font-semibold text-lg'>Truy cập nhiều</div>}
-                dataSource={posts}
-                renderItem={(item: any) => (
-                  <List.Item>
-                    <a href={`${item.url}-${item.id}.html`} target="_blank" rel="noreferrer">{item.title}</a> - <span className="text-sm text-gray-400">{<FormattedNumber value={item.view} />} <EyeOutlined /></span>
-                  </List.Item>
-                )}
-              />
-            </Col>
-          </Row>
-        </ProCard>
+            </ProCard>
+          </Col>
+        </Row>
       </div>
     </PageContainer>
   );
