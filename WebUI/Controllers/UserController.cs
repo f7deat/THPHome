@@ -10,7 +10,6 @@ using WebUI.Models.Api.Admin.Users;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using WebUI.Models.Api.Admin.User;
-using ApplicationCore.Entities;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure;
 using WebUI.Extensions;
@@ -18,6 +17,7 @@ using WebUI.Models.Filters.Users;
 using WebUI.Models.ViewModel;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
+using WebUI.Entities;
 
 namespace WebUI.Controllers;
 

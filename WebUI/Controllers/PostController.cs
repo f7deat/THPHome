@@ -15,6 +15,7 @@ using WebUI.Interfaces.IService;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using WebUI.Entities;
 
 namespace WebUI.Controllers;
 

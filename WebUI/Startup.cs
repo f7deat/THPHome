@@ -6,7 +6,6 @@ using ApplicationCore.Interfaces.IRepository;
 using Infrastructure.Repositories;
 using ApplicationCore.Services;
 using ApplicationCore.Interfaces;
-using ApplicationCore.Entities;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +19,7 @@ using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI;
 using WebUI.Foundations.Interfaces;
 using WebUI.Foundations;
+using WebUI.Entities;
 
 namespace WebUI;
 

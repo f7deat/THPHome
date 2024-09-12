@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Models.Files;
+﻿using ApplicationCore.Models.Files;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

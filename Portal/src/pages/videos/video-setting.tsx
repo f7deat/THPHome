@@ -1,4 +1,4 @@
-﻿import { Button, Drawer, Form, Input, message, Popconfirm, Select, Space, Table } from "antd"
+﻿import { Button, Drawer, Form, Input, message, Popconfirm, Space } from "antd"
 import React, { useEffect, useState } from "react"
 import {
     EditOutlined,
@@ -10,8 +10,6 @@ import {
 import { Link, request } from "@umijs/max";
 import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 
-const { Option } = Select;
-
 const VideoSetting = () => {
 
     const [menus, setMenus] = useState<any>([])
@@ -20,15 +18,15 @@ const VideoSetting = () => {
 
     const [form] = Form.useForm();
 
-    useEffect(() => {
-        fetchData()
-    }, [])
-
     const fetchData = () => {
         request(`video/get-list`).then(response => {
             setMenus(response)
         })
     }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     function handleAdd() {
         form.resetFields()
@@ -97,27 +95,30 @@ const VideoSetting = () => {
         setVisible(false)
     };
 
-    const columns : ProColumnType<any>[] = [
+    const columns: ProColumnType<any>[] = [
         {
             title: '#',
-            valueType: 'indexBorder'
+            valueType: 'indexBorder',
+            width: 30,
+            align: 'center'
         },
         {
-            title: 'Name',
+            title: 'Tiêu đề',
             render: (record: any) => (
                 <Link to={`/video/item/${record.id}`}>{record.name}</Link>
             )
         },
         {
             title: 'Url',
-            dataIndex: 'url'
+            dataIndex: 'url',
+            search: false
         },
         {
-            title: '',
-            render: (record: any) => (
-                <Space>
-                    <Button size="small" type="primary" icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
+            title: 'Tác vụ',
+            render: (record: any) => [
+                    <Button size="small" type="primary" icon={<EditOutlined />} onClick={() => handleUpdate(record)} key="edit" />,
                     <Popconfirm
+                        key="delete"
                         title="Are you sure to delete?"
                         okText="Yes"
                         cancelText="No"
@@ -125,9 +126,9 @@ const VideoSetting = () => {
                     >
                         <Button size="small" type="primary" danger icon={<DeleteOutlined />}></Button>
                     </Popconfirm>
-                </Space>
-            ),
-            valueType: 'option'
+            ],
+            valueType: 'option',
+            width: 100
         }
     ]
 

@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Constants;
-using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebUI.Entities;
 using WebUI.Foundations;
 
 namespace WebUI.Controllers

@@ -1,8 +1,8 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WebUI.Entities;
 
 namespace Infrastructure.Data
 {

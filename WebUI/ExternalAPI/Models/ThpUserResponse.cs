@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using THPCore.Enums;
 
 namespace WebUI.ExternalAPI.Models;
 
@@ -21,7 +22,7 @@ public class ThpUserResponse
     [JsonProperty("address")]
     public string? Address { get; set; }
     [JsonProperty("userType")]
-    public int? UserType { get; set; }
+    public UserType? UserType { get; set; }
     [JsonProperty("departmentId")]
     public int? DepartmentId { get; set; }
 }

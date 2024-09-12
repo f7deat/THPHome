@@ -115,12 +115,6 @@ export default defineConfig({
       hideInMenu: true,
     },
     {
-      icon: 'VideoCameraAddOutlined',
-      name: 'Video',
-      path: '/videos',
-      component: './videos/video-setting',
-    },
-    {
       icon: 'TeamOutlined',
       name: 'Tài khoản',
       path: '/user',
@@ -158,25 +152,32 @@ export default defineConfig({
     },
     {
       icon: 'PictureOutlined',
-      name: 'Thư viện ảnh',
-      path: '/gallery',
+      name: 'Multimedia',
+      path: '/media',
       routes: [
         {
-          path: '/gallery',
-          redirect: '/gallery/list',
-        },
-        {
-          name: 'Albums',
-          path: '/gallery/list',
+          name: 'Thư viện ảnh',
+          path: '/media/gallery',
           component: './gallery',
         },
         {
           name: 'Hình ảnh',
-          path: '/gallery/photo/:id',
+          path: '/media/gallery/photo/:id',
           component: './gallery/photo',
           hideInMenu: true,
         },
+        {
+          name: 'Video',
+          path: '/media/videos',
+          component: './videos/video-setting',
+        },
       ],
+    },
+    {
+      icon: 'ToolOutlined',
+      name: 'Công cụ',
+      path: '/tool',
+      component: './tools'
     },
     {
       icon: 'SettingOutlined',

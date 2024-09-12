@@ -1,12 +1,12 @@
 ﻿import { Button, Checkbox, Drawer, Input, message, Modal, Popconfirm, Space, Table, Form } from "antd"
 import React, { Fragment, useEffect, useRef, useState } from "react"
 import {
-    EditOutlined,
     DeleteOutlined,
     UsergroupAddOutlined,
     PlusCircleOutlined,
     CheckCircleTwoTone,
-    SearchOutlined
+    SearchOutlined,
+    UserOutlined
 } from "@ant-design/icons";
 import { Link } from "@umijs/max";
 import { request } from "@umijs/max";
@@ -76,6 +76,14 @@ const UserList = () => {
             align: 'center'
         },
         {
+            title: '',
+            dataIndex: 'avatar',
+            valueType: 'avatar',
+            width: 30,
+            align: 'center',
+            search: false
+        },
+        {
             title: 'Họ và tên',
             dataIndex: 'name',
         },
@@ -108,7 +116,7 @@ const UserList = () => {
             valueType: 'option',
             render: (dom, record: any) => (
                 <Space>
-                    <Link to={`/user/edit/${record.id}`}><Button icon={<EditOutlined />} size="small" type="primary"></Button></Link>
+                    <Link to={`/user/profile/${record.id}`}><Button icon={<UserOutlined />} size="small" type="primary"></Button></Link>
                     <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)} size="small"></Button>
                     <Popconfirm
                         title="Are you sure to delete?"
