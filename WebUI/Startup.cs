@@ -20,6 +20,8 @@ using WebUI.ExternalAPI;
 using WebUI.Foundations.Interfaces;
 using WebUI.Foundations;
 using WebUI.Entities;
+using THPCore.Interfaces;
+using THPCore.Senders;
 
 namespace WebUI;
 
@@ -65,6 +67,7 @@ public class Startup(IConfiguration configuration)
         services.AddTransient<IZaloAPI, ZaloAPI>();
 
         services.AddTransient<ICurrentUser, CurrentUser>();
+        services.AddTransient<IEmailSender, EmailSender>();
 
         services.AddHttpClient<ITHPAuthen, ThpAuthen>();
 

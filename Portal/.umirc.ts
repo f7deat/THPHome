@@ -180,6 +180,12 @@ export default defineConfig({
       component: './tools'
     },
     {
+      name: 'Email',
+      path: '/tool/email',
+      component: './tools/email',
+      hideInMenu: true
+    },
+    {
       icon: 'SettingOutlined',
       name: 'setting',
       path: '/settings',

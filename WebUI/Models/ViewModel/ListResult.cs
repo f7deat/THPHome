@@ -2,6 +2,7 @@
 using ApplicationCore.Models.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using THPCore.Interfaces;
 using WebUI.Constants;
 
 namespace WebUI.Models.ViewModel;

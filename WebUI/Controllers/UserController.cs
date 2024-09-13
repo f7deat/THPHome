@@ -18,6 +18,8 @@ using WebUI.Models.ViewModel;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.Entities;
+using THPCore.Helpers;
+using THPCore.Enums;
 
 namespace WebUI.Controllers;
 
@@ -422,4 +424,11 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
         return Ok(await _userManager.GetRolesAsync(user));
     }
     #endregion
+
+    [HttpGet("type/options")]
+    public IActionResult GetUserTypeOptions() => Ok(EnumHelper.EnumToList<UserType>().Select(x => new
+    {
+        label = EnumHelper.GetEnumDisplayName(x),
+        value = x
+    }));
 }

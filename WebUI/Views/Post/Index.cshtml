@@ -1,8 +1,8 @@
 ﻿@model ApplicationCore.Entities.Post
-@    using ApplicationCore.Entities;
-@    using WebUI.Models.Layouts;
-@    using Microsoft.AspNetCore.Identity;
-    using WebUI.Entities;
+@using ApplicationCore.Entities
+@using WebUI.Entities;
+@using WebUI.Models.Layouts;
+@using Microsoft.AspNetCore.Identity;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @{
@@ -18,7 +18,7 @@
     };
     for (int i = 0; i < categories.Count(); i++)
     {
-        breadcrumbs.Add(new Breadcrumb { Id = i + 2, Name = categories[i].Name, Url = $"/category/details/{categories[i].Id}", Icon = "fas fa-folder" });
+        breadcrumbs.Add(new Breadcrumb { Id = i + 2, Name = categories[i].Name ?? string.Empty, Url = $"/category/details/{categories[i].Id}", Icon = "fas fa-folder" });
     }
 }
 
@@ -63,7 +63,7 @@
             <button type="button" data-toggle="modal" data-target="report-modal"><i class="fa fa-flag"></i></button>
         </div>
 
-        @if (attachments.Count > 0)
+        @if (attachments != null && attachments.Count > 0)
         {
             <div class="title">Tệp tin đính kèm</div>
             <div class="p-2 shadow mb-3">

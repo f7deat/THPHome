@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
+using WebUI.Models.Args.Communications;
 
 namespace WebUI.ExternalAPI;
 
@@ -11,6 +13,12 @@ public class ThpAuthen : ITHPAuthen
     {
         httpClient.BaseAddress = new Uri("https://authen.dhhp.edu.vn/api/");
         _httpClient = httpClient;
+    }
+
+    public async Task<List<ThpUserResponse>> GetListUser(SendEmailArgs args)
+    {
+        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", args.Token);
+        throw new NotImplementedException();
     }
 
     public async Task<ThpUserResponse?> LoginAsync(string userName, string password)

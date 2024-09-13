@@ -17,3 +17,5 @@ export const apiLoginSSO = (data: any) => request(`user/sso`, {
     data,
     method: 'POST'
 })
+
+export const apiGetUserTypeOptions = () => request(`user/type/options`);
