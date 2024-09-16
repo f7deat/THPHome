@@ -10,6 +10,7 @@ import { AvatarDropdown } from './components/right-content/avatar-dropdown';
 import { SelectLang } from '@umijs/max';
 import { Question } from './components/right-content';
 import './style.css';
+import { getLocale } from '@umijs/max';
 const loginPath = '/accounts/login';
 
 export async function getInitialState(): Promise<{
@@ -109,7 +110,8 @@ export const request: RequestConfig = {
       config.headers = {
         authorization: `Bearer ${token}`,
       };
-      return config;
+      const url = config?.url?.concat(`?locale=${getLocale()}`);
+      return { ...config, url };
     },
   ],
   responseInterceptors: [

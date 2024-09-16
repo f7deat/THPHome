@@ -1,8 +1,8 @@
-import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { FormattedNumber, Link, request } from '@umijs/max';
-import { Col, List, Row, Statistic } from 'antd';
+import { PageContainer, ProCard, ProList } from '@ant-design/pro-components';
+import { FormattedNumber, history, Link, request } from '@umijs/max';
+import { Button, Col, List, Row, Statistic } from 'antd';
 import { useEffect, useState } from 'react';
-import { EyeOutlined, FolderOpenOutlined, LoginOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, EyeOutlined, FolderOpenOutlined, LoginOutlined, MailOutlined } from '@ant-design/icons';
 import { apiGetChartPostCreatedInYear } from '@/services/post';
 import EChartsReact from 'echarts-for-react';
 
@@ -80,11 +80,11 @@ const HomePage: React.FC = () => {
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col md={16} className='mb-4'>
+          <Col md={18} className='mb-4'>
             <ProCard title="Ứng dụng" headerBordered className='h-full'>
               <div className='grid md:grid-cols-4 gap-4'>
                 <Link to={`/onboard`}>
-                  <div className='border p-4 rounded hover:border-blue-500'>
+                  <div className='border p-4 rounded hover:border-blue-500 h-full'>
                     <div className='font-semibold uppercase mb-2 flex gap-2 items-center'>
                       <div className='h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white'><LoginOutlined /></div>
                       <div className='text-base'>Onboard</div>
@@ -93,7 +93,7 @@ const HomePage: React.FC = () => {
                   </div>
                 </Link>
                 <a href='https://qlvb.dhhp.edu.vn'>
-                  <div className='border p-4 rounded hover:border-blue-500'>
+                  <div className='border p-4 rounded hover:border-blue-500 h-full'>
                     <div className='font-semibold uppercase mb-2 flex gap-2 items-center'>
                       <div className='h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white'><FolderOpenOutlined /></div>
                       <div className='text-base'>Văn bản nội sinh</div>
@@ -104,49 +104,80 @@ const HomePage: React.FC = () => {
               </div>
             </ProCard>
           </Col>
-          <Col md={8} className='mb-4'>
-            <ProCard title="Truy cập nhiều" headerBordered>
-              <List
-                dataSource={posts}
-                renderItem={(item: any) => (
-                  <List.Item>
-                    <a href={`${item.url}-${item.id}.html`} target="_blank" rel="noreferrer">{item.title}</a> - <span className="text-sm text-gray-400">{<FormattedNumber value={item.view} />} <EyeOutlined /></span>
-                  </List.Item>
-                )}
+          <Col md={6} className='mb-4'>
+            <ProCard title="Công cụ" headerBordered className='h-full'>
+              <ProList
+                ghost
+                dataSource={[
+                  {
+                    avatar: <MailOutlined />,
+                    title: 'Gửi Email hàng loạt'
+                  }
+                ]}
+                metas={{
+                  avatar: {
+                    dataIndex: 'avatar'
+                  },
+                  title: {
+                    dataIndex: 'title',
+                    render: (dom) => <Link to='/tool/email'>{dom}</Link>
+                  },
+                  actions: {
+                    render: () => [
+                      <Button type='text' size='small' icon={<ArrowRightOutlined />} key="go" onClick={() => history.push('/tool/email')} />
+                    ]
+                  }
+                }}
               />
             </ProCard>
           </Col>
           <Col md={24}>
-            <ProCard title="Hoạt động trong năm" headerBordered>
-              <EChartsReact
-                option={{
-                  xAxis: {
-                    type: 'category',
-                    data: chartData?.xAsis
-                  },
-                  grid: {
-                    left: 30,
-                    top: 30,
-                    right: 0,
-                    bottom: 30
-                  },
-                  yAxis: {
-                    type: 'value'
-                  },
-                  series: [
-                    {
-                      data: chartData?.series,
-                      type: 'bar',
-                      name: 'Bài đăng'
-                    }
-                  ],
-                  tooltip: {}
-                }}
-                style={{
-                  height: 350
-                }}
-              />
-            </ProCard>
+            <Row gutter={16}>
+              <Col md={16}>
+                <ProCard title="Hoạt động trong năm" headerBordered>
+                  <EChartsReact
+                    option={{
+                      xAxis: {
+                        type: 'category',
+                        data: chartData?.xAsis
+                      },
+                      grid: {
+                        left: 30,
+                        top: 30,
+                        right: 0,
+                        bottom: 30
+                      },
+                      yAxis: {
+                        type: 'value'
+                      },
+                      series: [
+                        {
+                          data: chartData?.series,
+                          type: 'bar',
+                          name: 'Bài đăng'
+                        }
+                      ],
+                      tooltip: {}
+                    }}
+                    style={{
+                      height: 350
+                    }}
+                  />
+                </ProCard>
+              </Col>
+              <Col md={8}>
+                <ProCard title="Truy cập nhiều" headerBordered className='h-full'>
+                  <List
+                    dataSource={posts}
+                    renderItem={(item: any) => (
+                      <List.Item>
+                        <a href={`${item.url}-${item.id}.html`} target="_blank" rel="noreferrer">{item.title}</a> - <span className="text-sm text-gray-400">{<FormattedNumber value={item.view} />} <EyeOutlined /></span>
+                      </List.Item>
+                    )}
+                  />
+                </ProCard>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </div>

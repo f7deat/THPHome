@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using WebUI.Entities;
 using WebUI.Entities.Articles;
 using WebUI.Entities.Communications;
+using WebUI.Entities.Departments;
 using WebUI.Foundations.Interfaces;
 
 namespace Infrastructure;
@@ -46,6 +47,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<ApplicationSetting> ApplicationSettings { get; set; }
     public virtual DbSet<ZaloArticle> ZaloArticles { get; set; }
     public virtual DbSet<EmailLog> EmailLogs { get; set; }
+    public virtual DbSet<DepartmentType> DepartmentTypes { get; set; }
 
     public Task<int> SaveChangesAsync(bool audit)
     {

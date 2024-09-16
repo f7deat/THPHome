@@ -1,33 +1,68 @@
-﻿import { Button, Modal, Form, Input, message, Popconfirm, Tabs, Empty } from "antd"
-import { useRef, useState } from "react"
+﻿import { Button, Col, Form, Input, message, Popconfirm, Row } from "antd"
+import { useEffect, useRef, useState } from "react"
 import {
     FolderOutlined,
     DeleteOutlined,
-    PlusOutlined
+    PlusOutlined,
+    EditOutlined
 } from "@ant-design/icons";
-import { history, request } from "@umijs/max";
-import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
-import { apiGetDepartmentList } from "@/services/department";
+import { getLocale, history, request, useRequest } from "@umijs/max";
+import { ActionType, ModalForm, PageContainer, ProCard, ProColumnType, ProFormDigit, ProFormInstance, ProFormSelect, ProTable } from "@ant-design/pro-components";
+import { apiGetDepartmentList, apiGetDepartmentTypeOptions, apiGetDepartmentTypes, apiUpdateDepartment } from "@/services/department";
 
 const Department: React.FC = () => {
 
     const [open, setOpen] = useState<boolean>(false);
-    const [form] = Form.useForm();
-    const actionRef = useRef<ActionType>()
+    const formRef = useRef<ProFormInstance>();
+    const actionRef = useRef<ActionType>();
+    const { data: departmentTypes, loading: departmentTypeLoading } = useRequest(apiGetDepartmentTypes);
+    const [department, setDepartment] = useState<any>();
+
+    useEffect(() => {
+        if (department && open) {
+            formRef.current?.setFields([
+                {
+                    name: 'id',
+                    value: department.id
+                },
+                {
+                    name: 'name',
+                    value: department.name
+                },
+                {
+                    name: 'departmentTypeId',
+                    value: department.departmentTypeId
+                },
+                {
+                    name: 'code',
+                    value: department.code
+                },
+                {
+                    name: 'description',
+                    value: department.description
+                }
+            ])
+        } else {
+            setDepartment(null);
+            formRef.current?.resetFields();
+        }
+    }, [department, open]);
 
     const onFinish = async (values: any) => {
         if (values.id) {
-
+            await apiUpdateDepartment(values);
+            message.success('Đã lưu');
+            setOpen(false);
+            actionRef.current?.reload();
         } else {
-            const response = await request(`department/add`, {
+            values.locale = getLocale();
+            await request(`department/add`, {
                 data: values,
                 method: 'POST'
             });
-            if (response.data.succeeded) {
-                message.success('Đã lưu!');
-                setOpen(false);
-                actionRef.current?.reload();
-            }
+            message.success('Đã lưu!');
+            setOpen(false);
+            actionRef.current?.reload();
         }
     }
 
@@ -45,10 +80,11 @@ const Department: React.FC = () => {
         {
             title: '#',
             valueType: 'indexBorder',
-            width: 50
+            width: 30,
+            align: 'center'
         },
         {
-            title: 'Tên Khoa - Viện',
+            title: 'Tên đơn vị',
             dataIndex: 'name'
         },
         {
@@ -57,9 +93,27 @@ const Department: React.FC = () => {
             search: false
         },
         {
+            title: 'Ngày tạo',
+            dataIndex: 'createdDate',
+            search: false,
+            valueType: 'dateTime',
+            width: 160
+        },
+        {
+            title: 'Ngày cập nhật',
+            dataIndex: 'modifiedDate',
+            search: false,
+            valueType: 'dateTime',
+            width: 160
+        },
+        {
             title: 'Tác vụ',
             valueType: 'option',
             render: (value, record) => [
+                <Button size="small" icon={<EditOutlined />} key="edit" onClick={() => {
+                    setDepartment(record);
+                    setOpen(true);
+                }} />,
                 <Button size="small" type="primary" key="detail" icon={<FolderOutlined />} onClick={() => history.push(`/department/detail/${record.id}`)}></Button>,
                 <Popconfirm title="Xóa bản ghi?" key="delete" onConfirm={() => onConfirm(record.id)}>
                     <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
@@ -71,64 +125,61 @@ const Department: React.FC = () => {
 
     return (
         <PageContainer>
-            <Tabs
-                items={[
+            <ProCard loading={departmentTypeLoading} tabs={{
+                type: 'card'
+            }}>
+                {
+                    departmentTypes?.map(((type: any) => (
+                        <ProCard.TabPane key={type.id} tab={type.name}>
+                            <ProTable
+                                ghost
+                                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}
+                                actionRef={actionRef}
+                                request={(params) => apiGetDepartmentList({
+                                    ...params,
+                                    departmentTypeId: type.id
+                                })}
+                                search={{
+                                    layout: 'vertical'
+                                }}
+                                columns={columns}
+                            />
+                        </ProCard.TabPane>
+                    )))
+                }
+            </ProCard>
+
+            <ModalForm title="Đơn vị" open={open} onOpenChange={setOpen} formRef={formRef} onFinish={onFinish}>
+                <Form.Item name="id" hidden>
+                    <Input />
+                </Form.Item>
+                <Form.Item label="Tên đơn vị" name="name" rules={[
                     {
-                        key: 'faculty',
-                        label: 'Khoa - Viện',
-                        children: (
-                            <>
-                                <div className="flex justify-end mb-4">
-                                    <Button type="primary" onClick={() => {
-                                        form.resetFields();
-                                        setOpen(true);
-                                    }} icon={<PlusOutlined />}>Thêm mới</Button>
-                                </div>
-                                <ProTable
-                                    actionRef={actionRef}
-                                    search={{
-                                        layout: 'vertical'
-                                    }}
-                                    request={apiGetDepartmentList}
-                                    rowKey="id" columns={columns} />
-                            </>
-                        )
-                    },
-                    {
-                        key: 'function',
-                        label: 'Ban chức năng',
-                        children: <Empty description="Sắp có" />
-                    },
-                    {
-                        key: 'center',
-                        label: 'Trung tâm',
-                        children: <Empty description="Sắp có" />
+                        required: true,
+                        message: 'Vui lòng nhập tên đơn vị'
                     }
-                ]}
-            />
-            <Modal title="Khoa - Viện" open={open} onCancel={() => {
-                setOpen(false)
-            }} footer={false}>
-                <Form layout="vertical" onFinish={onFinish} form={form}>
-                    <Form.Item name="id" hidden>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item label="Tên phòng ban" name="name" rules={[
-                        {
-                            required: true,
-                            message: 'Vui lòng nhập tên phòng ban'
-                        }
-                    ]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item label="Mô tả" name="description">
-                        <Input.TextArea />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">Lưu lại</Button>
-                    </Form.Item>
-                </Form>
-            </Modal>
+                ]}>
+                    <Input />
+                </Form.Item>
+                <Row gutter={16}>
+                    <Col md={18}>
+                        <ProFormSelect
+                            request={apiGetDepartmentTypeOptions}
+                            name="departmentTypeId" label="Loại đơn vị" rules={[
+                                {
+                                    required: true
+                                }
+                            ]} />
+                    </Col>
+                    <Col md={6}>
+                        <ProFormDigit name="code" label="Mã đơn vị" />
+                    </Col>
+                </Row>
+                <Form.Item label="Mô tả" name="description">
+                    <Input.TextArea />
+                </Form.Item>
+            </ModalForm>
+
         </PageContainer>
     )
 }

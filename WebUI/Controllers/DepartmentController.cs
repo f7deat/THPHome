@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Models.Filters;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using WebUI.Entities;
 using WebUI.Extensions;
 using WebUI.Foundations;
+using WebUI.Models.Args.Departments;
+using WebUI.Models.ViewModel;
 
 namespace WebUI.Controllers;
 
@@ -19,14 +22,15 @@ public class DepartmentController : BaseController
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> ListAsync()
+    public async Task<IActionResult> ListAsync([FromQuery] DepartmentFilterOptions filterOptions)
     {
-        var query = _context.Departments;
-        return Ok(new
+        var query = _context.Departments.Where(x => x.Locale == filterOptions.Locale);
+        if (filterOptions.DepartmentTypeId != null)
         {
-            data = await query.OrderByDescending(x => x.ModifiedDate).ToListAsync(),
-            total = await query.CountAsync()
-        });
+            query = query.Where(x => x.DepartmentTypeId == filterOptions.DepartmentTypeId);
+        }
+        query = query.OrderByDescending(x => x.ModifiedDate);
+        return Ok(await ListResult<Department>.Success(query, filterOptions));
     }
 
     [HttpGet("{id}")]
@@ -35,14 +39,25 @@ public class DepartmentController : BaseController
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync([FromBody] Department args)
     {
-        var department = new Department
+        try
         {
-            Description = args.Description,
-            Name = args.Name,
-        };
-        await _context.Departments.AddAsync(department);
-        await _context.SaveChangesAsync();
-        return Ok(IdentityResult.Success);
+            var department = new Department
+            {
+                Description = args.Description,
+                Name = args.Name,
+                Locale = args.Locale,
+                CreatedDate = DateTime.Now,
+                CreatedBy = User.GetId(),
+                DepartmentTypeId = args.DepartmentTypeId
+            };
+            await _context.Departments.AddAsync(department);
+            await _context.SaveChangesAsync();
+            return Ok(IdentityResult.Success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("remove/{id}")]
@@ -65,12 +80,25 @@ public class DepartmentController : BaseController
     [HttpPost("update")]
     public async Task<IActionResult> UpdateAsync([FromBody] Department args)
     {
-        var department = await _context.Departments.FindAsync(args.Id);
-        if (department is null) return BadRequest("Department not found!");
-        department.Name = args.Name;
-        department.Description = args.Description;
-        await _context.SaveChangesAsync();
-        return Ok(IdentityResult.Success);
+        try
+        {
+            var department = await _context.Departments.FindAsync(args.Id);
+            if (department is null) return BadRequest("Department not found!");
+            department.Name = args.Name;
+            department.Description = args.Description;
+            department.Code = args.Code;
+            department.ModifiedDate = DateTime.Now;
+            department.ModifiedBy = User.GetId();
+            department.DepartmentTypeId = args.DepartmentTypeId;
+            if (!await _context.DepartmentTypes.AnyAsync(x => x.Id == args.DepartmentTypeId)) return BadRequest("Không tìm thấy loại đơn vị!");
+            _context.Departments.Update(department);
+            await _context.SaveChangesAsync();
+            return Ok(IdentityResult.Success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("add-user")]
@@ -148,6 +176,7 @@ public class DepartmentController : BaseController
         var detail = await _context.DepartmentDetails.FindAsync(args.Id);
         if (detail is null) return BadRequest("Data not found!");
         var user = await _userManager.FindByIdAsync(User.GetId());
+        if (user is null) return BadRequest("User not found!");
         detail.Content = args.Content;
         detail.Type = args.Type;
         detail.ModifiedDate = DateTime.Now;
@@ -193,4 +222,14 @@ public class DepartmentController : BaseController
                     };
         return Ok(await users.ToListAsync());
     }
+
+    [HttpGet("types")]
+    public async Task<IActionResult> GetTypesAsync([FromQuery] FilterOptions filterOptions) => Ok(new { data = await _context.DepartmentTypes.Where(x => x.Locale == filterOptions.Locale).ToListAsync() });
+
+    [HttpGet("type/options")]
+    public async Task<IActionResult> GetTypeOptionsAsync([FromQuery] FilterOptions filterOptions) => Ok(await _context.DepartmentTypes.Where(x => x.Locale == filterOptions.Locale).Select(x => new
+    {
+        label = x.Name,
+        value = x.Id
+    }).ToListAsync());
 }
