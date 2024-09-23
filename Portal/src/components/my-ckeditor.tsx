@@ -43,25 +43,34 @@ import {
     TodoList,
     Underline,
     Undo,
-    EditorConfig
+    EditorConfig,
+    Editor
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 import { ProForm, ProFormItemProps } from '@ant-design/pro-components';
 import { useEffect, useRef, useState } from 'react';
+import { MyCustomUploadAdapterPlugin } from './MyUploadAdapter';
 
 const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
-	const editorContainerRef = useRef(null);
-	const editorRef = useRef(null);
-	const [isLayoutReady, setIsLayoutReady] = useState(false);
+    const editorContainerRef = useRef(null);
+    const [editorRef, setEditorRef] = useState<Editor>();
+    const [isLayoutReady, setIsLayoutReady] = useState(false);
+    const formRef = ProForm.useFormInstance();
 
-	useEffect(() => {
-		setIsLayoutReady(true);
+    useEffect(() => {
+        setIsLayoutReady(true);
+        return () => setIsLayoutReady(false);
+    }, []);
 
-		return () => setIsLayoutReady(false);
-	}, []);
+    useEffect(() => {
+        const value = formRef.getFieldValue(props.name);
+        if (value) {
+            editorRef?.setData(value)
+        }
+    }, [formRef.getFieldValue(props.name)]);
 
-    const editorConfig : EditorConfig = {
+    const editorConfig: EditorConfig = {
         toolbar: {
             items: [
                 'undo',
@@ -84,10 +93,12 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
                 'numberedList',
                 'todoList',
                 'outdent',
-                'indent'
+                'indent',
+                'imageUpload'
             ],
             shouldNotGroupWhenFull: false
         },
+        extraPlugins: [MyCustomUploadAdapterPlugin],
         plugins: [
             AccessibilityHelp,
             Autoformat,
@@ -197,7 +208,7 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
                 'resizeImage'
             ]
         },
-        initialData: '',
+        initialData: formRef.getFieldValue(props.name),
         link: {
             addTargetToExternalLinks: true,
             defaultProtocol: 'https://',
@@ -222,23 +233,26 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
         table: {
             contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
         }
+
     };
 
     return (
         <ProForm.Item {...props}>
             <div>
-			<div className="main-container">
-				<div className="editor-container editor-container_classic-editor" ref={editorContainerRef}>
-					<div className="editor-container__editor">
-						<div ref={editorRef}>{isLayoutReady && <CKEditor editor={ClassicEditor} config={editorConfig} />}</div>
-					</div>
-				</div>
-			</div>
-		</div>
-            {/* <CKEditor
-                editor={ClassicEditor}
-                {...editorConfig}
-            /> */}
+                <div className="main-container">
+                    <div className="editor-container editor-container_classic-editor" ref={editorContainerRef}>
+                        <div className="editor-container__editor">
+                            <div>{isLayoutReady && <CKEditor editor={ClassicEditor} config={editorConfig}
+                                onReady={(editor) => {
+                                    setEditorRef(editor);
+                                }}
+                                onChange={(event, editor) => {
+                                    formRef.setFieldValue(props.name, editor.getData());
+                                }} />}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </ProForm.Item>
     )
 }

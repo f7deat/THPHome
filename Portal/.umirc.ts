@@ -265,6 +265,31 @@ export default defineConfig({
       ]
     },
     {
+      path: '/exam',
+      icon: 'QuestionCircleOutlined',
+      name: 'Bài thi',
+      routes: [
+        {
+          name: 'Câu hỏi',
+          path: '/exam/question/:id',
+          component: './exam/question',
+          hideInMenu: true
+        },
+        {
+          name: 'Đề thi',
+          path: '/exam/version/:id',
+          component: './exam/version',
+          hideInMenu: true
+        },
+        {
+          name: 'Câu trả lời',
+          path: '/exam/answer/:id',
+          component: './exam/answer',
+          hideInMenu: true
+        }
+      ]
+    },
+    {
       path: '/accounts',
       layout: false,
       routes: [
