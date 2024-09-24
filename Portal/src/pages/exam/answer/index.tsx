@@ -1,7 +1,7 @@
 import MyCkEditor from "@/components/my-ckeditor";
-import { apiAnswerAdd, apiAnswerDelete, apiAnswerList } from "@/services/exam/answer";
+import { apiAnswerAdd, apiAnswerDelete, apiAnswerList, apiAnswerUpdate } from "@/services/exam/answer";
 import { apiGetQuestion } from "@/services/exam/question";
-import { DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, PageContainer, ProCard, ProFormDigit, ProFormInstance, ProFormSelect, ProTable } from "@ant-design/pro-components"
 import { history, useParams } from "@umijs/max";
 import { Button, Col, message, Popconfirm, Row } from "antd";
@@ -50,13 +50,15 @@ const ExamAnswerPage: React.FC = () => {
     const onFinish = async (values: any) => {
         values.questionId = id;
         if (values.id) {
-
+            await apiAnswerUpdate(values);
         } else {
             await apiAnswerAdd(values);
+            setAnswer(null);
         }
         message.success('Thành công!');
         setOpen(false);
         actionRef.current?.reload();
+        formRef.current?.resetFields();
     }
 
     return (
@@ -91,6 +93,13 @@ const ExamAnswerPage: React.FC = () => {
                         render: (_, entity) => <div dangerouslySetInnerHTML={{ __html: entity.text }} />
                     },
                     {
+                        title: 'Đáp án',
+                        dataIndex: 'isCorrect',
+                        render: (_, entity) => entity.isCorrect ? <CheckOutlined className="text-green-500" /> : <CloseOutlined className="text-red-500" />,
+                        width: 70,
+                        align: 'center'
+                    },
+                    {
                         title: 'Tác vụ',
                         render: (dom, entity) => [
                             <Button key="edit" type="primary" icon={<EditOutlined />} size="small" onClick={() => {
@@ -106,7 +115,7 @@ const ExamAnswerPage: React.FC = () => {
                             </Popconfirm>
                         ],
                         valueType: 'option',
-                        width: 100
+                        width: 80
                     }
                 ]}
             />
