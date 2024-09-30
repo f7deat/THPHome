@@ -2,7 +2,7 @@ import MyCkEditor from "@/components/my-ckeditor";
 import { apiAnswerAdd, apiAnswerDelete, apiAnswerList, apiAnswerUpdate } from "@/services/exam/answer";
 import { apiGetQuestion } from "@/services/exam/question";
 import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
-import { ActionType, ModalForm, PageContainer, ProCard, ProFormDigit, ProFormInstance, ProFormSelect, ProTable } from "@ant-design/pro-components"
+import { ActionType, ModalForm, PageContainer, ProCard, ProFormDigit, ProFormInstance, ProFormSelect, ProFormText, ProTable } from "@ant-design/pro-components"
 import { history, useParams } from "@umijs/max";
 import { Button, Col, message, Popconfirm, Row } from "antd";
 import { useEffect, useRef, useState } from "react";
@@ -120,6 +120,7 @@ const ExamAnswerPage: React.FC = () => {
                 ]}
             />
             <ModalForm open={open} onOpenChange={setOpen} title="Câu trả lời" formRef={formRef} onFinish={onFinish} width={1000}>
+                <ProFormText name="id" hidden />
                 <MyCkEditor name="text" label="Nội dung" />
                 <Row gutter={16}>
                     <Col span={16}>

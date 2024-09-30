@@ -12,6 +12,7 @@ export default {
     'menu.ecommerce.newOrder': 'Đơn hàng mới',
     'menu.ecommerce.product': 'Sản phẩm',
     'menu.home': 'Trang chủ',
+    'menu.dashboard': 'Bảng tin',
     'menu.help': 'Trợ giúp',
     'menu.help.backup': 'Backup',
     'menu.help.upgrade': 'Nâng cấp',
@@ -76,4 +77,6 @@ export default {
     'menu.users.list': 'Danh sách',
     'menu.users.userCenter': 'Chi tiết người dùng',
     'menu.users.roleCenter': 'Chi tiết quyền',
+    'menu.exam': 'Bài thi',
+    'menu.exam.history': 'Lịch sử'
   };

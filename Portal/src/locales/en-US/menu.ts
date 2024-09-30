@@ -6,10 +6,7 @@ export default {
     'menu.article.home': 'Articles',
     'menu.article.list': 'Article list',
     'menu.catalog': 'Catalog',
-    'menu.ecommerce': 'E-Commerce',
-    'menu.ecommerce.order': 'Orders',
-    'menu.ecommerce.newOrder': 'New order',
-    'menu.ecommerce.product': 'Products',
+    'menu.dashboard': 'Dashboard',
     'menu.component': 'Components',
     'menu.component.articleLister': 'Article Lister',
     'menu.component.articlePicker': 'Article Picker',
@@ -72,4 +69,5 @@ export default {
     'menu.users.role': 'Roles',
     'menu.users.roleCenter': 'Role Center',
     'menu.users.center': 'User center',
+    'menu.exam.history': 'History'
   };

@@ -31,7 +31,7 @@ export default defineConfig({
     },
     {
       icon: 'DashboardOutlined',
-      name: 'Dashboard',
+      name: 'dashboard',
       path: '/home',
       component: './Home',
     },
@@ -267,8 +267,17 @@ export default defineConfig({
     {
       path: '/exam',
       icon: 'QuestionCircleOutlined',
-      name: 'Bài thi',
+      name: 'exam',
       routes: [
+        {
+          path: '/exam',
+          redirect: '/exam/dashboard'
+        },
+        {
+          name: 'Kỳ thi',
+          component: './exam',
+          path: '/exam/dashboard'
+        },
         {
           name: 'Câu hỏi',
           path: '/exam/question/:id',
@@ -286,8 +295,14 @@ export default defineConfig({
           path: '/exam/answer/:id',
           component: './exam/answer',
           hideInMenu: true
+        },
+        {
+          name: 'history',
+          path: '/exam/history',
+          component: './exam/history'
         }
-      ]
+      ],
+      access: 'admin'
     },
     {
       path: '/accounts',
