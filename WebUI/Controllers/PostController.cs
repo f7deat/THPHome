@@ -239,12 +239,14 @@ public class PostController : BaseController
     [HttpPost("active/{id}")]
     public async Task<IActionResult> SetActiveAsync([FromRoute] long id)
     {
-        if (User.IsInRole(RoleName.ADMIN))
+        if (User.IsInRole(RoleName.ADMIN) || User.IsInRole(RoleName.EDITOR))
         {
             var user = await _userManager.FindByIdAsync(User.GetId());
             var data = await _context.Posts.FindAsync(id);
+            if (data is null) return BadRequest("Bài viết không tồn tại!");
             if (_webHostEnvironment.IsProduction())
             {
+                if (user is null) return Unauthorized();
                 _ = _telegramService.SendMessageAsync($"{user.UserName} publish: {data.Title} -> https://dhhp.edu.vn/post/{data.Url}-{data.Id}.html");
             }
             return Ok(await _postService.SetActiveAsync(id));
