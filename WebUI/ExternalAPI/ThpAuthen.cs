@@ -25,8 +25,10 @@ public class ThpAuthen : ITHPAuthen
     {
         var response = await _httpClient.PostAsJsonAsync("user/login", new
         {
-            userName, password
+            userName,
+            password
         });
+        if (!response.IsSuccessStatusCode) return default;
 
         var user = JsonConvert.DeserializeObject<THPResponse<ThpUserResponse>>(await response.Content.ReadAsStringAsync());
         if (user is null) return null;
