@@ -258,6 +258,11 @@ export default defineConfig({
           component: './onboard/fist-week'
         },
         {
+          name: 'Chuẩn đầu ra',
+          path: '/onboard/proficiency',
+          component: './onboard/proficiency'
+        },
+        {
           name: 'Lịch sử',
           path: '/onboard/history',
           component: './onboard/history'
