@@ -86,12 +86,13 @@ const ExamQuestionPage: React.FC = () => {
                     {
                         title: '#',
                         valueType: 'indexBorder',
-                        width: 40
+                        width: 30,
+                        align: 'center'
                     },
                     {
                         title: 'Nội dung',
                         dataIndex: 'text',
-                        render: (dom, entity) => <div dangerouslySetInnerHTML={{ __html: entity.text }} />
+                        render: (_, entity) => <div dangerouslySetInnerHTML={{ __html: entity.text }} />
                     },
                     {
                         title: 'Số câu trả lời',
@@ -110,7 +111,7 @@ const ExamQuestionPage: React.FC = () => {
                     {
                         title: 'Tác vụ',
                         valueType: 'option',
-                        render: (dom, entity) => [
+                        render: (_, entity) => [
                             <Button type="primary" icon={<EditOutlined />} size="small" key="edit" onClick={() => {
                                 setQuestion(entity);
                                 setOpen(true);
@@ -164,6 +165,10 @@ const ExamQuestionPage: React.FC = () => {
                             {
                                 label: 'Table (Single Choice)',
                                 value: 6
+                            },
+                            {
+                                label: 'Survey (Khảo sát)',
+                                value: 7
                             }
                         ]} />
                     </Col>
