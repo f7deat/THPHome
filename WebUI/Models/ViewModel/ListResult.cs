@@ -13,8 +13,8 @@ public class ListResult<T> where T : class
     public int Total { get; set; }
     public bool Succeeded { get; }
     private IFilterOptions FilterOptions { get; set; }
-    public bool HasNextPage => Total > FilterOptions.PageIndex * FilterOptions.PageSize;
-    public bool HasPreviousPage => FilterOptions.PageIndex > 1;
+    public bool HasNextPage => Total > FilterOptions.Current * FilterOptions.PageSize;
+    public bool HasPreviousPage => FilterOptions.Current > 1;
     public bool HasData => Data.Any();
 
     [UIHint(UIHint.Pagination)]
@@ -33,7 +33,7 @@ public class ListResult<T> where T : class
         FilterOptions = filterOptions;
         Pagination = new Pagination
         {
-            Current = filterOptions.PageIndex,
+            Current = filterOptions.Current,
             PageSize = filterOptions.PageSize,
             Total = total,
         };
@@ -41,8 +41,8 @@ public class ListResult<T> where T : class
 
     public static async Task<ListResult<T>> Success(IQueryable<T> query, IFilterOptions filterOptions)
     {
-        if (filterOptions.PageSize < 1) filterOptions.PageSize = 1;
-        return new ListResult<T>(await query.AsNoTracking().Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(), await query.CountAsync(), filterOptions);
+        if (filterOptions.Current < 1) filterOptions.Current = 1;
+        return new ListResult<T>(await query.AsNoTracking().Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.Current).ToListAsync(), await query.CountAsync(), filterOptions);
     }
 
     public static ListResult<T> Success(IEnumerable<T> query, IFilterOptions filterOptions)

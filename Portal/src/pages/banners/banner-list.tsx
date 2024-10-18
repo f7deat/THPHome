@@ -27,7 +27,7 @@ const BannerList = () => {
     const init = useCallback(() => {
         apiBannerList({
             locale: intl.locale,
-            pageIndex: 1,
+            current: 1,
             pageSize: 20
         }).then(response => {
             setListBanner(response.data);

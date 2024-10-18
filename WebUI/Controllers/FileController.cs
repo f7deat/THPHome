@@ -55,7 +55,7 @@ public class FileController : BaseController
         query = query.OrderByDescending(x => x.ModifiedDate);
         return Ok(new
         {
-            data = await query.Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
+            data = await query.Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
             total = await query.CountAsync()
         });
     }
@@ -192,7 +192,7 @@ public class FileController : BaseController
     }
 
     [HttpGet("directories")]
-    public IActionResult Folders(string path = "files", int pageIndex = 1, int pageSize = 10)
+    public IActionResult Folders(string path = "files", int current = 1, int pageSize = 10)
     {
         var folders = new List<dynamic>();
         string pathCombine = Path.Combine(_webHostEnvironment.WebRootPath, path);
@@ -200,7 +200,7 @@ public class FileController : BaseController
 
         var files = new List<dynamic>();
 
-        var filesInDirectory = Directory.GetFiles(pathCombine).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+        var filesInDirectory = Directory.GetFiles(pathCombine).Skip((current - 1) * pageSize).Take(pageSize);
         foreach (var item in filesInDirectory)
         {
             var file = new FileInfo(item);

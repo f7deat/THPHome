@@ -64,7 +64,7 @@ public class CategoryService : ICategoryService
 
     public Task<IReadOnlyList<Category>> ListAsync(ISpecification<Category> spec) => _categoryRepository.ListAsync(spec);
 
-    public async Task<PaginatedList<Category>> ListParrentAsync(int? parrentId, int pageIndex, int pageSize) => await PaginatedList<Category>.CreateAsync(_categoryRepository.ListByParrentId(parrentId), pageIndex, pageSize);
+    public async Task<PaginatedList<Category>> ListParrentAsync(int? parentId, int current, int pageSize) => await PaginatedList<Category>.CreateAsync(_categoryRepository.ListByParrentId(parentId), current, pageSize);
 
     public async Task<dynamic> UpdateAsync(Category category)
     {

@@ -48,11 +48,11 @@
                 }
 
                 <a asp-action="tag" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
-                   asp-route-pageIndex="@(Model.PageIndex - 1)" class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white hover:text-white @prevDisabled shadow">
+                   asp-route-current="@(Model.Current - 1)" class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white hover:text-white @prevDisabled shadow">
                     <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
                 </a>
                 <a asp-action="tag" asp-route-searchTerm="@ViewBag.SearchTerm" asp-route-id="@ViewBag.Id"
-                   asp-route-pageIndex="@(Model.PageIndex + 1)"
+                   asp-route-current="@(Model.Current + 1)"
                    class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 hover:text-white text-white float-right @nextDisabled shadow">
                     <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
                 </a>

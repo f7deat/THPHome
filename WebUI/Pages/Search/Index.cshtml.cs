@@ -22,7 +22,7 @@ public class IndexModel : EntryPageModel
 
     [BindProperty(SupportsGet = true)]
     public string SearchTerm { get; set; } = string.Empty;
-    public int PageIndex { get; set; } = 1;
+    public int Current { get; set; } = 1;
     public int? CategoryId { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
@@ -36,7 +36,7 @@ public class IndexModel : EntryPageModel
         {
             return Page();
         }
-        Posts = await _postService.SearchAsync(SearchTerm.ToLower(), CategoryId, PageIndex, 10);
+        Posts = await _postService.SearchAsync(SearchTerm.ToLower(), CategoryId, Current, 10);
         return Page();
     }
 }

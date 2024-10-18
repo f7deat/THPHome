@@ -1,11 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IRepository;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using ApplicationCore.Helpers;
-using System;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
 using ApplicationCore.Models.Filters;
@@ -20,11 +16,11 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<PaginatedList<Post>> GetListPostByTagIdAsync(int tagId, int pageIndex, int pageSize)
+        public async Task<PaginatedList<Post>> GetListPostByTagIdAsync(int tagId, int current, int pageSize)
         {
             var query = from a in _context.Posts.Where(x => x.Status == PostStatus.PUBLISH)
                         select a;
-            return await PaginatedList<Post>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
+            return await PaginatedList<Post>.CreateAsync(query.AsNoTracking(), current, pageSize);
         }
 
         public async Task<int> GetTotalViewAsync()
@@ -92,8 +88,8 @@ namespace Infrastructure.Repositories
             var total = await query.CountAsync();
             return new
             {
-                pagination = new { current = filterOptions.PageIndex, pageSize = filterOptions.PageSize, total },
-                data = await query.Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
+                pagination = new { current = filterOptions.Current, pageSize = filterOptions.PageSize, total },
+                data = await query.Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
                 total
             };
         }
@@ -196,7 +192,7 @@ namespace Infrastructure.Repositories
             View = x.View
         }).ToListAsync();
 
-        public async Task<PaginatedList<PostView>> GetListAsync(int pageIndex) => await PaginatedList<PostView>.CreateAsync(_context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.ModifiedDate).Select(x => new PostView
+        public async Task<PaginatedList<PostView>> GetListAsync(int current) => await PaginatedList<PostView>.CreateAsync(_context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.ModifiedDate).Select(x => new PostView
         {
             Id = x.Id,
             Description = x.Description,
@@ -205,7 +201,7 @@ namespace Infrastructure.Repositories
             Title = x.Title,
             Url = x.Url,
             View = x.View
-        }), pageIndex, 8);
+        }), current, 8);
 
         public async Task<IEnumerable<Post>> GetListPopularAsync() => await _context.Posts.OrderByDescending(x => x.View).Take(5).ToListAsync();
 
@@ -235,7 +231,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize) => await _context.Posts.Where(x => x.Title.ToLower().Contains(keyword.ToLower())).OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
 
-        public async Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int pageIndex, int pageSize)
+        public async Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int current, int pageSize)
         {
             var query = from a in _context.Posts
                         join b in _context.PostCategories on a.Id equals b.PostId
@@ -251,10 +247,10 @@ namespace Infrastructure.Repositories
                             Url = a.Url,
                             View = a.View
                         };
-            return await PaginatedList<PostView>.CreateAsync(query, pageIndex, pageSize);
+            return await PaginatedList<PostView>.CreateAsync(query, current, pageSize);
         }
 
-        public async Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int pageIndex, int pageSize)
+        public async Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize)
         {
             var query = from a in _context.Categories
                         join b in _context.PostCategories on a.Id equals b.CategoryId
@@ -271,7 +267,7 @@ namespace Infrastructure.Repositories
                             Url = c.Url,
                             View = c.View
                         };
-            return await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return await query.Skip((current - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
         public async Task<List<CategoryWithPost>> GetListByAllCategoryAsync()
@@ -304,10 +300,10 @@ namespace Infrastructure.Repositories
             return returnValue;
         }
 
-        public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize, Language language)
+        public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, Language language)
         {
             return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Language == language)
-                .OrderByDescending(x => x.CreatedDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(x => new PostView
+                .OrderByDescending(x => x.CreatedDate).Skip((current - 1) * pageSize).Take(pageSize).Select(x => new PostView
             {
                 Id = x.Id,
                 Description = x.Description,

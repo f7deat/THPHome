@@ -182,8 +182,7 @@ const PostList: React.FC<{
                 request={(params) => queryPosts({
                     ...params,
                     type: type,
-                    language: language(intl.locale),
-                    pageIndex: params.current
+                    language: language(intl.locale)
                 })}
                 search={{
                     layout: 'vertical'

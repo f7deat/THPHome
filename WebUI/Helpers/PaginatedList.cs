@@ -8,13 +8,13 @@ namespace ApplicationCore.Helpers
 {
     public class PaginatedList<T> : List<T>
     {
-        public int PageIndex { get; private set; }
+        public int Current { get; private set; }
         public int TotalPages { get; private set; }
         public int Total { get; private set; }
 
-        public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
+        public PaginatedList(List<T> items, int count, int current, int pageSize)
         {
-            PageIndex = pageIndex;
+            Current = current;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             Total = count;
             AddRange(items);
@@ -24,7 +24,7 @@ namespace ApplicationCore.Helpers
         {
             get
             {
-                return PageIndex > 1;
+                return Current > 1;
             }
         }
 
@@ -32,15 +32,15 @@ namespace ApplicationCore.Helpers
         {
             get
             {
-                return PageIndex < TotalPages;
+                return Current < TotalPages;
             }
         }
 
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
+        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int current, int pageSize)
         {
             var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+            var items = await source.Skip((current - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList<T>(items, count, current, pageSize);
         }
 
     }
@@ -58,14 +58,14 @@ namespace ApplicationCore.Helpers
         public int Total { get; private set; }
 
         public Pagination Pagination { get; private set; } = new Pagination();
-        public List<T> Data { get; private set; } = new List<T>();
+        public List<T> Data { get; private set; } = [];
 
-        public Paginated(List<T> items, int count, int pageIndex, int pageSize)
+        public Paginated(List<T> items, int count, int current, int pageSize)
         {
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             Total = count;
 
-            Pagination.Current = pageIndex;
+            Pagination.Current = current;
             Pagination.Total = Total;
             Pagination.PageSize = pageSize;
             Data.AddRange(items);
@@ -87,11 +87,11 @@ namespace ApplicationCore.Helpers
             }
         }
 
-        public static async Task<Paginated<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
+        public static async Task<Paginated<T>> CreateAsync(IQueryable<T> source, int current, int pageSize)
         {
             var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new Paginated<T>(items, count, pageIndex, pageSize);
+            var items = await source.Skip((current - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new Paginated<T>(items, count, current, pageSize);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace WebUI.Pages.Categories
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; } = string.Empty;
         [BindProperty(SupportsGet = true)]
-        public int PageIndex { get; set; } = 1;
+        public int Current { get; set; } = 1;
         public PaginatedList<PostView> Posts;
         public IEnumerable<Category> Categories { get; set; }
 
@@ -69,7 +69,7 @@ namespace WebUI.Pages.Categories
                 ViewData["Title"] = $"[{Category.Name}] {SearchTerm}";
             }
             ViewData["Description"] = Category.Description;
-            Posts = await _postService.GetListInCategoryAsync(Category.Id, SearchTerm, PageIndex);
+            Posts = await _postService.GetListInCategoryAsync(Category.Id, SearchTerm, Current);
             Categories = await _categoryService.GetChildCategoriesAsync(Category.Id);
             ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Language);
             return Page();

@@ -59,7 +59,7 @@
 
                 @if (Model.Posts.HasPreviousPage)
                 {
-                    <a href="/category/details/@Model.Category.Id?pageIndex=@(Model.PageIndex - 1)&searchTerm=@Model.SearchTerm"
+                    <a href="/category/details/@Model.Category.Id?current=@(Model.Current - 1)&searchTerm=@Model.SearchTerm"
                        class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white shadow">
                         <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
                     </a>
@@ -74,7 +74,7 @@
                 }
                 @if (Model.Posts.HasNextPage)
                 {
-                    <a href="/category/details/@Model.Category.Id?pageIndex=@(Model.PageIndex + 1)&searchTerm=@Model.SearchTerm"
+                    <a href="/category/details/@Model.Category.Id?current=@(Model.Current + 1)&searchTerm=@Model.SearchTerm"
                        class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white float-right shadow">
                         <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
                     </a>

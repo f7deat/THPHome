@@ -46,18 +46,18 @@
                 }
                 else
                 {
-                    <partial name="/Views/Post/_Posts.cshtml" model="Model" />
+                    <partial name="/Views/Post/_Posts.cshtml" model="Model.Posts" />
 
                     <div class="flex justify-between">
                         @{
                             var prevDisabled = !Model.Posts.HasPreviousPage ? "disabled" : "";
                             var nextDisabled = !Model.Posts.HasNextPage ? "disabled" : "";
                         }
-                        <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-keyword="@ViewData["Title"]"
+                        <a asp-action="Index" asp-route-current="@(Model.Current - 1)" asp-route-keyword="@ViewData["Title"]"
                            class="px-4 py-1 bg-gray-800 text-white hover:bg-gray-900 hover:text-white rounded @prevDisabled shadow">
                             <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
                         </a>
-                        <a asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-keyword="@ViewData["Title"]"
+                        <a asp-action="Index" asp-route-current="@(Model.Current + 1)" asp-route-keyword="@ViewData["Title"]"
                            class="px-4 py-1 bg-gray-800 text-white hover:bg-gray-900 hover:text-white rounded @nextDisabled shadow">
                             <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
                         </a>

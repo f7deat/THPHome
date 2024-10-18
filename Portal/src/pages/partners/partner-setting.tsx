@@ -1,4 +1,4 @@
-﻿import { Button, message, Popconfirm, Popover, Space, Image } from "antd"
+﻿import { Button, message, Popconfirm } from "antd"
 import { useRef, useState } from "react"
 import {
     EditOutlined,
@@ -30,7 +30,7 @@ const PartnerPage = () => {
         {
             title: 'STT',
             valueType: 'indexBorder',
-            width: 50,
+            width: 30,
             align: 'center'
         },
         {
@@ -103,10 +103,7 @@ const PartnerPage = () => {
                     layout: 'vertical'
                 }}
                 actionRef={actionRef}
-                request={(params) => apiGetListPartner({
-                    ...params,
-                    pageIndex: params.current
-                })} columns={columns} rowKey="id" rowSelection={{}} />
+                request={apiGetListPartner} columns={columns} rowKey="id" rowSelection={{}} />
 
             <PartnerSetting open={open} setOpen={setOpen} id={id} actionRef={actionRef} />
         </PageContainer>

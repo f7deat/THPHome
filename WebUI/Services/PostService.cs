@@ -73,7 +73,7 @@ public class PostService : IPostService
 
     public Task<dynamic> GetListAsync(PostFilterOptions filterOptions) => _postRepository.GetListAsync(filterOptions);
 
-    public async Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int pageIndex) => await PaginatedList<PostView>.CreateAsync(_postRepository.GetListInCategory(categoryId, searchTerm), pageIndex, 9);
+    public async Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int current) => await PaginatedList<PostView>.CreateAsync(_postRepository.GetListInCategory(categoryId, searchTerm), current, 9);
 
     public Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0) => _postRepository.GetListRandomAsync(pageSize, categoryId);
 
@@ -111,7 +111,7 @@ public class PostService : IPostService
 
     public Task<IEnumerable<PostView>> GetRandomPostsAsync() => _postRepository.GetRandomPostsAsync();
 
-    public Task<PaginatedList<PostView>> GetListAsync(int pageIndex) => _postRepository.GetListAsync(pageIndex);
+    public Task<PaginatedList<PostView>> GetListAsync(int current) => _postRepository.GetListAsync(current);
 
     public Task<IEnumerable<Post>> GetListPopularAsync() => _postRepository.GetListPopularAsync();
 
@@ -123,13 +123,13 @@ public class PostService : IPostService
 
     public Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize) => _postRepository.GetRelatedListAsync(keyword, pageSize);
 
-    public Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int pageIndex, int pageSize) => _postRepository.SearchAsync(searchTerm, categoryId, pageIndex, pageSize);
+    public Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int current, int pageSize) => _postRepository.SearchAsync(searchTerm, categoryId, current, pageSize);
 
-    public Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int pageIndex, int pageSize) => _postRepository.GetListByCategoryAsync(normalizeName, pageIndex, pageSize);
+    public Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize) => _postRepository.GetListByCategoryAsync(normalizeName, current, pageSize);
 
     public Task<List<CategoryWithPost>> GetListByAllCategoryAsync() => _postRepository.GetListByAllCategoryAsync();
 
-    public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int pageIndex, int pageSize, Language language) => _postRepository.GetListByTypeAsync(type, pageIndex, pageSize, language);
+    public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, Language language) => _postRepository.GetListByTypeAsync(type, current, pageSize, language);
 
     public async Task<dynamic> SetActiveAsync(long id)
     {

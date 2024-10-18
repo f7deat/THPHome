@@ -3,10 +3,10 @@ import { EyeOutlined } from "@ant-design/icons";
 import { PageContainer, ProTable } from "@ant-design/pro-components"
 import { Button, Image, Popover, Tag } from "antd";
 
-const ProficiencyPage : React.FC = () => {
+const ProficiencyPage: React.FC = () => {
     return (
         <PageContainer>
-<ProTable
+            <ProTable
                 search={{
                     layout: 'vertical'
                 }}

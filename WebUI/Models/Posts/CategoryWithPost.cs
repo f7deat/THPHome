@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
+﻿namespace ApplicationCore.Models.Posts;
 
-namespace ApplicationCore.Models.Posts
+public class CategoryWithPost
 {
-    public class CategoryWithPost
-    {
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public List<PostView> ListPosts { get; set; }
-    }
+    public int CategoryId { get; set; }
+    public string? CategoryName { get; set; }
+    public List<PostView>? ListPosts { get; set; }
 }

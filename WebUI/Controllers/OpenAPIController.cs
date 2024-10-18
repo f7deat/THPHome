@@ -80,7 +80,7 @@ public class OpenAPIController : Controller
                     select b;
         }
 
-        var data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
+        var data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
 
         var categories = await (from a in _context.PostCategories
                                 join b in _context.Categories on a.CategoryId equals b.Id
@@ -132,7 +132,7 @@ public class OpenAPIController : Controller
         if (string.IsNullOrWhiteSpace(filterOptions.ApiKey)) return BadRequest("API KEY is required!");
         if (!filterOptions.ApiKey.Equals(Options.OpenApiKey)) return Unauthorized();
         var query = await _context.Photos.Where(x => filterOptions.PostId == null || x.PostId == filterOptions.PostId).OrderByDescending(x => x.CreatedDate)
-            .Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
+            .Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
         return Ok(query);
     }
 
@@ -151,7 +151,7 @@ public class OpenAPIController : Controller
                 x.ModifiedDate,
                 thumbnail = _context.Photos.Where(p => p.PostId == x.Id).Select(p => p.Url).FirstOrDefault()
             });
-        var data = await query.OrderByDescending(x => x.ModifiedDate).Skip((filterOptions.PageIndex - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
+        var data = await query.OrderByDescending(x => x.ModifiedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
         return Ok(data);
     }
 
