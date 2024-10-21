@@ -32,6 +32,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\THPCore\THPCore.csproj" />
+	  <ProjectReference Include="..\THPIdentity\THPIdentity.csproj" />
 	</ItemGroup>
 
 </Project>
