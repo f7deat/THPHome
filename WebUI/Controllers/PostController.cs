@@ -129,7 +129,7 @@ public class PostController : BaseController
             await _telegramService.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
         }
         var blocks = await _context.PostBlocks.Where(x => x.PostId == id).ToListAsync();
-        if (!blocks.IsNullOrEmpty())
+        if (blocks.Any())
         {
             _context.PostBlocks.RemoveRange(blocks);
             await _context.SaveChangesAsync();

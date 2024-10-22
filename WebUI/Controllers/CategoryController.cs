@@ -130,7 +130,7 @@ public class CategoryController : BaseController
             Value = x.Id,
             Title = x.Name
         });
-        if (categories.IsNullOrEmpty()) return result;
+        if (!categories.Any()) return result;
         foreach (var category in categories)
         {
             category.Children = GetTreeData(category.Value, raw);
@@ -150,7 +150,7 @@ public class CategoryController : BaseController
             Status = x.Status,
             Count = x.Count
         });
-        if (categories.IsNullOrEmpty()) return result;
+        if (!categories.Any()) return result;
         foreach (var category in categories)
         {
             category.Children = GetTreeDataItem(category.Id, raw);

@@ -27,7 +27,7 @@ public class BannerRepository : EfRepository<Banner>, IBannerRepository
     public async Task RemoveRangeAsync(long id)
     {
         var banners = await _context.Banners.Where(x => x.PostId == id).ToListAsync();
-        if (!banners.IsNullOrEmpty())
+        if (banners.Any())
         {
             _context.RemoveRange(banners);
             await _context.SaveChangesAsync();

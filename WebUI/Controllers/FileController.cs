@@ -65,7 +65,7 @@ public class FileController : BaseController
     {
         try
         {
-            if (args.Files.IsNullOrEmpty() || args.Files is null) return BadRequest("Không tìm thấy tệp tin!");
+            if (args.Files != null || args.Files is null) return BadRequest("Không tìm thấy tệp tin!");
             var rootPath = Path.Combine(_webHostEnvironment.WebRootPath, "files");
             var applicationFiles = new List<ApplicationFile>();
             foreach (var file in args.Files)

@@ -13,4 +13,5 @@ public class ApplicationUser : IdentityUser
     public int? SubDepartmentId { get; set; }
     public int Amount { get; set; }
     public string? Name { get; set; }
+    public int? Gender { get; set; }
 }

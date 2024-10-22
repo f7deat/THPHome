@@ -47,7 +47,7 @@ public class EmailController : BaseController
         var token = authHeader.ToString().Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase);
         args.Token = token;
         var users = await _thpAuthen.GetListUser(args);
-        if (users.IsNullOrEmpty()) return BadRequest("Không tìm thấy người dùng!");
+        if (!users.Any()) return BadRequest("Không tìm thấy người dùng!");
 
         return Ok(IdentityResult.Success);
     }
