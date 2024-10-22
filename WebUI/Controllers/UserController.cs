@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebUI.Models.Api.Admin.Roles;
@@ -20,6 +19,7 @@ using WebUI.ExternalAPI.Interfaces;
 using WebUI.Entities;
 using THPCore.Helpers;
 using THPCore.Enums;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WebUI.Controllers;
 

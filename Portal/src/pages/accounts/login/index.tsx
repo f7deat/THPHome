@@ -56,7 +56,7 @@ const Login: React.FC = () => {
                                 <img src="https://dhhp.edu.vn/img/banner.png" alt="LOGO" className="w-full" />
                                 <div className="login-form w-full">
                                     <Form layout="vertical" onFinish={onFinish}>
-                                        <ProFormText label="Email hoặc Tài khoản" name="username"
+                                        <ProFormText label="Tài khoản" name="username"
                                             fieldProps={{
                                                 size: "large",
                                                 prefix: <UserOutlined />
@@ -74,7 +74,7 @@ const Login: React.FC = () => {
                                         <Button type="primary" htmlType="submit" icon={<LoginOutlined />}>Đăng nhập</Button>
                                     </Form>
                                     <div className="flex justify-end">
-                                        <Button type="link" size="small" onClick={() => setOpen(true)}>Quên mật khẩu?</Button>
+                                        <Button type="link" size="small" onClick={() => setOpen(true)} className="poppins-regular">Quên mật khẩu?</Button>
                                     </div>
                                     <Divider>Hoặc</Divider>
                                     <Alert type="warning" showIcon message="Từ ngày 17/07/2024 có thể đăng nhập SSO bằng tài khoản QLDT" />
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
                                         <Button type="primary" size="large" className="w-full" icon={<FacebookOutlined />}>Đăng nhập với Facebook</Button>
                                     </div>
                                 </div>
-                                <div className="copy-right">© 2022 <a href="https://dhhp.edu.vn">Hai Phong University</a></div>
+                                <div className="copy-right poppins-regular">© 2022 <a href="https://dhhp.edu.vn">Hai Phong University</a></div>
                             </div>
                         </ProCard>
                     </Col>
