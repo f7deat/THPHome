@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using THPIdentity.Entities;
 using WebUI.Entities;
 using WebUI.Entities.Articles;
 using WebUI.Entities.Communications;

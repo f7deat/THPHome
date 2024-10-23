@@ -19,9 +19,10 @@ using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI;
 using WebUI.Foundations.Interfaces;
 using WebUI.Foundations;
-using WebUI.Entities;
 using THPCore.Interfaces;
 using THPCore.Senders;
+using THPIdentity.Data;
+using THPIdentity.Entities;
 
 namespace WebUI;
 
@@ -33,9 +34,11 @@ public class Startup(IConfiguration configuration)
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<IdentityDbTHPContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
+
         services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddEntityFrameworkStores<IdentityDbTHPContext>()
             .AddDefaultTokenProviders();
 
         services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));

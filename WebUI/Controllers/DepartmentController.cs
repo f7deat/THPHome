@@ -4,7 +4,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebUI.Entities;
+using THPIdentity.Entities;
 using WebUI.Extensions;
 using WebUI.Foundations;
 using WebUI.Models.Args.Departments;

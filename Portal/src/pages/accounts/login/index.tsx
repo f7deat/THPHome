@@ -1,10 +1,9 @@
-import { ModalForm, ProCard, ProFormText } from "@ant-design/pro-components";
+import { ModalForm, ProFormText } from "@ant-design/pro-components";
 import { history } from "@umijs/max";
-import { Alert, Button, Col, Divider, Form, Layout, Row, message } from "antd";
-import './index.css';
+import { Button, Form, Layout, message } from "antd";
 import { Helmet } from "@umijs/max";
-import { FacebookOutlined, LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
-import { apiLogin, apiLoginSSO } from "@/services/user";
+import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
+import { apiLogin } from "@/services/user";
 import { useModel } from "@umijs/max";
 import { flushSync } from "react-dom";
 import { useState } from "react";
@@ -16,7 +15,6 @@ const Login: React.FC = () => {
 
     const { initialState, setInitialState } = useModel('@@initialState');
     const [open, setOpen] = useState<boolean>(false);
-    const [openSSO, setOpenSSO] = useState<boolean>(false);
 
     const fetchUserInfo = async () => {
         const userInfo = await initialState?.fetchUserInfo?.();
@@ -34,7 +32,7 @@ const Login: React.FC = () => {
         const response = await apiLogin(values);
         if (response.succeeded) {
             message.success('Đăng nhập thành công!')
-            localStorage.setItem('wf_token', response.token || '');
+            localStorage.setItem('thp_token', response.token || '');
             await fetchUserInfo();
             const urlParams = new URL(window.location.href).searchParams;
             history.push(urlParams.get('redirect') || '/');
@@ -46,15 +44,16 @@ const Login: React.FC = () => {
     return (
         <Layout className="overflow-hidden">
             <Helmet>
-                <title>Login - Hai Phong University</title>
+                <title>Đăng nhập - Đại học Hải Phòng</title>
             </Helmet>
             <Content className="h-screen">
-                <Row gutter={16} className="h-full">
-                    <Col md={8} className="h-full">
-                        <ProCard className="h-full">
-                            <div className="flex flex-col items-center justify-center gap-2 py-4 relative h-full">
-                                <img src="https://dhhp.edu.vn/img/banner.png" alt="LOGO" className="w-full" />
-                                <div className="login-form w-full">
+                <div className="h-full flex">
+                    <div className="h-full relative md:w-1/3">
+                        <img src="https://dhhp.edu.vn/css/imgs/login_background.svg" className="absolute bottom-0" />
+                        <div className="h-full flex flex-col justify-between items-center bg-white w-full">
+                            <div className="flex flex-col items-center justify-center gap-2 py-4 relative flex-1 w-full px-10 md:px-20">
+                                <img src="https://dhhp.edu.vn/img/banner.png" alt="LOGO" className="mb-4" />
+                                <div className="mb-4 w-full">
                                     <Form layout="vertical" onFinish={onFinish}>
                                         <ProFormText label="Tài khoản" name="username"
                                             fieldProps={{
@@ -71,53 +70,28 @@ const Login: React.FC = () => {
                                             }}
                                             rules={[{ required: true }]}
                                         />
-                                        <Button type="primary" htmlType="submit" icon={<LoginOutlined />}>Đăng nhập</Button>
+                                        <Button type="primary" htmlType="submit" icon={<LoginOutlined />} className="shadow w-full" size="large">Đăng nhập</Button>
                                     </Form>
-                                    <div className="flex justify-end">
-                                        <Button type="link" size="small" onClick={() => setOpen(true)} className="poppins-regular">Quên mật khẩu?</Button>
-                                    </div>
-                                    <Divider>Hoặc</Divider>
-                                    <Alert type="warning" showIcon message="Từ ngày 17/07/2024 có thể đăng nhập SSO bằng tài khoản QLDT" />
-                                    <div className="login-social">
-                                        <Button size="large" className="w-full mb-2" icon={<LoginOutlined />} onClick={() => setOpenSSO(true)}>Đăng nhập SSO</Button>
-                                        <Button type="primary" size="large" className="w-full" icon={<FacebookOutlined />}>Đăng nhập với Facebook</Button>
-                                    </div>
                                 </div>
-                                <div className="copy-right poppins-regular">© 2022 <a href="https://dhhp.edu.vn">Hai Phong University</a></div>
+                                <div className="flex justify-end w-full">
+                                    <Button type="link" size="small" onClick={() => setOpen(true)} className="poppins-regular">Quên mật khẩu?</Button>
+                                </div>
                             </div>
-                        </ProCard>
-                    </Col>
-                    <Col md={16} style={{
+                            <div className="p-4 poppins-medium">© 2022 <a href="https://dhhp.edu.vn">Hai Phong University</a></div>
+                        </div>
+                    </div>
+                    <div style={{
                         backgroundImage: `url('https://dhhp.edu.vn/assets/bg-login.png')`
-                    }} className="bg-cover no-repeat">
+                    }} className="bg-cover no-repeat md:w-2/3">
 
-                    </Col>
-                </Row>
+                    </div>
+                </div>
             </Content>
             <ModalForm open={open} onOpenChange={setOpen} title="Quên mật khẩu?">
                 <ProFormText name="email" label="Địa chỉ email" rules={[
                     {
                         type: 'email'
                     },
-                    {
-                        required: true
-                    }
-                ]} />
-            </ModalForm>
-            <ModalForm open={openSSO} onOpenChange={setOpenSSO} title="Đăng nhập SSO" onFinish={async (values: any) => {
-                const response = await apiLoginSSO(values);
-                message.success('Đăng nhập thành công!')
-                localStorage.setItem('wf_token', response.token || '');
-                await fetchUserInfo();
-                const urlParams = new URL(window.location.href).searchParams;
-                history.push(urlParams.get('redirect') || '/');
-            }}>
-                <ProFormText name="userName" label="Tài khoản" rules={[
-                    {
-                        required: true
-                    }
-                ]} />
-                <ProFormText.Password name="password" label="Mật khẩu" rules={[
                     {
                         required: true
                     }

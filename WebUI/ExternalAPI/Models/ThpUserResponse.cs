@@ -21,8 +21,12 @@ public class ThpUserResponse
     public string? Email { get; set; }
     [JsonProperty("address")]
     public string? Address { get; set; }
+    [JsonProperty("gender")]
+    public int? Gender { get; set; }
+    [JsonProperty("dateOfBirth")]
+    public DateTime? DateOfBirth { get; set; }
     [JsonProperty("userType")]
-    public UserType? UserType { get; set; }
+    public UserType UserType { get; set; }
     [JsonProperty("departmentId")]
     public int? DepartmentId { get; set; }
 }

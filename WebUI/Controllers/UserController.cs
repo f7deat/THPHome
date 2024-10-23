@@ -16,10 +16,10 @@ using WebUI.Models.Filters.Users;
 using WebUI.Models.ViewModel;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
-using WebUI.Entities;
 using THPCore.Helpers;
 using THPCore.Enums;
 using System.IdentityModel.Tokens.Jwt;
+using THPIdentity.Entities;
 
 namespace WebUI.Controllers;
 
@@ -409,22 +409,27 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
                 user = new ApplicationUser
                 {
                     UserName = login.UserName,
-                    Name = $"{thpUser.FirstName} {thpUser.LastName}",
+                    Name = $"{thpUser.LastName} {thpUser.FirstName}",
                     Email = thpUser.Email,
                     PhoneNumber = thpUser.PhoneNumber,
                     DepartmentId = thpUser.DepartmentId,
                     UserType = thpUser.UserType,
-                    Address = thpUser.Address
+                    Address = thpUser.Address,
+                    Gender = thpUser.Gender,
+                    DateOfBirth = thpUser.DateOfBirth
                 };
                 await _userManager.CreateAsync(user);
             }
             else
             {
                 user.DepartmentId = thpUser.DepartmentId;
+                user.Name = $"{thpUser.LastName} {thpUser.FirstName}";
                 user.UserType = thpUser.UserType;
                 user.PhoneNumber = thpUser.PhoneNumber;
                 user.Email = thpUser.Email;
                 user.Address = thpUser.Address;
+                user.Gender = thpUser.Gender;
+                user.DateOfBirth = thpUser.DateOfBirth;
                 await _userManager.UpdateAsync(user);
             }
 
@@ -455,65 +460,6 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
                 succeeded = true
             });
         }
-    }
-
-    [HttpPost("sso"), AllowAnonymous]
-    public async Task<IActionResult> SSOAsync([FromBody] LoginModel args)
-    {
-        var thpUser = await _thpAuthen.LoginAsync(args.UserName, args.Password);
-        if (thpUser is null) return BadRequest("Tài khoản hoặc mật khẩu không đúng!");
-        if (thpUser.UserType == 0) return BadRequest("Bạn không có quyền truy cập vào hệ thống!");
-        var user = await _userManager.FindByNameAsync(args.UserName);
-        if (user is null)
-        {
-            user = new ApplicationUser
-            {
-                UserName = args.UserName,
-                Name = $"{thpUser.FirstName} {thpUser.LastName}",
-                Email = thpUser.Email,
-                PhoneNumber = thpUser.PhoneNumber,
-                DepartmentId = thpUser.DepartmentId,
-                UserType = thpUser.UserType,
-                Address = thpUser.Address
-            };
-            await _userManager.CreateAsync(user);
-        }
-        else
-        {
-            user.DepartmentId = thpUser.DepartmentId;
-            user.UserType = thpUser.UserType;
-            user.PhoneNumber = thpUser.PhoneNumber;
-            user.Email = thpUser.Email;
-            user.Address = thpUser.Address;
-            await _userManager.UpdateAsync(user);
-        }
-
-        var authClaims = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String),
-                new(ClaimTypes.Name, user.UserName ?? string.Empty, ClaimValueTypes.String),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-
-        var secretCode = _configuration["JWT:Secret"];
-        if (string.IsNullOrEmpty(secretCode)) return BadRequest($"Secret code not found!");
-
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretCode));
-
-        var token = new JwtSecurityToken(
-            expires: DateTime.Now.AddDays(7),
-            claims: authClaims,
-            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
-
-        var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-        return Ok(new
-        {
-            token = generatedToken,
-            expiration = token.ValidTo,
-            succeeded = true
-        });
     }
 
     #region Role

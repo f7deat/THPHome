@@ -105,7 +105,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 export const request: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
-      const token = localStorage.getItem('wf_token');
+      const token = localStorage.getItem('thp_token');
       config.baseURL = 'https://dhhp.edu.vn/api/';
       config.headers = {
         authorization: `Bearer ${token}`,

@@ -7,7 +7,7 @@ const instance = axios.create({
 // Request Interceptor 1: Add Authorization Token
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('wf_token');
+    const token = localStorage.getItem('thp_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

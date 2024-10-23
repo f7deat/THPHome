@@ -13,9 +13,4 @@ export async function queryCurrentUser() {
 
 export const queryUserList = (params: any) => request(`user/list`, { params });
 
-export const apiLoginSSO = (data: any) => request(`user/sso`, {
-    data,
-    method: 'POST'
-})
-
 export const apiGetUserTypeOptions = () => request(`user/type/options`);
