@@ -23,7 +23,6 @@ using THPIdentity.Entities;
 
 namespace WebUI.Controllers;
 
-[Route("api/[controller]"), Authorize]
 public class UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
@@ -109,7 +108,12 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
             EmailConfirmed = x.EmailConfirmed,
             PhoneNumber = x.PhoneNumber,
             UserName = x.UserName,
-            PhoneNumberConfirmed = x.PhoneNumberConfirmed
+            PhoneNumberConfirmed = x.PhoneNumberConfirmed,
+            Gender = x.Gender,
+            Address = x.Address,
+            Amount = x.Amount,
+            DateOfBirth = x.DateOfBirth,
+            UserType = x.UserType
         });
         if (!string.IsNullOrWhiteSpace(filterOptions.UserName))
         {
