@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using THPIdentity.Constants;
 using THPIdentity.Entities;
+using WebUI.Foundations;
 
 namespace WebUI.Controllers;
 
-[Authorize, Route("api/[controller]")]
-public class RoleController : Controller
+public class RoleController : BaseController
 {
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
-    public RoleController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+    public RoleController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(context)
     {
         _roleManager = roleManager;
         _userManager = userManager;
@@ -22,12 +23,12 @@ public class RoleController : Controller
     [Route("run-seed"), HttpPost]
     public async Task<IActionResult> RunSeedAsync()
     {
-        var role = new IdentityRole();
-        role.Name = "admin";
+        var role = new IdentityRole
+        {
+            Name = RoleName.ADMIN
+        };
         await _roleManager.CreateAsync(role);
-        role.Name = "member";
-        await _roleManager.CreateAsync(role);
-        role.Name = "editor";
+        role.Name = RoleName.EDITOR;
         return Ok(await _roleManager.CreateAsync(role));
     }
 
@@ -35,6 +36,7 @@ public class RoleController : Controller
     public async Task<IActionResult> DeleteAsync([FromRoute] string roleId)
     {
         var role = await _roleManager.FindByIdAsync(roleId);
+        if (role is null) return BadRequest("Không tìm thấy quyền!");
         return Ok(await _roleManager.DeleteAsync(role));
     }
 }

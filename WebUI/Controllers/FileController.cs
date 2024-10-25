@@ -33,28 +33,21 @@ public class FileController : BaseController
                     join b in _context.ApplicationFolders on a.FolderId equals b.Id
                     into ab
                     from b in ab.DefaultIfEmpty()
-                    join c in _context.Users on a.CreatedBy equals c.Id
-                    join d in _context.Users on a.ModifiedBy equals d.Id
-                    into ad
-                    from d in ad.DefaultIfEmpty()
                     select new
                     {
                         a.Id,
                         a.Url,
                         fileName = a.Name,
                         a.FolderId,
-                        createdBy = c.UserName,
                         folderName = b.Name,
-                        modifiedBy = d.UserName,
                         a.CreatedDate,
                         a.ModifiedDate,
                         a.Size,
                         a.ContentType
                     };
-        query = query.OrderByDescending(x => x.ModifiedDate);
         return Ok(new
         {
-            data = await query.Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
+            data = await query.OrderByDescending(x => x.ModifiedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
             total = await query.CountAsync()
         });
     }

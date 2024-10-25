@@ -1,8 +1,6 @@
 ﻿using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using THPIdentity.Entities;
 using WebUI.Entities;
 using WebUI.Entities.Articles;
 using WebUI.Entities.Communications;
@@ -11,7 +9,7 @@ using WebUI.Foundations.Interfaces;
 
 namespace Infrastructure;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public class ApplicationDbContext : DbContext
 {
     private readonly ICurrentUser _currentUser;
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser currentUser) : base(options)

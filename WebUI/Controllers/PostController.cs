@@ -17,6 +17,7 @@ using WebUI.ExternalAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using WebUI.Entities;
 using THPIdentity.Entities;
+using THPIdentity.Constants;
 
 namespace WebUI.Controllers;
 

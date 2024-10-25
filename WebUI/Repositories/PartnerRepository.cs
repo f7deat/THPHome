@@ -14,13 +14,10 @@ namespace Infrastructure.Repositories
         public async Task<ListResult<Partner>> GetListAsync(PartnerFilterOptions filterOptions)
         {
             var query = from a in _context.Partners
-                        join b in _context.Users on a.ModifiedBy equals b.Id
-                        into ab from b in ab.DefaultIfEmpty()
                         select new Partner
                         {
                             Id = a.Id,
                             Name = a.Name,
-                            ModifiedBy = b.UserName,
                             Description = a.Description,
                             Logo = a.Logo,
                             Url = a.Url,

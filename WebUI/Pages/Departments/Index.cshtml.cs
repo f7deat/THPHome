@@ -39,31 +39,7 @@ public class IndexModel : EntryPageModel
             .Where(x => x.DepartmentId == id)
             .OrderBy(x => x.SortOrder)
             .ToListAsync();
-
-        var query = await (from u in _context.Users
-                           join du in _context.DepartmentUsers on u.Id equals du.UserId
-                           join d in _context.Departments on du.DepartmentId equals d.Id
-                           where du.DepartmentId == id && !string.IsNullOrEmpty(du.Type) && d.DepartmentTypeId == type
-                           orderby du.Rank
-                           select new UserRank
-                           {
-                               Id = u.Id,
-                               Name = u.Name,
-                               Email = u.Email,
-                               JobTitle = du.JobTitle,
-                               Avatar = u.Avatar,
-                               Rank = du.Rank,
-                               Group = du.Type
-                           }).ToListAsync();
-        UserRanks = query.GroupBy(x => x.Rank).ToDictionary(x => x.Key, x => x.Select(y => new UserRank
-        {
-            Avatar = y.Avatar,
-            Rank = y.Rank,
-            Email = y.Email,
-            JobTitle = y.JobTitle,
-            Id = y.Id,
-            Name = y.Name
-        }));
+        UserRanks = new Dictionary<int, IEnumerable<UserRank>>();
 
         return Page();
     }

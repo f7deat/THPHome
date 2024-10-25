@@ -203,26 +203,6 @@ public class DepartmentController : BaseController
         return Ok(IdentityResult.Success);
     }
 
-    [HttpGet("users-in-department/{id}")]
-    public async Task<IActionResult> GetUsersInDepartmentAsync([FromRoute] Guid id)
-    {
-        var users = from a in _context.Users
-                    join b in _context.DepartmentUsers on a.Id equals b.UserId
-                    join c in _context.Departments on b.DepartmentId equals c.Id
-                    where b.DepartmentId == id
-                    select new
-                    {
-                        b.Id,
-                        a.Name,
-                        a.Email,
-                        b.Rank,
-                        b.JobTitle,
-                        userId = a.Id,
-                        b.Type
-                    };
-        return Ok(await users.ToListAsync());
-    }
-
     [HttpGet("types")]
     public async Task<IActionResult> GetTypesAsync([FromQuery] FilterOptions filterOptions) => Ok(new { data = await _context.DepartmentTypes.Where(x => x.Locale == filterOptions.Locale).ToListAsync() });
 

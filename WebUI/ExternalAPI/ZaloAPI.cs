@@ -2,6 +2,7 @@
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using THPIdentity.Data;
 using WebUI.Entities.Articles;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
@@ -13,12 +14,14 @@ public class ZaloAPI : IZaloAPI
     private readonly ApplicationDbContext _context;
     private readonly IConfiguration _configuration;
     private readonly HttpClient _client;
+    private readonly IdentityDbTHPContext _identityContext;
 
-    public ZaloAPI(ApplicationDbContext context, IConfiguration configuration, HttpClient client)
+    public ZaloAPI(ApplicationDbContext context, IConfiguration configuration, HttpClient client, IdentityDbTHPContext identityContext)
     {
         _context = context;
         _configuration = configuration;
         _client = client;
+        _identityContext = identityContext;
     }
 
     private async Task<string?> GetAccessTokenAsync()
@@ -59,7 +62,7 @@ public class ZaloAPI : IZaloAPI
     {
         try
         {
-            var author = await _context.Users.FindAsync(post.CreatedBy);
+            var author = await _identityContext.Users.FindAsync(post.CreatedBy);
             var accessToken = await GetAccessTokenAsync();
             if (string.IsNullOrEmpty(accessToken)) return "Không lấy được access token";
             if (string.IsNullOrEmpty(post.Thumbnail)) return "Cover không hợp lệ";
