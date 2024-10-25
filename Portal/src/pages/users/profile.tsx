@@ -1,10 +1,11 @@
-﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space } from "antd"
-import React, { useEffect, useState } from "react";
+﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space, Tooltip } from "antd"
+import { useEffect, useState } from "react";
 import {
     StarOutlined,
     CommentOutlined,
     EditOutlined,
-    UserOutlined
+    UserOutlined,
+    UsergroupAddOutlined
 } from "@ant-design/icons";
 import { request, useParams } from "@umijs/max";
 import { Link } from "@umijs/max";
@@ -47,7 +48,11 @@ const Profile = () => {
         <PageContainer extra={<Link to={`/user/edit/${profile?.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
             <Row gutter={16}>
                 <Col md={6}>
-                    <ProCard className="mb-4">
+                    <ProCard className="mb-4" actions={[
+                        <Tooltip key="role" title="Phân quyền">
+                            <UsergroupAddOutlined />
+                        </Tooltip>
+                    ]}>
                         <div className="flex items-center justify-center p-4">
                             {
                                 profile?.avatar ? (

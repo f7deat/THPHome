@@ -97,7 +97,8 @@ const ExamAnswerPage: React.FC = () => {
                         dataIndex: 'isCorrect',
                         render: (_, entity) => entity.isCorrect ? <CheckOutlined className="text-green-500" /> : <CloseOutlined className="text-red-500" />,
                         width: 70,
-                        align: 'center'
+                        align: 'center',
+                        search: false
                     },
                     {
                         title: 'Tác vụ',

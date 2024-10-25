@@ -6,7 +6,8 @@ import {
     PlusCircleOutlined,
     CheckCircleTwoTone,
     SearchOutlined,
-    UserOutlined
+    UserOutlined,
+    UserAddOutlined
 } from "@ant-design/icons";
 import { Link } from "@umijs/max";
 import { request } from "@umijs/max";
@@ -194,7 +195,7 @@ const UserList = () => {
     }
 
     return (
-        <PageContainer extra={<Button type="primary" icon={<PlusCircleOutlined />} onClick={handleAdd}>Thêm thành viên</Button>}>
+        <PageContainer extra={<Button type="primary" icon={<UserAddOutlined />} onClick={handleAdd}>Tạo tài khoản</Button>}>
             <div className="bg-white p-4">
                 <ProTable
                 ghost

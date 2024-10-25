@@ -91,13 +91,15 @@ export default [
   {
     icon: 'TeamOutlined',
     name: 'Tài khoản',
+    path: '/account',
+    access: 'canAdmin',
+    component: './users/user-list',
+  },
+  {
+    name: 'Tài khoản',
     path: '/user',
+    hideInMenu: true,
     routes: [
-      {
-        name: 'Người dùng',
-        path: '/user',
-        component: './users/user-list',
-      },
       {
         name: 'Chỉnh sửa người dùng',
         path: '/user/edit/:id',
@@ -152,17 +154,19 @@ export default [
     name: 'Công cụ',
     path: '/tool',
     component: './tools',
+    access: 'canAdmin'
   },
   {
     name: 'Email',
     path: '/tool/email',
     component: './tools/email',
-    hideInMenu: true,
+    hideInMenu: true
   },
   {
     icon: 'SettingOutlined',
     name: 'setting',
     path: '/settings',
+    access: 'canAdmin',
     routes: [
       {
         name: 'general',
@@ -206,6 +210,7 @@ export default [
     path: '/onboard',
     name: 'Onboard',
     icon: 'LoginOutlined',
+    access: 'canAdmin',
     routes: [
       {
         path: '/onboard',
@@ -250,18 +255,12 @@ export default [
     routes: [
       {
         path: '/exam',
-        redirect: '/exam/dashboard',
+        redirect: '/exam/version',
       },
       {
         name: 'Kỳ thi',
         component: './exam',
-        path: '/exam/dashboard',
-      },
-      {
-        name: 'Câu hỏi',
-        path: '/exam/question/:id',
-        component: './exam/question',
-        hideInMenu: true,
+        path: '/exam/version'
       },
       {
         name: 'Đề thi',
@@ -270,8 +269,14 @@ export default [
         hideInMenu: true,
       },
       {
+        name: 'Câu hỏi',
+        path: '/exam/version/question/:id',
+        component: './exam/question',
+        hideInMenu: true,
+      },
+      {
         name: 'Câu trả lời',
-        path: '/exam/answer/:id',
+        path: '/exam/version/answer/:id',
         component: './exam/answer',
         hideInMenu: true,
       },

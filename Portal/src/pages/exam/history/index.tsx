@@ -13,17 +13,12 @@ const ExamHistoryPage : React.FC = () => {
                     {
                         title: '#',
                         valueType: 'indexBorder',
-                        width: 40
+                        width: 30
                     },
                     {
-                        title: 'Mã sinh viên',
+                        title: 'Tài khoản',
                         dataIndex: 'userName',
                         width: 120,
-                        search: false
-                    },
-                    {
-                        title: 'Họ và tên',
-                        dataIndex: 'name',
                         search: false
                     },
                     {
