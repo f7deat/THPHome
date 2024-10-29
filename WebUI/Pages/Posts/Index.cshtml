@@ -33,16 +33,25 @@
     {
         <div class="md:flex">
             <div class="md:w-8/12 md:mr-1">
-                <h1 class="p-2 bg-gray-800 text-white font-bold rounded-t">
+                <h1 class="h1 mb-2">
                     @Model.PageData.Title
                 </h1>
-                <div class="p-2 shadow overflow-auto">
-                    @if (!string.IsNullOrWhiteSpace(Model.PageData.Description))
-                    {
-                        <div class="font-bold mb-3">
-                            @Html.Raw(Model.PageData.Description)
+
+                @if (Model.Author != null)
+                {
+                    <div class="post-content__author_meta">
+                        <div class="post-author mb-2 text-break">
+                            <div class="text-muted text-sm">
+                                <span>Đăng bởi</span>
+                                <a href="#" class="text-bold post-author__name">
+                                    <i class="fas fa-user"></i> @Model.Author.Name
+                                </a>
+                            </div>
                         </div>
-                    }
+                    </div>
+                }
+
+                <div class="py-2 overflow-auto">
                     <div class="mb-3 ql-editor post">
                         @Html.Raw(Model.PageData.Content)
                     </div>

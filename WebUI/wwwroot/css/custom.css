@@ -7,6 +7,7 @@
     --red: #D02929;
     --ueni: #2e74dd;
     --uwhite: #fff;
+    --bs-body-font-family: "Inter", serif;
 }
 
 a {
@@ -305,8 +306,9 @@ li.dropdown:hover .dropdown-menu {
 }
 
 .h1 {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.5;
 }
 
 .h2 {
@@ -449,6 +451,11 @@ li.dropdown:hover .dropdown-menu {
 }
 
 @media screen and (min-width: 768px) {
+
+    .h1 {
+        font-size: 1.5rem;
+    }
+
     .divider {
         font-size: 2rem;
         overflow: hidden;
