@@ -10,15 +10,19 @@ using WebUI.Models.Categories;
 using Microsoft.AspNetCore.Identity;
 using THPIdentity.Entities;
 using THPCore.Enums;
+using WebUI.Foundations.Interfaces;
+using WebUI.Models.Results.Posts;
 
 namespace Infrastructure.Repositories;
 
 public class PostRepository : EfRepository<Post>, IPostRepository
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    public PostRepository(ApplicationDbContext _context, UserManager<ApplicationUser> userManager) : base(_context)
+    private readonly ICurrentUser _currentUser;
+    public PostRepository(ApplicationDbContext _context, UserManager<ApplicationUser> userManager, ICurrentUser currentUser) : base(_context)
     {
         _userManager = userManager;
+        _currentUser = currentUser;
     }
 
     public async Task<PaginatedList<Post>> GetListPostByTagIdAsync(int tagId, int current, int pageSize)
@@ -52,7 +56,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         }
     }
 
-    public async Task<dynamic> GetDataBarChartAsync()
+    public async Task<dynamic?> GetDataBarChartAsync()
     {
         try
         {
@@ -66,6 +70,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
 
     public async Task<dynamic> GetListAsync(PostFilterOptions filterOptions)
     {
+        var userId = _currentUser.GetId();
         var query = from a in _context.Posts.Where(x => filterOptions.Type == null || x.Type == filterOptions.Type)
                     select new
                     {
@@ -89,10 +94,14 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         {
             query = query.Where(x => x.Status == filterOptions.Status);
         }
+        if (!filterOptions.CanSeeAll)
+        {
+            query = query.Where(x => x.CreatedBy == userId);
+        }
         query = query.Where(x => x.Language == filterOptions.Language).OrderByDescending(x => x.ModifiedDate);
         var total = await query.CountAsync();
         var data = await query.Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).AsNoTracking()
-            .Select(x => new Post
+            .Select(x => new PostListItemResult
             {
                 Id = x.Id,
                 Url = x.Url,
@@ -100,7 +109,9 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                 View = x.View,
                 Title = x.Title,
                 Status = x.Status,
-                CreatedBy = x.CreatedBy
+                CreatedBy = x.CreatedBy,
+                CreatedDate = x.CreatedDate,
+                CanUpdate = x.CreatedBy == userId
             }).ToListAsync();
         var users = await _userManager.Users.Where(x => x.UserType != UserType.Student).ToListAsync();
 
@@ -108,12 +119,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         {
             item.CreatedBy = users.FirstOrDefault(x => x.Id == item.CreatedBy)?.Name;
         }
-        return new
-        {
-            pagination = new { current = filterOptions.Current, pageSize = filterOptions.PageSize, total },
-            data,
-            total
-        };
+        return new { data, total };
     }
 
     public async Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions)

@@ -18,6 +18,7 @@ export default [
         name: 'Entry',
         path: '/post/entry',
         component: './posts/entry',
+        access: 'canAdmin'
       },
       {
         name: 'Tin tức',
@@ -239,7 +240,18 @@ export default [
       {
         name: 'Chuẩn đầu ra',
         path: '/onboard/proficiency',
-        component: './onboard/proficiency',
+        routes: [
+          {
+            name: 'Ôn chuẩn đầu ra',
+            path: '/onboard/proficiency/practice',
+            component: './onboard/proficiency/practice'
+          },
+          {
+            name: 'Thi chuẩn đầu ra',
+            path: '/onboard/proficiency/exam',
+            component: './onboard/proficiency/exam'
+          }
+        ]
       },
       {
         name: 'Lịch sử',
@@ -247,46 +259,6 @@ export default [
         component: './onboard/history',
       },
     ],
-  },
-  {
-    path: '/exam',
-    icon: 'QuestionCircleOutlined',
-    name: 'exam',
-    routes: [
-      {
-        path: '/exam',
-        redirect: '/exam/version',
-      },
-      {
-        name: 'Kỳ thi',
-        component: './exam',
-        path: '/exam/version'
-      },
-      {
-        name: 'Đề thi',
-        path: '/exam/version/:id',
-        component: './exam/version',
-        hideInMenu: true,
-      },
-      {
-        name: 'Câu hỏi',
-        path: '/exam/version/question/:id',
-        component: './exam/question',
-        hideInMenu: true,
-      },
-      {
-        name: 'Câu trả lời',
-        path: '/exam/version/answer/:id',
-        component: './exam/answer',
-        hideInMenu: true,
-      },
-      {
-        name: 'history',
-        path: '/exam/history',
-        component: './exam/history',
-      },
-    ],
-    access: 'admin',
   },
   {
     path: '/accounts',

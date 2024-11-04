@@ -34,6 +34,7 @@ public class PostService : IPostService
         post.CreatedDate = DateTime.Now;
         post.ModifiedDate = DateTime.Now;
         post.View = 0;
+        post.Status = PostStatus.DRAFT;
         post.Url = SeoHelper.ToSeoFriendly(post.Title);
         return await _postRepository.AddAsync(post);
     }
@@ -67,7 +68,7 @@ public class PostService : IPostService
 
     public Task<Post> FindAsync(long id) => _postRepository.FindAsync(id);
 
-    public Task<dynamic> GetDataBarChartAsync() => _postRepository.GetDataBarChartAsync();
+    public Task<dynamic?> GetDataBarChartAsync() => _postRepository.GetDataBarChartAsync();
 
     public Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions) => _postRepository.GetInCategoryAsync(filterOptions);
 

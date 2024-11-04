@@ -8,7 +8,9 @@ import {
     CopyOutlined,
     TranslationOutlined,
     MoreOutlined,
-    SendOutlined
+    SendOutlined,
+    ArrowUpOutlined,
+    ArrowDownOutlined
 } from '@ant-design/icons';
 import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
@@ -19,6 +21,7 @@ import { apiShareZaloOA, queryPosts } from "@/services/post";
 import CopyPost from "./components/copy";
 import { FormattedMessage } from "@umijs/max";
 import { PostType } from "@/enum/post-enum";
+import { PostStatus } from "@/utils/enum";
 
 const PostList: React.FC<{
     type: PostType
@@ -129,13 +132,15 @@ const PostList: React.FC<{
         },
         {
             title: 'Tác vụ',
-            render: (dom, record: IPost) => [
+            render: (dom, record: any) => [
                 <Tooltip key="build" title="Page Builder">
                     <Button size="small" icon={<ToolOutlined />} hidden={type !== PostType.DEFAULT && type !== PostType.PAGE} onClick={() => {
                         history.push(`/post/page/${record.id}`);
                     }} />
                 </Tooltip>,
-                <Link key="edit" to={`/post/setting/${record.id}`} hidden={type === PostType.DEFAULT}><Button type="primary" size="small" icon={<EditOutlined />}></Button></Link>,
+                <Link key="edit" to={`/post/setting/${record.id}`} hidden={type === PostType.DEFAULT}>
+                    <Button type="primary" size="small" icon={<EditOutlined />} disabled={!record.canUpdate}></Button>
+                </Link>,
                 <Popconfirm
                     key="delete"
                     title="Bạn có chắc chắn muốn xóa?"
@@ -143,13 +148,19 @@ const PostList: React.FC<{
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={type === PostType.DEFAULT}></Button>
+                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={type === PostType.DEFAULT} disabled={!record.canUpdate}></Button>
                 </Popconfirm>,
                 <Dropdown
+                    disabled={!record.canUpdate}
                     key="more" menu={{
                         items: [
                             {
-                                label: 'Chia sẻ lên Zalo OA',
+                                label: record.status === PostStatus.PUBLISH ? 'Quay lại bản nháp' : 'Xuất bản',
+                                key: 'publish',
+                                icon: record.status === PostStatus.PUBLISH ? <ArrowDownOutlined /> : <ArrowUpOutlined />,
+                            },
+                            {
+                                label: 'Chia sẻ Zalo OA',
                                 key: 'zalo',
                                 icon: <SendOutlined />
                             },
@@ -159,9 +170,10 @@ const PostList: React.FC<{
                                 icon: <CopyOutlined />
                             },
                             {
-                                label: 'Dịch sang ngôn ngữ khác',
+                                label: 'Dịch',
                                 key: 'translate',
-                                icon: <TranslationOutlined />
+                                icon: <TranslationOutlined />,
+                                disabled: true
                             }
                         ],
                         onClick: (info) => onMoreClick(info, record)

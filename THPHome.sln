@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI", "WebUI\WebUI.csproj", "{A6F948BA-D46D-4D6E-AA2A-9A9900F8D3D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THPHome", "THPHome\THPHome.csproj", "{A6F948BA-D46D-4D6E-AA2A-9A9900F8D3D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THPCore", "THPCore\THPCore.csproj", "{6EE736B1-7AF8-4973-9F8B-8876989688E3}"
 EndProject

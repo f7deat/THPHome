@@ -18,7 +18,7 @@ public interface IPostService
     Task<IEnumerable<PostView>> GetListInTagAsync(string tagName, int pageSize);
     Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions);
     Task<int> GetTotalAsync();
-    Task<dynamic> GetDataBarChartAsync();
+    Task<dynamic?> GetDataBarChartAsync();
     Task<byte[]> ExportAsync();
     Task<dynamic> ImportAsync(IFormFile file);
     Task<Post> AddAsync(Post post);

@@ -364,3 +364,4 @@ MigrationBackup/
 /Portal/pnpm-lock.yaml
 /WebUI/appsettings.Development.json
 /WebUI/Migrations
+/THPHome/appsettings.Development.json

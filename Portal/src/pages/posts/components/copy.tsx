@@ -1,5 +1,5 @@
 import { queryBlockCopy } from "@/services/block";
-import { ActionType, ModalForm, ModalFormProps, ProForm, ProFormInstance, ProFormText, ProFormTextArea } from "@ant-design/pro-components"
+import { ActionType, ModalForm, ModalFormProps, ProFormInstance, ProFormText, ProFormTextArea } from "@ant-design/pro-components"
 import { message } from "antd";
 import { useEffect, useRef } from "react";
 
@@ -47,7 +47,9 @@ const CopyPost : React.FC<Props> = (props) => {
             <ProFormText label="Tiêu đề" name="title" rules={[{
                 required: true
             }]} />
-            <ProFormTextArea label="Mô tả" name="description" />
+            <ProFormTextArea label="Mô tả" name="description" rules={[{
+                required: true
+            }]} />
         </ModalForm>
     )
 }

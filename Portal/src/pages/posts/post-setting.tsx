@@ -13,7 +13,6 @@ import { request } from '@umijs/max';
 import { PageContainer, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProFormTreeSelect } from '@ant-design/pro-components';
 import { language } from '@/utils/format';
 import { apiCategoryTreeData } from '@/services/categoy';
-import { PostStatus } from '@/utils/enum';
 
 const { Dragger } = Upload;
 
@@ -305,25 +304,8 @@ const PostSetting = () => {
                                 }
                             </div>
                             <Row gutter={16}>
-                                <Col md={12}>
+                                <Col md={24}>
                                     <ProFormDatePicker name="modifiedDate" label="Ngày xuất bản" width="xl" />
-                                </Col>
-                                <Col md={12}>
-                                    <ProFormSelect name="status" label="Trạng thái"
-                                        required
-                                        initialValue={PostStatus.DRAFT}
-                                        allowClear={false}
-                                        options={[
-                                            {
-                                                label: 'Bản nháp',
-                                                value: PostStatus.DRAFT
-                                            },
-                                            {
-                                                label: 'Xuất bản',
-                                                value: PostStatus.PUBLISH
-                                            }
-                                        ]}
-                                    />
                                 </Col>
                             </Row>
                             <div className="mb-1">Tệp tin đính kèm</div>

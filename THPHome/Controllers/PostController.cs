@@ -4,18 +4,15 @@ using Infrastructure;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
-using ApplicationCore.Constants;
 using ApplicationCore.Entities;
 using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using WebUI.Extensions;
 using WebUI.Models.Api.Admin;
 using WebUI.Interfaces.IService;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using WebUI.Entities;
 using THPIdentity.Entities;
 using THPIdentity.Constants;
 
@@ -73,6 +70,7 @@ public class PostController : BaseController
     [HttpGet("get-list")]
     public async Task<IActionResult> GetListAsync([FromQuery] PostFilterOptions filterOptions)
     {
+        filterOptions.CanSeeAll = User.IsInRole(RoleName.EDITOR) || User.IsInRole(RoleName.ADMIN);
         return Ok(await _postService.GetListAsync(filterOptions));
     }
 
@@ -128,7 +126,7 @@ public class PostController : BaseController
         var user = await _userManager.FindByIdAsync(User.GetId());
         if (_webHostEnvironment.IsProduction())
         {
-            await _telegramService.SendMessageAsync($"{user.UserName} deleted: {post.Title} -> https://dhhp.edu.vn/post/{post.Url}-{post.Id}.html");
+            await _telegramService.SendMessageAsync($"{user?.UserName} deleted: {post?.Title} -> https://dhhp.edu.vn/post/{post?.Url}-{post?.Id}.html");
         }
         var blocks = await _context.PostBlocks.Where(x => x.PostId == id).ToListAsync();
         if (blocks.Any())
@@ -151,6 +149,34 @@ public class PostController : BaseController
             }
         }
         return Ok(post);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetDetailAsync([FromRoute] long id)
+    {
+        var article = await _postService.FindAsync(id);
+        if (string.IsNullOrEmpty(article.CreatedBy)) return BadRequest("Không tìm thấy tác giả");
+        var author = await _userManager.FindByIdAsync(article.CreatedBy);
+        if (author == null) return BadRequest("Không tìm thấy tác giả");
+
+        return Ok(new
+        {
+            data = new
+            {
+                article.Id,
+                article.Url,
+                article.Title,
+                article.Description,
+                article.Content,
+                AuthorName = author.Name,
+                AuthorUserName = author.UserName,
+                article.CreatedDate,
+                article.ModifiedDate,
+                article.View,
+                article.Thumbnail,
+                article.Status
+            }
+        });
     }
 
     [HttpPost("update")]

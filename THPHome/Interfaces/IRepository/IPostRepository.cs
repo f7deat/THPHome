@@ -13,7 +13,7 @@ namespace ApplicationCore.Interfaces.IRepository
         Task<PaginatedList<Post>> GetListPostByTagIdAsync(int tagId, int current, int pageSize);
         Task<int> GetTotalViewAsync();
         Task<IEnumerable<Post>> GetTopViewAsync(int pageSize);
-        Task<dynamic> GetDataBarChartAsync();
+        Task<dynamic?> GetDataBarChartAsync();
         Task<dynamic> GetListAsync(PostFilterOptions filterOptions);
         Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions);
         Task<bool> IsExistInCategory(int id);
