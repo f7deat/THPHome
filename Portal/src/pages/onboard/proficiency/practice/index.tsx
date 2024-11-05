@@ -10,8 +10,10 @@ const ProficiencyPracticePage: React.FC = () => {
 
     const actionRef = useRef<ActionType>();
     const [params, setParams] = useState<any>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     const exportData = async () => {
+        setLoading(true);
         const response = await apiExportProficiancy(params) as any;
         const url = window.URL.createObjectURL(
             new Blob([response]),
@@ -31,13 +33,14 @@ const ProficiencyPracticePage: React.FC = () => {
 
         // Clean up and remove the link
         link.parentNode?.removeChild(link);
+        setLoading(false);
 
     }
 
     return (
         <PageContainer extra={(
             <>
-                <Button icon={<FileExcelOutlined />} onClick={() => exportData()}>Xuất dữ liệu</Button>
+                <Button icon={<FileExcelOutlined />} onClick={() => exportData()} loading={loading}>Xuất dữ liệu</Button>
                 <ProFiciencyForm reload={() => {
                     actionRef.current?.reload();
                 }} />
@@ -162,7 +165,7 @@ const ProficiencyPracticePage: React.FC = () => {
                     {
                         title: 'Ngày thanh toán',
                         dataIndex: 'paymentDate',
-                        valueType: 'dateTime',
+                        valueType: 'date',
                         search: false,
                         width: 150
                     },

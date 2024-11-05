@@ -149,7 +149,7 @@ const ProficiencyExamPage: React.FC = () => {
                     {
                         title: 'Ngày thanh toán',
                         dataIndex: 'paymentDate',
-                        valueType: 'dateTime',
+                        valueType: 'date',
                         search: false,
                         width: 150
                     },
