@@ -70,6 +70,18 @@ const PostList: React.FC<{
                 message.success('Chia sẻ thành công!');
             });
         }
+        if (info.key === 'publish') {
+            request(`post/active/${entity.id}`, {
+                method: 'POST'
+            }).then((response: any) => {
+                if (response.succeeded) {
+                    message.success(response.message);
+                    actionRef.current?.reload();
+                } else {
+                    message.error(response.message)
+                }
+            })
+        }
     }
 
     const columns: ProColumnType<IPost>[] = [

@@ -365,3 +365,4 @@ MigrationBackup/
 /WebUI/appsettings.Development.json
 /WebUI/Migrations
 /THPHome/appsettings.Development.json
+THPHome/.config/dotnet-tools.json
