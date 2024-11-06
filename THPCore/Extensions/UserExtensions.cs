@@ -8,4 +8,9 @@ public static class UserExtensions
     {
         return claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
     }
+
+    public static string GetUserName(this ClaimsPrincipal claimsPrincipal)
+    {
+        return claimsPrincipal.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+    }
 }
