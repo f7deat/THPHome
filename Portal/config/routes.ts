@@ -211,7 +211,7 @@ export default [
     path: '/onboard',
     name: 'Onboard',
     icon: 'LoginOutlined',
-    access: 'canAdmin',
+    access: 'canOnboard',
     routes: [
       {
         path: '/onboard',
@@ -245,6 +245,12 @@ export default [
             name: 'Ôn chuẩn đầu ra',
             path: '/onboard/proficiency/practice',
             component: './onboard/proficiency/practice'
+          },
+          {
+            name: 'Đợt ôn tập',
+            path: '/onboard/proficiency/practice/batch/:id',
+            component: './onboard/proficiency/practice/batch',
+            hideInMenu: true
           },
           {
             name: 'Thi chuẩn đầu ra',

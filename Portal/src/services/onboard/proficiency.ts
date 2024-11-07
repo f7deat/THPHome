@@ -14,3 +14,7 @@ export const apiAddProficiency = (data: any) => request.post(`proficiency/add`, 
 export const apiDeleteProficiency = (id: string) => request.post(`proficiency/delete/${id}`);
 
 export const apiProficiencyTypeOptions = () => request.get(`proficiency/type/options`);
+
+export const apiProficiencyBatchList = (params: any) => request(`proficiency/batch/list`, { params });
+
+export const apiGetProficiencyBatch = (id?: string) => request.get(`proficiency/batch/${id}`);

@@ -5,10 +5,12 @@ export default function access(initialState: { currentUser?: API.User } | undefi
   const canEditor = currentUser && currentUser?.roles?.includes('Editor');
 
   const admin = initialState && initialState.currentUser?.roles?.includes('Admin');
+  const canOnboard = canAdmin || currentUser?.userType === 3;
 
   return {
     canAdmin,
     canEditor,
-    admin
+    admin,
+    canOnboard
   };
 };

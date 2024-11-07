@@ -1,4 +1,4 @@
-import { apiUploadFile } from "@/services/exam/file";
+import { apiFileUpload } from "@/services/file";
 
 class MyUploadAdapter {
     constructor(loader: any) {
@@ -16,7 +16,7 @@ class MyUploadAdapter {
                 console.log(file)
                 const formData = new FormData();
                 formData.append('file', file);
-                apiUploadFile(formData).then((v: any) => resolve( {
+                apiFileUpload(formData).then((v: any) => resolve( {
                     default: v.url
                 } ))
             }));
