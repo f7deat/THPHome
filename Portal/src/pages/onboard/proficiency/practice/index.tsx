@@ -5,6 +5,7 @@ import { Link } from "@umijs/max";
 import { Button, Tooltip } from "antd";
 
 const Index: React.FC = () => {
+
     return (
         <PageContainer>
             <ProTable
@@ -38,18 +39,20 @@ const Index: React.FC = () => {
                     {
                         title: 'Người tạo',
                         dataIndex: 'createdBy',
-                        width: 120
+                        width: 120,
+                        search: false
                     },
                     {
                         title: 'Ngày tạo',
                         dataIndex: 'createdDate',
                         valueType: 'fromNow',
-                        width: 120
+                        width: 120,
+                        search: false
                     },
                     {
                         title: 'Tác vụ',
                         valueType: 'option',
-                        render: (dom, entity) => [
+                        render: (_, entity) => [
                             <Tooltip key="view" title="Xem chi tiết">
                                 <Link to={`/onboard/proficiency/practice/batch/${entity.id}`}>
                                 <Button type="primary" size="small" icon={<FolderOutlined />} />

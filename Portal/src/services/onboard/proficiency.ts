@@ -18,3 +18,7 @@ export const apiProficiencyTypeOptions = () => request.get(`proficiency/type/opt
 export const apiProficiencyBatchList = (params: any) => request(`proficiency/batch/list`, { params });
 
 export const apiGetProficiencyBatch = (id?: string) => request.get(`proficiency/batch/${id}`);
+
+export const apiGetProficiencyStatusOptions = () => request.get(`proficiency/status-options`) as any;
+
+export const apiGetProficiencyPracticeUpdateStatus = (data: any) => request.post(`proficiency/practice/update-status`, data)

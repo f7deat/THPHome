@@ -28,5 +28,6 @@ export default defineConfig({
   routes: routes,
   npmClient: 'pnpm',
   tailwindcss: {},
-  hash: true
+  hash: true,
+  esbuildMinifyIIFE: true,
 });

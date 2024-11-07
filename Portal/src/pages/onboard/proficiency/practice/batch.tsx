@@ -1,19 +1,31 @@
-import { apiDeleteProficiency, apiExportProficiancy, apiGetProficiencyBatch, apiProficiencyList } from "@/services/onboard/proficiency";
-import { CheckOutlined, DeleteOutlined, EditOutlined, EyeOutlined, FileExcelOutlined, ManOutlined, WomanOutlined } from "@ant-design/icons";
+import { apiDeleteProficiency, apiExportProficiancy, apiGetProficiencyBatch, apiGetProficiencyStatusOptions, apiProficiencyList } from "@/services/onboard/proficiency";
+import { CheckOutlined, DeleteOutlined, EditOutlined, EyeOutlined, FileExcelOutlined, ManOutlined, MoreOutlined, WomanOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
-import { Button, Image, message, Popconfirm, Popover, Tag, Tooltip } from "antd";
-import { useRef, useState } from "react";
+import { Button, Dropdown, Image, message, Popconfirm, Popover, Tag, Tooltip } from "antd";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import ProFiciencyForm from "../components/form";
 import { useParams, useRequest } from "@umijs/max";
+import ProficiencyPracticeStatusForm from "./components/status-form";
+import { useAccess } from "@umijs/max";
 
 const ProficiencyPracticePage: React.FC = () => {
 
     const { id } = useParams();
 
+    const access = useAccess();
+
     const actionRef = useRef<ActionType>();
     const [params, setParams] = useState<any>();
     const [loading, setLoading] = useState<boolean>(false);
+
+    const [openStatus, setOpenStatus] = useState<boolean>(false);
+    const [proficiency, setProficiency] = useState<any>();
+    const [statusOptions, setStatusOptions] = useState<any>();
+
+    useEffect(() => {
+        apiGetProficiencyStatusOptions().then((response: any) => setStatusOptions(response));
+    }, []);
 
     const { data } = useRequest(() => apiGetProficiencyBatch(id));
 
@@ -138,28 +150,9 @@ const ProficiencyPracticePage: React.FC = () => {
                         title: 'Trạng thái',
                         dataIndex: 'status',
                         valueType: 'select',
-                        valueEnum: {
-                            0: <Tag color="orange">Chờ xác nhận</Tag>,
-                            1: <Tag color="blue">Đã xác nhận</Tag>,
-                            2: <Tag color="green">Đã thanh toán</Tag>,
-                            3: <Tag color="error">Hủy đăng ký</Tag>
-                        },
                         width: 100,
                         fieldProps: {
-                            options: [
-                                {
-                                    label: 'Chờ xác nhận',
-                                    value: 0
-                                },
-                                {
-                                    label: 'Đã thanh toán',
-                                    value: 2
-                                },
-                                {
-                                    label: 'Hủy đăng ký',
-                                    value: 3
-                                }
-                            ]
+                            options: statusOptions
                         }
                     },
                     {
@@ -183,11 +176,27 @@ const ProficiencyPracticePage: React.FC = () => {
                         valueType: 'option',
                         render: (_, entity) => [
                             <Button type="primary" size="small" icon={<EditOutlined />} key="edit" disabled={entity.source === 0} />,
-                            <Tooltip key="confirm" title="Xác nhận">
-                                <Popconfirm title="Xác nhận đăng ký?">
-                                    <Button type="primary" size="small" icon={<CheckOutlined />} />
-                                </Popconfirm>
-                            </Tooltip>,
+                            <Dropdown key="more" menu={{
+                                items: [
+                                    {
+                                        key: 'status',
+                                        label: 'Đổi trạng thái'
+                                    },
+                                    {
+                                        key: 'move',
+                                        label: 'Chuyển đợt ôn tập'
+                                    }
+                                ],
+                                onClick: (info) => {
+                                    if (info.key === 'status') {
+                                        setProficiency(entity);
+                                        setOpenStatus(true);
+                                        return;
+                                    }
+                                }
+                            }}>
+                                <Button icon={<MoreOutlined />} size="small" />
+                            </Dropdown>,
                             <Popconfirm key="delete" title="Xác nhận xóa?" onConfirm={async () => {
                                 await apiDeleteProficiency(entity.id);
                                 message.success('Xóa thành công!');
@@ -196,7 +205,8 @@ const ProficiencyPracticePage: React.FC = () => {
                                 <Button type="primary" size="small" danger icon={<DeleteOutlined />} disabled={entity.source === 0} />
                             </Popconfirm>
                         ],
-                        width: 50
+                        width: 50,
+                        hideInTable: !access.canAdmin
                     }
                 ]}
                 request={(params) => {
@@ -211,6 +221,7 @@ const ProficiencyPracticePage: React.FC = () => {
                 }}
             />
 
+            <ProficiencyPracticeStatusForm open={openStatus} onOpenChange={setOpenStatus} data={proficiency} reload={() => actionRef.current?.reload()} />
         </PageContainer>
     )
 }
