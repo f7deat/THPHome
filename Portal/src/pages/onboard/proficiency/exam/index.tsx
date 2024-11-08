@@ -163,6 +163,10 @@ const ProficiencyExamPage: React.FC = () => {
                         }
                     },
                     {
+                        title: 'Ghi chú',
+                        dataIndex: 'note'
+                    },
+                    {
                         title: 'Tác vụ',
                         valueType: 'option',
                         render: (_, entity) => [

@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import axios from 'axios';
 
 const instance = axios.create({
@@ -27,6 +28,10 @@ instance.interceptors.response.use(
     if (error.response.status === 401) {
       // Handle unauthorized access
       // For example, redirect to login
+    }
+    if (error.response.status === 400) {
+      message.error(error.response.data);
+      return Promise.reject(error);
     }
     return Promise.reject(error);
   },

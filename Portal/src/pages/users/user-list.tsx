@@ -7,7 +7,9 @@ import {
     CheckCircleTwoTone,
     SearchOutlined,
     UserOutlined,
-    UserAddOutlined
+    UserAddOutlined,
+    WomanOutlined,
+    ManOutlined
 } from "@ant-design/icons";
 import { Link } from "@umijs/max";
 import { request } from "@umijs/max";
@@ -87,6 +89,16 @@ const UserList = () => {
         {
             title: 'Họ và tên',
             dataIndex: 'name',
+            render: (dom, entity) => {
+                
+                if (entity.gender === 0) {
+                    return <><ManOutlined className="text-blue-500" /> {dom}</>
+                }
+                if (entity.gender === 1) {
+                    return <><WomanOutlined className="text-red-500" /> {dom}</>
+                }
+                return dom;
+            }
         },
         {
             title: 'Tài khoản',
@@ -113,7 +125,13 @@ const UserList = () => {
             dataIndex: 'phoneNumber'
         },
         {
-            title: '',
+            title: 'Ngày sinh',
+            dataIndex: 'dateOfBirth',
+            valueType: 'date',
+            width: 100
+        },
+        {
+            title: 'Tác vụ',
             valueType: 'option',
             render: (dom, record: any) => (
                 <Space>
