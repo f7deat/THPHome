@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using THPCore.Interfaces;
 using WebUI.Entities.Communications;
@@ -11,7 +10,7 @@ using WebUI.Foundations;
 using WebUI.Models.Args.Communications;
 using WebUI.Models.Filters.Communications;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
 public class EmailController : BaseController
 {

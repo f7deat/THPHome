@@ -13,4 +13,5 @@ public class PostListItemResult
     public string Title { get; set; } = default!;
     public PostStatus Status { get; set; }
     public bool CanUpdate { get; set; }
+    public string? Thumbnail { get; set; }
 }

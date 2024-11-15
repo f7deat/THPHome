@@ -111,7 +111,8 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                 Status = x.Status,
                 CreatedBy = x.CreatedBy,
                 CreatedDate = x.CreatedDate,
-                CanUpdate = x.CreatedBy == userId
+                CanUpdate = x.CreatedBy == userId,
+                Thumbnail = x.Thumbnail
             }).ToListAsync();
         var users = await _userManager.Users.Where(x => x.UserType != UserType.Student).ToListAsync();
 
@@ -144,6 +145,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
     public async Task<dynamic> SetStatusAsync(Post post)
     {
         var data = await _context.Posts.FindAsync(post.Id);
+        if (data is null) return new { succeeded = false };
         data.Status = post.Status;
         return new { succeeded = await _context.SaveChangesAsync() > 0 };
     }

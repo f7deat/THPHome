@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using THPIdentity.Entities;
 using THPIdentity.Constants;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
 public class PostController : BaseController
 {
