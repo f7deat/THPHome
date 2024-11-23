@@ -443,6 +443,12 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
                 new(ClaimTypes.Name, user.UserName ?? string.Empty, ClaimValueTypes.String),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole, ClaimValueTypes.String));
+            }
 
             var secretCode = _configuration["JWT:Secret"];
             if (string.IsNullOrEmpty(secretCode)) return BadRequest($"Secret code not found!");
