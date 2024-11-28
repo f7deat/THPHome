@@ -278,32 +278,4 @@ public class OpenAPIController : Controller
     }
     #endregion
 
-    #region Article
-    [HttpGet("article/list")]
-    public async Task<IActionResult> GetListArticleAsync([FromQuery] OpenArticleFilterOptions filterOptions)
-    {
-        var query = from a in _context.Posts
-                    where a.Status == PostStatus.PUBLISH && a.Language == filterOptions.Language
-                    select new
-                    {
-                        a.Id,
-                        a.Url,
-                        a.CreatedDate,
-                        a.ModifiedDate,
-                        a.Title,
-                        a.Description,
-                        a.Thumbnail,
-                        a.Language,
-                        a.View,
-                        a.CreatedBy,
-                        a.ModifiedBy
-                    };
-        if (!string.IsNullOrEmpty(filterOptions.Title))
-        {
-            query = query.Where(x => x.Title.Contains(filterOptions.Title, StringComparison.CurrentCultureIgnoreCase));
-        }
-        query = query.OrderByDescending(x => x.CreatedDate);
-        return Ok(await ListResult<object>.Success(query, filterOptions));
-    }
-    #endregion
 }
