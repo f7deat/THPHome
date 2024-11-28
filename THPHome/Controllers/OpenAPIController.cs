@@ -1,50 +1,46 @@
 ﻿using ApplicationCore.Enums;
-using ApplicationCore.Models.Filters;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Buffers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Text.Encodings.Web;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.OpenAPI;
 using WebUI.Options;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.VisualStudio.TextTemplating;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using WebUI.ViewComponents;
 using ApplicationCore.Entities;
+using ApplicationCore.Interfaces.IService;
+using ApplicationCore.Models.Filters;
+using WebUI.Models.ViewModel;
+using THPHome.Models.Filters.OpenAPI.Articles;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
 [Route("open-api")]
 public class OpenAPIController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly IBlockService _blockService;
-    private readonly IViewComponentHelper _viewComponentHelper;
     private readonly IRazorViewEngine _razorViewEngine;
     private readonly IServiceProvider _serviceProvider;
     private readonly ITempDataProvider _tempDataProvider;
+    private readonly IPostService _postService;
 
-    public SettingOptions Options { get; }
-
-    public OpenAPIController(ApplicationDbContext context, IOptions<SettingOptions> optionsAccessor, IBlockService blockService, IViewComponentHelper viewComponentHelper, IRazorViewEngine razorViewEngine, IServiceProvider serviceProvider, ITempDataProvider tempDataProvider)
+    public OpenAPIController(ApplicationDbContext context, IOptions<SettingOptions> optionsAccessor, IBlockService blockService, IPostService postService, IRazorViewEngine razorViewEngine, IServiceProvider serviceProvider, ITempDataProvider tempDataProvider)
     {
         _context = context;
         Options = optionsAccessor.Value;
         _blockService = blockService;
-        _viewComponentHelper = viewComponentHelper;
+        _postService = postService;
         _razorViewEngine = razorViewEngine;
         _serviceProvider = serviceProvider;
         _tempDataProvider = tempDataProvider;
     }
+
+    public SettingOptions Options { get; }
 
     [HttpGet("posts")]
     public async Task<IActionResult> PostsAsync(PostsFilterOptions filterOptions)
@@ -279,6 +275,35 @@ public class OpenAPIController : Controller
             i.CreatedDate,
             i.ModifiedDate
         }).ToListAsync());
+    }
+    #endregion
+
+    #region Article
+    [HttpGet("article/list")]
+    public async Task<IActionResult> GetListArticleAsync([FromQuery] OpenArticleFilterOptions filterOptions)
+    {
+        var query = from a in _context.Posts
+                    where a.Status == PostStatus.PUBLISH && a.Language == filterOptions.Language
+                    select new
+                    {
+                        a.Id,
+                        a.Url,
+                        a.CreatedDate,
+                        a.ModifiedDate,
+                        a.Title,
+                        a.Description,
+                        a.Thumbnail,
+                        a.Language,
+                        a.View,
+                        a.CreatedBy,
+                        a.ModifiedBy
+                    };
+        if (!string.IsNullOrEmpty(filterOptions.Title))
+        {
+            query = query.Where(x => x.Title.Contains(filterOptions.Title, StringComparison.CurrentCultureIgnoreCase));
+        }
+        query = query.OrderByDescending(x => x.CreatedDate);
+        return Ok(await ListResult<object>.Success(query, filterOptions));
     }
     #endregion
 }

@@ -9,7 +9,7 @@ public class FilterOptions : IFilterOptions
     public int Current { get; set; } = 1;
     private Language language;
     public int PageSize { get; set; } = 10;
-    public string? Locale { get; set; }
+    public string? Locale { get; set; } = "vi-VN";
     public Language Language
     {
         get
