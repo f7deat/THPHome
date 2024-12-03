@@ -14,4 +14,5 @@ public class PostListItemResult
     public PostStatus Status { get; set; }
     public bool CanUpdate { get; set; }
     public string? Thumbnail { get; set; }
+    public DateTime IssuedDate { get; set; }
 }

@@ -8,7 +8,7 @@ public class Post: BaseEntity<long>
 {
     [StringLength(500)]
     public string Title { get; set; } = default!;
-    [StringLength(500), Required]
+    [StringLength(500)]
     public string Url { get; set; } = default!;
     [StringLength(500)]
     public string? Description { get; set; }
@@ -20,6 +20,7 @@ public class Post: BaseEntity<long>
     public PostType Type { get; set; }
     public string? Tags { get; set; }
     public Language Language { get; set; }
+    public DateTime IssuedDate { get; set; }
 
     public List<Photo>? Photos { get; set; }
 }

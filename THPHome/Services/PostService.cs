@@ -32,7 +32,6 @@ public class PostService : IPostService
     public async Task<Post> AddAsync(Post post)
     {
         post.CreatedDate = DateTime.Now;
-        post.ModifiedDate = DateTime.Now;
         post.View = 0;
         post.Status = PostStatus.DRAFT;
         post.Url = SeoHelper.ToSeoFriendly(post.Title);

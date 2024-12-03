@@ -84,7 +84,8 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                         a.CreatedDate,
                         a.CreatedBy,
                         a.Description,
-                        a.Thumbnail
+                        a.Thumbnail,
+                        a.IssuedDate
                     };
         if (!string.IsNullOrWhiteSpace(filterOptions.Title))
         {
@@ -112,7 +113,8 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                 CreatedBy = x.CreatedBy,
                 CreatedDate = x.CreatedDate,
                 CanUpdate = x.CreatedBy == userId,
-                Thumbnail = x.Thumbnail
+                Thumbnail = x.Thumbnail,
+                IssuedDate = x.IssuedDate
             }).ToListAsync();
         var users = await _userManager.Users.Where(x => x.UserType != UserType.Student).ToListAsync();
 

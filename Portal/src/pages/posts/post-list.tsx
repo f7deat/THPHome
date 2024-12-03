@@ -123,23 +123,30 @@ const PostList: React.FC<{
             width: 100
         },
         {
+            title: 'Người đăng',
+            dataIndex: 'createdBy',
+            width: 140,
+            search: false
+        },
+        {
             title: 'Ngày tạo',
             dataIndex: 'createdDate',
-            valueType: 'date',
+            valueType: 'fromNow',
             width: 100,
             search: false
         },
         {
             title: 'Ngày cập nhật',
             dataIndex: 'modifiedDate',
-            valueType: 'date',
+            valueType: 'fromNow',
             width: 110,
             search: false
         },
         {
-            title: 'Đăng bởi',
-            dataIndex: 'createdBy',
-            width: 140,
+            title: 'Ngày xuất bản',
+            dataIndex: 'issuedDate',
+            valueType: 'date',
+            width: 110,
             search: false
         },
         {

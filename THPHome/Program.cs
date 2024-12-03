@@ -1,4 +1,4 @@
-namespace WebUI;
+namespace THPHome;
 
 public class Program
 {

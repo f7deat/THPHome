@@ -24,7 +24,7 @@ using THPCore.Senders;
 using THPIdentity.Data;
 using THPIdentity.Entities;
 
-namespace WebUI;
+namespace THPHome;
 
 public class Startup(IConfiguration configuration)
 {

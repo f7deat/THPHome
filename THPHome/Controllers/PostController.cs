@@ -15,6 +15,8 @@ using WebUI.ExternalAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using THPIdentity.Entities;
 using THPIdentity.Constants;
+using THPHome.Models.Args.Posts;
+using WebUI.Helpers;
 
 namespace THPHome.Controllers;
 
@@ -81,28 +83,34 @@ public class PostController : BaseController
     public async Task<IActionResult> ImportAsync(IFormFile file) => Ok(await _postService.ImportAsync(file));
 
     [HttpPost("add")]
-    public async Task<IActionResult> AddAsync([FromBody] PostParam post)
+    public async Task<IActionResult> AddAsync([FromBody] AddPostArgs args, [FromQuery] string locale)
     {
         try
         {
+            if (args is null) return BadRequest("Dữ liệu không hợp lệ!");
+
+            var language = LanguageHelper.GetLanguage(locale);
+
             var user = await _userManager.FindByIdAsync(User.GetId());
             if (user is null) return BadRequest("User not found!");
-            if (post.Post is null) return BadRequest("Dữ liệu không hợp lệ!");
-            post.Post.CreatedBy = user.Id;
-            post.Post.ModifiedBy = user.Id;
-            if (post.Post.ModifiedDate == null)
+
+            var post = new Post
             {
-                post.Post.ModifiedDate = DateTime.Now;
-            }
-            if (string.IsNullOrWhiteSpace(post.Post.Thumbnail))
-            {
-                post.Post.Thumbnail = "https://dhhp.edu.vn/files/1a5acea5-4941-4140-a8f5-56a1d5e4eabd.jpg";
-            }
-            var data = await _postService.AddAsync(post.Post);
+                CreatedBy = user.Id,
+                CreatedDate = DateTime.Now,
+                Thumbnail = args.Thumbnail ?? "https://dhhp.edu.vn/files/1a5acea5-4941-4140-a8f5-56a1d5e4eabd.jpg",
+                Title = args.Title,
+                Content = args.Content,
+                Description = args.Description,
+                IssuedDate = args.IssuedDate,
+                Language = language,
+                Type = args.Type
+            };
+            var data = await _postService.AddAsync(post);
             if (data.Id > 0)
             {
-                await _postCategoryService.AddAsync(post.ListCategoryId, data.Id);
-                await _attachmentService.MapAsync(post.Attachments, data.Id);
+                await _postCategoryService.AddAsync(args.Categories, data.Id);
+                await _attachmentService.MapAsync(args.Attachments, data.Id);
             }
             return CreatedAtAction(nameof(AddAsync), IdentityResult.Success);
         }
@@ -174,29 +182,45 @@ public class PostController : BaseController
                 article.ModifiedDate,
                 article.View,
                 article.Thumbnail,
-                article.Status
+                article.Status,
+                article.IssuedDate
             }
         });
     }
 
     [HttpPost("update")]
-    public async Task<IActionResult> UpdateAsync([FromBody] PostParam post)
+    public async Task<IActionResult> UpdateAsync([FromBody] UpdatePostArgs args)
     {
-        if (post.Post is null) return BadRequest("Dữ liệu không hợp lệ.");
+        try
+        {
+            if (args is null) return BadRequest("Dữ liệu không hợp lệ.");
+            var user = await _userManager.FindByIdAsync(User.GetId());
+            if (user is null) return Unauthorized();
 
-        var user = await _userManager.FindByIdAsync(User.GetId());
-        await _postCategoryService.DeleteAsync(post.Post.Id);
-        await _postCategoryService.AddAsync(post.ListCategoryId, post.Post.Id);
-        await _attachmentService.MapAsync(post.Attachments, post.Post.Id);
-        post.Post.ModifiedBy = user?.Id;
-        var data = await _postService.FindAsync(post.Post.Id);
-        data.Description = post.Post.Description;
-        data.Title = post.Post.Title;
-        data.Content = post.Post.Content;
-        data.Thumbnail = post.Post.Thumbnail;
-        data.Type = post.Post.Type;
-        data.ModifiedDate = post.Post.ModifiedDate;
-        return Ok(await _postService.EditAsync(data));
+            var post = await _context.Posts.FindAsync(args.Id);
+            if (post is null) return BadRequest("Không tìm thấy bài viết!");
+            post.ModifiedBy = user.Id;
+            post.Description = args.Description;
+            post.Title = args.Title;
+            post.Content = args.Content;
+            post.Thumbnail = args.Thumbnail;
+            post.Type = args.Type;
+            post.ModifiedDate = DateTime.Now;
+            post.IssuedDate = args.IssuedDate;
+            post.Url = SeoHelper.ToSeoFriendly(args.Title);
+
+            await _postCategoryService.DeleteAsync(args.Id);
+
+            await _postCategoryService.AddAsync(args.Categories, post.Id);
+
+            await _attachmentService.MapAsync(args.Attachments, post.Id);
+
+            return Ok(await _postService.EditAsync(post));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [Route("get-list-category-id-in-post/{postId}")]
