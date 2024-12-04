@@ -99,7 +99,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         {
             query = query.Where(x => x.CreatedBy == userId);
         }
-        query = query.Where(x => x.Language == filterOptions.Language).OrderByDescending(x => x.ModifiedDate);
+        query = query.Where(x => x.Language == filterOptions.Language).OrderByDescending(x => x.IssuedDate);
         var total = await query.CountAsync();
         var data = await query.Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).AsNoTracking()
             .Select(x => new PostListItemResult
