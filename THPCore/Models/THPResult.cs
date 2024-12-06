@@ -4,12 +4,14 @@ public class THPResult
 {
     private static readonly THPResult _success = new() { Succeeded = true };
     private string _message = string.Empty;
+    private object? _data;
     /// <summary>
     /// Flag indicating whether if the operation succeeded or not.
     /// </summary>
     /// <value>True if the operation succeeded, otherwise false.</value>
     public bool Succeeded { get; protected set; }
     public string Message => _message;
+    public object? Data => _data;
 
     /// <summary>
     /// Returns an <see cref="THPResult"/> indicating a successful identity operation.
@@ -31,4 +33,6 @@ public class THPResult
         }
         return result;
     }
+
+    public static THPResult Ok(object? data) => new() { _data = data, Succeeded = true };
 }
