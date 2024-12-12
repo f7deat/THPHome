@@ -65,9 +65,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
           colorBgMenuItemSelected: '#D02929',
           colorTextMenuSecondary: '#FFFFFF',
           colorTextMenuTitle: '#FFFFFF',
-        },
-        pageContainer: {
-          paddingInlinePageContainerContent: 16
         }
     },
     footerRender: () => (

@@ -21,4 +21,6 @@ export const apiGetProficiencyBatch = (id?: string) => request.get(`proficiency/
 
 export const apiGetProficiencyStatusOptions = () => request.get(`proficiency/status-options`) as any;
 
+export const apiGetProficiencyTypeOptions = () => request.get(`proficiency/type/options`) as any;
+
 export const apiGetProficiencyPracticeUpdateStatus = (data: any) => request.post(`proficiency/practice/update-status`, data)

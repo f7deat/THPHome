@@ -1,7 +1,7 @@
-import { apiDeleteProficiency, apiExportProficiancy, apiGetProficiencyBatch, apiGetProficiencyStatusOptions, apiProficiencyList } from "@/services/onboard/proficiency";
-import { CheckOutlined, DeleteOutlined, EditOutlined, EyeOutlined, FileExcelOutlined, ManOutlined, MoreOutlined, WomanOutlined } from "@ant-design/icons";
+import { apiDeleteProficiency, apiExportProficiancy, apiGetProficiencyBatch, apiGetProficiencyStatusOptions, apiGetProficiencyTypeOptions, apiProficiencyList } from "@/services/onboard/proficiency";
+import { DeleteOutlined, EditOutlined, EyeOutlined, FileExcelOutlined, ManOutlined, MoreOutlined, WomanOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
-import { Button, Dropdown, Image, message, Popconfirm, Popover, Tag, Tooltip } from "antd";
+import { Button, Dropdown, Image, message, Popconfirm, Popover } from "antd";
 import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import ProFiciencyForm from "../components/form";
@@ -22,9 +22,11 @@ const ProficiencyPracticePage: React.FC = () => {
     const [openStatus, setOpenStatus] = useState<boolean>(false);
     const [proficiency, setProficiency] = useState<any>();
     const [statusOptions, setStatusOptions] = useState<any>();
+    const [typeOptions, setTypeOptions] = useState<any>();
 
     useEffect(() => {
         apiGetProficiencyStatusOptions().then((response: any) => setStatusOptions(response));
+        apiGetProficiencyTypeOptions().then((response: any) => setTypeOptions(response));
     }, []);
 
     const { data } = useRequest(() => apiGetProficiencyBatch(id));
@@ -125,14 +127,12 @@ const ProficiencyPracticePage: React.FC = () => {
                     },
                     {
                         title: 'Loại',
-                        dataIndex: 'type',
-                        valueEnum: {
-                            0: 'Tiếng Anh',
-                            2: 'Tiếng Trung',
-                            3: 'Tiếng Nhật',
-                            1: 'Tin Học'
-                        },
-                        width: 90
+                        dataIndex: 'typeId',
+                        width: 90,
+                        valueType: 'select',
+                        fieldProps: {
+                            options: typeOptions
+                        }
                     },
                     {
                         title: 'Ngày đăng ký',
