@@ -89,11 +89,11 @@ public class IndexModel : EntryPageModel
                      {
                          Id = a.Id,
                          Description = a.Description,
-                         ModifiedDate = a.ModifiedDate ?? a.CreatedDate,
                          Thumbnail = a.Thumbnail,
                          Title = a.Title,
                          Url = a.Url,
-                         View = a.View
+                         View = a.View,
+                         IssuedDate = a.IssuedDate
                      };
 
         PressTalks = await pressTalks.Take(3).ToListAsync();

@@ -10,7 +10,7 @@ using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Models.Posts;
 
-namespace WebUI.Pages.Posts;
+namespace THPHome.Pages.Posts;
 
 public class IndexModel(ApplicationDbContext context, ICategoryService categoryService, IPostService postService, IAttachmentService attachmentService, UserManager<ApplicationUser> userManager) : DynamicPageModel(context)
 {
@@ -35,12 +35,12 @@ public class IndexModel(ApplicationDbContext context, ICategoryService categoryS
             var relateds = from c in _context.PostCategories
                            join p in _context.Posts on c.PostId equals p.Id
                            where c.CategoryId == categoryId && p.Status == PostStatus.PUBLISH && p.Id != PageData.Id
-                           orderby p.Id descending
+                           orderby p.IssuedDate descending
                            select new Post
                            {
                                Id = p.Id,
                                Title = p.Title,
-                               ModifiedDate = p.ModifiedDate,
+                               IssuedDate = p.IssuedDate,
                                View = p.View,
                                Url = p.Url + "-" + p.Id + ".html"
                            };

@@ -47,11 +47,11 @@ public class IndexModel : EntryPageModel
 
 public class UserRank
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string JobTitle { get; set; }
-    public string Avatar { get; set; }
+    public string? Id { get; set; }
+    public string? Name { get; set; }
+    public string? Email { get; set; }
+    public string? JobTitle { get; set; }
+    public string? Avatar { get; set; }
     public int Rank { get; set; }
-    public string Group { get; set; }
+    public string? Group { get; set; }
 }

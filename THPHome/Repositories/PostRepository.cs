@@ -311,7 +311,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
             var posts = from a in _context.PostCategories
                         join b in _context.Posts on a.PostId equals b.Id
                         where a.CategoryId == item.Id && b.Status == PostStatus.PUBLISH
-                        orderby b.ModifiedDate
+                        orderby b.IssuedDate descending
                         select new PostView
                         {
                             Id = b.Id,
@@ -320,7 +320,8 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                             Thumbnail = b.Thumbnail,
                             Title = b.Title,
                             View = b.View,
-                            Url = b.Url
+                            Url = b.Url,
+                            IssuedDate = b.IssuedDate
                         };
             returnValue.Add(new CategoryWithPost
             {
@@ -335,7 +336,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
     public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, Language language)
     {
         return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Language == language)
-            .OrderByDescending(x => x.CreatedDate).Skip((current - 1) * pageSize).Take(pageSize).Select(x => new PostView
+            .OrderByDescending(x => x.IssuedDate).Skip((current - 1) * pageSize).Take(pageSize).Select(x => new PostView
         {
             Id = x.Id,
             Description = x.Description,
@@ -343,7 +344,8 @@ public class PostRepository : EfRepository<Post>, IPostRepository
             Thumbnail = x.Thumbnail,
             Title = x.Title,
             Url = x.Url,
-            View = x.View
+            View = x.View,
+            IssuedDate = x.IssuedDate
         }).ToListAsync();
     }
 

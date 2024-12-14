@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using WebUI.Models.Api.Admin.Roles;
 using WebUI.Models.Api.Admin.Users;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
@@ -20,8 +19,9 @@ using THPCore.Helpers;
 using THPCore.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using THPIdentity.Entities;
+using THPHome.Models.Roles;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
 public class UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {

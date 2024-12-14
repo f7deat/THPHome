@@ -10,5 +10,6 @@ public class PostView
     public string? Thumbnail { get; set; }
     public int View { get; set; }
     public DateTime? ModifiedDate { get; set; }
+    public DateTime IssuedDate { get; set; }
     public string? Description { get; set; }
 }

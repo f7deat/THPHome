@@ -26,7 +26,7 @@
                         <a href="@item.Url" title="@item.Title">@item.Title</a>
                     </div>
                     <div class="text-muted text-xs d-flex">
-                        <div class="mr-2"><i class="fa fa-calendar mr-2"></i>@item.ModifiedDate</div>
+                        <div class="mr-2"><i class="fa fa-calendar mr-2"></i>@item.IssuedDate.ToString("dd/MM/yyyy")</div>
                         <div><i class="fas fa-eye mr-2"></i>@item.View.ToString("N0")</div>
                     </div>
                 </div>

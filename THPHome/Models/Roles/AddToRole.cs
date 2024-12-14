@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace THPHome.Models.Roles;
 
-namespace WebUI.Models.Roles
+public class AddToRole
 {
-    public class AddToRole
-    {
-        public string Id { get; set; }
-        public string RoleName { get; set; }
-    }
+    public string UserId { get; set; } = default!;
+    public string? RoleName { get; set; }
 }
