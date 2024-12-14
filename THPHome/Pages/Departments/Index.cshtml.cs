@@ -13,22 +13,30 @@ public class IndexModel : EntryPageModel
     {
     }
 
-    public List<Department> Departments { get; set; }
-    public Department Department { get; set; }
-    public List<DepartmentDetail> DepartmentDetails { get; set; }
-    public Dictionary<int, IEnumerable<UserRank>> UserRanks { get; set; }
+    public List<Department> Departments { get; set; } = [];
+    public Department Department { get; set; } = new();
+    public List<DepartmentDetail> DepartmentDetails { get; set; } = [];
+    public Dictionary<int, IEnumerable<UserRank>> UserRanks { get; set; } = [];
 
-    public async Task<IActionResult> OnGetAsync(Guid? id, int type)
+    public async Task<IActionResult> OnGetAsync(Guid? id)
     {
-        Departments = await _context.Departments.Where(x => x.DepartmentTypeId == type).ToListAsync();
+        Departments = await _context.Departments.ToListAsync();
         if (id == null)
         {
-            Department = Departments.FirstOrDefault(x => x.DepartmentTypeId == type);
-            id = Department.Id;
+            var department = Departments.FirstOrDefault();
+            if (department != null)
+            {
+                Department = department;
+                id = Department.Id;
+            }
         }
         else
         {
-            Department = Departments.FirstOrDefault(x => x.Id == id);
+            var department = Departments.FirstOrDefault(x => x.Id == id);
+            if (department != null)
+            {
+                Department = department;
+            }
         }
         if (Department is null)
         {
@@ -39,7 +47,7 @@ public class IndexModel : EntryPageModel
             .Where(x => x.DepartmentId == id)
             .OrderBy(x => x.SortOrder)
             .ToListAsync();
-        UserRanks = new Dictionary<int, IEnumerable<UserRank>>();
+        UserRanks = [];
 
         return Page();
     }

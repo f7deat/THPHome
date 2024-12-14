@@ -167,11 +167,11 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                                                                                         {
                                                                                             Id = b.Id,
                                                                                             Description = b.Description,
-                                                                                            ModifiedDate = b.ModifiedDate,
                                                                                             Thumbnail = b.Thumbnail,
                                                                                             Title = b.Title,
                                                                                             Url = b.Url,
-                                                                                            View = b.View
+                                                                                            View = b.View,
+                                                                                            IssuedDate = b.IssuedDate
                                                                                         };
 
     public async Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0)
@@ -184,11 +184,11 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                     {
                         Id = a.Id,
                         Description = a.Description,
-                        ModifiedDate = a.ModifiedDate,
                         Thumbnail = a.Thumbnail,
                         Title = a.Title,
                         Url = a.Url,
-                        View = a.View
+                        View = a.View,
+                        IssuedDate = a.IssuedDate
                     };
         return await query.Take(pageSize).ToListAsync();
     }
@@ -206,10 +206,10 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                         Title = a.Title,
                         Description = a.Description,
                         Id = a.Id,
-                        ModifiedDate = a.ModifiedDate,
                         Thumbnail = a.Thumbnail,
                         Url = a.Url,
-                        View = a.View
+                        View = a.View,
+                        IssuedDate = a.IssuedDate
                     };
         return await PaginatedList<PostView>.CreateAsync(query, 1, 12);
     }
@@ -217,22 +217,22 @@ public class PostRepository : EfRepository<Post>, IPostRepository
     public async Task<IEnumerable<PostView>> GetRandomPostsAsync() => await _context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderBy(x => Guid.NewGuid()).Take(5).Select(x => new PostView
     {
         Id = x.Id,
-        ModifiedDate = x.ModifiedDate,
         Thumbnail = x.Thumbnail,
         Title = x.Title,
         Url = x.Url,
-        View = x.View
+        View = x.View,
+        IssuedDate = x.IssuedDate
     }).ToListAsync();
 
     public async Task<PaginatedList<PostView>> GetListAsync(int current) => await PaginatedList<PostView>.CreateAsync(_context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.ModifiedDate).Select(x => new PostView
     {
         Id = x.Id,
         Description = x.Description,
-        ModifiedDate = x.ModifiedDate,
         Thumbnail = x.Thumbnail,
         Title = x.Title,
         Url = x.Url,
-        View = x.View
+        View = x.View,
+        IssuedDate = x.IssuedDate
     }), current, 8);
 
     public async Task<IEnumerable<Post>> GetListPopularAsync() => await _context.Posts.OrderByDescending(x => x.View).Take(5).ToListAsync();
@@ -258,7 +258,8 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         Thumbnail = x.Thumbnail,
         Title = x.Title,
         Url = x.Url,
-        View = x.View
+        View = x.View,
+        IssuedDate = x.IssuedDate
     }).ToListAsync();
 
     public async Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize) => await _context.Posts.Where(x => x.Title.ToLower().Contains(keyword.ToLower())).OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
@@ -273,11 +274,11 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                     {
                         Id = a.Id,
                         Description = a.Description,
-                        ModifiedDate = a.ModifiedDate,
                         Thumbnail = a.Thumbnail,
                         Title = a.Title,
                         Url = a.Url,
-                        View = a.View
+                        View = a.View,
+                        IssuedDate = a.IssuedDate
                     };
         return await PaginatedList<PostView>.CreateAsync(query, current, pageSize);
     }
@@ -293,11 +294,11 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                     {
                         Id = c.Id,
                         Description = c.Description,
-                        ModifiedDate = c.ModifiedDate,
                         Thumbnail = c.Thumbnail,
                         Title = c.Title,
                         Url = c.Url,
-                        View = c.View
+                        View = c.View,
+                        IssuedDate = c.IssuedDate
                     };
         return await query.Skip((current - 1) * pageSize).Take(pageSize).ToListAsync();
     }

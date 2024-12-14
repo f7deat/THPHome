@@ -26,7 +26,7 @@
                     <div class="post-info">
                         <small class="mr-2">
                             <i class="fas fa-clock"></i>
-                            @item.ModifiedDate
+                            @item.IssuedDate.ToString("dd/MM/yyyy")
                         </small>
                         <small>
                             <i class="fa fa-eye"></i> @(item.View.ToString("N0"))
