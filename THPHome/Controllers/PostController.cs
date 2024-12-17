@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Infrastructure;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Entities;
 using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Identity;
-using WebUI.Extensions;
-using WebUI.Models.Api.Admin;
 using WebUI.Interfaces.IService;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
@@ -17,12 +14,13 @@ using THPIdentity.Entities;
 using THPIdentity.Constants;
 using THPHome.Models.Args.Posts;
 using WebUI.Helpers;
+using THPHome.Data;
+using THPCore.Extensions;
 
 namespace THPHome.Controllers;
 
 public class PostController : BaseController
 {
-
     private readonly IPostService _postService;
     private readonly IPostCategoryService _postCategoryService;
     private readonly UserManager<ApplicationUser> _userManager;

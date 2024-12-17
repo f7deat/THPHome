@@ -1,20 +1,16 @@
 ﻿using ApplicationCore.Models.Filters;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Extensions;
+using THPHome.Data;
 using WebUI.Entities;
-using WebUI.Extensions;
 using WebUI.Foundations;
 using WebUI.Models.ViewModel;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class QaController : BaseController
+public class QaController(ApplicationDbContext context) : BaseController(context)
 {
-    public QaController(ApplicationDbContext context) : base(context)
-    {
-    }
-
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] FilterOptions filterOptions)
     {

@@ -1,8 +1,8 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Payload;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using THPHome.Data;
 
 namespace WebUI.ViewComponents;
 

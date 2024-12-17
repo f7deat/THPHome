@@ -9,8 +9,6 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using WebUI.Models.Api.Admin.User;
 using Microsoft.EntityFrameworkCore;
-using Infrastructure;
-using WebUI.Extensions;
 using WebUI.Models.Filters.Users;
 using WebUI.Models.ViewModel;
 using WebUI.Foundations;
@@ -20,6 +18,9 @@ using THPCore.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using THPIdentity.Entities;
 using THPHome.Models.Roles;
+using THPHome.Data;
+using THPCore.Extensions;
+using ApplicationCore.Models.Filters;
 
 namespace THPHome.Controllers;
 
@@ -144,6 +145,7 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
                 }
             });
         }
+        if (string.IsNullOrWhiteSpace(addToRole.RoleName)) return BadRequest("Role name is required!");
         return Ok(await _userManager.AddToRoleAsync(user, addToRole.RoleName));
     }
 
@@ -478,4 +480,28 @@ public class UserController(UserManager<ApplicationUser> userManager, SignInMana
         label = EnumHelper.GetEnumDisplayName(x),
         value = x
     }));
+
+    [HttpGet("my-notifications")]
+    public async Task<IActionResult> GetMyNotificationsAsync([FromQuery] FilterOptions filterOptions)
+    {
+        var userName = User.GetUserName();
+        var query = from a in _context.Notifications
+                    join b in _context.UserNotifications on a.Id equals b.NotificationId
+                    where b.Recipient == userName
+                    select new
+                    {
+                        b.Id,
+                        a.Title,
+                        a.Content,
+                        a.CreatedDate,
+                        a.ModifiedDate,
+                        b.IsRead,
+                        b.NotificationId
+                    };
+        return Ok(new
+        {
+            data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
+            total = await query.CountAsync()
+        });
+    }
 }

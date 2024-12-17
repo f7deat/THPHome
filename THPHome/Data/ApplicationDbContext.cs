@@ -8,15 +8,11 @@ using WebUI.Entities.Communications;
 using WebUI.Entities.Departments;
 using WebUI.Foundations.Interfaces;
 
-namespace Infrastructure;
+namespace THPHome.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser currentUser) : DbContext(options)
 {
-    private readonly ICurrentUser _currentUser;
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser currentUser) : base(options)
-    {
-        _currentUser = currentUser;
-    }
+    private readonly ICurrentUser _currentUser = currentUser;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -49,6 +45,7 @@ public class ApplicationDbContext : DbContext
     public virtual DbSet<EmailLog> EmailLogs { get; set; }
     public virtual DbSet<DepartmentType> DepartmentTypes { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<UserNotification> UserNotifications { get; set; }
 
     public Task<int> SaveChangesAsync(bool audit)
     {

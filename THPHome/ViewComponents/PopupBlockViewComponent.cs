@@ -1,7 +1,7 @@
 ﻿using ApplicationCore.Entities;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPHome.Data;
 
 namespace WebUI.ViewComponents;
 

@@ -1,16 +1,16 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Models.Filters;
-using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Extensions;
+using THPHome.Data;
 using THPIdentity.Entities;
-using WebUI.Extensions;
 using WebUI.Foundations;
 using WebUI.Models.Args.Departments;
 using WebUI.Models.ViewModel;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
 public class DepartmentController : BaseController
 {

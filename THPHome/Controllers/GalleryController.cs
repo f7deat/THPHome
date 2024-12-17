@@ -1,30 +1,25 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
-using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Extensions;
+using THPHome.Data;
 using THPIdentity.Entities;
 using WebUI.Entities;
-using WebUI.Extensions;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.Files;
 using WebUI.Models.Posts;
 using WebUI.Models.ViewModel;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class GalleryController : BaseController
+public class GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IGalleryService galleryService) : BaseController(context)
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IGalleryService _galleryService;
-    public GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IGalleryService galleryService) : base(context)
-    {
-        _userManager = userManager;
-        _galleryService = galleryService;
-    }
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly IGalleryService _galleryService = galleryService;
 
     [HttpGet("list")]
     public async Task<IActionResult> GalleryListAsync([FromQuery] GalleryFilterOptions filterOptions) => Ok(await _galleryService.GalleryListAsync(filterOptions));

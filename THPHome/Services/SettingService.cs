@@ -1,5 +1,5 @@
-﻿using Infrastructure;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using THPHome.Data;
 using WebUI.Entities;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.Interfaces.IRepository;

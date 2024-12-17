@@ -2,26 +2,20 @@
 using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Payload;
-using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Extensions;
+using THPHome.Data;
 using THPIdentity.Entities;
-using WebUI.Extensions;
 using WebUI.Foundations;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class MenuController : BaseController
+public class MenuController(IMenuService menuService, UserManager<ApplicationUser> userManager, ApplicationDbContext context) : BaseController(context)
 {
-    private readonly IMenuService _menuService;
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public MenuController(IMenuService menuService, UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(context)
-    {
-        _menuService = menuService;
-        _userManager = userManager;
-    }
+    private readonly IMenuService _menuService = menuService;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     [HttpGet("list")]
     public async Task<IActionResult> GetListAsync([FromQuery] ListMenuPayload payload)

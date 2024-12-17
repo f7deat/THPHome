@@ -1,18 +1,18 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
-using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using THPCore.Extensions;
+using THPHome.Data;
 using THPIdentity.Entities;
 using WebUI.Entities;
-using WebUI.Extensions;
 using WebUI.Foundations;
 using WebUI.Models.Blocks;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
 public class BlockController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : BaseController(context)
 {

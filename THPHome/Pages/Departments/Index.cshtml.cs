@@ -1,8 +1,8 @@
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPHome.Data;
 using WebUI.Foundations;
 
 namespace WebUI.Pages.Departments;

@@ -1,23 +1,16 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using WebUI.Extensions;
+using THPCore.Extensions;
+using THPHome.Data;
 using WebUI.Foundations;
 using WebUI.Helpers;
 using WebUI.Models.Filters.Settings;
 using WebUI.Models.ViewModel;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class LocalizationController : BaseController
+public class LocalizationController(ApplicationDbContext context) : BaseController(context)
 {
-    public LocalizationController(ApplicationDbContext context) : base(context)
-    {
-    }
-
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] LocalizationFilterOptions filterOptions)
     {

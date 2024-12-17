@@ -15,5 +15,5 @@ public class Notification : BaseEntity
     [StringLength(256)]
     public string? ModifiedBy { get; set; }
 
-    public List<UserNofification>? UserNofifications { get; set; }
+    public List<UserNotification>? UserNofifications { get; set; }
 }

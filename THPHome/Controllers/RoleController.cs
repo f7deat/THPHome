@@ -1,6 +1,6 @@
-﻿using Infrastructure;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using THPHome.Data;
 using THPIdentity.Constants;
 using THPIdentity.Entities;
 using WebUI.Foundations;

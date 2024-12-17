@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Infrastructure;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Interfaces.IRepository;
 using Infrastructure.Repositories;
@@ -23,6 +22,7 @@ using THPCore.Interfaces;
 using THPCore.Senders;
 using THPIdentity.Data;
 using THPIdentity.Entities;
+using THPHome.Data;
 
 namespace THPHome;
 

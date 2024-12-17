@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IRepository;
 using Microsoft.EntityFrameworkCore;
+using THPHome.Data;
 
 namespace Infrastructure.Repositories
 {

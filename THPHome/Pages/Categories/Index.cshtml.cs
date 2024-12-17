@@ -3,9 +3,9 @@ using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models;
 using ApplicationCore.Services;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using THPHome.Data;
 using WebUI.Foundations;
 
 namespace WebUI.Pages.Categories

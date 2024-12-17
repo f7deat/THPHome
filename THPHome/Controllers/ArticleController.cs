@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Enums;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using THPHome.Data;
 using THPHome.Models.Filters.OpenAPI.Articles;
 using WebUI.Foundations;
 using WebUI.Models.ViewModel;

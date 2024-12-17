@@ -1,30 +1,23 @@
 ﻿using ApplicationCore.Models.Files;
-using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Extensions;
+using THPHome.Data;
 using THPIdentity.Entities;
 using WebUI.Entities;
-using WebUI.Extensions;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Args.Files;
 using WebUI.Models.Filters.Files;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class FileController : BaseController
+public class FileController(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, ITelegramService telegramService, UserManager<ApplicationUser> userManager) : BaseController(context)
 {
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly ITelegramService _telegramService;
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public FileController(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, ITelegramService telegramService, UserManager<ApplicationUser> userManager) : base(context)
-    {
-        _webHostEnvironment = webHostEnvironment;
-        _telegramService = telegramService;
-        _userManager = userManager;
-    }
+    private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
+    private readonly ITelegramService _telegramService = telegramService;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] FileFilterOptions filterOptions)
@@ -174,7 +167,7 @@ public class FileController : BaseController
 
             var host = Request.Host.Value;
             var url = $"https://{host}/img/{folder}/{file.FileName}";
-            return Ok(new { succeeded = true, url  });
+            return Ok(new { succeeded = true, url });
         }
         catch (Exception ex)
         {

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Payload;
 using ApplicationCore.ViewModels;
+using THPHome.Data;
 
 namespace Infrastructure.Repositories
 {

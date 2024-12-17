@@ -1,7 +1,7 @@
 ﻿using ApplicationCore.Enums;
-using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using THPHome.Data;
 
 namespace WebUI.Foundations;
 

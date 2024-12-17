@@ -1,5 +1,5 @@
-﻿using Infrastructure;
-using Infrastructure.Repositories;
+﻿using Infrastructure.Repositories;
+using THPHome.Data;
 using WebUI.Entities;
 using WebUI.Interfaces.IRepository;
 

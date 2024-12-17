@@ -3,10 +3,10 @@ using THPCore.Infrastructures;
 
 namespace THPHome.Entities.Notifications;
 
-public class UserNofification : BaseEntity
+public class UserNotification : BaseEntity
 {
     [StringLength(256)]
-    public string UserName { get; set; } = default!;
+    public string Recipient { get; set; } = default!;
     public bool IsRead { get; set; }
     public Guid NotificationId { get; set; }
 

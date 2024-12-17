@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Enums;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -16,6 +15,7 @@ using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Filters;
 using WebUI.Models.ViewModel;
 using THPHome.Models.Filters.OpenAPI.Articles;
+using THPHome.Data;
 
 namespace THPHome.Controllers;
 

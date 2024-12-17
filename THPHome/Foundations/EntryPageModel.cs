@@ -1,9 +1,9 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using THPHome.Data;
 using WebUI.Helpers;
 
 namespace WebUI.Foundations;

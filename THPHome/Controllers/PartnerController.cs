@@ -1,29 +1,20 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
-using ApplicationCore.Models.Filters;
-using Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using THPCore.Extensions;
+using THPHome.Data;
 using THPIdentity.Entities;
-using WebUI.Extensions;
 using WebUI.Foundations;
 using WebUI.Models.Filters.Parners;
 
-namespace WebUI.Api;
+namespace THPHome.Controllers;
 
-public class PartnerController : BaseController
+public class PartnerController(IPartnerService partnerService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context) : BaseController(context)
 {
-    private readonly IPartnerService _partnerService;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    public PartnerController(IPartnerService partnerService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context) : base(context)
-    {
-        _partnerService = partnerService;
-        _userManager = userManager;
-        _webHostEnvironment = webHostEnvironment;
-    }
+    private readonly IPartnerService _partnerService = partnerService;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] int id) => Ok(await _context.Partners.FindAsync(id));

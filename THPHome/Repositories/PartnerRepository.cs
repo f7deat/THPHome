@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IRepository;
+using THPHome.Data;
 using WebUI.Models.Filters.Parners;
 using WebUI.Models.ViewModel;
 

@@ -4,6 +4,7 @@ using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Models.Categories;
 using ApplicationCore.Models.Posts;
 using Microsoft.EntityFrameworkCore;
+using THPHome.Data;
 
 namespace Infrastructure.Repositories;
 
