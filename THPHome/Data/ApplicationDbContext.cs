@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using THPHome.Entities.Notifications;
 using WebUI.Entities;
 using WebUI.Entities.Articles;
 using WebUI.Entities.Communications;
@@ -47,6 +48,7 @@ public class ApplicationDbContext : DbContext
     public virtual DbSet<ZaloArticle> ZaloArticles { get; set; }
     public virtual DbSet<EmailLog> EmailLogs { get; set; }
     public virtual DbSet<DepartmentType> DepartmentTypes { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     public Task<int> SaveChangesAsync(bool audit)
     {
