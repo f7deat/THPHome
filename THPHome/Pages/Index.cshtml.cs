@@ -6,6 +6,7 @@ using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Models.Categories;
 using WebUI.Entities;
 using WebUI.Foundations;
 using WebUI.Models.Posts;
@@ -18,7 +19,7 @@ public class IndexModel : EntryPageModel
     private readonly IVideoService _videoService;
     private readonly ICategoryService _categoryService;
 
-    public List<ApplicationCore.Models.Categories.GroupCategory> GroupCategories = [];
+    public List<GroupCategory> GroupCategories = [];
     public IEnumerable<Menu> BoxMenu = [];
     public IEnumerable<Photo> Albums = [];
     public IEnumerable<Video> Videos = [];

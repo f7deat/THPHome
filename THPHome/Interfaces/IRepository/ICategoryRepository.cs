@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
-using ApplicationCore.Models.Categories;
+﻿using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using THPHome.Entities;
+using THPHome.Models.Categories;
 
 namespace ApplicationCore.Interfaces.IRepository
 {

@@ -6,13 +6,14 @@ using THPCore.Extensions;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Notifications;
+using THPHome.Interfaces.IService;
 using THPHome.Models.Args.Notifications;
 using THPIdentity.Constants;
 using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 
-public class NotificationController(ApplicationDbContext context) : BaseController(context)
+public class NotificationController(ApplicationDbContext context, INotificationService _notificationService) : BaseController(context)
 {
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] FilterOptions filterOptions)
@@ -121,4 +122,7 @@ public class NotificationController(ApplicationDbContext context) : BaseControll
         await _context.SaveChangesAsync();
         return Ok(THPResult.Success);
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(new { data = await _notificationService.GetAsync(id) });
 }

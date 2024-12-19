@@ -13,12 +13,8 @@ using WebUI.Models.Filters.Files;
 
 namespace THPHome.Controllers;
 
-public class FileController(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, ITelegramService telegramService, UserManager<ApplicationUser> userManager) : BaseController(context)
+public class FileController(IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, UserManager<ApplicationUser> _userManager) : BaseController(context)
 {
-    private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
-    private readonly ITelegramService _telegramService = telegramService;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] FileFilterOptions filterOptions)
     {

@@ -14,10 +14,8 @@ using WebUI.Models.Blocks;
 
 namespace THPHome.Controllers;
 
-public class BlockController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : BaseController(context)
+public class BlockController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager) : BaseController(context)
 {
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-
     [HttpGet("options")]
     public async Task<IActionResult> OptionsAsync()
     {

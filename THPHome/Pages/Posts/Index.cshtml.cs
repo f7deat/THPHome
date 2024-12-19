@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Entities;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Models.Posts;

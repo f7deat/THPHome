@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using THPHome.Data;
+using THPHome.Entities;
 
 namespace WebUI.Pages.Categories
 {

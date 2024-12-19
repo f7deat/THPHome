@@ -24,11 +24,8 @@ using ApplicationCore.Models.Filters;
 
 namespace THPHome.Controllers;
 
-public class UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
+public class UserController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
-    private readonly IConfiguration _configuration = configuration;
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
 
     [Route("get/{id?}")]

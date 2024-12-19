@@ -23,6 +23,8 @@ using THPCore.Senders;
 using THPIdentity.Data;
 using THPIdentity.Entities;
 using THPHome.Data;
+using THPHome.Interfaces.IService;
+using THPHome.Services;
 
 namespace THPHome;
 
@@ -63,6 +65,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ILocalizeService, LocalizeService>();
         services.AddScoped<ISettingRepository, SettingRepository>();
         services.AddScoped<ISettingService, SettingService>();
+        services.AddScoped<INotificationService, NotificationService>();
 
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 

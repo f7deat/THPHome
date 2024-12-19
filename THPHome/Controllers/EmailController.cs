@@ -12,17 +12,8 @@ using WebUI.Models.Filters.Communications;
 
 namespace THPHome.Controllers;
 
-public class EmailController : BaseController
+public class EmailController(ApplicationDbContext context, ITHPAuthen _thpAuthen, IEmailSender _emailSender) : BaseController(context)
 {
-    private readonly ITHPAuthen _thpAuthen;
-    private readonly IEmailSender _emailSender;
-
-    public EmailController(ApplicationDbContext context, ITHPAuthen thpAuthen, IEmailSender emailSender) : base(context)
-    {
-        _thpAuthen = thpAuthen;
-        _emailSender = emailSender;
-    }
-
     [HttpGet("logs")]
     public async Task<IActionResult> GetLogsAsync([FromQuery] LogFilterOptions filterOptions)
     {

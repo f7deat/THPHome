@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
+﻿using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
-using ApplicationCore.Models.Categories;
+using THPHome.Entities;
+using THPHome.Models.Categories;
 
 namespace ApplicationCore.Services;
 

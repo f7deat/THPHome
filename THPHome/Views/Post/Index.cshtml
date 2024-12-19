@@ -4,12 +4,13 @@
 @using WebUI.Entities;
 @using WebUI.Models.Layouts;
 @using Microsoft.AspNetCore.Identity;
+@using THPHome.Entities;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = Model.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var categories = (List<ApplicationCore.Entities.Category>)ViewBag.Categories;
+    var categories = (List<Category>)ViewBag.Categories;
     var listBanner = (List<ApplicationCore.Entities.Banner>)ViewBag.ListBanner;
     var attachments = ViewBag.Attachments as List<ApplicationCore.Entities.Attachment>;
     var relateds = ViewBag.RelatedPosts as List<Post>;

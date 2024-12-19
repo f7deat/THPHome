@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Constants;
-using ApplicationCore.Interfaces.IService;
+﻿using ApplicationCore.Interfaces.IService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,25 +6,10 @@ using THPHome.Data;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class DashboardController : BaseController
+public class DashboardController(IPostService _postService, UserManager<ApplicationUser> _userManager, ApplicationDbContext context) : BaseController(context)
 {
-    private readonly IPostService _postService;
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public DashboardController(IPostService postService, UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(context)
-    {
-        _postService = postService;
-        _userManager = userManager;
-    }
-
-    [Route("get")]
-    public IActionResult Index()
-    {
-        return Ok(true);
-    }
-
     [Route("get-total-post")]
     public async Task<IActionResult> GetTotalPostAsync() => Ok(await _postService.GetTotalAsync());
 

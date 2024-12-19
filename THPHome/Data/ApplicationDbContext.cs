@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using THPHome.Entities;
 using THPHome.Entities.Notifications;
 using WebUI.Entities;
 using WebUI.Entities.Articles;

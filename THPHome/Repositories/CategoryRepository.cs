@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
+﻿using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IRepository;
-using ApplicationCore.Models.Categories;
 using ApplicationCore.Models.Posts;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Entities;
+using THPHome.Models.Categories;
 
 namespace Infrastructure.Repositories;
 
@@ -19,17 +19,7 @@ public class CategoryRepository : EfRepository<Category>, ICategoryRepository
         return await _context.Categories.Take(pageSize).ToListAsync();
     }
 
-    public async Task<IEnumerable<Category>> GetChildAsync(int parentId)
-    {
-        try
-        {
-            return await _context.Categories.Where(x => x.ParrentId == parentId).ToListAsync();
-        }
-        catch (Exception)
-        {
-            return default;
-        }
-    }
+    public async Task<IEnumerable<Category>> GetChildAsync(int parentId) => await _context.Categories.Where(x => x.ParrentId == parentId).ToListAsync();
 
     public async Task<List<GroupCategory>> GetGroupCategories(Language language)
     {

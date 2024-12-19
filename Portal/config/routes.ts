@@ -164,6 +164,12 @@ export default [
     hideInMenu: true
   },
   {
+    name: 'Thông báo',
+    path: '/tool/notification',
+    component: './tools/notification',
+    hideInMenu: true
+  },
+  {
     icon: 'SettingOutlined',
     name: 'setting',
     path: '/settings',

@@ -19,28 +19,13 @@ using THPCore.Extensions;
 
 namespace THPHome.Controllers;
 
-public class PostController : BaseController
+public class PostController(IAttachmentService _attachmentService, IPostService _postService, IPostCategoryService _postCategoryService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, ITelegramService telegramService, IZaloAPI zaloAPI) : BaseController(context)
 {
-    private readonly IPostService _postService;
-    private readonly IPostCategoryService _postCategoryService;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly IAttachmentService _attachmentService;
-    private readonly ITelegramService _telegramService;
-    private readonly IZaloAPI _zaloAPI;
-
-    public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, ITelegramService telegramService, IZaloAPI zaloAPI) : base(context)
-    {
-        _postService = postService;
-        _postCategoryService = postCategoryService;
-        _userManager = userManager;
-        _webHostEnvironment = webHostEnvironment;
-        _roleManager = roleManager;
-        _attachmentService = attachmentService;
-        _telegramService = telegramService;
-        _zaloAPI = zaloAPI;
-    }
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
+    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+    private readonly ITelegramService _telegramService = telegramService;
+    private readonly IZaloAPI _zaloAPI = zaloAPI;
 
     [Route("post/tag")]
     public async Task<IActionResult> Tag(string name, string searchTerm)
@@ -135,7 +120,7 @@ public class PostController : BaseController
             await _telegramService.SendMessageAsync($"{user?.UserName} deleted: {post?.Title} -> https://dhhp.edu.vn/post/{post?.Url}-{post?.Id}.html");
         }
         var blocks = await _context.PostBlocks.Where(x => x.PostId == id).ToListAsync();
-        if (blocks.Any())
+        if (blocks.Count != 0)
         {
             _context.PostBlocks.RemoveRange(blocks);
             await _context.SaveChangesAsync();

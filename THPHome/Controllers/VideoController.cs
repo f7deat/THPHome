@@ -1,16 +1,13 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.IService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using THPHome.Data;
+using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 
-[Route("api/[controller]"), Authorize]
-public class VideoController : Controller
+public class VideoController(IVideoService _videoService, ApplicationDbContext context) : BaseController(context)
 {
-    private readonly IVideoService _videoService;
-    public VideoController(IVideoService videoService) => _videoService = videoService;
-
     [Route("get-list")]
     public async Task<IActionResult> GetListAsync() => Ok(await _videoService.GetListAsync(0));
 
