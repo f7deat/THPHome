@@ -79,8 +79,7 @@ input:focus {
 .footer {
     background-color: var(--dark);
     color: #fff;
-    padding: 2rem 0 1rem 0;
-    font-size: small;
+    padding-top: 2rem;
 }
 
     .footer svg, .title svg {

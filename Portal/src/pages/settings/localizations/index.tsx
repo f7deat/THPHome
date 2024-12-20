@@ -1,76 +1,63 @@
-﻿import { Button, Drawer, Form, Input, message, Popconfirm, Select, Space, Table } from "antd"
-import React, { useEffect, useState } from "react"
+﻿import { Button, message, Popconfirm } from "antd"
+import React, { useEffect, useRef, useState } from "react"
 import {
     EditOutlined,
-    DeleteOutlined,
-    SaveOutlined,
-    ArrowRightOutlined
+    DeleteOutlined
 } from "@ant-design/icons";
-import { request, useIntl } from "@umijs/max";
-import { PageContainer, ProCard, ProColumnType, ProTable } from "@ant-design/pro-components";
+import { request } from "@umijs/max";
+import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormInstance, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
+import { apiListLocalization } from "@/services/localization";
 
 const Localization: React.FC = () => {
 
-    const [menus, setMenus] = useState<any>([])
     const [visible, setVisible] = useState(false)
-    const [fields, setFields] = useState<any>([]);
-    const intl = useIntl();
-
-    const [form] = Form.useForm();
+    const [data, setData] = useState<any>();
+    const formRef = useRef<ProFormInstance>();
+    const actionRef = useRef<ActionType>();
 
     useEffect(() => {
-        fetchData()
-    }, [])
-
-    const fetchData = () => {
-        request(`localization/list`, {
-            params: {
-                locale: intl.locale
+        formRef.current?.setFields([
+            {
+                name: 'id',
+                value: data?.id
+            },
+            {
+                name: 'key',
+                value: data?.key
+            },
+            {
+                name: 'value',
+                value: data?.value
             }
-        }).then(response => {
-            setMenus(response.data)
-        })
-    }
-
-    const onClose = () => {
-        setVisible(false);
-    };
+        ])
+    }, [data]);
 
     function handleRemove(id: number) {
         request(`localization/delete/${id}`, {
             method: 'POST'
-        }).then(response => {
-            message.success('OK')
-            fetchData()
+        }).then(() => {
+            message.success('OK');
+            actionRef.current?.reload();
         })
     }
 
-    function handleUpdate(record: any) {
-        setFields([
-            {
-                name: ['id'],
-                value: record.id
-            },
-            {
-                name: ['value'],
-                value: record.value
-            }
-        ])
-        setVisible(true)
-    }
-
-    const onFinish = (values: any) => {
+    const onFinish = async (values: any) => {
         request(`localization/update`, {
             method: 'POST',
             data: values
-        }).then(response => {
+        }).then(() => {
             message.success('OK')
-            fetchData();
-            setVisible(false)
+            setVisible(false);
+            actionRef.current?.reload();
         })
     };
 
-    const columns : ProColumnType<any>[] = [
+    const columns: ProColumnType<any>[] = [
+        {
+            title: '#',
+            valueType: 'indexBorder',
+            width: 30
+        },
         {
             title: 'Key',
             dataIndex: 'key'
@@ -80,63 +67,64 @@ const Localization: React.FC = () => {
             dataIndex: "value"
         },
         {
-            title: 'Cập nhật lúc',
-            dataIndex: 'modifiedDate',
-            valueType: 'dateTime',
+            title: 'Ngày tạo',
+            dataIndex: 'createdDate',
+            valueType: 'fromNow',
             search: false
         },
         {
-            title: '',
-            render: (record: any) => (
-                <Space>
-                    <Button size="small" icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
-                    <Popconfirm
-                        title="Are you sure to delete?"
-                        okText="Yes"
-                        cancelText="No"
-                        onConfirm={() => handleRemove(record.id)}
-                    >
-                        <Button size="small" type="primary" danger icon={<DeleteOutlined />}></Button>
-                    </Popconfirm>
-                </Space>
-            ),
-            valueType: 'option'
+            title: 'Ngày cập nhật',
+            dataIndex: 'modifiedDate',
+            valueType: 'fromNow',
+            search: false
+        },
+        {
+            title: 'Tác vụ',
+            render: (_, record: any) => [
+                <Button size="small" icon={<EditOutlined />} onClick={() => {
+                    setData(record);
+                    setVisible(true);
+                }} key="edit"></Button>,
+                <Popconfirm
+                    title="Are you sure to delete?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={() => handleRemove(record.id)}
+                    key="delete"
+                >
+                    <Button size="small" type="primary" danger icon={<DeleteOutlined />}></Button>
+                </Popconfirm>
+            ],
+            valueType: 'option',
+            width: 60
         }
     ]
 
     return (
         <PageContainer>
-            <ProCard>
-                <ProTable 
+            <ProTable
+                actionRef={actionRef}
                 search={{
                     layout: 'vertical'
                 }}
-                dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
-            </ProCard>
+                request={apiListLocalization}
+                columns={columns} rowKey="id" />
 
-            <Drawer
+            <ModalForm
                 title="Cài đặt"
-                placement="right"
-                closable={false}
-                onClose={onClose}
-                visible={visible}
-                width={700}
+                onOpenChange={setVisible}
+                open={visible}
+                onFinish={onFinish}
+                formRef={formRef}
             >
-                <Form onFinish={onFinish} layout="vertical" fields={fields} form={form}>
-                    <Form.Item hidden={true} name="id"></Form.Item>
-
-                    <Form.Item label="Bản dịch" name="value">
-                        <Input.TextArea />
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Space>
-                            <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>Lưu lại</Button>
-                            <Button htmlType="button" icon={<ArrowRightOutlined />} onClick={() => setVisible(false)}>Đóng</Button>
-                        </Space>
-                    </Form.Item>
-                </Form>
-            </Drawer>
+                <ProFormText name="id" hidden />
+                <ProFormText name="key" label="Khóa" disabled />
+                <ProFormTextArea name="value" label="Bản dịch" rules={[
+                    {
+                        required: true
+                    }
+                ]} />
+            </ModalForm>
         </PageContainer>
     )
 }

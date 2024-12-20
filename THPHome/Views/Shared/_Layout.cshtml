@@ -179,20 +179,54 @@
         <div class="footer-bottom">
             <div class="footer-divide"></div>
             <div class="container">
-                <div class="d-flex justify-content-between">
-                    <div class="footer-bottom-link d-none d-md-block text-sm">
-                        <a href="#" class="ps-0">
-                            <localize key="career" />
+                <div class="d-flex justify-content-between items-center py-2">
+                    <div class="text-white">Copyright © @DateTime.Now.Year Trường Đại học Hải Phòng</div>
+                    <div class="flex jusify-end gap-2">
+                        <div class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-globe me-2"></i>
+                                Ngôn ngữ
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="/?locale=en-US">
+                                        <span role="img" aria-label="English" style="margin-right: 8px;">🇺🇸</span>
+                                        English
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/?locale=zh-CN">
+                                        <span role="img" aria-label="简体中文" style="margin-right: 8px;">🇨🇳</span>
+                                        简体中文
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/?locale=ja-JP">
+                                        <span role="img" aria-label="日本語" style="margin-right: 8px;">🇯🇵</span>
+                                        日本語
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/?locale=ko-KR">
+                                        <span role="img" aria-label="한국어" style="margin-right: 8px;">🇰🇷</span>
+                                        한국어
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/?locale=vi-VN">
+                                        <span role="img" aria-label="Tiếng Việt" style="margin-right: 8px;">🇻🇳</span>
+                                        Tiếng Việt
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a href="#" class="btn btn-sm text-white">
+                            <localize key="terms" />
                         </a>
-                        <a href="https://fb.com/HaiphongUniversity">FANPAGE</a>
-                        <a href="#">
-                            <localize key="q_and_a" />
-                        </a>
-                        <a href="#">
-                            <localize key="contact" />
+                        <a href="#" class="btn btn-sm text-white">
+                            <localize key="privacy_policy" />
                         </a>
                     </div>
-                    <div class="footer-copyright">Copyright © @DateTime.Now.Year &bull; Trường Đại học Hải Phòng</div>
                 </div>
             </div>
         </div>

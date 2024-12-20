@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
@@ -7,22 +6,13 @@ using Microsoft.Extensions.Caching.Memory;
 using THPHome.Data;
 using WebUI.Helpers;
 
-namespace WebUI.TagHelpers;
+namespace THPHome.TagHelpers;
 
-public class LocalizeTagHelper : TagHelper
+public class LocalizeTagHelper(ApplicationDbContext _context, IMemoryCache _memoryCache, IActionContextAccessor actionContextAccessor) : TagHelper
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IMemoryCache _memoryCache;
-    private readonly IActionContextAccessor _actionContextAccessor;
+    private readonly IActionContextAccessor _actionContextAccessor = actionContextAccessor;
 
-    public LocalizeTagHelper(ApplicationDbContext context, IMemoryCache memoryCache, IActionContextAccessor actionContextAccessor)
-    {
-        _context = context;
-        _memoryCache = memoryCache;
-        _actionContextAccessor = actionContextAccessor;
-    }
-
-    public string Key { get; set; }
+    public string Key { get; set; } = default!;
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
@@ -31,7 +21,7 @@ public class LocalizeTagHelper : TagHelper
             return;
         }
         output.TagName = null;
-
+        if (_actionContextAccessor.ActionContext is null) return;
         _actionContextAccessor.ActionContext.HttpContext.Request.Cookies.TryGetValue("locale", out string? locale);
 
         var lang = LanguageHelper.GetLanguage(locale);
