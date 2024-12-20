@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
+﻿using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using THPCore.Extensions;
 using THPHome.Data;
+using THPHome.Entities;
 using THPIdentity.Entities;
 using WebUI.Entities;
 using WebUI.Foundations;
@@ -14,8 +14,10 @@ using WebUI.Models.Blocks;
 
 namespace THPHome.Controllers;
 
-public class BlockController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager) : BaseController(context)
+public class BlockController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : BaseController(context)
 {
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+
     [HttpGet("options")]
     public async Task<IActionResult> OptionsAsync()
     {

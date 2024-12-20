@@ -3,6 +3,7 @@ using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Payload;
 using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
+using THPHome.Entities;
 
 namespace WebUI.ViewComponents;
 

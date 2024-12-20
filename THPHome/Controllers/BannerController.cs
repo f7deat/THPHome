@@ -12,18 +12,8 @@ using WebUI.Models.Filters.Settings;
 
 namespace THPHome.Controllers;
 
-public class BannerController : BaseController
+public class BannerController(IBannerService _bannerService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context) : BaseController(context)
 {
-    private readonly IBannerService _bannerService;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    public BannerController(IBannerService bannerService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context) : base(context)
-    {
-        _bannerService = bannerService;
-        _userManager = userManager;
-        _webHostEnvironment = webHostEnvironment;
-    }
-
     [HttpGet("list")]
     public async Task<IActionResult> GetListAsync(BannerFilterOptions filterOptions) => Ok(await _bannerService.GetListAsync(filterOptions));
 

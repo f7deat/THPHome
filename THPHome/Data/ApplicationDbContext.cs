@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using THPHome.Entities;
 using THPHome.Entities.Notifications;
+using THPHome.Entities.Utils;
 using WebUI.Entities;
 using WebUI.Entities.Articles;
 using WebUI.Entities.Communications;
@@ -11,42 +12,44 @@ using WebUI.Foundations.Interfaces;
 
 namespace THPHome.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser currentUser) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser _currentUser) : DbContext(options)
 {
-    private readonly ICurrentUser _currentUser = currentUser;
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<PostCategory>().HasKey(k => new { k.PostId, k.CategoryId });
         base.OnModelCreating(builder);
     }
 
-    public virtual DbSet<Post> Posts { get; set; }
-    public virtual DbSet<Category> Categories { get; set; }
-    public virtual DbSet<Banner> Banners { get; set; }
-    public virtual DbSet<PostCategory> PostCategories { get; set; }
-    public virtual DbSet<Menu> Menus { get; set; }
-    public virtual DbSet<Partner> Partners { get; set; }
-    public virtual DbSet<Video> Videos { get; set; }
-    public virtual DbSet<Attachment> Attachments { get; set; }
-    public virtual DbSet<Department> Departments { get; set; }
-    public virtual DbSet<DepartmentDetail> DepartmentDetails { get; set; }
-    public virtual DbSet<DepartmentUser> DepartmentUsers { get; set; }
-    public virtual DbSet<Localization> Localizations { get; set; }
-    public virtual DbSet<Block> Blocks { get; set; }
-    public virtual DbSet<PostBlock> PostBlocks { get; set; }
-    public virtual DbSet<ApplicationFile> ApplicationFiles { get; set; }
-    public virtual DbSet<ApplicationFolder> ApplicationFolders { get; set; }
-    public virtual DbSet<Gallery> Galleries { get; set; }
-    public virtual DbSet<Photo> Photos { get; set; }
-    public virtual DbSet<QaGroup> QaGroups { get; set; }
-    public virtual DbSet<QaItem> QaItems { get; set; }
-    public virtual DbSet<ApplicationSetting> ApplicationSettings { get; set; }
-    public virtual DbSet<ZaloArticle> ZaloArticles { get; set; }
-    public virtual DbSet<EmailLog> EmailLogs { get; set; }
-    public virtual DbSet<DepartmentType> DepartmentTypes { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Banner> Banners { get; set; }
+    public DbSet<PostCategory> PostCategories { get; set; }
+    public DbSet<Menu> Menus { get; set; }
+    public DbSet<Partner> Partners { get; set; }
+    public DbSet<Video> Videos { get; set; }
+    public DbSet<Attachment> Attachments { get; set; }
+    public DbSet<Department> Departments { get; set; }
+    public DbSet<DepartmentDetail> DepartmentDetails { get; set; }
+    public DbSet<DepartmentUser> DepartmentUsers { get; set; }
+    public DbSet<Localization> Localizations { get; set; }
+    public DbSet<Block> Blocks { get; set; }
+    public DbSet<PostBlock> PostBlocks { get; set; }
+    public DbSet<ApplicationFile> ApplicationFiles { get; set; }
+    public DbSet<ApplicationFolder> ApplicationFolders { get; set; }
+    public DbSet<Gallery> Galleries { get; set; }
+    public DbSet<Photo> Photos { get; set; }
+    public DbSet<QaGroup> QaGroups { get; set; }
+    public DbSet<QaItem> QaItems { get; set; }
+    public DbSet<ApplicationSetting> ApplicationSettings { get; set; }
+    public DbSet<ZaloArticle> ZaloArticles { get; set; }
+    public DbSet<EmailLog> EmailLogs { get; set; }
+    public DbSet<DepartmentType> DepartmentTypes { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<UserNotification> UserNotifications { get; set; }
+
+    #region Utils
+    public DbSet<UrlShortener> UrlShorteners { get; set; }
+    #endregion
 
     public Task<int> SaveChangesAsync(bool audit)
     {

@@ -1,25 +1,22 @@
-﻿using System.IO;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
-namespace ApplicationCore.Helpers
+namespace THPHome.Helpers;
+
+public class XmlHelper
 {
-    public class XmlHelper
+    public static T Deserialize<T>(Stream input) where T : class
     {
-        public static T Deserialize<T>(Stream input) where T : class
-        {
-            XmlSerializer ser = new XmlSerializer(typeof(T));
-            return (T)ser.Deserialize(input);
-        }
+        XmlSerializer ser = new(typeof(T));
+        return (T)ser.Deserialize(input);
+    }
 
-        public string Serialize<T>(T ObjectToSerialize)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(ObjectToSerialize.GetType());
+    public string Serialize<T>(T ObjectToSerialize)
+    {
+        if (ObjectToSerialize == null) return string.Empty;
+        XmlSerializer xmlSerializer = new(ObjectToSerialize.GetType());
 
-            using (StringWriter textWriter = new StringWriter())
-            {
-                xmlSerializer.Serialize(textWriter, ObjectToSerialize);
-                return textWriter.ToString();
-            }
-        }
+        using StringWriter textWriter = new();
+        xmlSerializer.Serialize(textWriter, ObjectToSerialize);
+        return textWriter.ToString();
     }
 }

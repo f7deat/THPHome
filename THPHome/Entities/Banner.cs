@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using THPHome.Entities;
 
 namespace ApplicationCore.Entities;
 

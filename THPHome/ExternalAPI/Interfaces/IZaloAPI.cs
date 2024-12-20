@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Entities;
+﻿using THPHome.Entities;
 
 namespace WebUI.ExternalAPI.Interfaces;
 

@@ -1,6 +1,6 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
+using THPHome.Entities;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Layouts;
 

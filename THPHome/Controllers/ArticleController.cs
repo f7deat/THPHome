@@ -7,13 +7,8 @@ using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 
-public class ArticleController : BaseController
+public class ArticleController(ApplicationDbContext context) : BaseController(context)
 {
-    public ArticleController(ApplicationDbContext context) : base(context)
-    {
-    }
-
-
     [HttpGet("open-list")]
     public async Task<IActionResult> GetListArticleAsync([FromQuery] OpenArticleFilterOptions filterOptions)
     {

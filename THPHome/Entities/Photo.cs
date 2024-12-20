@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
+using THPHome.Entities;
 
 namespace WebUI.Entities;
 

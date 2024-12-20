@@ -1,24 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
+﻿using ApplicationCore.Helpers;
 
-namespace ApplicationCore.Helpers
+namespace THPHome.Helpers;
+
+public static class SessionExtensions
 {
-    public static class SessionExtensions
+    public static void Set<T>(this ISession session, string key, T value)
     {
-        public static void Set<T>(this ISession session, string key, T value)
-        {
-            session.Set(key, JsonHelper.SerializeAsync(value));
-        }
-
-        //public static T Get<T>(this ISession session, string key)
-        //{
-        //    var value = session.GetString(key);
-
-        //    return value == null ? default(T) :
-        //        JsonSerializer.DeserializeAsync<T>(value);
-        //}
+        if (value is null) return;
+        session.Set(key, JsonHelper.SerializeAsync(value));
     }
 }

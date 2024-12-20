@@ -1,10 +1,11 @@
-﻿using ApplicationCore.Enums;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
 using WebUI.Entities;
 
-namespace ApplicationCore.Entities;
+namespace THPHome.Entities;
 
-public class Post: BaseEntity<long>
+public class Post : BaseEntity<long>
 {
     [StringLength(500)]
     public string Title { get; set; } = default!;

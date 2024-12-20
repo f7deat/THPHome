@@ -1,7 +1,7 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using THPHome.Data;
+using THPHome.Entities;
 using THPIdentity.Data;
 using WebUI.Entities.Articles;
 using WebUI.ExternalAPI.Interfaces;

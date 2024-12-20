@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IRepository;
+﻿using ApplicationCore.Interfaces.IRepository;
 using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Helpers;
 using ApplicationCore.Enums;
@@ -13,6 +12,7 @@ using THPCore.Enums;
 using WebUI.Foundations.Interfaces;
 using WebUI.Models.Results.Posts;
 using THPHome.Data;
+using THPHome.Entities;
 
 namespace Infrastructure.Repositories;
 
@@ -45,7 +45,17 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         };
     }
 
-    public async Task<IEnumerable<Post>> GetTopViewAsync(int pageSize) => await _context.Posts.OrderByDescending(x => x.View).Take(pageSize).ToListAsync();
+    public async Task<IEnumerable<Post>> GetTopViewAsync(int pageSize)
+    {
+        try
+        {
+            return await _context.Posts.OrderByDescending(x => x.View).Take(pageSize).ToListAsync();
+        }
+        catch (Exception)
+        {
+            return default;
+        }
+    }
 
     public async Task<dynamic?> GetDataBarChartAsync()
     {
@@ -191,7 +201,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
     public async Task<PaginatedList<PostView>> GetPostsInTagSync(string name, string searchTerm)
     {
         var query = from a in _context.Posts
-                    where a.Tags != null && a.Tags.ToLower().Contains(name) && (string.IsNullOrEmpty(searchTerm) || a.Title.ToLower().Contains(searchTerm)) && a.Status == PostStatus.PUBLISH
+                    where a.Tags.ToLower().Contains(name) && (string.IsNullOrEmpty(searchTerm) || a.Title.ToLower().Contains(searchTerm)) && a.Status == PostStatus.PUBLISH
                     select new PostView
                     {
                         Title = a.Title,
@@ -230,7 +240,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
 
     public async Task<IEnumerable<Post>> GetListByUserAsync(string id) => await _context.Posts.Where(x => x.CreatedBy == id).OrderByDescending(x => x.ModifiedDate).ToListAsync();
 
-    public async Task<IEnumerable<PostView>> GetListInTagAsync(string tagName, int pageSize) => await _context.Posts.Where(x => x.Tags != null && x.Tags.Contains(tagName)).OrderByDescending(x => x.Id).Take(pageSize).Select(x => new PostView
+    public async Task<IEnumerable<PostView>> GetListInTagAsync(string tagName, int pageSize) => await _context.Posts.Where(x => x.Tags.Contains(tagName)).OrderByDescending(x => x.Id).Take(pageSize).Select(x => new PostView
     {
         Id = x.Id,
         Description = x.Description,
@@ -238,8 +248,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         Thumbnail = x.Thumbnail,
         Title = x.Title,
         Url = x.Url,
-        View = x.View,
-        IssuedDate = x.IssuedDate
+        View = x.View
     }).ToListAsync();
 
     public async Task<IEnumerable<PostView>> GetLastedListAsync(int pageSize) => await _context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.Id).Take(pageSize).Select(x => new PostView
