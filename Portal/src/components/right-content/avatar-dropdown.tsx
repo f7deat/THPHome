@@ -116,6 +116,7 @@ import {
         label: intl.formatMessage({
           id: 'general.logout',
         }),
+        danger: true
       },
     ];
   
@@ -128,7 +129,7 @@ import {
         }}
         arrow
       >
-        <Space className='cursor-pointer'>
+        <Space className='cursor-pointer mr-2'>
           <AvatarLogo />
           <AvatarName />
         </Space>

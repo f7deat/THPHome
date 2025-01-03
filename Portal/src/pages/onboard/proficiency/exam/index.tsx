@@ -126,7 +126,8 @@ const ProficiencyExamPage: React.FC = () => {
                             0: <Tag color="orange">Chờ xác nhận</Tag>,
                             1: <Tag color="blue">Đã xác nhận</Tag>,
                             2: <Tag color="green">Đã thanh toán</Tag>,
-                            3: <Tag color="error">Hủy đăng ký</Tag>
+                            3: <Tag color="error">Hủy đăng ký</Tag>,
+                            4: <Tag color="success">Đã lên danh sách thi</Tag>
                         },
                         width: 100,
                         fieldProps: {
@@ -142,6 +143,10 @@ const ProficiencyExamPage: React.FC = () => {
                                 {
                                     label: 'Hủy đăng ký',
                                     value: 3
+                                },
+                                {
+                                    label: 'Đã lên danh sách thi',
+                                    value: 4
                                 }
                             ]
                         }

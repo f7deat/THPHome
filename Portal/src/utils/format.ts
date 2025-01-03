@@ -1,4 +1,4 @@
-// 示例方法，没有实际意义
+// Example method, no practical significance
 export function trim(str: string) {
   return str.trim();
 }
@@ -22,6 +22,7 @@ export function language(str: string) {
  */
 export function humanFileSize(bytes: number, si=false, dp=1) {
   const thresh = si ? 1000 : 1024;
+  let newBytes = bytes;
 
   if (Math.abs(bytes) < thresh) {
     return bytes + ' B';
@@ -34,10 +35,10 @@ export function humanFileSize(bytes: number, si=false, dp=1) {
   const r = 10**dp;
 
   do {
-    bytes /= thresh;
+    newBytes /= thresh;
     ++u;
-  } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+  } while (Math.round(Math.abs(newBytes) * r) / r >= thresh && u < units.length - 1);
 
 
-  return bytes.toFixed(dp) + ' ' + units[u];
+  return newBytes.toFixed(dp) + ' ' + units[u];
 }
