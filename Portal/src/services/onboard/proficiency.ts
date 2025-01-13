@@ -9,6 +9,10 @@ export const apiExportProficiancy = (params: any) => request.get(`proficiency/ex
     responseType: 'blob' 
 });
 
+export const apiExportProficiencyExam = () => request.get(`proficiency/exam/export`, { 
+    responseType: 'blob' 
+});
+
 export const apiAddProficiency = (data: any) => request.post(`proficiency/add`, data);
 
 export const apiDeleteProficiency = (id: string) => request.post(`proficiency/delete/${id}`);

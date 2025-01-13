@@ -1,4 +1,4 @@
-import { apiDeleteProficiency, apiExportProficiancy, apiProficiencyExamList, apiProficiencyTypeOptions } from "@/services/onboard/proficiency";
+import { apiDeleteProficiency, apiExportProficiencyExam, apiProficiencyExamList, apiProficiencyTypeOptions } from "@/services/onboard/proficiency";
 import { DeleteOutlined, EditOutlined, EyeOutlined, FileExcelOutlined, ManOutlined, WomanOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
 import { Button, Image, message, Popconfirm, Popover, Tag } from "antd";
@@ -8,15 +8,16 @@ import dayjs from "dayjs";
 const ProficiencyExamPage: React.FC = () => {
 
     const actionRef = useRef<ActionType>();
-    const [params, setParams] = useState<any>();
     const [typeOptions, setTypeOptions] = useState<any>([]);
+    const [loadingExport, setLoadingExport] = useState<boolean>(false);
 
     useEffect(() => {
         apiProficiencyTypeOptions().then(response => setTypeOptions(response));
     }, []);
 
     const exportData = async () => {
-        const response = await apiExportProficiancy(params) as any;
+        setLoadingExport(true);
+        const response = await apiExportProficiencyExam() as any;
         const url = window.URL.createObjectURL(
             new Blob([response]),
         );
@@ -24,7 +25,7 @@ const ProficiencyExamPage: React.FC = () => {
         link.href = url;
         link.setAttribute(
             'download',
-            `ontap-cdr-${dayjs().year()}${dayjs().month()}${dayjs().day()}.xlsx`,
+            `proficiency-exam-${dayjs().year()}${dayjs().month()}${dayjs().day()}.xlsx`,
         );
 
         // Append to html link element page
@@ -35,13 +36,13 @@ const ProficiencyExamPage: React.FC = () => {
 
         // Clean up and remove the link
         link.parentNode?.removeChild(link);
-
+        setLoadingExport(false);
     }
 
     return (
         <PageContainer extra={(
             <>
-                <Button icon={<FileExcelOutlined />} onClick={() => exportData()} hidden>Xuất dữ liệu</Button>
+                <Button type="primary" icon={<FileExcelOutlined />} onClick={() => exportData()} loading={loadingExport}>Xuất dữ liệu</Button>
             </>
         )}>
             <ProTable
@@ -187,10 +188,7 @@ const ProficiencyExamPage: React.FC = () => {
                         width: 50
                     }
                 ]}
-                request={(params) => {
-                    setParams(params);
-                    return apiProficiencyExamList(params);
-                }}
+                request={apiProficiencyExamList}
             />
 
         </PageContainer>
