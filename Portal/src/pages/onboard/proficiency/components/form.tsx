@@ -1,9 +1,9 @@
 import { apiAddProficiency } from "@/services/onboard/proficiency";
 import { PlusOutlined } from "@ant-design/icons";
-import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { ModalForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useAccess, useParams } from "@umijs/max";
 import { Button, Col, message, Row } from "antd";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type Props = {
     reload: any;
@@ -13,6 +13,7 @@ const ProFiciencyForm: React.FC<Props> = ({ reload }) => {
 
     const [open, setOpen] = useState<boolean>(false);
     const { id } = useParams();
+    const formRef = useRef<ProFormInstance>();
 
     const access = useAccess();
 
@@ -20,6 +21,7 @@ const ProFiciencyForm: React.FC<Props> = ({ reload }) => {
         values.batchId = id;
         await apiAddProficiency(values);
         message.success('Tạo thành công!');
+        formRef.current?.resetFields();
         reload();
         setOpen(false);
     }
@@ -27,7 +29,7 @@ const ProFiciencyForm: React.FC<Props> = ({ reload }) => {
     return (
         <>
             <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)} hidden={!access.canAdmin}>Tạo đơn đăng ký</Button>
-            <ModalForm open={open} onOpenChange={setOpen} title="Đăng ký chuẩn đầu ra" onFinish={onFinish}>
+            <ModalForm open={open} onOpenChange={setOpen} title="Đăng ký chuẩn đầu ra" onFinish={onFinish} formRef={formRef}>
                 <ProFormText name="userName" label="Mã sinh viên" rules={[
                     {
                         required: true
@@ -45,22 +47,22 @@ const ProFiciencyForm: React.FC<Props> = ({ reload }) => {
                         ]} />
                     </Col>
                     <Col md={12}>
-                        <ProFormSelect name="type" label="Loại" rules={[
+                        <ProFormSelect name="typeId" label="Loại" rules={[
                             {
                                 required: true
                             }
                         ]} options={[
                             {
                                 label: 'Tiếng Anh',
-                                value: 0
-                            },
-                            {
-                                label: 'Tiếng Trung',
                                 value: 2
                             },
                             {
-                                label: 'Tiếng Nhật',
+                                label: 'Tiếng Trung',
                                 value: 3
+                            },
+                            {
+                                label: 'Tiếng Nhật',
+                                value: 4
                             },
                             {
                                 label: 'Tin Học',
