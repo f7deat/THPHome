@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace THPHome.Models.Files;
 
-namespace ApplicationCore.Models.Files
+public class FileInfoModel
 {
-    public class FileInfoModel
-    {
-        public string FullName { get; set; }
-    }
+    public string? FullName { get; set; }
 }

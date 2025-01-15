@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace THPHome.Models.Api.Admin.User;
 
-namespace WebUI.Models.Api.Admin.Users
+public class ConfirmEmailModel
 {
-    public class ConfirmEmailModel
-    {
-        public string  UserId { get; set; }
-        public string Code { get; set; }
-    }
+    public string? UserId { get; set; }
+    public string? Code { get; set; }
 }

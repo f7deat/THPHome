@@ -24,7 +24,7 @@ public interface IPostService
     Task<Post> AddAsync(Post post);
     Task<dynamic> SetStatusAsync(Post post);
     Task<dynamic> RemoveAsync(long id);
-    Task<Post> FindAsync(long id);
+    Task<Post?> FindAsync(long id);
     Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0);
     Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int current, int pageSize);
     Task<List<CategoryWithPost>> GetListByAllCategoryAsync();

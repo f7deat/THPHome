@@ -11,7 +11,7 @@ using WebUI.Models.Categories;
 using WebUI.Models.Filters;
 using WebUI.Models.Results;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
 public class CategoryController : BaseController
 {
@@ -42,7 +42,7 @@ public class CategoryController : BaseController
         var result = new List<TreeCategoryItem>();
         var raw = await _context.Categories
             .Where(x => x.Language == filterOptions.Language)
-            .Where(x => string.IsNullOrEmpty(filterOptions.Name) || (!string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower())))
+            .Where(x => string.IsNullOrEmpty(filterOptions.Name) || !string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower()))
             .Select(x => new TreeCategoryItem
             {
                 ParentId = x.ParrentId,

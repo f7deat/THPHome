@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Models.Layouts;
 using WebUI.Interfaces.IService;
-using WebUI.Models.Layouts;
 
 namespace WebUI.ViewComponents;
 

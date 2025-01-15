@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using THPHome.Entities;
+using THPHome.Interfaces.Base;
 using THPHome.Models.Categories;
 
 namespace ApplicationCore.Interfaces.IRepository

@@ -1,17 +1,19 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
-using ApplicationCore.Models.Payload;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Entities;
+using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
+using THPHome.Models.Payload;
 using WebUI.Entities;
 using WebUI.Foundations;
 using WebUI.Models.Posts;
 
-namespace WebUI.Pages;
+namespace THPHome.Pages;
 
 public class IndexModel : EntryPageModel
 {
@@ -37,11 +39,11 @@ public class IndexModel : EntryPageModel
         _categoryService = categoryService;
     }
 
-    public async Task<IActionResult> OnGetAsync(string lang)
+    public async Task<IActionResult> OnGetAsync(string locale)
     {
-        if (!string.IsNullOrWhiteSpace(lang))
+        if (!string.IsNullOrWhiteSpace(locale))
         {
-            Response.Cookies.Append("locale", lang);
+            Response.Cookies.Append("locale", locale);
             return Redirect("/");
         }
         var banners = from slide in _context.Banners
@@ -83,19 +85,19 @@ public class IndexModel : EntryPageModel
                         }).ToListAsync();
 
         var pressTalks = from a in _context.Posts
-                     join b in _context.PostCategories on a.Id equals b.PostId
-                     where b.CategoryId == 551
+                         join b in _context.PostCategories on a.Id equals b.PostId
+                         where b.CategoryId == 551
                          orderby a.CreatedDate descending
-                     select new PostView
-                     {
-                         Id = a.Id,
-                         Description = a.Description,
-                         Thumbnail = a.Thumbnail,
-                         Title = a.Title,
-                         Url = a.Url,
-                         View = a.View,
-                         IssuedDate = a.IssuedDate
-                     };
+                         select new PostView
+                         {
+                             Id = a.Id,
+                             Description = a.Description,
+                             Thumbnail = a.Thumbnail,
+                             Title = a.Title,
+                             Url = a.Url,
+                             View = a.View,
+                             IssuedDate = a.IssuedDate
+                         };
 
         PressTalks = await pressTalks.Take(3).ToListAsync();
 

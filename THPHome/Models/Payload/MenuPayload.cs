@@ -1,12 +1,10 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
+﻿using ApplicationCore.Models.Filters;
+using THPHome.Entities;
 
-namespace ApplicationCore.Models.Payload
+namespace THPHome.Models.Payload;
+
+public class ListMenuPayload : FilterOptions
 {
-    public class ListMenuPayload
-    {
-        public MenuType Type { get; set; }
-        public int ParentId { get; set; }
-        public Language Language { get; set; }
-    }
+    public MenuType Type { get; set; }
+    public int ParentId { get; set; }
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Models.Categories;
+using THPHome.Repositories.Base;
 
 namespace Infrastructure.Repositories;
 

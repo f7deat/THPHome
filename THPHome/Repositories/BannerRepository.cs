@@ -3,6 +3,7 @@ using ApplicationCore.Interfaces.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using THPHome.Data;
+using THPHome.Repositories.Base;
 using WebUI.Helpers;
 using WebUI.Models.Filters.Settings;
 using WebUI.Models.ViewModel;

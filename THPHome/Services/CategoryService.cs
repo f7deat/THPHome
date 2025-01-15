@@ -46,9 +46,9 @@ public class CategoryService : ICategoryService
         return new { succeeded = true };
     }
 
-    public Task<Category> FindAsync(int id) => _categoryRepository.GetByIdAsync(id);
+    public Task<Category?> FindAsync(int id) => _categoryRepository.GetByIdAsync(id);
 
-    public Task<Category> GetCategory(int id) => _categoryRepository.GetByIdAsync(id);
+    public Task<Category?> GetCategory(int id) => _categoryRepository.GetByIdAsync(id);
 
     public Task<IEnumerable<Category>> GetChildCategoriesAsync(int parentId) => _categoryRepository.GetChildAsync(parentId);
 

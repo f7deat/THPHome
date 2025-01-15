@@ -1,6 +1,9 @@
-import { Language } from "@/utils/enum";
 import { request } from "@umijs/max";
 
-export async function queryMenuOptions(language: Language) {
-    return request(`menu/options?language=${language}`);
+export async function queryMenuOptions() {
+    return request(`menu/options`);
+}
+
+export async function apiListMenu(params: any) {
+    return request(`menu/list`, { params })
 }

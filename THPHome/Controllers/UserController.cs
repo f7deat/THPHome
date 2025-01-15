@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using WebUI.Models.Api.Admin.Users;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
-using WebUI.Models.Api.Admin.User;
 using Microsoft.EntityFrameworkCore;
 using WebUI.Models.Filters.Users;
 using WebUI.Models.ViewModel;
@@ -21,6 +19,8 @@ using THPHome.Models.Roles;
 using THPHome.Data;
 using THPCore.Extensions;
 using ApplicationCore.Models.Filters;
+using THPHome.Models.Api.Admin.User;
+using NuGet.Protocol.Plugins;
 
 namespace THPHome.Controllers;
 
@@ -175,6 +175,7 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     [HttpPost("get-authentication-token"), AllowAnonymous]
     public async Task<IActionResult> GetAuthenticationTokenAsync([FromBody] LoginModel login)
     {
+        if (string.IsNullOrWhiteSpace(login.UserName) || string.IsNullOrWhiteSpace(login.Password)) return BadRequest("Vui lòng nhập tên đăng nhập hoặc mật khẩu!");
         var result = await _signInManager.PasswordSignInAsync(login.UserName, login.Password, false, false);
         if (result.Succeeded)
         {
@@ -250,6 +251,7 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordModel input)
     {
+        if (string.IsNullOrWhiteSpace(input.CurrentPassword) || string.IsNullOrWhiteSpace(input.NewPassword)) return BadRequest("Vui lòng nhập mật khẩu!");
         var user = await _userManager.FindByIdAsync(User.GetId());
         if (user == null)
         {
@@ -352,6 +354,7 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     [HttpPost("password-sign-in"), AllowAnonymous]
     public async Task<IActionResult> PasswordSignInAsync([FromBody] LoginModel login)
     {
+        if (string.IsNullOrWhiteSpace(login.UserName) || string.IsNullOrWhiteSpace(login.Password)) return BadRequest("Vui lòng nhập tên đăng nhập hoặc mật khẩu!");
         var result = await _signInManager.PasswordSignInAsync(login.UserName, login.Password, false, false);
         if (result.Succeeded)
         {

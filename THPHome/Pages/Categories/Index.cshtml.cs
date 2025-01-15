@@ -22,7 +22,7 @@ namespace WebUI.Pages.Categories
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Request.Cookies.TryGetValue("locale", out string locale);
+            Request.Cookies.TryGetValue("locale", out string? locale);
             var lang = Language.VI;
             if (!string.IsNullOrEmpty(locale))
             {

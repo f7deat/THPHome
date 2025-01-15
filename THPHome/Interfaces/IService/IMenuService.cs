@@ -1,18 +1,16 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
-using ApplicationCore.Models.Payload;
+﻿using ApplicationCore.Models.Filters;
 using ApplicationCore.ViewModels;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using THPHome.Entities;
+using THPHome.Models.Payload;
 
-namespace ApplicationCore.Interfaces.IService
+namespace THPHome.Interfaces.IService;
+
+public interface IMenuService
 {
-    public interface IMenuService
-    {
-        Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload);
-        Task<object> AddAsync(Menu menu);
-        Task<object> UpdateAsync(Menu menu);
-        Task<object> DeleteAsyn(int id);
-        Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type);
-    }
+    Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload);
+    Task<object> GetListAsync(FilterOptions payload);
+    Task<object> AddAsync(Menu menu);
+    Task<object> UpdateAsync(Menu menu);
+    Task<object> DeleteAsyn(int id);
+    Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type);
 }

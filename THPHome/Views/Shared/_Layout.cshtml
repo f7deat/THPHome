@@ -1,4 +1,4 @@
-﻿@using ApplicationCore.Entities
+﻿@using THPHome.Entities
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -19,7 +19,57 @@
 </head>
 <body>
 
-    @await Component.InvokeAsync("Menu", new { type = MenuType.TOP })
+    <div class="bg-slate-100">
+        <div class="container flex justify-between items-center">
+            <a href="https://admin.dhhp.edu.vn" class="text-slate-700 hover:text-gray-900 text-sm font-medium hidden md:block"><i class="fa-solid fa-right-to-bracket me-2"></i>Đăng nhập</a>
+            <div class="flex gap-4 justify-end items-center">
+                <div class="dropdown">
+                    <button class="btn btn-sm dropdown-toggle text-slate-700 font-medium" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-globe me-2"></i>
+                        Ngôn ngữ
+                    </button>
+                    <ul class="dropdown-menu shadow text-sm">
+                        <li>
+                            <a class="dropdown-item font-medium text-slate-700" href="/?locale=en-US">
+                                <span role="img" aria-label="English" style="margin-right: 8px;">🇺🇸</span>
+                                English
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item font-medium text-slate-700" href="/?locale=zh-CN">
+                                <span role="img" aria-label="简体中文" style="margin-right: 8px;">🇨🇳</span>
+                                简体中文
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item font-medium text-slate-700" href="/?locale=ja-JP">
+                                <span role="img" aria-label="日本語" style="margin-right: 8px;">🇯🇵</span>
+                                日本語
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item font-medium text-slate-700" href="/?locale=ko-KR">
+                                <span role="img" aria-label="한국어" style="margin-right: 8px;">🇰🇷</span>
+                                한국어
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item font-medium text-slate-700" href="/?locale=vi-VN">
+                                <span role="img" aria-label="Tiếng Việt" style="margin-right: 8px;">🇻🇳</span>
+                                Tiếng Việt
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <ul class="list-unstyled d-flex mb-0">
+                    <li> <a class="p-2 nav-link text-slate-700" href="https://www.facebook.com/HaiPhongUniversity"><i class="fa-brands fa-facebook"></i></a> </li>
+                    <li> <a class="p-2 nav-link text-slate-700" href="https://www.instagram.com/hpu.off"><i class="fa-brands fa-instagram"></i></a> </li>
+                    <li> <a class="p-2 nav-link text-slate-700" href="https://t.me/haiphonguniversity"><i class="fa-brands fa-telegram"></i></a> </li>
+                    <li> <a class="p-2 nav-link text-slate-700" href="https://www.linkedin.com/company/hai-phong-university/"><i class="fa-brands fa-linkedin-in"></i></a> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
     @await Component.InvokeAsync("Logo")
 
@@ -73,7 +123,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <div class="font-bold mb-2 uppercase text-base">Cơ sở I</div>
+                    <div class="font-bold mb-2 uppercase text-base">Về chúng tôi</div>
                     <div class="mb-2">
                         <i class="fas fa-home mr-2"></i>Trường Đại học Hải Phòng
                     </div>
@@ -84,26 +134,42 @@
                         <i class="fas fa-print mr-2"></i>Fax: (+84225) 3876 893
                     </div>
                     <div class="mb-2">
-                        <i class="fas fa-map-marker-alt mr-2"></i><localize key="address" />: 171 Phan Đăng Lưu , Kiến An, Hải Phòng, Việt Nam.
+                        <i class="fas fa-map-marker-alt mr-2"></i>Cơ sở 1: 171 Phan Đăng Lưu , Kiến An, Hải Phòng, Việt Nam.
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Cơ sở 2: 246B - Đà nẵng - Ngô Quyền - Hải Phòng
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Cơ sở 3: 49 Trần Phú - Ngô Quyền - Hải Phòng
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="font-bold mb-2 uppercase text-base">Cơ sở II</div>
-                    <div class="mb-2">
-                        <i class="fa-solid fa-caret-right"></i>
-                        Điện thoại: (+84225) 3261 316
-                    </div>
-                    <div class="mb-2">
-                        <i class="fa-solid fa-caret-right"></i>
-                        246B - Đà nẵng - Ngô Quyền - Hải Phòng
-                    </div>
-                    <div class="mb-2">
-                        <i class="fa-solid fa-caret-right"></i>
-                        Điện thoại: (+84225) 3591 034
-                    </div>
-                    <div class="mb-2">
-                        <i class="fa-solid fa-caret-right"></i>
-                        49 Trần Phú - Ngô Quyền - Hải Phòng
+                    <div class="font-bold mb-2 uppercase text-base">Liên kết</div>
+                    <div>
+                        <div class="mb-2">
+                            <i class="fa-solid fa-caret-right"></i>
+                            <a href="https://dttx.dhhp.edu.vn/">TT Ngoại ngữ, Tin học - ĐT Thường xuyên</a>
+                        </div>
+                        <div class="mb-2">
+                            <i class="fa-solid fa-caret-right"></i>
+                            <a href="https://thptphandangluu.haiphong.edu.vn/homegd2">Trường THPT Phan Đăng Lưu</a>
+                        </div>
+                        <div class="mb-2">
+                            <i class="fa-solid fa-caret-right"></i>
+                            <a href="https://sdh.dhhp.edu.vn/">Phòng quản lý sau Đại học</a>
+                        </div>
+                        <div class="mb-2">
+                            <i class="fa-solid fa-caret-right"></i>
+                            <a href="https://fit.dhhp.edu.vn/">Khoa Công Nghệ Thông Tin</a>
+                        </div>
+                        <div class="mb-2">
+                            <i class="fa-solid fa-caret-right"></i>
+                            <a href="https://old.dhhp.edu.vn/?page_id=3770&lang=vi">Ba công khai</a>
+                        </div>
+                        <div class="mb-2">
+                            <i class="fa-solid fa-caret-right"></i>
+                            <a href="http://tuyensinh.dhhp.edu.vn/">Tuyển sinh @DateTime.Now.Year</a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3 d-none d-md-block">

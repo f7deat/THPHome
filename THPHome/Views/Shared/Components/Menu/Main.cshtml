@@ -1,6 +1,7 @@
 ﻿@using ApplicationCore.Entities;
 @using ApplicationCore.ViewModels;
 @using WebUI.ViewComponents;
+@using THPHome.Entities;
 @model List<MenuViewModel>
 
 @{
@@ -8,7 +9,7 @@
 }
 
 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 md:justify-content-center mb-md-0">
-    @foreach (var item in Model.Where(x => x.ParrentId == 0))
+    @foreach (var item in Model.Where(x => x.ParentId == 0))
     {
         if (item.Mode == MenuMode.Mega)
         {

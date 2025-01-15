@@ -1,8 +1,7 @@
-﻿namespace WebUI.Models.Api.Admin.User
+﻿namespace THPHome.Models.Api.Admin.User;
+
+public class ChangePasswordModel
 {
-    public class ChangePasswordModel
-    {
-        public string CurrentPassword { get; set; }
-        public string NewPassword { get; set; }
-    }
+    public string? CurrentPassword { get; set; }
+    public string? NewPassword { get; set; }
 }

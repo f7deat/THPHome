@@ -106,8 +106,8 @@ namespace ApplicationCore.Helpers
                 {
                     var post = new Post
                     {
-                        Title = worksheet.Cells[row, 2].Value?.ToString(),
-                        Url = worksheet.Cells[row, 3].Value?.ToString(),
+                        Title = worksheet.Cells[row, 2].Value?.ToString() ?? string.Empty,
+                        Url = worksheet.Cells[row, 3].Value?.ToString() ?? string.Empty,
                         Description = worksheet.Cells[row, 5].Value?.ToString(),
                         Content = worksheet.Cells[row, 6].Value?.ToString(),
                         CreatedDate = DateTime.Now,

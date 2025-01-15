@@ -144,10 +144,11 @@ public class PostController : BaseController
         return Ok(await _postService.RemoveAsync(id));
     }
 
-    [Route("get/{id}")]
+    [HttpGet("get/{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] long id)
     {
         var post = await _postService.FindAsync(id);
+        if (post is null) return BadRequest("Post not found!");
         if (!string.IsNullOrEmpty(post.Thumbnail))
         {
             if (!post.Thumbnail.StartsWith("http"))
@@ -162,6 +163,7 @@ public class PostController : BaseController
     public async Task<IActionResult> GetDetailAsync([FromRoute] long id)
     {
         var article = await _postService.FindAsync(id);
+        if (article is null) return BadRequest("Không tìm thấy bài viết");
         if (string.IsNullOrEmpty(article.CreatedBy)) return BadRequest("Không tìm thấy tác giả");
         var author = await _userManager.FindByIdAsync(article.CreatedBy);
         if (author == null) return BadRequest("Không tìm thấy tác giả");

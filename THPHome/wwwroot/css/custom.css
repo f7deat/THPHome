@@ -23,6 +23,10 @@ input:focus {
     outline: none;
 }
 
+.dropdown-menu {
+    --bs-dropdown-border-color: transparent;
+}
+
 .main-menu {
     background-color: var(--dark);
 }

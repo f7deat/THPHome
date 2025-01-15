@@ -4,7 +4,6 @@ using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Interfaces.IRepository;
 using Infrastructure.Repositories;
 using ApplicationCore.Services;
-using ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -25,6 +24,10 @@ using THPIdentity.Entities;
 using THPHome.Data;
 using THPHome.Interfaces.IService;
 using THPHome.Services;
+using THPHome.Repositories;
+using THPHome.Repositories.Base;
+using THPHome.Interfaces.Base;
+using THPHome.ExternalAPI;
 
 namespace THPHome;
 

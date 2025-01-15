@@ -1,5 +1,5 @@
-﻿using ApplicationCore.Specifications.Base;
-using THPHome.Entities;
+﻿using THPHome.Entities;
+using THPHome.Specifications.Base;
 
 namespace ApplicationCore.Specifications
 {

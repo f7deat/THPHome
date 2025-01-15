@@ -1,22 +1,13 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IService;
-using ApplicationCore.Models.Payload;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Interfaces.IService;
+using THPHome.Models.Payload;
 
-namespace WebUI.ViewComponents;
+namespace THPHome.ViewComponents;
 
-public class MenuViewComponent : ViewComponent
+public class MenuViewComponent(IMenuService _menuService) : ViewComponent
 {
-    private readonly IMenuService _menuService;
-    private readonly ApplicationDbContext _context;
-
-    public MenuViewComponent(IMenuService menuService, ApplicationDbContext context)
-    {
-        _menuService = menuService;
-        _context = context;
-    }
     protected Post PageData
     {
         get

@@ -1,138 +1,72 @@
-﻿import { Button, Col, Drawer, Form, Input, InputNumber, message, Popconfirm, Row, Select, Space, Table, Tabs, TabsProps } from "antd"
-import React, { useEffect, useState } from "react"
+﻿import { Button, Col, Form, Input, InputNumber, message, Popconfirm, Row, Select } from "antd"
+import React, { useEffect, useRef, useState } from "react"
 import {
     EditOutlined,
     DeleteOutlined,
-    PlusOutlined,
-    SaveOutlined,
-    ArrowRightOutlined
+    PlusOutlined
 } from "@ant-design/icons";
-import Card from "antd/lib/card/Card";
-import { request, useIntl } from "@umijs/max";
-import { PageContainer, ProFormRadio, ProFormSelect } from "@ant-design/pro-components";
-import { queryMenuOptions } from "@/services/menu";
-import { language } from "@/utils/format";
+import { request } from "@umijs/max";
+import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormInstance, ProFormSelect, ProFormText, ProTable } from "@ant-design/pro-components";
+import { apiListMenu, queryMenuOptions } from "@/services/menu";
 
 const { Option } = Select;
 
 const MenuSetting = () => {
 
-    const [menus, setMenus] = useState<any>([])
     const [visible, setVisible] = useState(false)
-    const [fields, setFields] = useState<any>([]);
-    const [currentType, setCurrentType] = useState<number>(1);
     const [menu, setMenu] = useState<any>();
-    const intl = useIntl();
-    const [linkOption, setLinkOption] = useState<string>('internal');
-
-    const [form] = Form.useForm();
-
-    const fetchData = () => {
-        request(`menu/list?type=${currentType}&language=${language(intl.locale)}`).then(response => {
-            setMenus(response)
-        })
-    }
+    const formRef = useRef<ProFormInstance>();
+    const actionRef = useRef<ActionType>();
 
     useEffect(() => {
-        fetchData();
-    }, [currentType, menu])
-
-    const filterType = (value: string) => {
-        setCurrentType(Number(value))
-    }
-
-    function handleAdd() {
-        form.resetFields()
-        form.setFields([
+        formRef.current?.setFields([
             {
-                name: 'type',
-                value: currentType
+                name: 'id',
+                value: menu?.id
+            },
+            {
+                name: 'name',
+                value: menu?.name
+            },
+            {
+                name: 'parentId',
+                value: menu?.parentId
+            },
+            {
+                name: 'thumbnail',
+                value: menu?.thumbnail
+            },
+            {
+                name: 'description',
+                value: menu?.description
+            },
+            {
+                name: 'url',
+                value: menu?.url
+            },
+            {
+                name: 'index',
+                value: menu?.index
+            },
+            {
+                name: 'icon',
+                value: menu?.icon
             }
         ])
-        setVisible(true)
-    }
-
-    const onClose = () => {
-        setVisible(false);
-    };
+    }, [menu]);
 
     function handleRemove(id: number) {
         request(`menu/delete/${id}`, {
             method: 'DELETE'
-        }).then(response => {
-            if (response.succeeded) {
-                message.success(response.message)
-                fetchData()
-            } else {
-                message.error(response.message)
-            }
+        }).then(() => {
+            message.success('Thành công!');
+            actionRef.current?.reload();
         })
     }
 
-    function handleUpdate(record: any) {
-        setFields([
-            {
-                name: ['id'],
-                value: record.id
-            },
-            {
-                name: ['createdBy'],
-                value: record.createdBy
-            },
-            {
-                name: ['createdDate'],
-                value: record.createdDate
-            },
-            {
-                name: ['name'],
-                value: record.name
-            },
-            {
-                name: ['thumbnail'],
-                value: record.thumbnail
-            },
-            {
-                name: ['description'],
-                value: record.description
-            },
-            {
-                name: ['url'],
-                value: record.url
-            },
-            {
-                name: ['index'],
-                value: record.index
-            },
-            {
-                name: ['icon'],
-                value: record.icon
-            }
-        ])
-        form.setFields([
-            {
-                name: 'type',
-                value: record.type
-            },
-            {
-                name: 'mode',
-                value: record.mode
-            },
-            {
-                name: 'parrentId',
-                value: record.parrentId === 0 ? null : record.parrentId
-            }
-        ])
-        setVisible(true)
-    }
-
-    const onFinish = (values: any) => {
+    const onFinish = async (values: any) => {
         let url = '';
-        values.type = Number(currentType);
-        if (!values.parrentId) {
-            values.parrentId = 0;
-        } else {
-            values.parrentId = Number(values.parrentId);
-        }
+        values.type = 2;
         if (values.id) {
             url = `menu/update`;
         } else {
@@ -141,26 +75,26 @@ const MenuSetting = () => {
         request(url, {
             data: values,
             method: 'POST'
-        }).then(response => {
-            if (response.succeeded) {
-                message.success(response.message)
-            } else {
-                message.error(response.message)
-            }
+        }).then(() => {
+            message.success('Thành công!');
             setVisible(false);
-            fetchData();
+            formRef.current?.resetFields();
+            actionRef.current?.reload();
         })
     };
 
-    const columns = [
+    const columns: ProColumnType<any>[] = [
         {
-            title: 'Id',
-            dataIndex: 'id'
+            title: '#',
+            width: 20,
+            align: 'center',
+            search: false
         },
         {
-            title: 'Thứ tự',
+            title: 'STT',
             dataIndex: "index",
-            width: 100
+            width: 40,
+            search: false
         },
         {
             title: 'Tên',
@@ -179,157 +113,90 @@ const MenuSetting = () => {
         },
         {
             title: 'Tác vụ',
-            render: (record: any) => (
-                <Space>
-                    <Button size="small" type="primary" icon={<PlusOutlined />} onClick={() => {
-                        setMenu(record);
-                        setVisible(true);
-                    }}></Button>
-                    <Button size="small" icon={<EditOutlined />} onClick={() => handleUpdate(record)}></Button>
-                    <Popconfirm
-                        title="Are you sure to delete?"
-                        okText="Yes"
-                        cancelText="No"
-                        onConfirm={() => handleRemove(record.id)}
-                    >
-                        <Button type="primary" danger icon={<DeleteOutlined />} size="small"></Button>
-                    </Popconfirm>
-                </Space>
-            ),
-            width: 200
+            valueType: 'option',
+            render: (_, record: any) => [
+                <Button size="small" key="add" type="primary" icon={<PlusOutlined />} onClick={() => {
+                    setMenu(record);
+                    setVisible(true);
+                }}></Button>,
+                <Button size="small" key="edit" icon={<EditOutlined />} onClick={() => {
+                    setMenu(record);
+                    setVisible(true);
+                }}></Button>,
+                <Popconfirm
+                    key="delete"
+                    title="Are you sure to delete?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={() => handleRemove(record.id)}
+                >
+                    <Button type="primary" danger icon={<DeleteOutlined />} size="small"></Button>
+                </Popconfirm>
+            ],
+            width: 100
         }
     ]
 
-    const items: TabsProps['items'] = [
-        {
-            key: '1',
-            label: 'Top Menu'
-        },
-        {
-            key: '2',
-            label: 'Main Menu'
-        },
-        {
-            key: '3',
-            label: 'Box Menu'
-        },
-    ];
-
     return (
-        <PageContainer>
-            <Card title='Menu' extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => handleAdd()}>Thêm</Button>}>
-                <Tabs defaultActiveKey={1 as any} items={items} onChange={filterType} type="card" />
-                <Table dataSource={menus} columns={columns} rowKey="id" />
+        <PageContainer extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => setVisible(true)}>Thêm</Button>}>
+            <ProTable
+                actionRef={actionRef}
+                search={{
+                    layout: 'vertical'
+                }}
+                request={apiListMenu}
+                columns={columns} rowKey="id" />
 
-                <Drawer
-                    title="Cài đặt"
-                    placement="right"
-                    closable={false}
-                    onClose={onClose}
-                    open={visible}
-                    width={700}
-                >
-                    <Form onFinish={onFinish} layout="vertical" fields={fields} form={form}>
-                        <Form.Item hidden={true} name="id"></Form.Item>
-                        <Form.Item hidden={true} name="createdBy"></Form.Item>
-                        <Form.Item hidden={true} name="createdDate"></Form.Item>
-                        <Form.Item hidden={true} name="modifiedBy"></Form.Item>
-                        <Form.Item label="Tên" name="name" rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập'
-                            }
-                        ]}>
+            <DrawerForm
+                title="Cài đặt"
+                onOpenChange={setVisible}
+                open={visible}
+                width={700}
+                onFinish={onFinish}
+                formRef={formRef}
+            >
+                <ProFormText hidden name="id" />
+                <ProFormText name="name" label="Tên" rules={[
+                    {
+                        required: true
+                    }
+                ]} />
+
+                <ProFormSelect label="Menu cha" name="parentId" allowClear showSearch request={queryMenuOptions} />
+                <ProFormText name="type" initialValue={2} hidden />
+
+                <Form.Item label="Ảnh đại diện" name="thumbnail">
+                    <Input />
+                </Form.Item>
+
+                <Form.Item label="Mô tả" name="description">
+                    <Input.TextArea />
+                </Form.Item>
+                <Form.Item label="Liên kết" name="url">
+                    <Input />
+                </Form.Item>
+
+                <Row gutter={16}>
+                    <Col span={8}>
+                        <Form.Item name="mode" label="Kiểu hiển thị" initialValue="Flyout">
+                            <Select>
+                                <Option value="Flyout">Flyout</Option>
+                                <Option value="Mega">Mega</Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item label="Thứ tự" name="index">
+                            <InputNumber style={{ width: '100%' }} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item label="Icon" name="icon">
                             <Input />
                         </Form.Item>
-
-                        <Row gutter={16}>
-                            <Col span={16}>
-                                <ProFormSelect label="Menu cha" name="parrentId" allowClear showSearch request={() => {
-                                    return queryMenuOptions(language(intl.locale));
-                                }} />
-                            </Col>
-                            <Col span={8}>
-                                <ProFormSelect disabled
-                                    options={[
-                                        {
-                                            label: 'Top Menu',
-                                            value: 1
-                                        },
-                                        {
-                                            label: 'Menu Menu',
-                                            value: 2
-                                        },
-                                        {
-                                            label: 'Box Menu',
-                                            value: 3
-                                        }
-                                    ]}
-                                    label="Loại" name="type" initialValue={currentType} />
-                            </Col>
-                        </Row>
-
-                        <Form.Item label="Ảnh đại diện" name="thumbnail">
-                            <Input />
-                        </Form.Item>
-
-                        <Form.Item label="Mô tả" name="description">
-                            <Input.TextArea />
-                        </Form.Item>
-                        {/* <ProFormRadio.Group
-                            label="Liên kết"
-                            radioType="button"
-                            className="w-full"
-                            fieldProps={{
-                                value: linkOption,
-                                onChange: (e) => setLinkOption(e.target.value),
-                            }}
-                            options={[
-                                {
-                                    label: 'Nội bộ',
-                                    value: 'internal'
-                                },
-                                {
-                                    label: 'Ngoài trang',
-                                    value: 'external'
-                                }
-                            ]}
-                        /> */}
-                        {/* <ProFormSelect name="url" label="Liên kết" hidden={linkOption === 'external'} /> */}
-                        <Form.Item label="Liên kết" name="url">
-                            <Input />
-                        </Form.Item>
-
-                        <Row gutter={16}>
-                            <Col span={8}>
-                                <Form.Item name="mode" label="Kiểu hiển thị" initialValue="Flyout">
-                                    <Select>
-                                        <Option value="Flyout">Flyout</Option>
-                                        <Option value="Mega">Mega</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item label="Thứ tự" name="index">
-                                    <InputNumber style={{ width: '100%' }} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item label="Icon" name="icon">
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Form.Item>
-                            <Space>
-                                <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>Save</Button>
-                                <Button htmlType="button" icon={<ArrowRightOutlined />} onClick={() => setVisible(false)}>Close</Button>
-                            </Space>
-                        </Form.Item>
-                    </Form>
-                </Drawer>
-            </Card>
+                    </Col>
+                </Row>
+            </DrawerForm>
         </PageContainer>
     )
 }

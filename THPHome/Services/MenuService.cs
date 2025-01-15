@@ -1,58 +1,127 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
-using ApplicationCore.Interfaces.IRepository;
-using ApplicationCore.Interfaces.IService;
-using ApplicationCore.Models.Payload;
+﻿using ApplicationCore.Interfaces.IRepository;
+using ApplicationCore.Models.Filters;
 using ApplicationCore.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using THPHome.Data;
+using THPHome.Entities;
+using THPHome.Interfaces.IService;
+using THPHome.Models.Payload;
 
-namespace ApplicationCore.Services
+namespace THPHome.Services;
+
+public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _context) : IMenuService
 {
-    public class MenuService : IMenuService
+    public async Task<object> AddAsync(Menu menu)
     {
-        private readonly IMenuRepository _menuRepository;
-        public MenuService(IMenuRepository menuRepository)
+        return new
         {
-            _menuRepository = menuRepository;
-        }
+            succeeded = true,
+            data = await _menuRepository.AddAsync(menu),
+            message = "Thành công!"
+        };
+    }
 
-        public async Task<object> AddAsync(Menu menu)
+    public async Task<object> DeleteAsyn(int id)
+    {
+        var menu = await _menuRepository.GetByIdAsync(id);
+        await _menuRepository.DeleteAsync(menu);
+        return new
         {
-            return new
+            succeeded = true,
+            data = menu,
+            message = "Thành công!"
+        };
+    }
+
+    public Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload) => _menuRepository.GetListAsync(payload);
+
+    public async Task<object> GetListAsync(FilterOptions filterOptions)
+    {
+        var menus = await _context.Menus.Where(x => x.Locale == filterOptions.Locale && (x.Type == MenuType.MAIN || x.Type == MenuType.DEFAULT)).AsNoTracking().ToListAsync();
+
+        var parents = menus.Where(x => x.ParentId == 0 || x.ParentId == null).Select(x => new MenuViewModel
+                {
+                    Url = x.Url,
+                    ParentId = x.ParentId,
+                    CreatedBy = x.CreatedBy,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    Icon = x.Icon,
+                    Index = x.Index,
+                    Locale = x.Locale,
+                    Mode = x.Mode,
+                    ModifiedBy = x.ModifiedBy,
+                    ModifiedDate = x.ModifiedDate,
+                    Name = x.Name,
+                    Status = x.Status,
+                    Type = x.Type,
+                    Id = x.Id
+                })
+                .OrderBy(x => x.Index).ToList();
+
+        var data = new List<MenuViewModel>();
+
+        foreach (var item in parents)
+        {
+            var childs = menus.Where(x => x.ParentId == item.Id).ToList();
+            if (childs.Count != 0)
             {
-                succeeded = true,
-                data = await _menuRepository.AddAsync(menu),
-                message = "Thành công!"
-            };
+                item.Children = childs.Select(x => new MenuViewModel
+                {
+                    Url = x.Url,
+                    ParentId = x.ParentId,
+                    CreatedBy = x.CreatedBy,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    Icon = x.Icon,
+                    Index = x.Index,
+                    Locale = x.Locale,
+                    Mode = x.Mode,
+                    ModifiedBy = x.ModifiedBy,
+                    ModifiedDate = x.ModifiedDate,
+                    Name = x.Name,
+                    Status = x.Status,
+                    Type = x.Type,
+                    Id = x.Id,
+                    Children = menus.Where(m => m.ParentId == x.Id).Select(x => new MenuViewModel
+                    {
+                        Url = x.Url,
+                        ParentId = x.ParentId,
+                        CreatedBy = x.CreatedBy,
+                        CreatedDate = x.CreatedDate,
+                        Description = x.Description,
+                        Icon = x.Icon,
+                        Index = x.Index,
+                        Locale = x.Locale,
+                        Mode = x.Mode,
+                        ModifiedBy = x.ModifiedBy,
+                        ModifiedDate = x.ModifiedDate,
+                        Name = x.Name,
+                        Status = x.Status,
+                        Type = x.Type,
+                        Id = x.Id
+                    })
+                })
+                .OrderBy(x => x.Index);
+            }
+            data.Add(item);
         }
 
-        public async Task<object> DeleteAsyn(int id)
+        return new {
+            data,
+            total = parents.Count,
+        };
+    }
+
+    public Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type) => _menuRepository.GetListParrentAsync(type);
+
+    public async Task<object> UpdateAsync(Menu menu)
+    {
+        return new
         {
-            var menu = await _menuRepository.GetByIdAsync(id);
-            await _menuRepository.DeleteAsync(menu);
-            return new
-            {
-                succeeded = true,
-                data = menu,
-                message = "Thành công!"
-            };
-        }
-
-        public Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload) => _menuRepository.GetListAsync(payload);
-
-        public Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type) => _menuRepository.GetListParrentAsync(type);
-
-        public async Task<object> UpdateAsync(Menu menu)
-        {
-            return new
-            {
-                succeeded = true,
-                data = await _menuRepository.UpdateAsync(menu),
-                message = "Thành công!"
-            };
-        }
+            succeeded = true,
+            data = await _menuRepository.UpdateAsync(menu),
+            message = "Thành công!"
+        };
     }
 }

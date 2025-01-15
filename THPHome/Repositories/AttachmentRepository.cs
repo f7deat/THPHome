@@ -2,6 +2,7 @@
 using ApplicationCore.Interfaces.IRepository;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Repositories.Base;
 
 namespace Infrastructure.Repositories
 {

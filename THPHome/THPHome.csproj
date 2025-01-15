@@ -30,10 +30,11 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
 		<PackageReference Include="THPCore" Version="1.0.0" />
+		<PackageReference Include="THPIdentity" Version="1.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\THPIdentity\THPIdentity.csproj" />
+	  <Folder Include="Models\Views\" />
 	</ItemGroup>
 
 </Project>

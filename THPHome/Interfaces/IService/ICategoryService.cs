@@ -11,10 +11,10 @@ namespace ApplicationCore.Interfaces.IService
     public interface ICategoryService
     {
         Task<IReadOnlyList<Category>> ListAllAsync(Language lang);
-        Task<Category> GetCategory(int id);
+        Task<Category?> GetCategory(int id);
         Task<IReadOnlyList<Category>> CategoriesByType(int pageSize);
         Task<PaginatedList<Category>> ListParrentAsync(int? parrentId, int current, int pageSize);
-        Task<Category> FindAsync(int id);
+        Task<Category?> FindAsync(int id);
         Task<IEnumerable<Category>> GetListAsyc(int id, Language lang);
         Task<IEnumerable<Category>> GetChildCategoriesAsync(int parentId);
         Task<dynamic> AddAsync(Category category);

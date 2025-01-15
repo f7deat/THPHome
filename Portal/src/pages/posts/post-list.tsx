@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
-import { history, Link, request, useIntl } from "@umijs/max";
+import { history, Link, request, useAccess, useIntl } from "@umijs/max";
 import { language } from "@/utils/format";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { apiShareZaloOA, queryPosts } from "@/services/post";
@@ -32,6 +32,7 @@ const PostList: React.FC<{
     const [openCopy, setOpenCopy] = useState<boolean>(false);
     const [post, setPost] = useState<any>();
     const [loading, setLoading] = useState<boolean>(false);
+    const access = useAccess();
 
     function remove(id: number) {
         request(`post/remove/${id}`, {
@@ -132,7 +133,7 @@ const PostList: React.FC<{
             title: 'Ngày tạo',
             dataIndex: 'createdDate',
             valueType: 'fromNow',
-            width: 100,
+            width: 120,
             search: false
         },
         {
@@ -167,10 +168,10 @@ const PostList: React.FC<{
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={type === PostType.DEFAULT} disabled={!record.canUpdate}></Button>
+                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={type === PostType.DEFAULT} disabled={!record.canUpdate && !access.canAdmin}></Button>
                 </Popconfirm>,
                 <Dropdown
-                    disabled={!record.canUpdate}
+                    disabled={!record.canUpdate && !access.canAdmin}
                     key="more" menu={{
                         items: [
                             {

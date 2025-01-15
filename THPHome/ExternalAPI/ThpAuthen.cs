@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
 using WebUI.Models.Args.Communications;
 
-namespace WebUI.ExternalAPI;
+namespace THPHome.ExternalAPI;
 
 public class ThpAuthen : ITHPAuthen
 {
@@ -15,7 +14,7 @@ public class ThpAuthen : ITHPAuthen
         _httpClient = httpClient;
     }
 
-    public async Task<List<ThpUserResponse>> GetListUser(SendEmailArgs args)
+    public Task<List<ThpUserResponse>> GetListUser(SendEmailArgs args)
     {
         _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", args.Token);
         throw new NotImplementedException();

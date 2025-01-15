@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using THPHome.Interfaces.Base;
 using WebUI.Models.Filters.Settings;
 using WebUI.Models.ViewModel;
 

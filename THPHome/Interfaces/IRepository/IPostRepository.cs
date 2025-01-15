@@ -5,6 +5,7 @@ using ApplicationCore.Models.Filters;
 using WebUI.Models.ViewModel;
 using WebUI.Models.Categories;
 using THPHome.Entities;
+using THPHome.Interfaces.Base;
 
 namespace ApplicationCore.Interfaces.IRepository
 {

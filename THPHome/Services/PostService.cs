@@ -65,7 +65,7 @@ public class PostService : IPostService
             );
     }
 
-    public Task<Post> FindAsync(long id) => _postRepository.FindAsync(id);
+    public Task<Post?> FindAsync(long id) => _postRepository.FindAsync(id);
 
     public Task<dynamic?> GetDataBarChartAsync() => _postRepository.GetDataBarChartAsync();
 

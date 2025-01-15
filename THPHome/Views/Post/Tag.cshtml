@@ -1,11 +1,11 @@
 @model ApplicationCore.Helpers.PaginatedList<ApplicationCore.Models.Posts.PostView>
-@using WebUI.Models.Layouts;
+@using THPHome.Models.Layouts;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     var breadcrumbs = new List<Breadcrumb>
 {
         new Breadcrumb { Id = 1, Name = "Trang chủ", Url = "/", Icon ="fas fa-home" },
-        new Breadcrumb { Id = 2, Name = ViewData["Title"].ToString(), Icon ="fas fa-tag", IsActive = true }
+        new Breadcrumb { Id = 2, Name = ViewData["Title"]?.ToString(), Icon ="fas fa-tag", IsActive = true }
     };
 }
 <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
