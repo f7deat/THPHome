@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using THPHome.Data;
-using WebUI.Helpers;
+using THPHome.Helpers;
 
 namespace THPHome.TagHelpers;
 

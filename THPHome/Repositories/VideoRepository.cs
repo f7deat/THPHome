@@ -1,27 +1,19 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IRepository;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using THPHome.Data;
+using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
 
-namespace Infrastructure.Repositories
-{
-    public class VideoRepository : EfRepository<Video>, IVideoRepository
-    {
-        public VideoRepository(ApplicationDbContext context) : base(context)
-        {
-        }
+namespace THPHome.Repositories;
 
-        public async Task<IReadOnlyList<Video>> GetListAsync(int pageSize)
+public class VideoRepository(ApplicationDbContext context) : EfRepository<Video>(context), IVideoRepository
+{
+    public async Task<IReadOnlyList<Video>> GetListAsync(int pageSize)
+    {
+        if (pageSize == 0)
         {
-            if (pageSize == 0)
-            {
-                return await _context.Videos.OrderByDescending(x => x.Id).ToListAsync();
-            }
-            return await _context.Videos.OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
+            return await _context.Videos.OrderByDescending(x => x.Id).ToListAsync();
         }
+        return await _context.Videos.OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
     }
 }

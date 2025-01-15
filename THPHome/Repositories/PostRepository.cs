@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Interfaces.IRepository;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Helpers;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
@@ -13,9 +12,10 @@ using WebUI.Foundations.Interfaces;
 using WebUI.Models.Results.Posts;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
 
-namespace Infrastructure.Repositories;
+namespace THPHome.Repositories;
 
 public class PostRepository : EfRepository<Post>, IPostRepository
 {
@@ -330,33 +330,33 @@ public class PostRepository : EfRepository<Post>, IPostRepository
     {
         return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Language == language)
             .OrderByDescending(x => x.IssuedDate).Skip((current - 1) * pageSize).Take(pageSize).Select(x => new PostView
-        {
-            Id = x.Id,
-            Description = x.Description,
-            ModifiedDate = x.CreatedDate,
-            Thumbnail = x.Thumbnail,
-            Title = x.Title,
-            Url = x.Url,
-            View = x.View,
-            IssuedDate = x.IssuedDate
-        }).ToListAsync();
+            {
+                Id = x.Id,
+                Description = x.Description,
+                ModifiedDate = x.CreatedDate,
+                Thumbnail = x.Thumbnail,
+                Title = x.Title,
+                Url = x.Url,
+                View = x.View,
+                IssuedDate = x.IssuedDate
+            }).ToListAsync();
     }
 
-    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, Language locale)
+    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale)
     {
-        var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Type == pAGE && x.Language == locale);
+        var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Type == pAGE && x.Language == language);
         if (post is null)
         {
             post = new Post
             {
                 Title = url,
                 Url = url,
-                Language = locale,
+                Language = language,
                 Status = PostStatus.PUBLISH,
                 CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now,
                 Type = pAGE,
-                View = 0
+                View = 0,
+                Locale = locale
             };
             await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();

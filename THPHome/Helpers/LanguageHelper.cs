@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Enums;
 
-namespace WebUI.Helpers;
+namespace THPHome.Helpers;
 
 public class LanguageHelper
 {
@@ -10,6 +10,9 @@ public class LanguageHelper
         return locale switch
         {
             "en-US" => Language.EN,
+            "zh-CN" => Language.ZH,
+            "ja-JP" => Language.JP,
+            "ko-KR" => Language.KR,
             _ => Language.VI,
         };
     }

@@ -3,8 +3,9 @@ using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
-using WebUI.Foundations;
-using WebUI.Helpers;
+using THPHome.Foundations;
+using THPHome.Helpers;
+using THPHome.Interfaces.IService;
 
 namespace WebUI.Pages.Search;
 

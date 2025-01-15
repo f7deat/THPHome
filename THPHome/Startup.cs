@@ -28,6 +28,7 @@ using THPHome.Repositories;
 using THPHome.Repositories.Base;
 using THPHome.Interfaces.Base;
 using THPHome.ExternalAPI;
+using THPHome.Interfaces.IRepository;
 
 namespace THPHome;
 

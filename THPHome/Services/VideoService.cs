@@ -1,51 +1,42 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using THPHome.Interfaces.IRepository;
 
-namespace ApplicationCore.Services
+namespace THPHome.Services;
+
+public class VideoService(IVideoRepository _videoRepository) : IVideoService
 {
-    public class VideoService : IVideoService
+    public async Task<dynamic> AddAsync(Video video)
     {
-        private readonly IVideoRepository _videoRepository;
-        public VideoService(IVideoRepository videoRepository)
+        video.CreatedDate = DateTime.Now;
+        return new
         {
-            _videoRepository = videoRepository;
-        }
-        public async Task<dynamic> AddAsync(Video video)
-        {
-            video.CreatedDate = DateTime.Now;
-            return new
-            {
-                succeeded = true,
-                message = "Succeeded",
-                data = await _videoRepository.AddAsync(video)
-            };
-        }
+            succeeded = true,
+            message = "Succeeded",
+            data = await _videoRepository.AddAsync(video)
+        };
+    }
 
-        public async Task<dynamic> DeleteAsync(long id)
+    public async Task<dynamic> DeleteAsync(long id)
+    {
+        var video = await _videoRepository.FindAsync(id);
+        if (video is null) return new { succeeded = false };
+        await _videoRepository.DeleteAsync(video);
+        return new
         {
-            var video = await _videoRepository.FindAsync(id);
-            await _videoRepository.DeleteAsync(video);
-            return new
-            {
-                succeeded = true,
-                data = video,
-                message = "Succeeded"
-            };
-        }
+            succeeded = true,
+            data = video,
+            message = "Succeeded"
+        };
+    }
 
-        public Task<IReadOnlyList<Video>> GetListAsync(int pageSize)
-        {
-            return _videoRepository.GetListAsync(pageSize);
-        }
+    public Task<IReadOnlyList<Video>> GetListAsync(int pageSize)
+    {
+        return _videoRepository.GetListAsync(pageSize);
+    }
 
-        public async Task<dynamic> UpdateAsync(Video video)
-        {
-            return new { succeeded = true, data = await _videoRepository.UpdateAsync(video), message = "Succeeded!" };
-        }
+    public async Task<dynamic> UpdateAsync(Video video)
+    {
+        return new { succeeded = true, data = await _videoRepository.UpdateAsync(video), message = "Succeeded!" };
     }
 }

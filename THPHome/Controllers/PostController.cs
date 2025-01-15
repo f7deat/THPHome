@@ -13,36 +13,16 @@ using Microsoft.AspNetCore.Authorization;
 using THPIdentity.Entities;
 using THPIdentity.Constants;
 using THPHome.Models.Args.Posts;
-using WebUI.Helpers;
 using THPHome.Data;
 using THPCore.Extensions;
 using THPHome.Entities;
+using THPHome.Helpers;
+using THPHome.Interfaces.IService;
 
 namespace THPHome.Controllers;
 
-public class PostController : BaseController
+public class PostController(IAttachmentService _attachmentService, IPostService _postService, IPostCategoryService _postCategoryService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, IZaloAPI _zaloAPI) : BaseController(context)
 {
-    private readonly IPostService _postService;
-    private readonly IPostCategoryService _postCategoryService;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly IAttachmentService _attachmentService;
-    private readonly ITelegramService _telegramService;
-    private readonly IZaloAPI _zaloAPI;
-
-    public PostController(IAttachmentService attachmentService, IPostService postService, IPostCategoryService postCategoryService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, ITelegramService telegramService, IZaloAPI zaloAPI) : base(context)
-    {
-        _postService = postService;
-        _postCategoryService = postCategoryService;
-        _userManager = userManager;
-        _webHostEnvironment = webHostEnvironment;
-        _roleManager = roleManager;
-        _attachmentService = attachmentService;
-        _telegramService = telegramService;
-        _zaloAPI = zaloAPI;
-    }
-
     [Route("post/tag")]
     public async Task<IActionResult> Tag(string name, string searchTerm)
     {
@@ -103,7 +83,8 @@ public class PostController : BaseController
                 Description = args.Description,
                 IssuedDate = args.IssuedDate,
                 Language = language,
-                Type = args.Type
+                Type = args.Type,
+                Locale = locale
             };
             var data = await _postService.AddAsync(post);
             if (data.Id > 0)
@@ -136,7 +117,7 @@ public class PostController : BaseController
             await _telegramService.SendMessageAsync($"{user?.UserName} deleted: {post?.Title} -> https://dhhp.edu.vn/post/{post?.Url}-{post?.Id}.html");
         }
         var blocks = await _context.PostBlocks.Where(x => x.PostId == id).ToListAsync();
-        if (blocks.Any())
+        if (blocks.Count != 0)
         {
             _context.PostBlocks.RemoveRange(blocks);
             await _context.SaveChangesAsync();
@@ -144,11 +125,11 @@ public class PostController : BaseController
         return Ok(await _postService.RemoveAsync(id));
     }
 
-    [HttpGet("get/{id}")]
+    [Route("get/{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] long id)
     {
         var post = await _postService.FindAsync(id);
-        if (post is null) return BadRequest("Post not found!");
+        if (post is null) return BadRequest();
         if (!string.IsNullOrEmpty(post.Thumbnail))
         {
             if (!post.Thumbnail.StartsWith("http"))
@@ -163,7 +144,7 @@ public class PostController : BaseController
     public async Task<IActionResult> GetDetailAsync([FromRoute] long id)
     {
         var article = await _postService.FindAsync(id);
-        if (article is null) return BadRequest("Không tìm thấy bài viết");
+        if (article is null) return BadRequest();
         if (string.IsNullOrEmpty(article.CreatedBy)) return BadRequest("Không tìm thấy tác giả");
         var author = await _userManager.FindByIdAsync(article.CreatedBy);
         if (author == null) return BadRequest("Không tìm thấy tác giả");

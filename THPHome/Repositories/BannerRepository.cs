@@ -1,22 +1,16 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IRepository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using THPHome.Data;
+using THPHome.Helpers;
+using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
-using WebUI.Helpers;
 using WebUI.Models.Filters.Settings;
 using WebUI.Models.ViewModel;
 
-namespace Infrastructure.Repositories;
+namespace THPHome.Repositories;
 
-public class BannerRepository : EfRepository<Banner>, IBannerRepository
+public class BannerRepository(ApplicationDbContext context) : EfRepository<Banner>(context), IBannerRepository
 {
-    public BannerRepository(ApplicationDbContext context) : base(context)
-    {
-
-    }
-
     public async Task<ListResult<Banner>> GetListAsync(BannerFilterOptions filterOptions)
     {
         var language = LanguageHelper.GetLanguage(filterOptions.Locale);
@@ -29,7 +23,7 @@ public class BannerRepository : EfRepository<Banner>, IBannerRepository
     public async Task RemoveRangeAsync(long id)
     {
         var banners = await _context.Banners.Where(x => x.PostId == id).ToListAsync();
-        if (banners.Any())
+        if (banners.Count != 0)
         {
             _context.RemoveRange(banners);
             await _context.SaveChangesAsync();

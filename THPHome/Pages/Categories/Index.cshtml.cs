@@ -6,33 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using THPHome.Data;
 using THPHome.Entities;
-using WebUI.Foundations;
+using THPHome.Foundations;
+using THPHome.Interfaces.IService;
 
-namespace WebUI.Pages.Categories
+namespace THPHome.Pages.Categories;
+
+public class IndexModel(IPostService postService, ApplicationDbContext context, ICategoryService _categoryService) : EntryPageModel(postService, context)
 {
-    public class IndexModel : EntryPageModel
+    public IReadOnlyList<Category> Categories { get; set; } = [];
+
+    public async Task<IActionResult> OnGetAsync()
     {
-        private readonly ICategoryService _categoryService;
-        public IndexModel(IPostService postService, ApplicationDbContext context, ICategoryService categoryService) : base(postService, context)
+        Request.Cookies.TryGetValue("locale", out string? locale);
+        var lang = Language.VI;
+        if (!string.IsNullOrEmpty(locale))
         {
-            _categoryService = categoryService;
-        }
-
-        public IReadOnlyList<Category> Categories { get; set; } = new List<Category>();
-
-        public async Task<IActionResult> OnGetAsync()
-        {
-            Request.Cookies.TryGetValue("locale", out string? locale);
-            var lang = Language.VI;
-            if (!string.IsNullOrEmpty(locale))
+            if (locale == "en-US")
             {
-                if (locale == "en-US")
-                {
-                    lang = Language.EN;
-                }
+                lang = Language.EN;
             }
-            Categories = await _categoryService.ListAllAsync(lang);
-            return Page();
         }
+        Categories = await _categoryService.ListAllAsync(lang);
+        return Page();
     }
 }

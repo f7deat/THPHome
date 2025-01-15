@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
+using THPHome.Interfaces.IRepository;
 
 namespace ApplicationCore.Services;
 

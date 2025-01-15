@@ -1,9 +1,9 @@
 using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
-using WebUI.Foundations;
+using THPHome.Foundations;
+using THPHome.Interfaces.IService;
 
 namespace WebUI.Pages.Departments;
 

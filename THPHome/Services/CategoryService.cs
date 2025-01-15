@@ -1,24 +1,16 @@
-﻿using ApplicationCore.Enums;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces;
-using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
 using THPHome.Entities;
+using THPHome.Interfaces.IRepository;
 using THPHome.Models.Categories;
 
-namespace ApplicationCore.Services;
+namespace THPHome.Services;
 
-public class CategoryService : ICategoryService
+public class CategoryService(ICategoryRepository _categoryRepository, IPostRepository _postRepository) : ICategoryService
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IPostRepository _postRepository;
-
-    public CategoryService(ICategoryRepository categoryRepository, IPostRepository postRepository)
-    {
-        _categoryRepository = categoryRepository;
-        _postRepository = postRepository;
-    }
-
     public async Task<dynamic> AddAsync(Category category)
     {
         if (string.IsNullOrEmpty(category.NormalizeName))
@@ -42,6 +34,7 @@ public class CategoryService : ICategoryService
             return new { succeeded = false, message = $"Không thể xóa danh mục đã có bài viết" };
         }
         var category = await _categoryRepository.GetByIdAsync(id);
+        if (category is null) return new { succeeded = false };
         await _categoryRepository.DeleteAsync(category);
         return new { succeeded = true };
     }

@@ -3,7 +3,7 @@ using THPHome.Interfaces.Base;
 using WebUI.Models.Filters.Settings;
 using WebUI.Models.ViewModel;
 
-namespace ApplicationCore.Interfaces.IRepository;
+namespace THPHome.Interfaces.IRepository;
 
 public interface IBannerRepository : IAsyncRepository<Banner>
 {

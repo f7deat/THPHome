@@ -1,11 +1,12 @@
-﻿using ApplicationCore.Interfaces.IRepository;
-using ApplicationCore.Models.Filters;
-using ApplicationCore.ViewModels;
+﻿using ApplicationCore.Models.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Payload;
+using THPHome.ViewModels;
 
 namespace THPHome.Services;
 
@@ -24,6 +25,7 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
     public async Task<object> DeleteAsyn(int id)
     {
         var menu = await _menuRepository.GetByIdAsync(id);
+        if (menu is null) return new { succeeded = false };
         await _menuRepository.DeleteAsync(menu);
         return new
         {

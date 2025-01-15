@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using THPHome.Entities;
+﻿using THPHome.Entities;
 
-namespace ApplicationCore.ViewModels
+namespace THPHome.ViewModels;
+
+public class MenuViewModel : Menu
 {
-    public class MenuViewModel : Menu
-    {
-        public IEnumerable<MenuViewModel>? Children { get; set; }
-    }
+    public IEnumerable<MenuViewModel>? Children { get; set; }
 }

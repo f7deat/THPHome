@@ -7,7 +7,7 @@ using WebUI.Models.Categories;
 using THPHome.Entities;
 using THPHome.Interfaces.Base;
 
-namespace ApplicationCore.Interfaces.IRepository
+namespace THPHome.Interfaces.IRepository
 {
     public interface IPostRepository : IAsyncRepository<Post>
     {
@@ -37,6 +37,6 @@ namespace ApplicationCore.Interfaces.IRepository
         Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize);
         Task<List<CategoryWithPost>> GetListByAllCategoryAsync();
         Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, Language language);
-        Task<Post> EnsureDataAsync(string url, PostType pAGE, Language locale);
+        Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale);
     }
 }

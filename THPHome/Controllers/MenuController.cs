@@ -29,11 +29,17 @@ public class MenuController(IMenuService _menuService, ApplicationDbContext cont
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync([FromBody] Menu menu, [FromQuery] string locale)
     {
-        menu.CreatedBy = User.GetUserName();
-        menu.ModifiedBy = User.GetUserName();
-        menu.CreatedDate = DateTime.Now;
-        menu.Locale = locale;
-        return Ok(await _menuService.AddAsync(menu));
+        try
+        {
+            menu.CreatedBy = User.GetUserName();
+            menu.CreatedDate = DateTime.Now;
+            menu.Locale = locale;
+            return Ok(await _menuService.AddAsync(menu));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("update")]

@@ -1,46 +1,20 @@
-﻿using ApplicationCore.Interfaces.IRepository;
-using Microsoft.EntityFrameworkCore;
-using ApplicationCore.ViewModels;
+﻿using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.ViewModels;
+using THPHome.Interfaces.IRepository;
+using THPHome.Repositories.Base;
 using THPHome.Entities;
 using THPHome.Models.Payload;
-using THPHome.Repositories.Base;
 
-namespace THPHome.Repositories;
-
-public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(context), IMenuRepository
+namespace THPHome.Repositories
 {
-    public async Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload)
+    public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(context), IMenuRepository
     {
-        var menus = await _context.Menus.Where(x => x.Locale == payload.Locale && x.Type == payload.Type).AsNoTracking().ToListAsync();
-
-        var parents = menus.Where(x => x.ParentId == 0 || x.ParentId == null).Select(x => new MenuViewModel
+        public async Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload)
         {
-            Url = x.Url,
-            ParentId = x.ParentId,
-            CreatedBy = x.CreatedBy,
-            CreatedDate = x.CreatedDate,
-            Description = x.Description,
-            Icon = x.Icon,
-            Index = x.Index,
-            Locale = x.Locale,
-            Mode = x.Mode,
-            ModifiedBy = x.ModifiedBy,
-            ModifiedDate = x.ModifiedDate,
-            Name = x.Name,
-            Status = x.Status,
-            Type = x.Type,
-            Id = x.Id
-        }).OrderBy(x => x.Index).ToList();
-
-        var data = new List<MenuViewModel>();
-
-        foreach (var item in parents)
-        {
-            var childs = menus.Where(x => x.ParentId == item.Id).ToList();
-            if (childs.Count != 0)
-            {
-                item.Children = childs.Select(x => new MenuViewModel
+            var menus = await _context.Menus
+                .Where(x => x.Locale == payload.Locale && x.Type == payload.Type && x.ParentId == payload.ParentId)
+                .Select(x => new MenuViewModel
                 {
                     Url = x.Url,
                     ParentId = x.ParentId,
@@ -56,39 +30,33 @@ public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(c
                     Name = x.Name,
                     Status = x.Status,
                     Type = x.Type,
-                    Id = x.Id,
-                    Children = menus.Where(m => m.ParentId == x.Id).Select(x => new MenuViewModel
-                    {
-                        Url = x.Url,
-                        ParentId = x.ParentId,
-                        CreatedBy = x.CreatedBy,
-                        CreatedDate = x.CreatedDate,
-                        Description = x.Description,
-                        Icon = x.Icon,
-                        Index = x.Index,
-                        Locale = x.Locale,
-                        Mode = x.Mode,
-                        ModifiedBy = x.ModifiedBy,
-                        ModifiedDate = x.ModifiedDate,
-                        Name = x.Name,
-                        Status = x.Status,
-                        Type = x.Type,
-                        Id = x.Id
-                    })
+                    Id = x.Id
                 })
-                .OrderBy(x => x.Index);
-            }
-            data.Add(item);
-        }
-        return data;
-    }
+                .OrderBy(x => x.Index)
+                .ToListAsync();
+            foreach (var item in menus)
+            {
+                if (await _context.Menus.AnyAsync(x => x.ParentId == item.Id))
+                {
+                    item.Children = await GetListAsync(new ListMenuPayload
+                    {
+                        Type = item.Type,
+                        ParentId = item.Id,
+                        Locale = item.Locale
+                    });
+                }
 
-    public async Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type)
-    {
-        if (type == null)
-        {
-            return new List<Menu>();
+            }
+            return menus;
         }
-        return await _context.Menus.Where(x => x.ParentId == 0 && x.Type == type).OrderBy(x => x.Name).ToListAsync();
+
+        public async Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type)
+        {
+            if (type == null)
+            {
+                return new List<Menu>();
+            }
+            return await _context.Menus.Where(x => x.ParentId == 0 && x.Type == type).OrderBy(x => x.Name).ToListAsync();
+        }
     }
 }

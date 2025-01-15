@@ -6,7 +6,7 @@ using THPHome.Entities;
 using WebUI.Models.Categories;
 using WebUI.Models.ViewModel;
 
-namespace ApplicationCore.Interfaces.IService;
+namespace THPHome.Interfaces.IService;
 
 public interface IPostService
 {
@@ -41,5 +41,5 @@ public interface IPostService
     Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize);
     Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize);
     Task<dynamic> SetActiveAsync(long id);
-    Task<Post> EnsureDataAsync(string url, PostType pAGE, Language locale);
+    Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale);
 }

@@ -1,12 +1,12 @@
 ﻿using ApplicationCore.Enums;
-using ApplicationCore.Interfaces.IService;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using THPHome.Data;
 using THPHome.Entities;
-using WebUI.Helpers;
+using THPHome.Helpers;
+using THPHome.Interfaces.IService;
 
-namespace WebUI.Foundations;
+namespace THPHome.Foundations;
 
 public class EntryPageModel : PageModel
 {
@@ -28,7 +28,7 @@ public class EntryPageModel : PageModel
 
         Request.Cookies.TryGetValue("locale", out string? locale);
         var lang = LanguageHelper.GetLanguage(locale);
-        var catalog = await _postService.EnsureDataAsync(page.ToLower(), PostType.Entry, lang);
+        var catalog = await _postService.EnsureDataAsync(page.ToLower(), PostType.Entry, lang, locale ?? "vi-VN");
         PageData = catalog;
         ViewData["Title"] = catalog.Title;
         ViewData["Description"] = catalog.Description;

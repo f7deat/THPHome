@@ -52,41 +52,43 @@
             </h1>
 
             <partial name="/Views/Post/_Posts.cshtml" model="Model.Posts" />
-            <div class="mb-3">
-                @{
-                    var prevDisabled = !Model.Posts.HasPreviousPage ? "disabled" : "";
-                    var nextDisabled = !Model.Posts.HasNextPage ? "disabled" : "";
-                }
+            @if (Model.Posts != null)
+            {
+                <div class="mb-3">
+                    @{
+                        var prevDisabled = !Model.Posts.HasPreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.Posts.HasNextPage ? "disabled" : "";
+                    }
 
-                @if (Model.Posts.HasPreviousPage)
-                {
-                    <a href="/category/details/@Model.Category.Id?current=@(Model.Current - 1)&searchTerm=@Model.SearchTerm"
-                       class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white shadow">
-                        <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
-                    </a>
-                }
-                else
-                {
-                    <button
-                        disabled
-                            class="rounded px-4 py-1 bg-gray-800 text-white shadow opacity-75">
-                        <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
-                    </button>
-                }
-                @if (Model.Posts.HasNextPage)
-                {
-                    <a href="/category/details/@Model.Category.Id?current=@(Model.Current + 1)&searchTerm=@Model.SearchTerm"
-                       class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white float-right shadow">
-                        <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
-                    </a>
-                }
-                else
-                {
-                    <button disabled class="rounded px-4 py-1 bg-gray-800 text-white opacity-75">
-                        <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
-                    </button>
-                }
-            </div>
+                    @if (Model.Posts.HasPreviousPage)
+                    {
+                        <a href="/category/details/@Model.Category.Id?current=@(Model.Current - 1)&searchTerm=@Model.SearchTerm"
+                           class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white shadow">
+                            <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
+                        </a>
+                    }
+                    else
+                    {
+                        <button disabled
+                                class="rounded px-4 py-1 bg-gray-800 text-white shadow opacity-75">
+                            <i class="fa fa-angle-double-left"></i> <localize key="previous_page" />
+                        </button>
+                    }
+                    @if (Model.Posts.HasNextPage)
+                    {
+                        <a href="/category/details/@Model.Category.Id?current=@(Model.Current + 1)&searchTerm=@Model.SearchTerm"
+                           class="rounded px-4 py-1 bg-gray-800 hover:bg-gray-900 text-white float-right shadow">
+                            <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <button disabled class="rounded px-4 py-1 bg-gray-800 text-white opacity-75">
+                            <localize key="next_page" /> <i class="fa fa-angle-double-right"></i>
+                        </button>
+                    }
+                </div>
+            }
         </div>
         <div class="col-md-4">
             @if (Model.Categories.Count() > 0)

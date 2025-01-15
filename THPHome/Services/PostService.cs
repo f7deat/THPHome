@@ -1,10 +1,10 @@
 ﻿using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
-using ApplicationCore.Interfaces.IRepository;
-using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Filters;
 using ApplicationCore.Models.Posts;
 using THPHome.Entities;
+using THPHome.Interfaces.IRepository;
+using THPHome.Interfaces.IService;
 using WebUI.Models.Categories;
 using WebUI.Models.ViewModel;
 
@@ -96,6 +96,7 @@ public class PostService : IPostService
     public async Task<dynamic> RemoveAsync(long id)
     {
         var post = await _postRepository.FindAsync(id);
+        if (post is null) return new { succeeded = false };
         await _postRepository.DeleteAsync(post);
         var postCategories = await _postCategoryRepository.GetListInPostAsync(id);
         await _postCategoryRepository.RemoveRangeAsync(postCategories);
@@ -150,8 +151,8 @@ public class PostService : IPostService
         return new { succeeded = true, message = "Thành công!" };
     }
 
-    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, Language locale)
+    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale)
     {
-        return await _postRepository.EnsureDataAsync(url, pAGE, locale);
+        return await _postRepository.EnsureDataAsync(url, pAGE, language, locale);
     }
 }

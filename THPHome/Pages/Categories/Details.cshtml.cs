@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Interfaces.IService;
 
 namespace THPHome.Pages.Categories;
 
@@ -20,7 +21,9 @@ public class DetailsModel(IPostService postService, ApplicationDbContext context
     public Post PageData { private set; get; } = new Post();
     public IEnumerable<PostView> ListNotification = [];
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public override async Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         var page = context.RouteData.Values["page"]?.ToString();
         if (string.IsNullOrEmpty(page))
@@ -36,8 +39,10 @@ public class DetailsModel(IPostService postService, ApplicationDbContext context
                 lang = Language.EN;
             }
         }
-        var catalog = new Post();
-        catalog.Language = lang;
+        var catalog = new Post
+        {
+            Language = lang
+        };
         PageData = catalog;
         RouteData.Values.TryAdd(nameof(Post), catalog);
     }

@@ -32,7 +32,8 @@ public class MenuViewComponent(IMenuService _menuService) : ViewComponent
                 return View("Main", await _menuService.GetListAsync(new ListMenuPayload
                 {
                     Language = PageData.Language,
-                    Type = type
+                    Type = type,
+                    Locale = PageData.Locale
                 }));
             default:
                 break;
