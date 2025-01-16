@@ -67,7 +67,6 @@ public class ZaloAPI : IZaloAPI
             if (string.IsNullOrEmpty(accessToken)) return "Không lấy được access token";
             if (string.IsNullOrEmpty(post.Thumbnail)) return "Cover không hợp lệ";
             if (string.IsNullOrEmpty(post.Description)) return "Mô tả không được để trống";
-            if (string.IsNullOrEmpty(post.Content)) return "Nội dung không được để trống";
             var imageName = post.Thumbnail.Split('/').Last();
             var photo_url = post.Thumbnail.Replace(imageName, Uri.EscapeDataString(imageName));
 
@@ -82,13 +81,18 @@ public class ZaloAPI : IZaloAPI
                 title = post.Title,
                 author = author?.Name,
                 description = post.Description,
-                status = "hide",
+                status = "show",
                 body = new[]
                 {
                     new
                     {
                         type = "text",
-                        content = post.Content
+                        content = post.Description
+                    },
+                    new
+                    {
+                        type = "text",
+                        content = "Chi tiết vui lòng xem tại cổng thông tin điện tử: https://dhhp.edu.vn"
                     }
                 },
                 cover = new
