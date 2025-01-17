@@ -7,7 +7,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using WebUI.Models.Filters.Users;
 using WebUI.Models.ViewModel;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
@@ -21,6 +20,8 @@ using THPCore.Extensions;
 using ApplicationCore.Models.Filters;
 using THPHome.Models.Api.Admin.User;
 using NuGet.Protocol.Plugins;
+using THPHome.Models.Filters.Users;
+using THPIdentity.Constants;
 
 namespace THPHome.Controllers;
 
@@ -125,6 +126,10 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         {
             query = query.Where(x => !string.IsNullOrEmpty(x.Email) && x.Email.ToLower().Contains(filterOptions.Email.ToLower()));
         }
+        if (filterOptions.UserType != null)
+        {
+            query = query.Where(x => x.UserType == filterOptions.UserType);
+        }
         return Ok(await ListResult<ApplicationUser>.Success(query, filterOptions));
     }
 
@@ -160,7 +165,7 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         return Ok(await _userManager.RemoveFromRoleAsync(user, role));
     }
 
-    [HttpPost("delete/{id}")]
+    [HttpPost("delete/{id}"), Authorize(Roles = RoleName.ADMIN)]
     public async Task<IActionResult> DeleteAsync([FromRoute] string id)
     {
         var user = await _userManager.FindByIdAsync(id);

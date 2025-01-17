@@ -1,3 +1,5 @@
+import { Department } from "./utils/constants";
+
 export default function access(initialState: { currentUser?: API.User } | undefined) {
   const { currentUser } = initialState ?? {};
 
@@ -6,11 +8,13 @@ export default function access(initialState: { currentUser?: API.User } | undefi
 
   const admin = initialState && initialState.currentUser?.roles?.includes('Admin');
   const canOnboard = canAdmin || currentUser?.userType === 3;
+  const qualityAssurance = canAdmin || (initialState && initialState?.currentUser?.departmentId === Department.QualityAssuranceOffice)
 
   return {
     canAdmin,
     canEditor,
     admin,
-    canOnboard
+    canOnboard,
+    qualityAssurance
   };
 };

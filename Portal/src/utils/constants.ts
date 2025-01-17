@@ -1,3 +1,4 @@
 export const Department = {
-    Trainning: 28
+    AcademicAffairsOffice: 28,
+    QualityAssuranceOffice: 30
 }

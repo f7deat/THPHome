@@ -6,5 +6,6 @@ declare namespace API {
         name: string;
         roles: string[];
         userType: number;
+        departmentId: number;
     }
 }

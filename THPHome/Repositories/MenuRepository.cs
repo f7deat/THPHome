@@ -13,7 +13,7 @@ public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(c
     public async Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload)
     {
         var menus = await _context.Menus
-            .Where(x => x.Locale == payload.Locale && x.Type == payload.Type && x.ParentId == payload.ParentId)
+            .Where(x => x.Locale == payload.Locale && x.Type == payload.Type)
             .Select(x => new MenuViewModel
             {
                 Url = x.Url,
@@ -34,20 +34,26 @@ public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(c
             })
             .OrderBy(x => x.Index)
             .ToListAsync();
-        foreach (var item in menus)
+        var data = menus.Where(x => x.ParentId == 0 || x.ParentId == null).ToList();
+
+        foreach (var item in data)
         {
-            if (await _context.Menus.AnyAsync(x => x.ParentId == item.Id))
+            item.Children = await GetChildListAsync(menus, menus.Where(x => x.ParentId == item.Id));
+        }
+        return data;
+    }
+
+    private static async Task<List<MenuViewModel>> GetChildListAsync(List<MenuViewModel> all, IEnumerable<MenuViewModel> parents)
+    {
+        foreach (var item in parents)
+        {
+            if (all.Any(x => x.ParentId == item.Id))
             {
-                item.Children = await GetListAsync(new ListMenuPayload
-                {
-                    Type = item.Type,
-                    ParentId = item.Id,
-                    Locale = item.Locale
-                });
+                item.Children = await GetChildListAsync(all, all.Where(x => x.ParentId == item.Id));
             }
 
         }
-        return menus;
+        return parents.ToList();
     }
 
     public async Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type)

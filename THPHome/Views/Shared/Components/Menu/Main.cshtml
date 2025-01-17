@@ -9,7 +9,7 @@
 }
 
 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 md:justify-content-center mb-md-0">
-    @foreach (var item in Model.Where(x => x.ParentId == 0))
+    @foreach (var item in Model)
     {
         if (item.Mode == MenuMode.Mega)
         {

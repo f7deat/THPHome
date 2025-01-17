@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Models.Filters;
+using THPCore.Enums;
 
-namespace WebUI.Models.Filters.Users;
+namespace THPHome.Models.Filters.Users;
 
 public class UserFilterOptions : FilterOptions
 {
@@ -8,4 +9,5 @@ public class UserFilterOptions : FilterOptions
     public string? UserName { get; set; }
     public string? Email { get; set; }
     public string? PhoneNumber { get; set; }
+    public UserType? UserType { get; set; }
 }

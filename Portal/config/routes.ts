@@ -170,6 +170,28 @@ export default [
     hideInMenu: true
   },
   {
+    name: 'Khảo thí',
+    path: '/quality-assurance',
+    icon: 'SafetyOutlined',
+    routes: [
+      {
+        path: '/quality-assurance',
+        redirect: '/quality-assurance/dashboard',
+      },
+      {
+        name: 'Dashboard',
+        path: '/quality-assurance/dashboard',
+        component: './quality-assurance'
+      },
+      {
+        name: 'Thi chuẩn đầu ra',
+        path: '/quality-assurance/proficiency-exam',
+        component: './onboard/proficiency/exam'
+      }
+    ],
+    access: 'qualityAssurance'
+  },
+  {
     icon: 'SettingOutlined',
     name: 'setting',
     path: '/settings',
@@ -257,11 +279,6 @@ export default [
             path: '/onboard/proficiency/practice/batch/:id',
             component: './onboard/proficiency/practice/batch',
             hideInMenu: true
-          },
-          {
-            name: 'Thi chuẩn đầu ra',
-            path: '/onboard/proficiency/exam',
-            component: './onboard/proficiency/exam'
           }
         ]
       },
