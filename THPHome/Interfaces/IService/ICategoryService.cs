@@ -10,7 +10,7 @@ namespace ApplicationCore.Interfaces.IService
 {
     public interface ICategoryService
     {
-        Task<IReadOnlyList<Category>> ListAllAsync(Language lang);
+        Task<IReadOnlyList<Category>> ListAllAsync(string? locale);
         Task<Category?> GetCategory(int id);
         Task<IReadOnlyList<Category>> CategoriesByType(int pageSize);
         Task<PaginatedList<Category>> ListParrentAsync(int? parrentId, int current, int pageSize);

@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "WebUI": {
+    "THPHome": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

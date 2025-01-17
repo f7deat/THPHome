@@ -53,7 +53,7 @@ public class CategoryService(ICategoryRepository _categoryRepository, IPostRepos
 
     public Task<Category?> GetParentAsync(int categoryId) => _categoryRepository.GetParrentAsync(categoryId);
 
-    public Task<IReadOnlyList<Category>> ListAllAsync(Language lang) => _categoryRepository.ListAllAsync(lang);
+    public Task<IReadOnlyList<Category>> ListAllAsync(string? locale) => _categoryRepository.ListAllAsync(locale);
 
     public Task<IReadOnlyList<Category>> ListAsync(ISpecification<Category> spec) => _categoryRepository.ListAsync(spec);
 

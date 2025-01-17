@@ -112,17 +112,29 @@ input:focus {
 }
 
 .title {
-    padding: 0.5rem 1rem;
-    background-color: var(--dark);
-    color: #fff;
-    font-weight: bold;
+    padding: 0.5rem 0 0.25rem 0;
+    font-weight: 600;
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--bs-gray-200);
+    position: relative;
+    text-transform: uppercase;
 }
 
-    .title.active {
-        background-color: var(--red);
+    .title::after {
+        content: '';
+        background-color: var(--primary);
+        width: 30%;
+        display: block;
+        height: 2px;
+        position: absolute;
+        bottom: -2px;
+    }
+
+    .title.active::after {
+        color: #fff;
+        background-color: red;
     }
 
 .box {
@@ -454,7 +466,6 @@ li.dropdown:hover .dropdown-menu {
 }
 
 @media screen and (min-width: 768px) {
-
     .h1 {
         font-size: 1.5rem;
     }

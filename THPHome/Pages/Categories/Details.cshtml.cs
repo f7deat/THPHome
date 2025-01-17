@@ -31,17 +31,9 @@ public class DetailsModel(IPostService postService, ApplicationDbContext context
             return;
         }
         Request.Cookies.TryGetValue("locale", out string? locale);
-        var lang = Language.VI;
-        if (!string.IsNullOrEmpty(locale))
-        {
-            if (locale == "en-US")
-            {
-                lang = Language.EN;
-            }
-        }
         var catalog = new Post
         {
-            Language = lang
+            Locale = locale,
         };
         PageData = catalog;
         RouteData.Values.TryAdd(nameof(Post), catalog);

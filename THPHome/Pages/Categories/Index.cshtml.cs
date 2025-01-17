@@ -18,15 +18,7 @@ public class IndexModel(IPostService postService, ApplicationDbContext context, 
     public async Task<IActionResult> OnGetAsync()
     {
         Request.Cookies.TryGetValue("locale", out string? locale);
-        var lang = Language.VI;
-        if (!string.IsNullOrEmpty(locale))
-        {
-            if (locale == "en-US")
-            {
-                lang = Language.EN;
-            }
-        }
-        Categories = await _categoryService.ListAllAsync(lang);
+        Categories = await _categoryService.ListAllAsync(locale);
         return Page();
     }
 }
