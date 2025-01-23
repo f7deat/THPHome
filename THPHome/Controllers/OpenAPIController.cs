@@ -27,14 +27,12 @@ public class OpenAPIController : Controller
     private readonly IRazorViewEngine _razorViewEngine;
     private readonly IServiceProvider _serviceProvider;
     private readonly ITempDataProvider _tempDataProvider;
-    private readonly IPostService _postService;
 
-    public OpenAPIController(ApplicationDbContext context, IOptions<SettingOptions> optionsAccessor, IBlockService blockService, IPostService postService, IRazorViewEngine razorViewEngine, IServiceProvider serviceProvider, ITempDataProvider tempDataProvider)
+    public OpenAPIController(ApplicationDbContext context, IOptions<SettingOptions> optionsAccessor, IBlockService blockService, IRazorViewEngine razorViewEngine, IServiceProvider serviceProvider, ITempDataProvider tempDataProvider)
     {
         _context = context;
         Options = optionsAccessor.Value;
         _blockService = blockService;
-        _postService = postService;
         _razorViewEngine = razorViewEngine;
         _serviceProvider = serviceProvider;
         _tempDataProvider = tempDataProvider;

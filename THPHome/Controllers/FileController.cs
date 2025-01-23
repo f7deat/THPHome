@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Models.Files;
@@ -10,11 +12,14 @@ using WebUI.Foundations;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Args.Files;
 using WebUI.Models.Filters.Files;
+using WebUI.Options;
 
 namespace THPHome.Controllers;
 
-public class FileController(IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, UserManager<ApplicationUser> _userManager) : BaseController(context)
+public class FileController(IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, UserManager<ApplicationUser> _userManager, IConfiguration _configuration, IOptions<SettingOptions> _optionsAccessor) : BaseController(context)
 {
+    public SettingOptions Options { get; } = _optionsAccessor.Value;
+
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] FileFilterOptions filterOptions)
     {
@@ -102,45 +107,49 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
         }
     }
 
-    [HttpPost("upload")]
-    public async Task<IActionResult> UploadAsync([FromForm] IFormFile file)
+    [HttpPost("upload"), AllowAnonymous]
+    public async Task<IActionResult> UploadAsync([FromForm] IFormFile file, [FromQuery] string? apiKey)
     {
         try
         {
-            if (file?.Length > 0)
+            if (file is null || file.Length > 0) return BadRequest("File not found!");
+
+            if (string.IsNullOrEmpty(User.GetUserName()))
             {
-                var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "files");
-
-                var filePath = Path.Combine(uploadPath, file.FileName);
-
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                var host = Request.Host.Value;
-                var url = $"https://{host}/files/{file.FileName}";
-
-                var user = await _userManager.FindByIdAsync(User.GetId());
-                var applicationFile = new ApplicationFile
-                {
-                    ContentType = file.ContentType,
-                    Name = file.FileName,
-                    Size = file.Length,
-                    CreatedDate = DateTime.Now,
-                    ModifiedDate = DateTime.Now,
-                    Url = url,
-                    CreatedBy = user?.Id
-                };
-                await _context.ApplicationFiles.AddAsync(applicationFile);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { succeeded = true, url, applicationFile.Id });
+                if (string.IsNullOrWhiteSpace(apiKey)) return BadRequest("Unauthorized!");
+                if (apiKey != Options.OpenApiKey) return BadRequest("Unauthorized!");
             }
-            return Ok(new { succeeded = false, message = "File not found", url = string.Empty });
+
+            var folder = Guid.NewGuid().ToString();
+            var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, folder, "files");
+
+            if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
+            var filePath = Path.Combine(uploadPath, file.FileName);
+
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await file.CopyToAsync(stream);
+            }
+            var host = Request.Host.Value;
+            var url = $"https://{host}/{folder}/files/{file.FileName}";
+
+            var applicationFile = new ApplicationFile
+            {
+                ContentType = file.ContentType,
+                Name = file.FileName,
+                Size = file.Length,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now,
+                Url = url,
+                CreatedBy = User.GetUserName() ?? "tandc"
+            };
+            await _context.ApplicationFiles.AddAsync(applicationFile);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { succeeded = true, url, applicationFile.Id });
         }
         catch (Exception ex)
         {
-            await _telegramService.SendMessageAsync(ex.ToString());
             return BadRequest(ex.ToString());
         }
     }
