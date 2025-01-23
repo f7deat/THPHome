@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using THPCore.Extensions;
 using THPHome.Data;
+using THPHome.Models.Args.Files;
 using THPHome.Models.Files;
 using THPIdentity.Entities;
 using WebUI.Entities;
@@ -108,11 +109,11 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
     }
 
     [HttpPost("upload"), AllowAnonymous]
-    public async Task<IActionResult> UploadAsync([FromForm] IFormFile file, [FromQuery] string? apiKey)
+    public async Task<IActionResult> UploadAsync([FromForm] SingleUploadArgs args, [FromQuery] string? apiKey)
     {
         try
         {
-            if (file is null || file.Length > 0) return BadRequest("File not found!");
+            if (args.File is null) return BadRequest("File not found!");
 
             if (string.IsNullOrEmpty(User.GetUserName()))
             {
@@ -124,20 +125,20 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
             var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, folder, "files");
 
             if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
-            var filePath = Path.Combine(uploadPath, file.FileName);
+            var filePath = Path.Combine(uploadPath, args.File.FileName);
 
             using (var stream = System.IO.File.Create(filePath))
             {
-                await file.CopyToAsync(stream);
+                await args.File.CopyToAsync(stream);
             }
             var host = Request.Host.Value;
-            var url = $"https://{host}/{folder}/files/{file.FileName}";
+            var url = $"https://{host}/{folder}/files/{args.File.FileName}";
 
             var applicationFile = new ApplicationFile
             {
-                ContentType = file.ContentType,
-                Name = file.FileName,
-                Size = file.Length,
+                ContentType = args.File.ContentType,
+                Name = args.File.FileName,
+                Size = args.File.Length,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now,
                 Url = url,
