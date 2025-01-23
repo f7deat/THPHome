@@ -122,7 +122,7 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
             }
 
             var folder = Guid.NewGuid().ToString();
-            var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, folder, "files");
+            var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", folder);
 
             if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
             var filePath = Path.Combine(uploadPath, args.File.FileName);
@@ -132,7 +132,7 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
                 await args.File.CopyToAsync(stream);
             }
             var host = Request.Host.Value;
-            var url = $"https://{host}/{folder}/files/{args.File.FileName}";
+            var url = $"https://{host}/files/{folder}/{args.File.FileName}";
 
             var applicationFile = new ApplicationFile
             {
