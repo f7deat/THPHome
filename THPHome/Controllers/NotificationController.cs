@@ -9,11 +9,12 @@ using THPHome.Entities.Notifications;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Args.Notifications;
 using THPIdentity.Constants;
+using THPIdentity.Entities;
 using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 
-public class NotificationController(ApplicationDbContext context, INotificationService _notificationService) : BaseController(context)
+public class NotificationController(ApplicationDbContext context, INotificationService _notificationService, UserManager<ApplicationUser> _userManager) : BaseController(context)
 {
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] FilterOptions filterOptions)
@@ -47,6 +48,34 @@ public class NotificationController(ApplicationDbContext context, INotificationS
         await _context.Notifications.AddAsync(args);
         await _context.SaveChangesAsync();
         return Ok(IdentityResult.Success);
+    }
+
+    [HttpPost("mensions")]
+    public async Task<IActionResult> MensionAsync([FromBody] MensionsArgs args)
+    {
+        if (args.Mensions is null) return BadRequest("Vui lòng nhập thông tin người được nhắc tới!");
+        var user = await _userManager.FindByIdAsync(User.GetId());
+        if (user is null || string.IsNullOrEmpty(user.UserName)) return Unauthorized();
+        var notification = new Notification
+        {
+            Id = Guid.NewGuid(),
+            Content = $"{user.Name} đã nhắc đến bạn!",
+            CreatedBy = user.UserName,
+            CreatedDate = DateTime.Now,
+            Title = $"{user.Name} đã nhắc đến bạn!"
+        };
+        await _context.Notifications.AddAsync(notification);
+        foreach (var item in args.Mensions)
+        {
+            await _context.UserNotifications.AddAsync(new UserNotification
+            {
+                IsRead = false,
+                NotificationId = notification.Id,
+                Recipient = item
+            });
+        }
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     [HttpPost("send")]
