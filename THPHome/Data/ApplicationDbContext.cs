@@ -51,6 +51,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<UrlShortener> UrlShorteners { get; set; }
     #endregion
 
+    public DbSet<Contact> Contacts { get; set; }
+
     public Task<int> SaveChangesAsync(bool audit)
     {
         if (audit) return base.SaveChangesAsync();
