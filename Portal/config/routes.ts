@@ -170,6 +170,18 @@ export default [
     hideInMenu: true
   },
   {
+    name: 'Tuyển sinh',
+    icon: 'UserAddOutlined',
+    path: '/admission',
+    routes: [
+      {
+        name: 'Liên hệ',
+        path: '/admission/contact',
+        component: './admission/contact'
+      }
+    ]
+  },
+  {
     name: 'Khảo thí',
     path: '/quality-assurance',
     icon: 'SafetyOutlined',

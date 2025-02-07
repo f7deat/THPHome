@@ -2,7 +2,7 @@ import { PageContainer, ProCard, ProList } from '@ant-design/pro-components';
 import { FormattedNumber, history, Link, request } from '@umijs/max';
 import { Button, Col, List, Row, Statistic } from 'antd';
 import { useEffect, useState } from 'react';
-import { ArrowRightOutlined, EyeOutlined, FolderOpenOutlined, LoginOutlined, MailOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, EyeOutlined, FolderOpenOutlined, LoginOutlined, MailOutlined, UserAddOutlined } from '@ant-design/icons';
 import { apiGetChartPostCreatedInYear } from '@/services/post';
 import EChartsReact from 'echarts-for-react';
 
@@ -101,6 +101,15 @@ const HomePage: React.FC = () => {
                     <div className='text-gray-500'>Tối ưu quy trình làm việc bằng văn bản, đảm bảo tính nhất quán và chính xác của thông tin</div>
                   </div>
                 </a>
+                <Link to='/admission'>
+                  <div className='border p-4 rounded hover:border-blue-500 h-full'>
+                    <div className='font-semibold uppercase mb-2 flex gap-2 items-center'>
+                      <div className='h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white'><UserAddOutlined /></div>
+                      <div className='text-base'>Tuyển sinh</div>
+                    </div>
+                    <div className='text-gray-500'>Theo dõi, đăng tải, quản lý thông tin tuyển sinh</div>
+                  </div>
+                </Link>
               </div>
             </ProCard>
           </Col>
