@@ -8,4 +8,5 @@ public class ContactFilterOptions : FilterOptions
     public string? PhoneNumber { get; set; }
     public string? Email { get; set; }
     public string? School { get; set; }
+    public int? ContactStatusId { get; set; }
 }

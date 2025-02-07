@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using THPHome.Entities;
+using THPHome.Entities.Contacts;
 using THPHome.Entities.Notifications;
 using THPHome.Entities.Utils;
 using WebUI.Entities;
@@ -51,7 +52,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<UrlShortener> UrlShorteners { get; set; }
     #endregion
 
+    #region Contacts
     public DbSet<Contact> Contacts { get; set; }
+    public DbSet<ContactStatus> ContactStatuses { get; set; }
+    #endregion
+
+    public DbSet<ApplicationLog> Logs { get; set; }
 
     public Task<int> SaveChangesAsync(bool audit)
     {

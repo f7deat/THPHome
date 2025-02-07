@@ -10,3 +10,13 @@ export async function apiUpdateContactStatus(data: any) {
         data
     })
 }
+
+export async function apiContactStatusOptions(params?: any) {
+    return request(`contact/status-options`, { params });
+}
+
+export async function apiDeleteContact(id: string) {
+    return request(`contact/delete/${id}`, {
+        method: 'POST'
+    })
+}

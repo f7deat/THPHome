@@ -24,6 +24,7 @@ public class Post : BaseEntity<long>
     public DateTime IssuedDate { get; set; }
     [StringLength(10)]
     public string? Locale { get; set; }
+    public int? CategoryId { get; set; }
 
     public List<Photo>? Photos { get; set; }
 }

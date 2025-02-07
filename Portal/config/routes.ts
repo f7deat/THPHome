@@ -178,6 +178,12 @@ export default [
         name: 'Liên hệ',
         path: '/admission/contact',
         component: './admission/contact'
+      },
+      {
+        name: 'Trạng thái',
+        path: '/admission/contact/status',
+        component: './admission/contact/status',
+        hideInMenu: true
       }
     ]
   },

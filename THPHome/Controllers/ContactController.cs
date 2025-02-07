@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ApplicationCore.Models.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;
-using THPHome.Entities;
+using THPHome.Entities.Contacts;
 using THPHome.Helpers.Validators;
 using THPHome.Models.Filters.Contacts;
 using THPIdentity.Constants;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
+using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 
@@ -23,7 +25,7 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
         args.CreatedDate = DateTime.Now;
         await _context.Contacts.AddAsync(args);
 
-        _ = _telegramService.SendMessageAsync($"Có liên hệ mới {args.FullName} - {args.PhoneNumber}!");
+        await _telegramService.SendMessageAsync($"Liên hệ mới {args.FullName} - {args.PhoneNumber}!");
 
         await _context.SaveChangesAsync();
         return Ok();
@@ -50,6 +52,10 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
         {
             query = query.Where(x => x.School != null && x.School.ToLower().Contains(filterOptions.School.ToLower()));
         }
+        if (filterOptions.ContactStatusId != null)
+        {
+            query = query.Where(x => x.ContactStatusId == filterOptions.ContactStatusId);
+        }
         return Ok(new
         {
             data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
@@ -66,7 +72,7 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
         {
             if (contact.UserName != User.GetUserName()) return BadRequest("Không thể cập nhật trạng thái của liên hệ người khác đang xử lý!");
         }
-        contact.Status = args.Status;
+        contact.ContactStatusId = args.ContactStatusId;
         contact.UserName = User.GetUserName();
         contact.ModifiedDate = DateTime.Now;
         _context.Contacts.Update(contact);
@@ -83,5 +89,31 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
         _context.Contacts.Remove(contact);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+
+    [HttpGet("status-options")]
+    public async Task<IActionResult> StatusOptionsAsync() => Ok(await _context.ContactStatuses.Select(x => new
+    {
+        label = x.Name,
+        value = x.Id
+    }).OrderBy(x => x.label).ToListAsync());
+
+    [HttpGet("list-status")]
+    public async Task<IActionResult> ListStatusAsync([FromQuery] FilterOptions filterOptions)
+    {
+        var query = from a in _context.ContactStatuses
+                    select new
+                    {
+                        a.Id,
+                        a.CreatedDate,
+                        a.Name,
+                        a.Description,
+                        a.CreatedBy,
+                        a.ModifiedDate,
+                        a.ModifiedBy,
+                        ContactCount = _context.Contacts.Count(x => x.ContactStatusId == a.Id)
+                    };
+        query = query.OrderByDescending(x => x.CreatedDate);
+        return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 }
