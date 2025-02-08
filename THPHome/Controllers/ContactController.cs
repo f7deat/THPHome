@@ -95,7 +95,8 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
     public async Task<IActionResult> StatusOptionsAsync() => Ok(await _context.ContactStatuses.Select(x => new
     {
         label = x.Name,
-        value = x.Id
+        value = x.Id,
+        disabled = x.Id == 1
     }).OrderBy(x => x.label).ToListAsync());
 
     [HttpGet("list-status")]
@@ -115,5 +116,41 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
                     };
         query = query.OrderByDescending(x => x.CreatedDate);
         return Ok(await ListResult<object>.Success(query, filterOptions));
+    }
+
+    [HttpPost("delete-status/{id}")]
+    public async Task<IActionResult> DeleteStatusAsync([FromRoute] int id)
+    {
+        var status = await _context.ContactStatuses.FindAsync(id);
+        if (status is null) return BadRequest("Status not found!");
+        if (await _context.Contacts.AnyAsync(x => x.ContactStatusId == id)) return BadRequest("Không thể xóa trạng thái đã gắn với liên hệ!");
+        _context.ContactStatuses.Remove(status);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpPost("update-status-name")]
+    public async Task<IActionResult> UpdateStatusNameAsync([FromBody] ContactStatus args)
+    {
+        var status = await _context.ContactStatuses.FindAsync(args.Id);
+        if (status is null) return BadRequest("Status not found");
+        status.ModifiedBy = User.GetUserName();
+        status.Name = args.Name;
+        status.Description = args.Description;
+        status.ModifiedDate = DateTime.Now;
+        _context.ContactStatuses.Update(status);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpPost("add-status")]
+    public async Task<IActionResult> AddStatusAsync([FromBody] ContactStatus args)
+    {
+        if (await _context.ContactStatuses.AnyAsync(x => x.Name.ToLower() == args.Name.ToLower())) return BadRequest("Trạng thái đã tồn tại!");
+        args.CreatedDate = DateTime.Now;
+        args.CreatedBy = User.GetUserName();
+        await _context.ContactStatuses.AddAsync(args);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 }
