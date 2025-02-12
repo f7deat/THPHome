@@ -10,7 +10,6 @@ using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
 using THPHome.Models.Payload;
-using WebUI.Entities;
 using WebUI.Models.Posts;
 
 namespace THPHome.Pages;

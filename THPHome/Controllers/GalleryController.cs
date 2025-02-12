@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Interfaces.IService;
 using THPIdentity.Entities;
-using WebUI.Entities;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.Files;
@@ -16,7 +16,7 @@ using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 
-public class GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IGalleryService galleryService) : BaseController(context)
+public class GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IGalleryService galleryService, ILogService _logService) : BaseController(context)
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly IGalleryService _galleryService = galleryService;
@@ -95,22 +95,30 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
     [HttpPost("photo/add")]
     public async Task<IActionResult> PhotoAdd([FromBody] Photo args)
     {
-        if (args.GalleryId != null)
+        try
         {
-            var gallery = await _context.Posts.FindAsync(args.PostId);
-            if (gallery is null) return BadRequest("Gallery not found!");
+            if (args.GalleryId != null)
+            {
+                var gallery = await _context.Posts.FindAsync(args.PostId);
+                if (gallery is null) return BadRequest("Gallery not found!");
+            }
+            var user = await _userManager.FindByIdAsync(User.GetId());
+            if (user == null) return BadRequest("User not found!");
+            await _context.Photos.AddAsync(new Photo
+            {
+                Description = args.Description,
+                Url = args.Url,
+                PostId = args.PostId,
+                FileId = args.FileId
+            });
+            await _context.SaveChangesAsync();
+            return Ok();
         }
-        var user = await _userManager.FindByIdAsync(User.GetId());
-        if (user == null) return BadRequest("User not found!");
-        await _context.Photos.AddAsync(new Photo
+        catch (Exception ex)
         {
-            Description = args.Description,
-            Url = args.Url,
-            PostId = args.PostId,
-            FileId = args.FileId
-        });
-        await _context.SaveChangesAsync();
-        return Ok();
+            await _logService.ExeptionAsync(ex);
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpGet("photo/list")]

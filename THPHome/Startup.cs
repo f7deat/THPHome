@@ -29,6 +29,7 @@ using THPHome.Repositories.Base;
 using THPHome.Interfaces.Base;
 using THPHome.ExternalAPI;
 using THPHome.Interfaces.IRepository;
+using THPCore.Services;
 
 namespace THPHome;
 
@@ -70,6 +71,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ISettingRepository, SettingRepository>();
         services.AddScoped<ISettingService, SettingService>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<ILogService, LogService>();
 
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
@@ -78,6 +80,7 @@ public class Startup(IConfiguration configuration)
 
         services.AddTransient<ICurrentUser, CurrentUser>();
         services.AddTransient<IEmailSender, EmailSender>();
+        services.AddTransient<IHCAService, HCAService>();
 
         services.AddHttpClient<ITHPAuthen, ThpAuthen>();
 

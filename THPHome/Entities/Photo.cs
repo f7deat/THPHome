@@ -1,8 +1,8 @@
 ﻿using ApplicationCore.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
-using THPHome.Entities;
+using WebUI.Entities;
 
-namespace WebUI.Entities;
+namespace THPHome.Entities;
 
 public class Photo : BaseEntity<Guid>
 {

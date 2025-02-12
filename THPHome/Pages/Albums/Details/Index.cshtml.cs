@@ -1,14 +1,11 @@
-using ApplicationCore.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing.Drawing2D;
 using THPHome.Data;
+using THPHome.Entities;
 using WebUI.Entities;
 using WebUI.Foundations;
 
-namespace WebUI.Pages.Albums.Details;
+namespace THPHome.Pages.Albums.Details;
 
 public class IndexModel : DynamicPageModel
 {
