@@ -1,8 +1,10 @@
 ﻿using ApplicationCore.Models.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;
+using THPHome.Models.Results.QAs;
 using WebUI.Entities;
 using WebUI.Foundations;
 using WebUI.Models.ViewModel;
@@ -102,5 +104,29 @@ public class QaController(ApplicationDbContext context) : BaseController(context
         _context.QaItems.Remove(data);
         await _context.SaveChangesAsync();
         return NoContent();
+    }
+
+    [HttpGet("all"), AllowAnonymous]
+    public async Task<IActionResult> AllQaAsync()
+    {
+        var data = new List<QaGroupListItem>();
+        var groups = await _context.QaGroups.OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
+        var items = await _context.QaItems.OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
+        foreach (var group in groups)
+        {
+            var collapse = new QaGroupListItem
+            {
+                Id = group.Id,
+                Title = group.Title,
+                Collapses = items.Where(x => x.QaGroupId == group.Id).Select(x => new QaCollapse
+                {
+                    Key = x.Id,
+                    Label = x.Question,
+                    Children = x.Answer
+                }).ToList()
+            };
+            data.Add(collapse);
+        }
+        return Ok(data);
     }
 }
