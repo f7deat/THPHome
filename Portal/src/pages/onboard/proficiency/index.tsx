@@ -1,43 +1,17 @@
-import { apiDeleteProficiency, apiExportProficiancy, apiProficiencyList } from "@/services/onboard/proficiency";
-import { DeleteOutlined, EditOutlined, EyeOutlined, FileExcelOutlined, ManOutlined, WomanOutlined } from "@ant-design/icons";
+import { apiDeleteProficiency, apiProficiencyList } from "@/services/onboard/proficiency";
+import { DeleteOutlined, EditOutlined, EyeOutlined, ManOutlined, WomanOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
 import { Button, Image, message, Popconfirm, Popover, Tag } from "antd";
 import ProFiciencyForm from "./components/form";
-import { useRef, useState } from "react";
-import dayjs from "dayjs";
+import { useRef } from "react";
 
 const ProficiencyPage: React.FC = () => {
 
     const actionRef = useRef<ActionType>();
-    const [params, setParams] = useState<any>();
-
-    const exportData = async () => {
-        const response = await apiExportProficiancy(params) as any;
-        const url = window.URL.createObjectURL(
-            new Blob([response]),
-        );
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute(
-            'download',
-            `ontap-cdr-${dayjs().year()}${dayjs().month()}${dayjs().day()}.xlsx`,
-        );
-
-        // Append to html link element page
-        document.body.appendChild(link);
-
-        // Start download
-        link.click();
-
-        // Clean up and remove the link
-        link.parentNode?.removeChild(link);
-
-    }
 
     return (
         <PageContainer extra={(
             <>
-                <Button icon={<FileExcelOutlined />} onClick={() => exportData()}>Xuất dữ liệu</Button>
                 <ProFiciencyForm reload={() => {
                     actionRef.current?.reload();
                 }} />
@@ -191,12 +165,8 @@ const ProficiencyPage: React.FC = () => {
                         width: 50
                     }
                 ]}
-                request={(params) => {
-                    setParams(params);
-                    return apiProficiencyList(params);
-                }}
+                request={apiProficiencyList}
             />
-
         </PageContainer>
     )
 }

@@ -1,13 +1,13 @@
-import { apiDeleteProficiency, apiExportProficiancy, apiGetProficiencyBatch, apiGetProficiencyStatusOptions, apiGetProficiencyTypeOptions, apiProficiencyList } from "@/services/onboard/proficiency";
-import { DeleteOutlined, EditOutlined, EyeOutlined, FileExcelOutlined, ManOutlined, MoreOutlined, WomanOutlined } from "@ant-design/icons";
+import { apiDeleteProficiency, apiGetProficiencyBatch, apiGetProficiencyStatusOptions, apiGetProficiencyTypeOptions, apiProficiencyList } from "@/services/onboard/proficiency";
+import { DeleteOutlined, EditOutlined, EyeOutlined, ManOutlined, MoreOutlined, WomanOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
 import { Button, Dropdown, Image, message, Popconfirm, Popover } from "antd";
 import { useEffect, useRef, useState } from "react";
-import dayjs from "dayjs";
 import ProFiciencyForm from "../components/form";
 import { useParams, useRequest } from "@umijs/max";
 import ProficiencyPracticeStatusForm from "./components/status-form";
 import { useAccess } from "@umijs/max";
+import ExportPracticeModal from "./components/export-practice";
 
 const ProficiencyPracticePage: React.FC = () => {
 
@@ -16,8 +16,6 @@ const ProficiencyPracticePage: React.FC = () => {
     const access = useAccess();
 
     const actionRef = useRef<ActionType>();
-    const [params, setParams] = useState<any>();
-    const [loading, setLoading] = useState<boolean>(false);
 
     const [openStatus, setOpenStatus] = useState<boolean>(false);
     const [proficiency, setProficiency] = useState<any>();
@@ -31,37 +29,12 @@ const ProficiencyPracticePage: React.FC = () => {
 
     const { data } = useRequest(() => apiGetProficiencyBatch(id));
 
-    const exportData = async () => {
-        setLoading(true);
-        const response = await apiExportProficiancy(params) as any;
-        const url = window.URL.createObjectURL(
-            new Blob([response]),
-        );
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute(
-            'download',
-            `ontap-cdr-${dayjs().year()}${dayjs().month()}${dayjs().day()}.xlsx`,
-        );
-
-        // Append to html link element page
-        document.body.appendChild(link);
-
-        // Start download
-        link.click();
-
-        // Clean up and remove the link
-        link.parentNode?.removeChild(link);
-        setLoading(false);
-
-    }
-
     return (
         <PageContainer
             title={data?.name}
             extra={(
                 <>
-                    <Button icon={<FileExcelOutlined />} onClick={() => exportData()} loading={loading}>Xuất dữ liệu</Button>
+                    <ExportPracticeModal />
                     <ProFiciencyForm reload={() => {
                         actionRef.current?.reload();
                     }} />
@@ -210,10 +183,6 @@ const ProficiencyPracticePage: React.FC = () => {
                     }
                 ]}
                 request={(params) => {
-                    setParams({
-                        batchId: id,
-                        ...params
-                    });
                     return apiProficiencyList({
                         batchId: id,
                         ...params

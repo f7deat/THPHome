@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters.Files;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
@@ -121,10 +123,10 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
         }
     }
 
-    [HttpGet("photo/list")]
+    [HttpGet("photo/list"), AllowAnonymous]
     public async Task<IActionResult> PhotoList([FromQuery] PhotoFilterOptions filterOptions)
     {
-        var query = _context.Photos.AsQueryable();
+        var query = from a in _context.Photos select a;
         if (filterOptions.PostId != null)
         {
             query = query.Where(x => x.PostId == filterOptions.PostId);

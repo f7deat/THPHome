@@ -1,4 +1,4 @@
-import { apiAddProficiency } from "@/services/onboard/proficiency";
+import { apiAddProficiency, apiGetProficiencyTypeOptions } from "@/services/onboard/proficiency";
 import { PlusOutlined } from "@ant-design/icons";
 import { ModalForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useAccess, useParams } from "@umijs/max";
@@ -51,24 +51,7 @@ const ProFiciencyForm: React.FC<Props> = ({ reload }) => {
                             {
                                 required: true
                             }
-                        ]} options={[
-                            {
-                                label: 'Tiếng Anh',
-                                value: 2
-                            },
-                            {
-                                label: 'Tiếng Trung',
-                                value: 3
-                            },
-                            {
-                                label: 'Tiếng Nhật',
-                                value: 4
-                            },
-                            {
-                                label: 'Tin Học',
-                                value: 1
-                            }
-                        ]} />
+                        ]} request={apiGetProficiencyTypeOptions} />
                     </Col>
                     <Col md={12}>
                         <ProFormSelect name="status" label="Trạng thái" rules={[
@@ -77,7 +60,7 @@ const ProFiciencyForm: React.FC<Props> = ({ reload }) => {
                             }
                         ]} options={[
                             {
-                                label: 'Chờ xác nhận',
+                                label: 'Chờ xử lý',
                                 value: 0
                             },
                             {

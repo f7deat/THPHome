@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Models.Filters;
 
-namespace WebUI.Models.Filters.Files;
+namespace THPHome.Models.Filters.Files;
 
 public class PhotoFilterOptions : FilterOptions
 {
