@@ -1,6 +1,6 @@
 ﻿using WebUI.Foundations;
 
-namespace WebUI.Models.Blocks;
+namespace THPHome.Models.Blocks;
 
 public class TinyMCEBlock : BaseBlock
 {

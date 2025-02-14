@@ -16,6 +16,7 @@ using WebUI.Models.ViewModel;
 using THPHome.Models.Filters.OpenAPI.Articles;
 using THPHome.Data;
 using THPHome.Interfaces.IService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace THPHome.Controllers;
 
@@ -149,18 +150,15 @@ public class OpenAPIController : Controller
         return Ok(data);
     }
 
-    [HttpGet("post/{id}")]
-    public async Task<IActionResult> PostAsync([FromRoute] long id, [FromQuery] string apiKey)
+    [HttpGet("post/{id}"), AllowAnonymous]
+    public async Task<IActionResult> PostAsync([FromRoute] string id)
     {
-        if (string.IsNullOrWhiteSpace(apiKey)) return BadRequest("API KEY is required!");
-        if (!apiKey.Equals(Options.OpenApiKey)) return Unauthorized();
-
-        var post = await _context.Posts.FindAsync(id);
+        var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == id);
         if (post is null) return NoContent();
 
         var categories = await (from a in _context.PostCategories
                                 join b in _context.Categories on a.CategoryId equals b.Id
-                                where a.PostId == id
+                                where a.PostId == post.Id
                                 select new
                                 {
                                     b.Id,
@@ -171,7 +169,7 @@ public class OpenAPIController : Controller
 
         var blocks = await (from a in _context.PostBlocks
                             join b in _context.Blocks on a.BlockId equals b.Id
-                            where a.PostId == id && a.Active
+                            where a.PostId == post.Id && a.Active
                             orderby a.SortOrder ascending
                             select new
                             {

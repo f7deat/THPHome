@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Models.Blocks;
 using THPIdentity.Entities;
 using WebUI.Entities;
 using WebUI.Foundations;
