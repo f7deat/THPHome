@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Models.Filters;
+﻿using ApplicationCore.Models.Filters;
 
 namespace WebUI.Models.Filters;
 
@@ -8,7 +7,6 @@ public class CategoryFilterOptions : FilterOptions
     public string? Name { get; set; }
 }
 
-public class CategorySelectFilterOptions
+public class CategorySelectFilterOptions : FilterOptions
 {
-    public Language Language { get; set; }
 }

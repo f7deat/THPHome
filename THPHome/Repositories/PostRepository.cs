@@ -4,7 +4,6 @@ using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
 using ApplicationCore.Models.Filters;
 using WebUI.Models.ViewModel;
-using WebUI.Models.Categories;
 using Microsoft.AspNetCore.Identity;
 using THPIdentity.Entities;
 using THPCore.Enums;
@@ -14,6 +13,7 @@ using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
+using THPHome.Models.Categories;
 
 namespace THPHome.Repositories;
 
@@ -119,11 +119,20 @@ public class PostRepository : EfRepository<Post>, IPostRepository
 
     public async Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions)
     {
-        var query = from a in _context.PostCategories.Where(x => x.CategoryId == filterOptions.CategoryId)
-                    join b in _context.Posts on a.PostId equals b.Id
-                    where b.Language == filterOptions.Language
-                    orderby b.ModifiedDate descending
-                    select b;
+        var query = from a in _context.Posts
+                    where a.Locale == filterOptions.Locale && a.CategoryId == filterOptions.CategoryId && a.Status == PostStatus.PUBLISH
+                    orderby a.CreatedDate descending
+                    select new
+                    {
+                        a.Id,
+                        a.Title,
+                        a.CategoryId,
+                        a.View,
+                        a.Thumbnail,
+                        a.Description,
+                        a.Url,
+                        a.CreatedDate
+                    };
         return await ListResult<dynamic>.Success(query, filterOptions);
     }
 

@@ -5,7 +5,7 @@ using ApplicationCore.Models.Posts;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
-using WebUI.Models.Categories;
+using THPHome.Models.Categories;
 using WebUI.Models.ViewModel;
 
 namespace ApplicationCore.Services;

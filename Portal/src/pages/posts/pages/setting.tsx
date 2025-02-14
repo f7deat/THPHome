@@ -1,4 +1,4 @@
-import { ProCard, ProForm, ProFormDigit, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
+import { ProCard, ProForm, ProFormDigit, ProFormTreeSelect, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
 import { Button, Col, Empty, Image, Row, message } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "@umijs/max";
@@ -6,6 +6,7 @@ import { apiPageBuilderUpdate, queryPost } from "@/services/post";
 import { UploadOutlined } from "@ant-design/icons";
 import FileUpload from "@/components/files/upload";
 import { IFileUpload } from "@/components/files/typings";
+import { apiCategoryTreeData } from "@/services/categoy";
 
 const PageSetting: React.FC = () => {
 
@@ -34,6 +35,10 @@ const PageSetting: React.FC = () => {
                         {
                             name: 'thumbnail',
                             value: response.thumbnail
+                        },
+                        {
+                            name: 'categoryId',
+                            value: response.categoryId
                         }
                     ]);
                     if (response.thumbnail) {
@@ -42,7 +47,7 @@ const PageSetting: React.FC = () => {
                 }
             })
         }
-    }, [id, thumbnail]);
+    }, [id]);
 
     const onUpload = (values: IFileUpload) => {
         form.setFieldValue('thumbnail', values.url);
@@ -69,9 +74,10 @@ const PageSetting: React.FC = () => {
                         <ProFormTextArea label="Mô tả" name="description" tooltip="Meta Description" />
                         <ProFormText label="Ảnh đại diện" name="thumbnail" 
                         fieldProps={{
-                            addonAfter: <Button icon={<UploadOutlined />} type="text" size="small">Upload</Button>
+                            addonAfter: <Button icon={<UploadOutlined />} type="text" size="small" onClick={() => setOpenUpload(true)}>Upload</Button>
                         }}
                         />
+                        <ProFormTreeSelect label="Danh mục" name="categoryId" request={apiCategoryTreeData} />
                     </Col>
                     <Col span={8}>
                         <ProCard bordered title="Ảnh đại diện" headerBordered size="small">

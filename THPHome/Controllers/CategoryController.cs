@@ -1,32 +1,22 @@
 using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
-using Microsoft.AspNetCore.Identity;
+using ApplicationCore.Models.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
-using THPIdentity.Entities;
+using THPHome.Models.Categories;
 using WebUI.Foundations;
 using WebUI.Models.Categories;
 using WebUI.Models.Filters;
 using WebUI.Models.Results;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class CategoryController : BaseController
+public class CategoryController(ICategoryService _categoryService, ApplicationDbContext context, IPostService _postService) : BaseController(context)
 {
-    private readonly ICategoryService _categoryService;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IPostService _postService;
-
-    public CategoryController(ICategoryService categoryService, UserManager<ApplicationUser> userManager, ApplicationDbContext context, IPostService postService) : base(context)
-    {
-        _categoryService = categoryService;
-        _userManager = userManager;
-        _postService = postService;
-    }
-
     [HttpGet("parent/options")]
     public async Task<IActionResult> GetParentOptionsAsync([FromQuery] Language language) => Ok(await _context.Categories.Where(x => x.ParrentId == null && x.Language == language).Select(x => new
     {
@@ -34,7 +24,7 @@ public class CategoryController : BaseController
         value = x.Id
     }).ToListAsync());
 
-    [HttpGet("posts")]
+    [HttpGet("posts"), AllowAnonymous]
     public async Task<IActionResult> GetPostsAsync([FromQuery] PostInCategoryFilterOptions filterOptions) => Ok(await _postService.GetInCategoryAsync(filterOptions));
 
     [HttpGet("list")]
@@ -43,7 +33,7 @@ public class CategoryController : BaseController
         var result = new List<TreeCategoryItem>();
         var raw = await _context.Categories
             .Where(x => x.Language == filterOptions.Language)
-            .Where(x => string.IsNullOrEmpty(filterOptions.Name) || (!string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower())))
+            .Where(x => string.IsNullOrEmpty(filterOptions.Name) || !string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower()))
             .Select(x => new TreeCategoryItem
             {
                 ParentId = x.ParrentId,
@@ -159,10 +149,10 @@ public class CategoryController : BaseController
     }
 
     [HttpGet("options")]
-    public async Task<IActionResult> GetOptionsAsync([FromQuery] CategorySelectFilterOptions args)
+    public async Task<IActionResult> GetOptionsAsync([FromQuery] FilterOptions args)
     {
         var result = new List<TreeCategoryData>();
-        var raw = await _context.Categories.Where(x => x.Status == CategoryStatus.Active).Where(x => x.Language == args.Language).ToListAsync();
+        var raw = await _context.Categories.Where(x => x.Status == CategoryStatus.Active).Where(x => x.Locale == args.Locale).AsNoTracking().ToListAsync();
         var categories = raw.Where(x => x.ParrentId == null || x.ParrentId == 0)
             .Select(x => new
             {

@@ -21,7 +21,7 @@ using THPHome.Interfaces.IService;
 
 namespace THPHome.Controllers;
 
-public class PostController(IAttachmentService _attachmentService, IPostService _postService, IPostCategoryService _postCategoryService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, IZaloAPI _zaloAPI) : BaseController(context)
+public class PostController(IAttachmentService _attachmentService, IPostService _postService, IPostCategoryService _postCategoryService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, IZaloAPI _zaloAPI, ILogService _logService) : BaseController(context)
 {
     [Route("post/tag")]
     public async Task<IActionResult> Tag(string name, string searchTerm)
@@ -300,20 +300,34 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
     [HttpPost("page-builder/update")]
     public async Task<IActionResult> PageBuilderUpdateAsync([FromBody] Post args)
     {
-        var page = await _context.Posts.FindAsync(args.Id);
-        if (page is null) return BadRequest("Data not found!");
-        page.Title = args.Title;
-        page.Description = args.Description;
-        if (page.Type != PostType.Entry)
+        try
         {
-            page.Url = SeoHelper.ToSeoFriendly(page.Title);
+            var page = await _context.Posts.FindAsync(args.Id);
+            if (page is null) return BadRequest("Data not found!");
+            page.Title = args.Title;
+            page.Description = args.Description;
+            if (page.Type != PostType.Entry)
+            {
+                page.Url = SeoHelper.ToSeoFriendly(page.Title);
+            }
+            page.Thumbnail = args.Thumbnail;
+            page.ModifiedDate = DateTime.Now;
+            page.ModifiedBy = User.GetId();
+            if (args.CategoryId != null)
+            {
+                var category = await _context.Categories.FindAsync(args.CategoryId);
+                if (category is null) return BadRequest("Category not found!");
+            }
+            page.CategoryId = args.CategoryId;
+            _context.Posts.Update(page);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
-        page.Thumbnail = args.Thumbnail;
-        page.ModifiedDate = DateTime.Now;
-        page.ModifiedBy = User.GetId();
-        _context.Posts.Update(page);
-        await _context.SaveChangesAsync();
-        return Ok();
+        catch (Exception ex)
+        {
+            await _logService.ExeptionAsync(ex);
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("zalo/share/{id}"), AllowAnonymous]
@@ -343,10 +357,10 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
         var query = await _context.Posts
             .Where(x => x.CreatedDate.Year == DateTime.Now.Year)
             .Select(x => new
-        {
-            x.Id,
-            x.CreatedDate
-        }).GroupBy(x => x.CreatedDate.Month)
+            {
+                x.Id,
+                x.CreatedDate
+            }).GroupBy(x => x.CreatedDate.Month)
         .Select(x => new
         {
             Month = x.Key,
@@ -360,6 +374,19 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
         {
             series,
             xAsis
+        });
+    }
+
+    [HttpGet("meta/{id}"), AllowAnonymous]
+    public async Task<IActionResult> GetMetaAsync([FromRoute] string id)
+    {
+        var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == id);
+        if (post is null) return BadRequest("Data not found!");
+        return Ok(new
+        {
+            post.Title,
+            post.Description,
+            post.Thumbnail
         });
     }
 }

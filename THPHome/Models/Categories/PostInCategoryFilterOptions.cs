@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Models.Filters;
 
-namespace WebUI.Models.Categories;
+namespace THPHome.Models.Categories;
 
 public class PostInCategoryFilterOptions : FilterOptions
 {

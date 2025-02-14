@@ -20,6 +20,8 @@ public class Category : BaseEntity<int>
     public bool IsDisplayOnHome { get; set; }
     public string? Icon { get; set; }
     public Language Language { get; set; }
+    [StringLength(10)]
+    public string Locale { get; set; } = default!;
 
 }
 

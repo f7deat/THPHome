@@ -3,9 +3,9 @@ using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
 using ApplicationCore.Models.Filters;
 using WebUI.Models.ViewModel;
-using WebUI.Models.Categories;
 using THPHome.Entities;
 using THPHome.Interfaces.Base;
+using THPHome.Models.Categories;
 
 namespace THPHome.Interfaces.IRepository
 {

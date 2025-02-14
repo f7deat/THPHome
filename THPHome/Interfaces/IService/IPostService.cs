@@ -3,7 +3,7 @@ using ApplicationCore.Helpers;
 using ApplicationCore.Models.Filters;
 using ApplicationCore.Models.Posts;
 using THPHome.Entities;
-using WebUI.Models.Categories;
+using THPHome.Models.Categories;
 using WebUI.Models.ViewModel;
 
 namespace THPHome.Interfaces.IService;
