@@ -246,6 +246,12 @@ export default [
         component: './roles/role-list',
       },
       {
+        name: 'roleCenter',
+        path: '/settings/roles/center/:id',
+        component: './settings/role/center',
+        hideInMenu: true
+      },
+      {
         name: 'Bài viết trên Zalo OA',
         path: '/settings/application/zalo-article',
         component: './settings/app/zalo/article',
