@@ -122,12 +122,6 @@ export default [
     component: './partners/partner-setting',
   },
   {
-    icon: 'DownloadOutlined',
-    name: 'fileManager',
-    path: '/files',
-    component: './files',
-  },
-  {
     icon: 'PictureOutlined',
     name: 'Multimedia',
     path: '/media',
@@ -324,4 +318,9 @@ export default [
       },
     ],
   },
+  {
+    path: '*',
+    layout: false,
+    component: './404',
+  }
 ];
