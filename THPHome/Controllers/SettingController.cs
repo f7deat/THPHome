@@ -1,4 +1,6 @@
-﻿using ApplicationCore.Models.Filters;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Models.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -64,5 +66,23 @@ public class SettingController : BaseController
                         b.ModifiedDate
                     };
         return Ok(await ListResult<dynamic>.Success(query, filterOptions));
+    }
+
+    [HttpGet("logo"), AllowAnonymous]
+    public async Task<IActionResult> GetLogoAsync([FromQuery] string? locale)
+    {
+        var query = from a in _context.Banners
+                    where a.Type == BannerType.LOGO && a.Active
+                    select a;
+        if (locale == "en-US")
+        {
+            query = query.Where(x => x.Language == ApplicationCore.Enums.Language.EN);
+        }
+        else
+        {
+            query = query.Where(x => x.Language == ApplicationCore.Enums.Language.VI);
+        }
+        var data = await query.FirstOrDefaultAsync();
+        return Ok(new { data = data?.Image });
     }
 }
