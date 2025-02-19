@@ -580,9 +580,3 @@ li.dropdown:hover .dropdown-mega {
         margin-bottom: 0;
     }
 }
-
-.swiper-slide {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-}
