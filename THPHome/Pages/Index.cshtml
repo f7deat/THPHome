@@ -144,10 +144,19 @@
     </div>
 </div>
 
-@foreach (var item in Model.Blocks)
-{
-    @await Component.InvokeAsync(item.ViewComponent, item.Id)
-}
+<div class="container">
+    <div class="row" data-aos="fade-up">
+        <div class="col-md-12">
+            <div class="title affiliate mb-1 " style="text-transform: uppercase">
+                <localize key="affiliate-partner" />
+            </div>
+            @foreach (var item in Model.Blocks)
+            {
+                @await Component.InvokeAsync(item.ViewComponent, item.Id)
+            }
+        </div>
+    </div>
+</div>
 
 <div class="container">
     <div class="row" data-aos="fade-up">

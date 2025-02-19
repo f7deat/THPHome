@@ -171,6 +171,7 @@ const PageBlock: React.FC = () => {
         }
         if (block.normalizedName === 'SponsorBlock') {
             return <SponsorBlock id={block.id} />
+                
         }
         if (block.normalizedName === 'SideGalleryBlock') {
             return <SideGalleryBlock id={block.id} />
