@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities.Utils;
 using THPHome.Models.Args.Utils;
 using THPIdentity.Constants;
 using WebUI.Foundations;
+using WebUI.Models.Blocks;
 
 namespace THPHome.Controllers;
 
@@ -73,5 +77,60 @@ public class ToolController(ApplicationDbContext context) : BaseController(conte
     {
         var hash = originalUrl.GetHashCode();
         return Convert.ToBase64String(BitConverter.GetBytes(hash)).TrimEnd('=')[..6]; // First 6 chars of base64 encoding
+    }
+
+    public class OldSponsorBlock
+    {
+        [JsonPropertyName("id")]
+        public Guid Id { get; set; }
+        [JsonPropertyName("logos")]
+        public List<string>? Logos { get; set; }
+    }
+
+    [HttpGet("mirate-block"), AllowAnonymous]
+    public async Task<IActionResult> MigrateBlockAsync()
+    {
+        var sponsorBlock = await _context.Blocks.FirstOrDefaultAsync(x => x.NormalizedName == nameof(SponsorBlock));
+        if (sponsorBlock is null) return NotFound();
+        var blockData = await _context.PostBlocks.Where(x => x.BlockId == sponsorBlock.Id).ToListAsync();
+        if (!blockData.Any())
+        {
+            return Ok("Ko co gi");
+        }
+        foreach (var item in blockData)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(item.Data)) continue;
+                var dataObject = JsonConvert.DeserializeObject<OldSponsorBlock>(item.Data);
+                if (dataObject is null || dataObject.Logos is null) continue;
+                var newDataObjectItem = new List<SponsorItem>();
+                foreach (var item1 in dataObject.Logos)
+                {
+                    newDataObjectItem.Add(new SponsorItem
+                    {
+                        Logo = item1,
+                        Link = "#"
+                    });
+                }
+                var newDataObject = new SponsorBlock
+                {
+                    AutoPlay = 1000,
+                    ClassName = "container",
+                    Speed = 1000,
+                    Id = item.Id,
+                    Sponsors = newDataObjectItem
+                };
+                item.Data = JsonConvert.SerializeObject(newDataObject);
+                _context.PostBlocks.Update(item);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        await _context.SaveChangesAsync();
+        return Ok();
+        
     }
 }

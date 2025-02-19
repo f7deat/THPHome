@@ -10,10 +10,12 @@
     <div class="sponsor @Model.ClassName">
         <div class="swiper swiper-@id">
             <div class="swiper-wrapper">
-                @foreach (var item in Model.Logos)
+                @foreach (var item in Model.Sponsors)
                 {
                     <div class="swiper-slide">
-                        <img src="@item" alt="LOGO" class="logo" />
+                        <a href="@item.Link">
+                            <img src="@item.Logo" alt="LOGO" class="logo" />
+                        </a>
                     </div>
                 }
             </div>
@@ -25,7 +27,11 @@
     var swiper = new Swiper(".swiper-@id", {
         slidesPerView: 10,
         spaceBetween: 30,
-        autoplay: true,
+        autoplay: {
+            delay: @Model.AutoPlay,
+            disableOnInteraction: false
+        },
+        speed: @Model.Speed,
         loop: true,
         breakpoints: {
             320: {
