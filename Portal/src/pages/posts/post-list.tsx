@@ -14,8 +14,7 @@ import {
 } from '@ant-design/icons';
 import IPost from "./interfaces/post-model";
 import Tooltip from "antd/es/tooltip";
-import { history, Link, request, useAccess, useIntl } from "@umijs/max";
-import { language } from "@/utils/format";
+import { history, Link, request, useAccess } from "@umijs/max";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { apiShareZaloOA, queryPosts } from "@/services/post";
 import CopyPost from "./components/copy";
@@ -28,7 +27,6 @@ const PostList: React.FC<{
 }> = ({ type }) => {
 
     const actionRef = useRef<ActionType>();
-    const intl = useIntl();
     const [openCopy, setOpenCopy] = useState<boolean>(false);
     const [post, setPost] = useState<any>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -82,6 +80,9 @@ const PostList: React.FC<{
                     message.error(response.message)
                 }
             })
+        }
+        if (info.key === 'builder') {
+            history.push(`/post/page/${entity.id}`);
         }
     }
 
@@ -153,23 +154,9 @@ const PostList: React.FC<{
         {
             title: 'Tác vụ',
             render: (dom, record: any) => [
-                <Tooltip key="build" title="Page Builder">
-                    <Button size="small" icon={<ToolOutlined />} hidden={type !== PostType.DEFAULT && type !== PostType.PAGE} onClick={() => {
-                        history.push(`/post/page/${record.id}`);
-                    }} />
-                </Tooltip>,
                 <Link key="edit" to={`/post/setting/${record.id}`} hidden={type === PostType.DEFAULT}>
                     <Button type="primary" size="small" icon={<EditOutlined />} disabled={!record.canUpdate}></Button>
                 </Link>,
-                <Popconfirm
-                    key="delete"
-                    title="Bạn có chắc chắn muốn xóa?"
-                    onConfirm={() => remove(record.id || 0)}
-                    okText="Yes"
-                    cancelText="No"
-                >
-                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={type === PostType.DEFAULT} disabled={!record.canUpdate && !access.canAdmin}></Button>
-                </Popconfirm>,
                 <Dropdown
                     disabled={!record.canUpdate && !access.canAdmin}
                     key="more" menu={{
@@ -194,12 +181,26 @@ const PostList: React.FC<{
                                 key: 'translate',
                                 icon: <TranslationOutlined />,
                                 disabled: true
+                            },
+                            {
+                                label: 'Page builder',
+                                key: 'builder',
+                                icon: <ToolOutlined />
                             }
                         ],
                         onClick: (info) => onMoreClick(info, record)
                     }}>
                     <Button size="small" icon={<MoreOutlined />} />
-                </Dropdown>
+                </Dropdown>,
+                <Popconfirm
+                    key="delete"
+                    title="Bạn có chắc chắn muốn xóa?"
+                    onConfirm={() => remove(record.id || 0)}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={type === PostType.DEFAULT} disabled={!record.canUpdate && !access.canAdmin}></Button>
+                </Popconfirm>
             ],
             valueType: 'option',
             width: 100,
@@ -213,8 +214,7 @@ const PostList: React.FC<{
                 actionRef={actionRef}
                 request={(params) => queryPosts({
                     ...params,
-                    type: type,
-                    language: language(intl.locale)
+                    type: type
                 })}
                 search={{
                     layout: 'vertical'

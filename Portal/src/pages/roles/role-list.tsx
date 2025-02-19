@@ -1,16 +1,16 @@
-﻿import { Button, Drawer, message, Popconfirm, Space, Table } from "antd";
+﻿import { Button, Drawer, message, Popconfirm } from "antd";
 import React, { useEffect, useState } from "react";
 import {
     FolderOutlined,
     DeleteOutlined
 } from '@ant-design/icons';
-import { request } from "@umijs/max";
+import { Link, request } from "@umijs/max";
+import { ProColumns, ProTable } from "@ant-design/pro-components";
 
 const RoleList = () => {
 
     const [listRole, setListRole] = useState<any>([])
     const [drawVisible, setDrawVisible] = useState<boolean>(false)
-    const [listUser, setListUser] = useState<any>([])
 
     useEffect(() => {
         request('role/get-list').then(response => {
@@ -29,17 +29,12 @@ const RoleList = () => {
         })
     }
 
-    function drawListUserInRole(roleName: string) {
-        request(`user/get-users-in-role/${roleName}`).then(response => {
-            setListUser(response)
-            setDrawVisible(true)
-        })
-    }
-
-    const columns = [
+    const columns: ProColumns[] = [
         {
-            title: 'Id',
-            dataIndex: 'id',
+            title: '#',
+            valueType: 'indexBorder',
+            width: 30,
+            align: 'center'
         },
         {
             title: 'Name',
@@ -47,64 +42,43 @@ const RoleList = () => {
         },
         {
             title: 'Normalized Name',
-            dataIndex: 'normalizedName'
+            dataIndex: 'normalizedName',
+            search: false
         },
         {
-            title: '',
-            render: (record: any) => (
-                <Space>
-                    <Button type="primary" icon={<FolderOutlined />} onClick={() => drawListUserInRole(record.name)}></Button>
-                    <Popconfirm
-                        title="Are you sure to delete?"
-                        onConfirm={() => deleteRole(record.id)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <Button type="primary" danger icon={<DeleteOutlined />}></Button>
-                    </Popconfirm>
-                </Space>
-            )
-        }
-    ];
-
-    const userColumns = [
-        {
-            title: 'Id',
-            dataIndex: 'id',
-        },
-        {
-            title: 'User Name',
-            dataIndex: 'userName',
-        },
-        {
-            title: '',
-            render: (record: any) => (
+            title: 'Tác vụ',
+            valueType: 'option',
+            render: (_, record: any) => [
+                <Link key="edit" to={`/settings/roles/center/${record.name}`}>
+                    <Button type="primary" icon={<FolderOutlined />} size="small"></Button>
+                </Link>,
                 <Popconfirm
-                    title="Are you sure delete from role?"
+                    key="delete"
+                    title="Are you sure to delete?"
                     onConfirm={() => deleteRole(record.id)}
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button type="primary" danger icon={<DeleteOutlined />}></Button>
+                    <Button type="primary" danger icon={<DeleteOutlined />} size="small"></Button>
                 </Popconfirm>
-            )
+            ],
+            width: 60
         }
-    ]
+    ];
 
     return (
         <div>
-            <div className="bg-white p-4">
-                <Table dataSource={listRole} columns={columns} rowKey="id" />
-            </div>
+            <ProTable dataSource={listRole} columns={columns} rowKey="id" search={{
+                layout: 'vertical'
+            }} />
             <Drawer
                 title="User In Role"
                 placement="right"
                 closable={false}
                 onClose={() => setDrawVisible(false)}
-                visible={drawVisible}
+                open={drawVisible}
                 width={800}
             >
-                <Table dataSource={listUser} columns={userColumns} rowKey="id" />
             </Drawer>
         </div>
     )

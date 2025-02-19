@@ -151,7 +151,7 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         return Ok(await _userManager.AddToRoleAsync(user, addToRole.RoleName));
     }
 
-    [Route("get-users-in-role/{roleName}")]
+    [HttpGet("users-in-role/{roleName}")]
     public async Task<IActionResult> GetUsersInRole([FromRoute] string roleName) => Ok(await _userManager.GetUsersInRoleAsync(roleName));
 
     [Route("is-authenticated"), AllowAnonymous]

@@ -53,7 +53,7 @@ const Profile = () => {
                             <UsergroupAddOutlined />
                         </Tooltip>
                     ]}>
-                        <div className="flex items-center justify-center p-4">
+                        <div className="flex items-center justify-center p-4 relative">
                             {
                                 profile?.avatar ? (
                                     <Avatar size={150} src={profile?.avatar} />
@@ -61,6 +61,9 @@ const Profile = () => {
                                     <Avatar size={150} icon={<UserOutlined />} />
                                 )
                             }
+                            <Tooltip title="Chỉnh sửa ảnh đại diện" className="absolute right-0 bottom-0">
+                                <Button type="text" className="absolute right-0 top-0" icon={<EditOutlined />} size="small" />
+                            </Tooltip>
                         </div>
                         <div className="flex items-center justify-center flex-col">
                             <Typography.Title level={3}>{profile?.name}</Typography.Title>
@@ -81,7 +84,7 @@ const Profile = () => {
                                         <div className="flex items-center">
                                             <CommentOutlined className="text-blue-400 text-xl px-2" />
                                             <div className="flex-grow px-2">
-                                                <div className="text-gray-400">Comment</div>
+                                                <div className="text-gray-400">Bình luận</div>
                                                 <div className="font-bold text-lg">{commentCount}</div>
                                             </div>
                                         </div>

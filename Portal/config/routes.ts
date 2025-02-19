@@ -122,12 +122,6 @@ export default [
     component: './partners/partner-setting',
   },
   {
-    icon: 'DownloadOutlined',
-    name: 'fileManager',
-    path: '/files',
-    component: './files',
-  },
-  {
     icon: 'PictureOutlined',
     name: 'Multimedia',
     path: '/media',
@@ -246,6 +240,12 @@ export default [
         component: './roles/role-list',
       },
       {
+        name: 'roleCenter',
+        path: '/settings/roles/center/:id',
+        component: './settings/role/center',
+        hideInMenu: true
+      },
+      {
         name: 'Bài viết trên Zalo OA',
         path: '/settings/application/zalo-article',
         component: './settings/app/zalo/article',
@@ -318,4 +318,9 @@ export default [
       },
     ],
   },
+  {
+    path: '*',
+    layout: false,
+    component: './404',
+  }
 ];

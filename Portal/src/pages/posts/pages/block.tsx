@@ -3,7 +3,7 @@ import HtmlBlock from "@/components/blocks/html";
 import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
-import { ActionType, DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { ActionType, DragSortTable, DrawerForm, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
 import { Button, Empty, Popconfirm, Switch, Tooltip, message } from "antd";
 import { useEffect, useRef, useState } from "react";
@@ -234,11 +234,11 @@ const PageBlock: React.FC = () => {
                     request={queryBlockOptions}
                     name="blockId" label="Block" />
             </ModalForm>
-            <ModalForm open={open} onOpenChange={setOpen} title="Block Configuration" onFinish={onSaveBlock} formRef={form}>
+            <DrawerForm open={open} onOpenChange={setOpen} title="Cấu hình" onFinish={onSaveBlock} formRef={form} width={1000}>
                 <ProFormText name="id" hidden />
                 <ProFormText name="className" label="Class Name" />
                 {renderSetting()}
-            </ModalForm>
+            </DrawerForm>
         </>
     );
 }
