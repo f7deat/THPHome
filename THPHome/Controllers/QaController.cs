@@ -16,7 +16,7 @@ public class QaController(ApplicationDbContext context) : BaseController(context
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] FilterOptions filterOptions)
     {
-        var query = _context.QaGroups.OrderByDescending(x => x.SortOrder);
+        var query = _context.QaGroups.OrderBy(x => x.SortOrder);
         return Ok(await ListResult<QaGroup>.Success(query, filterOptions));
     }
 

@@ -15,4 +15,5 @@ public class PostListItemResult
     public bool CanUpdate { get; set; }
     public string? Thumbnail { get; set; }
     public DateTime IssuedDate { get; set; }
+    public int? CategoryId { get; set; }
 }

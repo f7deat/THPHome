@@ -1,4 +1,5 @@
-﻿@model WebUI.Models.Blocks.SponsorBlock
+﻿@using THPHome.Models.Blocks
+@model SponsorBlock
 
 @{
     var id = Guid.NewGuid();
@@ -10,7 +11,7 @@
     <div class="sponsor @Model.ClassName">
         <div class="swiper swiper-@id">
             <div class="swiper-wrapper">
-                @foreach (var item in Model.Sponsors)
+                @foreach (var item in Model.Items)
                 {
                     <div class="swiper-slide">
                         <a href="@item.Link">
@@ -21,31 +22,31 @@
             </div>
         </div>
     </div>
-}
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
-    var swiper = new Swiper(".swiper-@id", {
-        slidesPerView: 10,
-        spaceBetween: 30,
-        autoplay: {
-            delay: @Model.AutoPlay,
-            disableOnInteraction: false
-        },
-        speed: @Model.Speed,
-        loop: true,
-        breakpoints: {
-            320: {
-                slidesPerView: 2
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        var swiper = new Swiper(".swiper-@id", {
+            slidesPerView: 10,
+            spaceBetween: 30,
+            autoplay: {
+                delay: @Model.AutoPlay?.Delay,
+                disableOnInteraction: false
             },
-            480: {
-                slidesPerView: 3
-            },
-            640: {
-                slidesPerView: 4
-            },
-            1530: {
-                slidesPerView: 8
+            speed: @Model.Speed,
+            loop: true,
+            breakpoints: {
+                320: {
+                    slidesPerView: 2
+                },
+                480: {
+                    slidesPerView: 3
+                },
+                640: {
+                    slidesPerView: 4
+                },
+                1530: {
+                    slidesPerView: 8
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
+}

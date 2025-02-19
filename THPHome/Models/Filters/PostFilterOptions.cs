@@ -1,7 +1,8 @@
 ﻿using ApplicationCore.Enums;
+using ApplicationCore.Models.Filters;
 using System.Text.Json.Serialization;
 
-namespace ApplicationCore.Models.Filters;
+namespace THPHome.Models.Filters;
 
 public class PostFilterOptions : FilterOptions
 {
@@ -10,4 +11,5 @@ public class PostFilterOptions : FilterOptions
     public PostStatus? Status { get; set; }
     [JsonIgnore]
     public bool CanSeeAll { get; set; }
+    public int? CategoryId { get; set; }
 }

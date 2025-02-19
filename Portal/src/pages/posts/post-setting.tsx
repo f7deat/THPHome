@@ -7,10 +7,9 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ListPostType, PostType } from '../../enum/post-enum'
 import MyEditor from '../../components/my-editor';
-import { useParams, useIntl, getLocale, history } from '@umijs/max';
+import { useParams, getLocale, history } from '@umijs/max';
 import { request } from '@umijs/max';
 import { PageContainer, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProFormTreeSelect } from '@ant-design/pro-components';
-import { language } from '@/utils/format';
 import { apiCategoryTreeData } from '@/services/categoy';
 import dayjs from 'dayjs';
 
@@ -22,11 +21,9 @@ const PostSetting = () => {
 
     const { id } = useParams<any>();
 
-    // const [post, setPost] = useState<IPost>({})
-    const [defaultFileList, setDefaultFileList] = useState<any>([])
+    const [defaultFileList, setDefaultFileList] = useState<any>([]);
     const [previewImage, setPreviewImage] = useState<string>('https://dhhp.edu.vn/files/1a5acea5-4941-4140-a8f5-56a1d5e4eabd.jpg');
     const [loading, setLoading] = useState<boolean>(false);
-    const intl = useIntl();
     const [content, setContent] = useState<string>();
 
     const initCallback = useCallback(() => {
@@ -65,6 +62,10 @@ const PostSetting = () => {
                     {
                         name: 'issuedDate',
                         value: response.issuedDate
+                    },
+                    {
+                        name: 'categoryId',
+                        value: response.categoryId
                     }
                 ])
                 setPreviewImage(response.thumbnail);
@@ -181,14 +182,6 @@ const PostSetting = () => {
 
     const onFinish = async (values: any) => {
         values.type = Number(values.type);
-        // post.content = values.content;
-        // post.type = values.type;
-        // post.title = values.title;
-        // post.thumbnail = values.thumbnail;
-        // post.language = language(intl.locale);
-        // post.description = values.description;
-        // post.modifiedDate = values.modifiedDate;
-        // post.status = values.status;
         setLoading(true);
         if (id) {
             values.id = id;
@@ -242,17 +235,12 @@ const PostSetting = () => {
                                 </Col>
                             </Row>
 
-                            <ProFormTreeSelect label="Danh mục" name="categories"
-                                request={(params) => apiCategoryTreeData({
-                                    ...params,
-                                    language: language(intl.locale)
-                                })}
+                            <ProFormTreeSelect label="Danh mục" name="categoryId"
+                                request={apiCategoryTreeData}
                                 fieldProps={{
                                     showSearch: true,
                                     filterTreeNode: (input, treeNode: any) =>
-                                        (treeNode.label as string)?.toLowerCase().includes(input.toLowerCase()),
-                                    multiple: true
-
+                                        (treeNode.label as string)?.toLowerCase().includes(input.toLowerCase())
                                 }}
                             />
 

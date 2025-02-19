@@ -86,7 +86,7 @@ public class CategoryRepository(ApplicationDbContext context) : EfRepository<Cat
 
     public async Task<bool> IsExistAsync(string name) => await _context.Categories.AnyAsync(x => !string.IsNullOrEmpty(x.NormalizeName) && x.NormalizeName.ToLower() == name);
 
-    public async Task<IReadOnlyList<Category>> ListAllAsync(string? locale) => await _context.Categories.Where(x => x.Language == Language.VI)
+    public async Task<IReadOnlyList<Category>> ListAllAsync(string? locale) => await _context.Categories.Where(x => x.Locale == locale)
             .OrderBy(x => x.Index)
             .ToListAsync();
 

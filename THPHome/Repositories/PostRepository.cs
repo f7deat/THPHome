@@ -2,7 +2,6 @@
 using ApplicationCore.Helpers;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
-using ApplicationCore.Models.Filters;
 using WebUI.Models.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using THPIdentity.Entities;
@@ -14,6 +13,7 @@ using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
 using THPHome.Models.Categories;
+using THPHome.Models.Filters;
 
 namespace THPHome.Repositories;
 
@@ -77,11 +77,16 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                         a.CreatedBy,
                         a.Description,
                         a.Thumbnail,
-                        a.IssuedDate
+                        a.IssuedDate,
+                        a.CategoryId
                     };
         if (!string.IsNullOrWhiteSpace(filterOptions.Title))
         {
             query = query.Where(x => !string.IsNullOrEmpty(x.Title) && x.Title.ToLower().Contains(filterOptions.Title));
+        }
+        if (filterOptions.CategoryId != null)
+        {
+            query = query.Where(x => x.CategoryId == filterOptions.CategoryId);
         }
         if (filterOptions.Status != null)
         {

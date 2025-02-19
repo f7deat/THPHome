@@ -12,6 +12,7 @@ public class AddPostArgs
     public string? Thumbnail { get; set; }
     public DateTime IssuedDate { get; set; }
     public int[] Categories { get; set; } = [];
+    public int? CategoryId { get; set; }
     public List<Attachment>? Attachments { get; set; }
 }
 

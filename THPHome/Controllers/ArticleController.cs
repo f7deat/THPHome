@@ -16,7 +16,7 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
     public async Task<IActionResult> GetListArticleAsync([FromQuery] OpenArticleFilterOptions filterOptions)
     {
         var query = from a in _context.Posts
-                    where a.Status == PostStatus.PUBLISH && a.Language == filterOptions.Language && a.Type == PostType.NEWS
+                    where a.Status == PostStatus.PUBLISH && a.Language == filterOptions.Language
                     select new
                     {
                         a.Id,
@@ -53,16 +53,35 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
                         a.Description,
                         a.Thumbnail,
                         a.View,
-                        a.CategoryId
+                        a.CategoryId,
+                        a.Type
                     };
         if (filterOptions.CategoryId != null)
         {
             query = query.Where(x => x.CategoryId == filterOptions.CategoryId);
+        }
+        if (filterOptions.Type != null)
+        {
+            query = query.Where(x => x.Type == filterOptions.Type);
+        }
+        if (!string.IsNullOrWhiteSpace(filterOptions.Title))
+        {
+            query = query.Where(x => x.Title.ToLower().Contains(filterOptions.Title.ToLower()));
         }
         query = query.OrderByDescending(x => x.CreatedDate);
         return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
     [HttpGet("{url}"), AllowAnonymous]
-    public async Task<IActionResult> GetByUrlAsync([FromRoute] string url) => Ok(await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Status == PostStatus.PUBLISH));
+    public async Task<IActionResult> GetByUrlAsync([FromRoute] string url)
+    {
+        var article = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Status == PostStatus.PUBLISH);
+        if (article != null)
+        {
+            article.View++;
+            await _context.SaveChangesAsync();
+            return Ok(article);
+        }
+        return Ok(article);
+    }
 }

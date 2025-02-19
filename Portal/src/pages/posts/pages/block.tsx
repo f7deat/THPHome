@@ -3,7 +3,7 @@ import HtmlBlock from "@/components/blocks/html";
 import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
-import { ActionType, DragSortTable, DrawerForm, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { ActionType, DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
 import { Button, Empty, Popconfirm, Switch, Tooltip, message } from "antd";
 import { useEffect, useRef, useState } from "react";
@@ -152,7 +152,14 @@ const PageBlock: React.FC = () => {
         })
     };
 
-    const renderSetting = () => {
+    const onSaveBlock = async (values: any) => {
+        if (!block) return;
+        await queryBlockSave(block.id, values);
+        message.success('Saved!');
+        setOpen(false);
+    }
+
+    const FormSetting = () => {
         if (!block) return <Empty />
         if (block.normalizedName === 'TextBlock') {
             return <TextBlock id={block.id} />
@@ -169,10 +176,7 @@ const PageBlock: React.FC = () => {
         if (block.normalizedName === 'TinyMCEBlock') {
             return <TinyMCEBlock id={block.id} />
         }
-        if (block.normalizedName === 'SponsorBlock') {
-            return <SponsorBlock id={block.id} />
-                
-        }
+        if (block.normalizedName === 'SponsorBlock') return <SponsorBlock data={block} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
         if (block.normalizedName === 'SideGalleryBlock') {
             return <SideGalleryBlock id={block.id} />
         }
@@ -183,13 +187,6 @@ const PageBlock: React.FC = () => {
             return <HtmlBlock id={block.id} />
         }
         return <Empty />
-    }
-
-    const onSaveBlock = async (values: any) => {
-        if (!block) return;
-        await queryBlockSave(block.id, values);
-        message.success('Saved!');
-        setOpen(false);
     }
 
     return (
@@ -234,11 +231,7 @@ const PageBlock: React.FC = () => {
                     request={queryBlockOptions}
                     name="blockId" label="Block" />
             </ModalForm>
-            <DrawerForm open={open} onOpenChange={setOpen} title="Cấu hình" onFinish={onSaveBlock} formRef={form} width={1000}>
-                <ProFormText name="id" hidden />
-                <ProFormText name="className" label="Class Name" />
-                {renderSetting()}
-            </DrawerForm>
+            <FormSetting />
         </>
     );
 }

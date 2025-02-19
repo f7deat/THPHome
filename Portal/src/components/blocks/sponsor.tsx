@@ -1,44 +1,52 @@
-import { queryBlock } from '@/services/block';
 import { PlusOutlined } from '@ant-design/icons';
-import { ProForm, ProFormDigit, ProFormText } from '@ant-design/pro-components';
+import { DrawerForm, DrawerFormProps, ProFormDigit, ProFormInstance, ProFormText } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
-import { Badge, Button, Image, Upload, message } from 'antd';
-import { useEffect, useState } from 'react';
+import { Badge, Button, Col, Divider, Image, Row, Upload, message } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 
-type Props = {
-  id: string;
+type Props = DrawerFormProps & {
+  data?: any;
 };
 
-const SponsorBlock: React.FC<Props> = ({ id }) => {
+const SponsorBlock: React.FC<Props> = (props) => {
   const [sponsors, setSponsors] = useState<{ logo: string; link: string }[]>(
     [],
   );
   const [fileList, setFileList] = useState<any>([]);
-  const form = ProForm.useFormInstance();
+  const formRef = useRef<ProFormInstance>();
 
   useEffect(() => {
-    if (id) {
-      queryBlock(id).then((response) => {
-        form.setFields([
-          { name: 'label', value: response.label },
-          { name: 'className', value: response.className },
-          { name: 'autoPlay', value: response.autoPlay },
-          { name: 'speed', value: response.speed },
-        ]);
-        setSponsors(response.sponsors || []);
-      });
+    if (props.data) {
+      formRef.current?.setFields([
+        { name: 'label', value: props.data?.label },
+        { name: 'className', value: props.data?.className },
+        { name: 'delay', value: props.data?.autoPlay?.delay },
+        { name: 'speed', value: props.data?.speed },
+      ]);
+      setSponsors(props.data?.sponsors || []);
     }
-  }, [id]);
+  }, [props.data]);
 
   useEffect(() => {
     setFileList([]);
-  }, [form]);
+  }, [props.data]);
 
   return (
-    <>
-      <ProFormDigit name="autoPlay" label="Auto Play" />
-      <ProFormDigit name="speed" label="Speed" />
+    <DrawerForm {...props} formRef={formRef} onFinish={async (values) => {
+      values.autoPlay.delay = values.delay;
+      props.onFinish?.(values);
+    }}>
+      <Divider orientation="left">Auto Play</Divider>
+      <Row gutter={16}>
+        <Col span={12}>
+          <ProFormDigit name="delay" label="Delay" />
+        </Col>
+        <Col span={12}>
+          <ProFormDigit name="speed" label="Speed" />
+        </Col>
+      </Row>
       <ProFormText name="sponsors" hidden />
+      <Divider orientation="left">Logo</Divider>
       <div className="flex gap-4" style={{ gap: 8, flexWrap: 'wrap' }}>
         {sponsors.map((sponsor, i) => (
           <div
@@ -59,7 +67,7 @@ const SponsorBlock: React.FC<Props> = ({ id }) => {
                       (_, index) => index !== i,
                     );
                     setSponsors(updatedSponsors);
-                    form.setFieldValue('sponsors', updatedSponsors);
+                    formRef.current?.setFieldValue('sponsors', updatedSponsors);
                   }}
                   type="text"
                   size="small"
@@ -93,7 +101,7 @@ const SponsorBlock: React.FC<Props> = ({ id }) => {
                     link: e.target.value,
                   };
                   setSponsors(updatedSponsors);
-                  form.setFieldValue('sponsors', updatedSponsors);
+                  formRef.current?.setFieldValue('sponsors', updatedSponsors);
                 },
               }}
             />
@@ -122,7 +130,7 @@ const SponsorBlock: React.FC<Props> = ({ id }) => {
                 { logo: response.url, link: '' },
               ];
               setSponsors(newSponsors);
-              form.setFieldValue('sponsors', newSponsors);
+              formRef.current?.setFieldValue('sponsors', newSponsors);
             });
             return false;
           }}
@@ -138,7 +146,7 @@ const SponsorBlock: React.FC<Props> = ({ id }) => {
           </button>
         </Upload>
       </div>
-    </>
+    </DrawerForm>
   );
 };
 

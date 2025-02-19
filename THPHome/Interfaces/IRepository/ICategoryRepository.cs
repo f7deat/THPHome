@@ -19,5 +19,5 @@ public interface ICategoryRepository : IAsyncRepository<Category>
     Task<List<Category>> GetListInPostAsync(long postId);
     Task<bool> IsExistAsync(string normalizeName);
     Task<List<GroupCategory>> GetGroupCategories(Language language);
-    Task<IReadOnlyList<Category>> ListAllAsync(string locale);
+    Task<IReadOnlyList<Category>> ListAllAsync(string? locale);
 }

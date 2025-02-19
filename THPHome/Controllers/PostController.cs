@@ -4,7 +4,6 @@ using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Entities;
-using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Identity;
 using WebUI.Interfaces.IService;
 using WebUI.Foundations;
@@ -18,6 +17,7 @@ using THPCore.Extensions;
 using THPHome.Entities;
 using THPHome.Helpers;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters;
 
 namespace THPHome.Controllers;
 
@@ -68,8 +68,6 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
         {
             if (args is null) return BadRequest("Dữ liệu không hợp lệ!");
 
-            var language = LanguageHelper.GetLanguage(locale);
-
             var user = await _userManager.FindByIdAsync(User.GetId());
             if (user is null) return BadRequest("User not found!");
 
@@ -82,9 +80,9 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
                 Content = args.Content,
                 Description = args.Description,
                 IssuedDate = args.IssuedDate,
-                Language = language,
                 Type = args.Type,
-                Locale = locale
+                Locale = locale,
+                CategoryId = args.CategoryId
             };
             var data = await _postService.AddAsync(post);
             if (data.Id > 0)
@@ -189,6 +187,7 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
             post.Type = args.Type;
             post.ModifiedDate = DateTime.Now;
             post.IssuedDate = args.IssuedDate;
+            post.CategoryId = args.CategoryId;
             post.Url = SeoHelper.ToSeoFriendly(args.Title);
 
             await _postCategoryService.DeleteAsync(args.Id);
