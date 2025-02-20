@@ -1,5 +1,5 @@
 ﻿import { Button, Dropdown, message, Popconfirm, Spin, Tag } from "antd";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     EditOutlined,
     DeleteOutlined,
@@ -21,6 +21,7 @@ import CopyPost from "./components/copy";
 import { FormattedMessage } from "@umijs/max";
 import { PostType } from "@/enum/post-enum";
 import { PostStatus } from "@/utils/enum";
+import { apiGetAllCategoryOptions } from "@/services/categoy";
 
 const PostList: React.FC<{
     type: PostType
@@ -31,6 +32,11 @@ const PostList: React.FC<{
     const [post, setPost] = useState<any>();
     const [loading, setLoading] = useState<boolean>(false);
     const access = useAccess();
+    const [categories, setCategories] = useState<any[]>([]);
+
+    useEffect(() => {
+        apiGetAllCategoryOptions().then(response => setCategories(response));
+    }, []);
 
     function remove(id: number) {
         request(`post/remove/${id}`, {
@@ -59,15 +65,21 @@ const PostList: React.FC<{
     }
 
     const onMoreClick = (info: any, entity: any) => {
+        if (info.key === 'edit') {
+            history.push(`/post/setting/${entity.id}`);
+            return;
+        }
         if (info.key === 'copy') {
             setPost(entity);
             setOpenCopy(true);
+            return;
         }
         if (info.key === 'zalo') {
             apiShareZaloOA(entity.id).then(() => {
                 setLoading(false);
                 message.success('Chia sẻ thành công!');
             });
+            return;
         }
         if (info.key === 'publish') {
             request(`post/active/${entity.id}`, {
@@ -80,9 +92,11 @@ const PostList: React.FC<{
                     message.error(response.message)
                 }
             })
+            return;
         }
         if (info.key === 'builder') {
             history.push(`/post/page/${entity.id}`);
+            return;
         }
     }
 
@@ -99,11 +113,20 @@ const PostList: React.FC<{
             render: (dom, record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank" rel="noreferrer">{record.title}</a>
         },
         {
+            title: 'Danh mục',
+            dataIndex: 'categoryId',
+            valueType: 'select',
+            fieldProps: {
+                options: categories
+            },
+            minWidth: 120
+        },
+        {
             title: <FormattedMessage id='general.view' />,
             dataIndex: 'view',
             valueType: 'digit',
             search: false,
-            width: 100,
+            width: 80,
             align: 'center'
         },
         {
@@ -122,7 +145,7 @@ const PostList: React.FC<{
                     </Tag>
                 </Tooltip>
             ),
-            width: 100
+            width: 90
         },
         {
             title: 'Người đăng',
@@ -153,14 +176,16 @@ const PostList: React.FC<{
         },
         {
             title: 'Tác vụ',
-            render: (dom, record: any) => [
-                <Link key="edit" to={`/post/setting/${record.id}`} hidden={type === PostType.DEFAULT}>
-                    <Button type="primary" size="small" icon={<EditOutlined />} disabled={!record.canUpdate}></Button>
-                </Link>,
+            render: (_, record: any) => [
                 <Dropdown
                     disabled={!record.canUpdate && !access.canAdmin}
                     key="more" menu={{
                         items: [
+                            {
+                                label: 'Chỉnh sửa',
+                                key: 'edit',
+                                icon: <EditOutlined />
+                            },
                             {
                                 label: record.status === PostStatus.PUBLISH ? 'Quay lại bản nháp' : 'Xuất bản',
                                 key: 'publish',
@@ -203,7 +228,7 @@ const PostList: React.FC<{
                 </Popconfirm>
             ],
             valueType: 'option',
-            width: 100,
+            width: 60,
             align: 'center'
         }
     ];

@@ -1,7 +1,7 @@
 import { PostType } from "@/enum/post-enum";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
 import CopyPost from "../components/copy";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FormattedMessage, Link, request, useAccess, history } from "@umijs/max";
 import { apiShareZaloOA, queryPosts } from "@/services/post";
 import { Button, Dropdown, message, Popconfirm, Spin, Tag, Tooltip } from "antd";
@@ -9,6 +9,7 @@ import { PostStatus } from "@/utils/enum";
 import { EditOutlined, ArrowDownOutlined, ArrowUpOutlined, SendOutlined, CopyOutlined, TranslationOutlined, ToolOutlined, MoreOutlined, DeleteOutlined } from "@ant-design/icons";
 import IPost from "../interfaces/post-model";
 import NewPost from "../components/new-post";
+import { apiGetAllCategoryOptions } from "@/services/categoy";
 
 const PagePage : React.FC = () => {
 
@@ -17,6 +18,11 @@ const PagePage : React.FC = () => {
     const [post, setPost] = useState<any>();
     const [loading, setLoading] = useState<boolean>(false);
     const access = useAccess();
+    const [categories, setCategories] = useState<any[]>([]);
+
+    useEffect(() => {
+        apiGetAllCategoryOptions().then(response => setCategories(response));
+    }, []);
 
     function remove(id: number) {
         request(`post/remove/${id}`, {
@@ -85,11 +91,19 @@ const PagePage : React.FC = () => {
             render: (dom, record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank" rel="noreferrer">{record.title}</a>
         },
         {
+            title: 'Danh mục',
+            dataIndex: 'categoryId',
+            valueType: 'select',
+            fieldProps: {
+                options: categories
+            }
+        },
+        {
             title: <FormattedMessage id='general.view' />,
             dataIndex: 'view',
             valueType: 'digit',
             search: false,
-            width: 100,
+            width: 90,
             align: 'center'
         },
         {

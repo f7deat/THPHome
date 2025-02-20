@@ -15,7 +15,7 @@ namespace THPHome.Interfaces.IRepository
         Task<int> GetTotalViewAsync();
         Task<IEnumerable<Post>> GetTopViewAsync(int pageSize);
         Task<dynamic?> GetDataBarChartAsync();
-        Task<dynamic> GetListAsync(PostFilterOptions filterOptions);
+        Task<dynamic?> GetListAsync(PostFilterOptions filterOptions);
         Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions);
         Task<bool> IsExistInCategory(int id);
         Task<dynamic> AddRangeAsync(List<Post> posts);

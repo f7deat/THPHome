@@ -14,6 +14,7 @@ using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
+using THPIdentity.Constants;
 
 namespace THPHome.Repositories;
 
@@ -60,9 +61,13 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         }
     }
 
-    public async Task<dynamic> GetListAsync(PostFilterOptions filterOptions)
+    public async Task<dynamic?> GetListAsync(PostFilterOptions filterOptions)
     {
         var userId = _currentUser.GetId();
+        if (userId is null) return default;
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) return default;
+        var isEditor = await _userManager.IsInRoleAsync(user, RoleName.EDITOR);
         var query = from a in _context.Posts.Where(x => filterOptions.Type == null || x.Type == filterOptions.Type)
                     select new
                     {
@@ -109,9 +114,10 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                 Status = x.Status,
                 CreatedBy = x.CreatedBy,
                 CreatedDate = x.CreatedDate,
-                CanUpdate = x.CreatedBy == userId,
+                CanUpdate = x.CreatedBy == userId || isEditor,
                 Thumbnail = x.Thumbnail,
-                IssuedDate = x.IssuedDate
+                IssuedDate = x.IssuedDate,
+                CategoryId = x.CategoryId
             }).ToListAsync();
         var users = await _userManager.Users.Where(x => x.UserType != UserType.Student).ToListAsync();
 

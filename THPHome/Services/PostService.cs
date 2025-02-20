@@ -71,7 +71,7 @@ public class PostService : IPostService
 
     public Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions) => _postRepository.GetInCategoryAsync(filterOptions);
 
-    public Task<dynamic> GetListAsync(PostFilterOptions filterOptions) => _postRepository.GetListAsync(filterOptions);
+    public Task<dynamic?> GetListAsync(PostFilterOptions filterOptions) => _postRepository.GetListAsync(filterOptions);
 
     public async Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int current) => await PaginatedList<PostView>.CreateAsync(_postRepository.GetListInCategory(categoryId, searchTerm), current, 9);
 

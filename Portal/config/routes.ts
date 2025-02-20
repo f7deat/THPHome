@@ -54,11 +54,6 @@ export default [
         hideInMenu: true,
       },
       {
-        name: 'Tuyển sinh',
-        path: '/post/admission',
-        component: './posts/admission',
-      },
-      {
         name: 'Câu hỏi thường gặp',
         path: '/post/qa',
         component: './posts/qa',
@@ -168,6 +163,11 @@ export default [
     icon: 'UserAddOutlined',
     path: '/admission',
     routes: [
+      {
+        name: 'Tin tức',
+        path: '/admission/article',
+        component: './posts/admission',
+      },
       {
         name: 'Liên hệ',
         path: '/admission/contact',

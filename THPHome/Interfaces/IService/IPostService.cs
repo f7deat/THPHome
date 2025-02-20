@@ -12,7 +12,7 @@ public interface IPostService
 {
     Task<IEnumerable<Post>> GetListAsync(PostType type);
     Task<PaginatedList<PostView>> GetListAsync(int current);
-    Task<dynamic> GetListAsync(PostFilterOptions filterOptions);
+    Task<dynamic?> GetListAsync(PostFilterOptions filterOptions);
     Task<int> GetTotalViewAsync();
     Task<IEnumerable<Post>> GetTopViewAsync(int pageSize);
     Task<IEnumerable<PostView>> GetListInTagAsync(string tagName, int pageSize);

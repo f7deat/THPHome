@@ -10,6 +10,10 @@ button.ant-btn-primary {
     font-style: normal;
 }
 
+.ant-menu-submenu-title span {
+    color: white;
+}
+
 .poppins-extralight {
     font-family: "Poppins", sans-serif;
     font-weight: 200;

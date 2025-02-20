@@ -78,7 +78,7 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
                 CategoryId = args.CategoryId,
                 CreatedDate = DateTime.Now,
                 Title = args.Title,
-                CreatedBy = user.UserName,
+                CreatedBy = user.Id,
                 Description = args.Description,
                 Type = args.Type,
                 Url = url,

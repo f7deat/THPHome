@@ -61,10 +61,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
           colorTextMenu: '#FFFFFF',
           colorTextMenuSelected: '#FFFFFF',
           colorTextMenuItemHover: '#FFFFFF',
-          colorTextMenuActive: '#FFFFFF',
           colorBgMenuItemSelected: '#D02929',
           colorTextMenuSecondary: '#FFFFFF',
-          colorTextMenuTitle: '#FFFFFF',
+          colorBgMenuItemCollapsedElevated: '#008000',
+          colorTextSubMenuSelected: '#FFFFFF',
         }
     },
     footerRender: () => (

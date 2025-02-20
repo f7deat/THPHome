@@ -172,6 +172,13 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
         return Ok(result);
     }
 
+    [HttpGet("all-options")]
+    public async Task<IActionResult> AllOptionsAsync([FromQuery] string locale) => Ok(await _context.Categories.Where(x => x.Status == CategoryStatus.Active && x.Locale == locale).Select(x => new
+    {
+        value = x.Id,
+        label = x.Name
+    }).ToListAsync());
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] int id)
     {
