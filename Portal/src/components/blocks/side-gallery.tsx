@@ -1,52 +1,47 @@
-import { queryBlock } from "@/services/block";
 import { PlusOutlined } from "@ant-design/icons";
 import { ProForm, ProFormText } from "@ant-design/pro-components";
 import { request } from "@umijs/max";
 import { Badge, Button, Image, Upload, message } from "antd";
 import { useEffect, useState } from "react";
 import MyEditor from "../my-editor";
+import { BlockProps } from "./typings";
 
-type Props = {
-    id: string;
-}
-
-const SideGalleryBlock: React.FC<Props> = ({ id }) => {
+const SideGalleryBlock: React.FC<BlockProps> = (props) => {
 
     const [images, setImages] = useState<string[]>([]);
     const [fileList, setFileList] = useState<any>([]);
     const [dataSource, setDataSource] = useState<any>();
 
     const form = ProForm.useFormInstance();
+
     useEffect(() => {
-        if (id) {
-            queryBlock(id).then(response => {
+        if (props.data) {
                 form.setFields([
                     {
                         name: 'textContent',
-                        value: response.textContent
+                        value: props.data.textContent
                     },
                     {
                         name: 'images',
-                        value: response.images
+                        value: props.data.images
                     },
                     {
                         name: 'className',
-                        value: response.className
+                        value: props.data.className
                     }
                 ]);
-                setDataSource(response);
-                if (response.images) {
-                    setImages(response.images);
+                setDataSource(props.data);
+                if (props.data.images) {
+                    setImages(props.data.images);
                 } else {
                     setImages([]);
                 }
-            });
         }
-    }, [id]);
+    }, [props.data]);
 
     useEffect(() => {
         setFileList([]);
-    }, [form, id]);
+    }, [form, props.data]);
 
     return (
         <>

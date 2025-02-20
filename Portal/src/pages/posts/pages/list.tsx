@@ -195,7 +195,7 @@ const PagePage : React.FC = () => {
     ];
     
     return (
-        <PageContainer extra={<NewPost />}>
+        <PageContainer extra={<NewPost type={PostType.PAGE} />}>
             <ProTable
                 actionRef={actionRef}
                 request={(params) => queryPosts({

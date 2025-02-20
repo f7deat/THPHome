@@ -138,7 +138,8 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
         }
         return Ok(new
         {
-            block.Id,
+            work.Id,
+            work.BlockId,
             block.NormalizedName,
             block.Name,
             block.Active,
@@ -149,12 +150,19 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
     [HttpPost("save/{id}")]
     public async Task<IActionResult> SaveAsync([FromRoute] Guid id, [FromBody] object data)
     {
-        var work = await _context.PostBlocks.FindAsync(id);
-        if (work is null) return BadRequest();
-        work.Data = data.ToString();
-        _context.PostBlocks.Update(work);
-        await _context.SaveChangesAsync();
-        return Ok();
+        try
+        {
+            var work = await _context.PostBlocks.FindAsync(id);
+            if (work is null) return BadRequest("Work not found!");
+            work.Data = data.ToString();
+            _context.PostBlocks.Update(work);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("delete/{id}")]

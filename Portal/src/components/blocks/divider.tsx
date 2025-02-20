@@ -1,13 +1,13 @@
-import { DrawerForm, ProFormInstance, ProFormText } from "@ant-design/pro-components";
-import { useEffect, useRef } from "react";
+import { ProForm, ProFormText } from "@ant-design/pro-components";
+import { useEffect } from "react";
 import { BlockProps } from "./typings";
 
 const DividerBlock: React.FC<BlockProps> = (props) => {
 
-    const formRef = useRef<ProFormInstance>();
+    const formRef = ProForm.useFormInstance();
 
     useEffect(() => {
-        formRef.current?.setFields([
+        formRef.setFields([
             {
                 name: 'label',
                 value: props.data?.label
@@ -20,9 +20,9 @@ const DividerBlock: React.FC<BlockProps> = (props) => {
     }, [props.data])
 
     return (
-        <DrawerForm {...props} formRef={formRef}>
+        <>
             <ProFormText label="Label" name="label" />
-        </DrawerForm>
+        </>
     )
 }
 

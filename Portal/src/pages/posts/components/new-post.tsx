@@ -1,15 +1,25 @@
+import { PostType } from "@/enum/post-enum";
 import { apiCategoryTreeData } from "@/services/categoy";
+import { apiNewPost } from "@/services/post";
 import { ModalForm, ProFormInstance, ProFormText, ProFormTextArea, ProFormTreeSelect } from "@ant-design/pro-components"
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useRef, useState } from "react";
 
-const NewPost: React.FC = () => {
+type Props = {
+    type: PostType;
+}
+
+const NewPost: React.FC<Props> = ({ type }) => {
 
     const [open, setOpen] = useState<boolean>(false);
     const formRef = useRef<ProFormInstance>();
 
     const onFinish = async (values: any) => {
-        console.log(values);
+        values.type = type;
+        await apiNewPost(values);
+        message.success('Thêm mới thành công!');
+        setOpen(false);
+        formRef.current?.resetFields();
     }
 
     return (

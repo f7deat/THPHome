@@ -16,3 +16,8 @@ export const apiShareZaloOA = (id: number) => request(`post/zalo/share/${id}`, {
 });
 
 export const apiGetChartPostCreatedInYear = () => request(`post/chart-post-created-in-year`);
+
+export const apiNewPost = (data: any) => request(`post/new`, {
+    method: 'POST',
+    data
+});

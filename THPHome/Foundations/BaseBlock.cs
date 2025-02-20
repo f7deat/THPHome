@@ -1,4 +1,4 @@
-﻿namespace WebUI.Foundations;
+﻿namespace THPHome.Foundations;
 
 public class BaseBlock
 {

@@ -1,5 +1,6 @@
-import { DividerBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
+import { DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import HtmlBlock from "@/components/blocks/html";
+import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
 import { ActionType, DragSortTable, DrawerForm, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
@@ -144,8 +145,6 @@ const PageBlock: React.FC = () => {
 
     const onSaveBlock = async (values: any) => {
         if (!block) return;
-        console.log(values);
-        return;
         await queryBlockSave(block.id, values);
         message.success('Saved!');
         setOpen(false);
@@ -153,12 +152,14 @@ const PageBlock: React.FC = () => {
 
     const FormSetting = () => {
         if (!block) return <div />
-        if (block.normalizedName === 'TextBlock') return <TextBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
-        if (block.normalizedName === 'VideoBlock') return <VideoBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
-        if (block.normalizedName === 'DividerBlock') return <DividerBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
-        if (block.normalizedName === 'TinyMCEBlock') return <TinyMCEBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
-        if (block.normalizedName === 'SponsorBlock') return <SponsorBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
-        if (block.normalizedName === 'HtmlBlock') return <HtmlBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
+        if (block.normalizedName === 'TextBlock') return <TextBlock data={block.data} />
+        if (block.normalizedName === 'VideoBlock') return <VideoBlock data={block.data} />
+        if (block.normalizedName === 'DividerBlock') return <DividerBlock data={block.data} />
+        if (block.normalizedName === 'TinyMCEBlock') return <TinyMCEBlock data={block.data} />
+        if (block.normalizedName === 'SponsorBlock') return <SponsorBlock data={block.data} />
+        if (block.normalizedName === 'HtmlBlock') return <HtmlBlock data={block.data} />
+        if (block.normalizedName === 'MajorGeneralBlock') return <MajorGeneralBlock data={block.data} />
+        if (block.normalizedName === 'SideGalleryBlock') return <SideGalleryBlock data={block.data} />
         return <div />
     }
 

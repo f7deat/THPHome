@@ -63,7 +63,7 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
     public async Task<IActionResult> ImportAsync(IFormFile file) => Ok(await _postService.ImportAsync(file));
 
     [HttpPost("new")]
-    public async Task<IActionResult> NewAsync([FromBody] Post args)
+    public async Task<IActionResult> NewAsync([FromBody] Post args, [FromQuery] string locale)
     {
         try
         {
@@ -71,6 +71,8 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
             var user = await _userManager.FindByIdAsync(User.GetId());
             if (user is null) return Unauthorized();
             if (user.UserType == UserType.Student) return BadRequest("Tài khoản không có quyền truy cập!");
+            var url = SeoHelper.ToSeoFriendly(args.Title);
+            if (await _context.Posts.AnyAsync(x => x.Url == url)) return BadRequest("Đường dẫn đã tồn tại!");
             await _context.Posts.AddAsync(new Post
             {
                 CategoryId = args.CategoryId,
@@ -79,7 +81,9 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
                 CreatedBy = user.UserName,
                 Description = args.Description,
                 Type = args.Type,
-                Url = SeoHelper.ToSeoFriendly(args.Title)
+                Url = url,
+                Locale = locale,
+                IssuedDate = DateTime.Now
             });
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(NewAsync), IdentityResult.Success);

@@ -1,4 +1,4 @@
-﻿using WebUI.Foundations;
+﻿using THPHome.Foundations;
 
 namespace WebUI.Models.Blocks;
 

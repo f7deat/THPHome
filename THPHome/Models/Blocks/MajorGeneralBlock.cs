@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WebUI.Foundations;
+using THPHome.Foundations;
 
-namespace WebUI.Models.Blocks;
+namespace THPHome.Models.Blocks;
 
 public class MajorGeneralBlock : BaseBlock
 {

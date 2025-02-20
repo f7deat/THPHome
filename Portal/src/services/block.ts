@@ -29,7 +29,7 @@ export const queryActiveBlock = (id: any) => request(`block/active/${id}`, {
 
 export const queryBlockOptions = () => request(`block/options`);
 
-export const queryBlockSave = (blockId: string, data: any) => request(`block/save/${blockId}`, {
+export const queryBlockSave = (workId: string, data: any) => request(`block/save/${workId}`, {
     method: 'POST',
     data
 });
