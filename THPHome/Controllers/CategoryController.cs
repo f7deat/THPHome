@@ -118,7 +118,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
         var categories = raw.Where(x => x.ParrentId == parentId).Select(x => new TreeCategoryData
         {
             Value = x.Id,
-            Title = x.Name
+            Label = x.Name
         });
         if (!categories.Any()) return result;
         foreach (var category in categories)
@@ -165,7 +165,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
             result.Add(new TreeCategoryData
             {
                 Value = category.Id,
-                Title = category.Name,
+                Label = category.Name,
                 Children = GetTreeData(category.Id, raw)
             });
         }

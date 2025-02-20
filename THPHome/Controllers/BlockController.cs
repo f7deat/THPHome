@@ -77,23 +77,73 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
         if (work is null) return BadRequest();
         var block = await _context.Blocks.FindAsync(work.BlockId);
         if (block is null) return BadRequest();
-        if (string.IsNullOrEmpty(work.Data)) return Ok();
-        switch (block.NormalizedName)
+        object? data = new { };
+        if (!string.IsNullOrWhiteSpace(work.Data))
         {
-            case nameof(DividerBlock): return Ok(JsonConvert.DeserializeObject<DividerBlock>(work.Data));
-            case nameof(HtmlBlock): return Ok(JsonConvert.DeserializeObject<HtmlBlock>(work.Data));
-            case nameof(MajorGeneralBlock): return Ok(JsonConvert.DeserializeObject<MajorGeneralBlock>(work.Data));
-            case nameof(TextBlock): return Ok(JsonConvert.DeserializeObject<TextBlock>(work.Data));
-            case nameof(TinyMCEBlock): return Ok(JsonConvert.DeserializeObject<TinyMCEBlock>(work.Data));
-            case nameof(VideoBlock): return Ok(JsonConvert.DeserializeObject<VideoBlock>(work.Data));
-            case nameof(SponsorBlock): return Ok(JsonConvert.DeserializeObject<SponsorBlock>(work.Data));
-            case nameof(SideGalleryBlock): return Ok(JsonConvert.DeserializeObject<SideGalleryBlock>(work.Data));
-            case nameof(BannerBlock): return Ok(JsonConvert.DeserializeObject<BannerBlock>(work.Data));
-            case nameof(PopupBlock): return Ok(JsonConvert.DeserializeObject<PopupBlock>(work.Data));
-            default:
-                break;
+            switch (block.NormalizedName)
+            {
+                case nameof(DividerBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<DividerBlock>(work.Data);
+                        break;
+                    }
+                case nameof(HtmlBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<HtmlBlock>(work.Data);
+                        break;
+                    };
+                case nameof(MajorGeneralBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<MajorGeneralBlock>(work.Data);
+                        break;
+                    };
+                case nameof(TextBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<TextBlock>(work.Data);
+                        break;
+                    };
+                case nameof(TinyMCEBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<TinyMCEBlock>(work.Data);
+                        break;
+                    };
+                case nameof(VideoBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<VideoBlock>(work.Data);
+                        break;
+                    };
+                case nameof(SponsorBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<SponsorBlock>(work.Data);
+                        break;
+                    };
+                case nameof(SideGalleryBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<SideGalleryBlock>(work.Data);
+                        break;
+                    };
+                case nameof(BannerBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<BannerBlock>(work.Data);
+                        break;
+                    };
+                case nameof(PopupBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<PopupBlock>(work.Data);
+                        break;
+                    };
+                default:
+                    break;
+            }
         }
-        return Ok();
+        return Ok(new
+        {
+            block.Id,
+            block.NormalizedName,
+            block.Name,
+            block.Active,
+            data,
+        });
     }
 
     [HttpPost("save/{id}")]

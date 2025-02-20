@@ -1,11 +1,10 @@
-import { BannerBlock, DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
+import { DividerBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import HtmlBlock from "@/components/blocks/html";
-import SideGalleryBlock from "@/components/blocks/side-gallery";
-import { queryActiveBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
+import { queryActiveBlock, queryBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
-import { ActionType, DragSortTable, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { ActionType, DragSortTable, DrawerForm, ModalForm, ProColumns, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
-import { Button, Empty, Popconfirm, Switch, Tooltip, message } from "antd";
+import { Button, Popconfirm, Switch, Tooltip, message, Skeleton } from "antd";
 import { useEffect, useRef, useState } from "react";
 
 const PageBlock: React.FC = () => {
@@ -14,9 +13,10 @@ const PageBlock: React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [block, setBlock] = useState<any>();
-    const form = useRef<ProFormInstance>();
     const formBlock = useRef<ProFormInstance>();
     const actionRef = useRef<ActionType>();
+    const [blockId, setBlockId] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchData = () => {
         if (id) {
@@ -25,6 +25,16 @@ const PageBlock: React.FC = () => {
             })
         }
     }
+
+    useEffect(() => {
+        if (blockId) {
+            setLoading(true);
+            queryBlock(blockId).then(response => {
+                setLoading(false);
+                setBlock(response);
+            })
+        }
+    }, [blockId]);
 
     useEffect(() => {
         if (id) {
@@ -51,25 +61,6 @@ const PageBlock: React.FC = () => {
         fetchData();
         formBlock.current?.resetFields();
     };
-
-    useEffect(() => {
-        if (block) {
-            formBlock.current?.setFields([
-                {
-                    name: 'id',
-                    value: block.id
-                },
-                {
-                    name: 'name',
-                    value: block.name
-                },
-                {
-                    name: 'blockId',
-                    value: block.blockId
-                }
-            ]);
-        }
-    }, [block]);
 
     const columns: ProColumns<any>[] = [
         {
@@ -111,8 +102,7 @@ const PageBlock: React.FC = () => {
                         type="primary"
                         icon={<ToolOutlined />}
                         onClick={() => {
-                            setBlock(entity);
-                            form.current?.setFieldValue('id', entity.id);
+                            setBlockId(entity.id);
                             setOpen(true);
                         }}
                     />
@@ -154,39 +144,22 @@ const PageBlock: React.FC = () => {
 
     const onSaveBlock = async (values: any) => {
         if (!block) return;
+        console.log(values);
+        return;
         await queryBlockSave(block.id, values);
         message.success('Saved!');
         setOpen(false);
     }
 
     const FormSetting = () => {
-        if (!block) return <Empty />
-        if (block.normalizedName === 'TextBlock') {
-            return <TextBlock id={block.id} />
-        }
-        if (block.normalizedName === 'MajorGeneralBlock') {
-            return <MajorGeneralBlock id={block.id} />
-        }
-        if (block.normalizedName === 'VideoBlock') {
-            return <VideoBlock id={block.id} />
-        }
-        if (block.normalizedName === 'DividerBlock') {
-            return <DividerBlock id={block.id} />
-        }
-        if (block.normalizedName === 'TinyMCEBlock') {
-            return <TinyMCEBlock id={block.id} />
-        }
-        if (block.normalizedName === 'SponsorBlock') return <SponsorBlock data={block} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
-        if (block.normalizedName === 'SideGalleryBlock') {
-            return <SideGalleryBlock id={block.id} />
-        }
-        if (block.normalizedName === 'BannerBlock') {
-            return <BannerBlock id={block.id} />
-        }
-        if (block.normalizedName === 'HtmlBlock') {
-            return <HtmlBlock id={block.id} />
-        }
-        return <Empty />
+        if (!block) return <div />
+        if (block.normalizedName === 'TextBlock') return <TextBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
+        if (block.normalizedName === 'VideoBlock') return <VideoBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
+        if (block.normalizedName === 'DividerBlock') return <DividerBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
+        if (block.normalizedName === 'TinyMCEBlock') return <TinyMCEBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
+        if (block.normalizedName === 'SponsorBlock') return <SponsorBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
+        if (block.normalizedName === 'HtmlBlock') return <HtmlBlock data={block.data} onFinish={onSaveBlock} open={open} onOpenChange={setOpen} />
+        return <div />
     }
 
     return (
@@ -231,7 +204,11 @@ const PageBlock: React.FC = () => {
                     request={queryBlockOptions}
                     name="blockId" label="Block" />
             </ModalForm>
-            <FormSetting />
+            <DrawerForm open={open} onOpenChange={setOpen} title={block?.name} onFinish={onSaveBlock} width={1000}>
+                <Skeleton loading={loading}>
+                    <FormSetting />
+                </Skeleton>
+            </DrawerForm>
         </>
     );
 }

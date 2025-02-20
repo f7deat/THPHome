@@ -1,26 +1,19 @@
-import { queryBlock } from "@/services/block";
 import { ProForm, ProFormText } from "@ant-design/pro-components";
 import { useEffect } from "react";
+import { BlockProps } from "./typings";
 
-type Props = {
-    id: string;
-}
+const VideoBlock: React.FC<BlockProps> = (props) => {
 
-const VideoBlock: React.FC<Props> = ({ id }) => {
+    const formRef = ProForm.useFormInstance();
 
-    const form = ProForm.useFormInstance();
     useEffect(() => {
-        if (id) {
-            queryBlock(id).then(response => {
-                form.setFields([
-                    {
-                        name: 'embedUrl',
-                        value: response.embedUrl
-                    }
-                ]);
-            })
-        }
-    }, [id])
+        formRef.setFields([
+            {
+                name: 'embedUrl',
+                value: props.data?.embedUrl
+            }
+        ]);
+    }, [props?.data])
 
     return (
         <>

@@ -1,3 +1,3 @@
-export interface IBlock {
-    id: string;
+export type BlockProps = DrawerFormProps & {
+    data?: any;
 }

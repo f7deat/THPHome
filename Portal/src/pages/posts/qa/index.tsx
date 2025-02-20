@@ -1,11 +1,11 @@
-import { apiQaAdd, apiQaDelete, apiQaList, apiQaUpdate } from "@/services/qa";
+import { apiActiveQaGroup, apiQaAdd, apiQaDelete, apiQaList, apiQaUpdate } from "@/services/qa";
 import { DeleteOutlined, EditOutlined, FolderOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormDigit, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
 import { history } from "@umijs/max";
-import { Button, Popconfirm, message } from "antd";
+import { Button, Popconfirm, Switch, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 
-const QaPage : React.FC = () => {
+const QaPage: React.FC = () => {
 
     const formRef = useRef<ProFormInstance>();
     const [open, setOpen] = useState<boolean>(false);
@@ -47,7 +47,7 @@ const QaPage : React.FC = () => {
         setOpen(false);
     }
 
-    const columns : ProColumnType<any>[] = [
+    const columns: ProColumnType<any>[] = [
         {
             title: '#',
             valueType: 'indexBorder',
@@ -68,16 +68,25 @@ const QaPage : React.FC = () => {
         {
             title: 'Ngày tạo',
             dataIndex: 'createdDate',
-            valueType: 'dateTime',
+            valueType: 'fromNow',
             width: 180,
             search: false
         },
         {
             title: 'Ngày cập nhật',
             dataIndex: 'modifiedDate',
-            valueType: 'dateTime',
+            valueType: 'fromNow',
             width: 180,
             search: false
+        },
+        {
+            title: 'Hiển thị',
+            dataIndex: 'active',
+            render: (_, entity) => <Switch size="small" checked={entity.active} onChange={async () => {
+                await apiActiveQaGroup({ id: entity.id });
+                message.success('Thao tác thành công!');
+                actionRef.current?.reload();
+            }} />
         },
         {
             title: 'Tác vụ',
@@ -88,7 +97,7 @@ const QaPage : React.FC = () => {
                     setQaGroup(entity);
                     setOpen(true);
                 }} />,
-                <Popconfirm  key="delete" title="Xác nhận xóa?" onConfirm={async () => {
+                <Popconfirm key="delete" title="Xác nhận xóa?" onConfirm={async () => {
                     await apiQaDelete(entity.id);
                     message.success('Xóa thành công!');
                     actionRef.current?.reload();

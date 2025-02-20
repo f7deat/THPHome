@@ -34,6 +34,18 @@ public class QaController(ApplicationDbContext context) : BaseController(context
         return Ok();
     }
 
+    [HttpPost("group/active")]
+    public async Task<IActionResult> ActiveGroupAsync([FromBody] QaGroup args)
+    {
+        var group = await _context.QaGroups.FindAsync(args.Id);
+        if (group is null) return BadRequest("Data not found!");
+        group.Active = !group.Active;
+        group.ModifiedDate = DateTime.Now;
+        _context.QaGroups.Update(group);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync([FromBody] QaGroup args)
     {
@@ -110,7 +122,7 @@ public class QaController(ApplicationDbContext context) : BaseController(context
     public async Task<IActionResult> AllQaAsync()
     {
         var data = new List<QaGroupListItem>();
-        var groups = await _context.QaGroups.OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
+        var groups = await _context.QaGroups.Where(x => x.Active).OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
         var items = await _context.QaItems.OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
         foreach (var group in groups)
         {

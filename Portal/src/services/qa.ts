@@ -10,6 +10,11 @@ export const apiQaUpdate = (data: any) => request(`qa/update`, {
     data
 });
 
+export const apiActiveQaGroup = (data: any) => request(`qa/group/active`, {
+    method: 'POST',
+    data
+});
+
 export const apiQaDelete = (id: string) => request(`qa/delete/${id}`, { 
     method: 'POST'
 });

@@ -1,34 +1,26 @@
-import { queryBlock } from "@/services/block";
-import { ProForm } from "@ant-design/pro-components";
 import { useEffect, useState } from "react";
 import MyEditor from "../my-editor";
+import { BlockProps } from "./typings";
+import { ProForm } from "@ant-design/pro-components";
 
-type Props = {
-    id: string;
-}
+const TinyMCEBlock: React.FC<BlockProps> = (props) => {
 
-const TinyMCEBlock: React.FC<Props> = ({ id }) => {
-
-    const form = ProForm.useFormInstance();
+    const formRef = ProForm.useFormInstance();
     const [dataSource, setDataSource] = useState<any>();
 
     useEffect(() => {
-        if (id) {
-            queryBlock(id).then(response => {
-                form.setFields([
-                    {
-                        name: 'raw',
-                        value: response.raw
-                    },
-                    {
-                        name: 'className',
-                        value: response.className
-                    }
-                ]);
-                setDataSource(response);
-            });
-        }
-    }, [id])
+        formRef.setFields([
+            {
+                name: 'raw',
+                value: props.data?.raw
+            },
+            {
+                name: 'className',
+                value: props.data?.className
+            }
+        ]);
+        setDataSource(props.data);
+    }, [props.data])
 
     return (
         <>

@@ -1,53 +1,59 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { DrawerForm, DrawerFormProps, ProFormDigit, ProFormInstance, ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormDigit, ProFormText } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
 import { Badge, Button, Col, Divider, Image, Row, Upload, message } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { BlockProps } from './typings';
 
-type Props = DrawerFormProps & {
-  data?: any;
-};
-
-const SponsorBlock: React.FC<Props> = (props) => {
+const SponsorBlock: React.FC<BlockProps> = (props) => {
   const [sponsors, setSponsors] = useState<{ logo: string; link: string }[]>(
     [],
   );
   const [fileList, setFileList] = useState<any>([]);
-  const formRef = useRef<ProFormInstance>();
+  const formRef = ProForm.useFormInstance(); 
 
   useEffect(() => {
+    console.log(formRef);
     if (props.data) {
-      formRef.current?.setFields([
+      formRef?.setFields([
         { name: 'label', value: props.data?.label },
         { name: 'className', value: props.data?.className },
         { name: 'delay', value: props.data?.autoPlay?.delay },
         { name: 'speed', value: props.data?.speed },
+        { name: 'items', value: props.data?.items },
       ]);
-      setSponsors(props.data?.sponsors || []);
+      setSponsors(props.data?.items || []);
     }
   }, [props.data]);
+
+  const onDelayChange = (delay: number | null) => {
+    console.log(delay)
+    formRef.setFieldValue('autoPlay', {
+      delay: delay,
+    });
+  }
 
   useEffect(() => {
     setFileList([]);
   }, [props.data]);
 
   return (
-    <DrawerForm {...props} formRef={formRef} onFinish={async (values) => {
-      values.autoPlay.delay = values.delay;
-      props.onFinish?.(values);
-    }}>
+    <>
+      <ProFormText name="items" hidden />
+      <ProFormText name="autoPlay" hidden />
       <Divider orientation="left">Auto Play</Divider>
       <Row gutter={16}>
         <Col span={12}>
-          <ProFormDigit name="delay" label="Delay" />
+          <ProFormDigit name="deplay" label="Delay" fieldProps={{
+            onChange: onDelayChange,
+          }} />
         </Col>
         <Col span={12}>
           <ProFormDigit name="speed" label="Speed" />
         </Col>
       </Row>
-      <ProFormText name="sponsors" hidden />
       <Divider orientation="left">Logo</Divider>
-      <div className="flex gap-4" style={{ gap: 8, flexWrap: 'wrap' }}>
+      <div className="grid grid-cols-4 gap-4">
         {sponsors.map((sponsor, i) => (
           <div
             className="relative"
@@ -67,7 +73,7 @@ const SponsorBlock: React.FC<Props> = (props) => {
                       (_, index) => index !== i,
                     );
                     setSponsors(updatedSponsors);
-                    formRef.current?.setFieldValue('sponsors', updatedSponsors);
+                    formRef.setFieldValue('items', updatedSponsors);
                   }}
                   type="text"
                   size="small"
@@ -80,12 +86,11 @@ const SponsorBlock: React.FC<Props> = (props) => {
               <Image
                 src={sponsor.logo}
                 alt="LOGO"
-                width={90}
                 height={90}
                 style={{
                   borderRadius: 8,
                   objectFit: 'cover',
-                }}
+                }} className='w-full'
               />
             </Badge.Ribbon>
             <ProFormText
@@ -101,7 +106,7 @@ const SponsorBlock: React.FC<Props> = (props) => {
                     link: e.target.value,
                   };
                   setSponsors(updatedSponsors);
-                  formRef.current?.setFieldValue('sponsors', updatedSponsors);
+                  formRef.setFieldValue('items', updatedSponsors);
                 },
               }}
             />
@@ -130,7 +135,7 @@ const SponsorBlock: React.FC<Props> = (props) => {
                 { logo: response.url, link: '' },
               ];
               setSponsors(newSponsors);
-              formRef.current?.setFieldValue('sponsors', newSponsors);
+              formRef.setFieldValue('items', newSponsors);
             });
             return false;
           }}
@@ -146,7 +151,7 @@ const SponsorBlock: React.FC<Props> = (props) => {
           </button>
         </Upload>
       </div>
-    </DrawerForm>
+    </>
   );
 };
 

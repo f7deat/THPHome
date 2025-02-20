@@ -1,35 +1,28 @@
-import { queryBlock } from "@/services/block";
-import { ProForm, ProFormText } from "@ant-design/pro-components";
-import { useEffect } from "react";
+import { DrawerForm, ProFormInstance, ProFormText } from "@ant-design/pro-components";
+import { useEffect, useRef } from "react";
+import { BlockProps } from "./typings";
 
-type Props = {
-    id: string;
-}
+const DividerBlock: React.FC<BlockProps> = (props) => {
 
-const DividerBlock: React.FC<Props> = ({ id }) => {
+    const formRef = useRef<ProFormInstance>();
 
-    const form = ProForm.useFormInstance();
     useEffect(() => {
-        if (id) {
-            queryBlock(id).then(response => {
-                form.setFields([
-                    {
-                        name: 'label',
-                        value: response.label
-                    },
-                    {
-                        name: 'className',
-                        value: response.className
-                    }
-                ]);
-            })
-        }
-    }, [id])
+        formRef.current?.setFields([
+            {
+                name: 'label',
+                value: props.data?.label
+            },
+            {
+                name: 'className',
+                value: props.data?.className
+            }
+        ]);
+    }, [props.data])
 
     return (
-        <>
+        <DrawerForm {...props} formRef={formRef}>
             <ProFormText label="Label" name="label" />
-        </>
+        </DrawerForm>
     )
 }
 

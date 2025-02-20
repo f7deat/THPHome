@@ -15,8 +15,16 @@ public class LocalizationController(ApplicationDbContext context) : BaseControll
     public async Task<IActionResult> ListAsync([FromQuery] LocalizationFilterOptions filterOptions)
     {
         var lang = LanguageHelper.GetLanguage(filterOptions.Locale);
-        var query = _context.Localizations.Where(x => x.Language == lang).OrderBy(x => x.Key);
-        return Ok(await ListResult<Localization>.Success(query, filterOptions));
+        var query = _context.Localizations.Where(x => x.Language == lang);
+        if (!string.IsNullOrWhiteSpace(filterOptions.Key))
+        {
+            query = query.Where(x => x.Key.ToLower().Contains(filterOptions.Key.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(filterOptions.Value))
+        {
+            query = query.Where(x => x.Value != null && x.Value.ToLower().Contains(filterOptions.Value.ToLower()));
+        }
+        return Ok(await ListResult<Localization>.Success(query.OrderBy(x => x.Key), filterOptions));
     }
 
     [HttpPost("update")]

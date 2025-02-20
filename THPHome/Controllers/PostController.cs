@@ -18,6 +18,7 @@ using THPHome.Entities;
 using THPHome.Helpers;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters;
+using THPCore.Enums;
 
 namespace THPHome.Controllers;
 
@@ -60,6 +61,34 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
 
     [HttpPost("import")]
     public async Task<IActionResult> ImportAsync(IFormFile file) => Ok(await _postService.ImportAsync(file));
+
+    [HttpPost("new")]
+    public async Task<IActionResult> NewAsync([FromBody] Post args)
+    {
+        try
+        {
+            if (args is null) return BadRequest("Dữ liệu không hợp lệ!");
+            var user = await _userManager.FindByIdAsync(User.GetId());
+            if (user is null) return Unauthorized();
+            if (user.UserType == UserType.Student) return BadRequest("Tài khoản không có quyền truy cập!");
+            await _context.Posts.AddAsync(new Post
+            {
+                CategoryId = args.CategoryId,
+                CreatedDate = DateTime.Now,
+                Title = args.Title,
+                CreatedBy = user.UserName,
+                Description = args.Description,
+                Type = args.Type,
+                Url = SeoHelper.ToSeoFriendly(args.Title)
+            });
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(NewAsync), IdentityResult.Success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+    }
 
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync([FromBody] AddPostArgs args, [FromQuery] string locale)

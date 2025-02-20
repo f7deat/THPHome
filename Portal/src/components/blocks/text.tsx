@@ -1,34 +1,27 @@
-import { queryBlock } from "@/services/block";
 import { ProForm, ProFormSelect, ProFormTextArea } from "@ant-design/pro-components";
 import { useEffect } from "react";
+import { BlockProps } from "./typings";
 
-type Props = {
-    id: string;
-}
+const TextBlock: React.FC<BlockProps> = (props) => {
 
-const TextBlock: React.FC<Props> = ({ id }) => {
+    const formRef = ProForm.useFormInstance();
 
-    const form = ProForm.useFormInstance();
     useEffect(() => {
-        if (id) {
-            queryBlock(id).then(response => {
-                form.setFields([
-                    {
-                        name: 'type',
-                        value: response.type
-                    },
-                    {
-                        name: 'value',
-                        value: response.value
-                    },
-                    {
-                        name: 'className',
-                        value: response.className
-                    }
-                ]);
-            })
-        }
-    }, [id])
+        formRef.setFields([
+            {
+                name: 'type',
+                value: props.data?.type
+            },
+            {
+                name: 'value',
+                value: props.data?.value
+            },
+            {
+                name: 'className',
+                value: props.data?.className
+            }
+        ]);
+    }, [props.data])
 
     return (
         <>

@@ -1,32 +1,30 @@
-import { ProForm, ProFormTextArea } from "@ant-design/pro-components";
-import { IBlock } from "./typings";
-import { useEffect } from "react";
-import { queryBlock } from "@/services/block";
+import { DrawerForm, ProFormInstance, ProFormTextArea } from "@ant-design/pro-components";
+import { useEffect, useRef } from "react";
+import { BlockProps } from "./typings";
 
-const HtmlBlock: React.FC<IBlock> = ({ id }) => {
-    const form = ProForm.useFormInstance();
+const HtmlBlock: React.FC<BlockProps> = (props) => {
+    
+    const formRef = useRef<ProFormInstance>();
 
     useEffect(() => {
-        if (id) {
-            queryBlock(id).then(response => {
-                form.setFields([
+        if (props.data) {
+            formRef.current?.setFields([
                     {
                         name: 'className',
-                        value: response.className
+                        value: props.data?.className
                     },
                     {
                         name: 'value',
-                        value: response.value
+                        value: props.data?.value
                     }
                 ]);
-            })
         }
-    }, [id]);
+    }, [props.data]);
 
     return (
-        <>
+        <DrawerForm {...props} formRef={formRef}>
             <ProFormTextArea label="Html" name="value" />
-        </>
+        </DrawerForm>
     )
 }
 
