@@ -1,4 +1,4 @@
-import { DividerBlock, MajorGeneralBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
+import { DividerBlock, MajorGeneralBlock, SloganBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import HtmlBlock from "@/components/blocks/html";
 import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
@@ -160,6 +160,7 @@ const PageBlock: React.FC = () => {
         if (block.normalizedName === 'HtmlBlock') return <HtmlBlock data={block.data} />
         if (block.normalizedName === 'MajorGeneralBlock') return <MajorGeneralBlock data={block.data} />
         if (block.normalizedName === 'SideGalleryBlock') return <SideGalleryBlock data={block.data} />
+        if (block.normalizedName === 'SloganBlock') return <SloganBlock data={block.data} />
         return <div />
     }
 

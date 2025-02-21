@@ -132,6 +132,11 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
                         data = JsonConvert.DeserializeObject<PopupBlock>(work.Data);
                         break;
                     };
+                case nameof(SloganBlock):
+                    {
+                        data = JsonConvert.DeserializeObject<SloganBlock>(work.Data);
+                        break;
+                    };
                 default:
                     break;
             }

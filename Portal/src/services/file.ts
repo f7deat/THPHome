@@ -36,3 +36,13 @@ export const apiGalleryUpdate = (data: any) => request(`gallery`, {
 export const apiGalleryDelete = (id: string) => request(`gallery/${id}`, {
     method: 'DELETE'
 });
+
+export async function apiUploadImage(data: FormData) {
+    return request('file/image/upload', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        data
+    })
+}
