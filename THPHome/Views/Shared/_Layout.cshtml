@@ -87,7 +87,7 @@
     <div class="header-banner">
         <img src="~/img/DHHP.png">
     </div>
-    <header class="text-white mb-0 main-menu shadow">
+    <header class="text-white mb-0 main-menu shadow mb-md-4">
         <div class="container">
             <div class="navbar navbar-expand-lg">
                 <a href="/" class="d-flex align-items-center mb-lg-0 text-white nav-brand md:h-14 md:w-14 h-12 w-12 items-center justify-center">
@@ -115,10 +115,7 @@
             </div>
         </div>
     </header>
-    <div class="main-menu-slogan">
-        <div class="text-slogan">
-            Khai phóng - Phụng sự - Nhân văn
-        </div>
+    @* <div class="main-menu-slogan flex justify-end">
         <div class="searchBox">
             <div class="formSearch">
                 <form class="d-flex mt-3 mt-lg-0 items-center border-2 border-dark rounded-[30px]" action="/search">
@@ -126,7 +123,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> *@
     <partial name="_CookieConsentPartial" />
     <main role="main" class="main mb-4">
         @RenderBody()

@@ -28,14 +28,14 @@ const PageBlock: React.FC = () => {
     }
 
     useEffect(() => {
-        if (blockId) {
+        if (blockId && open) {
             setLoading(true);
             queryBlock(blockId).then(response => {
                 setLoading(false);
                 setBlock(response);
             })
         }
-    }, [blockId]);
+    }, [blockId, open]);
 
     useEffect(() => {
         if (id) {
