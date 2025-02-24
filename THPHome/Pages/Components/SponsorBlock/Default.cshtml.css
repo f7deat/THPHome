@@ -1,5 +1,12 @@
-﻿.swiper-slide {
+﻿/*.swiper-slide {
     display: flex !important;
     justify-content: center;
     align-items: center;
+}*/
+.sponsor-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    object-fit: contain;
 }
