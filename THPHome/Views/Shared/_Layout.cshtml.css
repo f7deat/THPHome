@@ -1,0 +1,21 @@
+﻿@media (max-width: 768px) {
+    .info-header {
+        gap: 0px;
+        justify-content: center;
+    }
+
+    .flex.gap-8 {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-left: 0;
+    }
+
+    .gap-8 {
+        font-size: 0.85rem;
+        gap: 0px !important;
+    }
+
+    .gap-14 {
+        gap: 0px !important;
+    }
+}
