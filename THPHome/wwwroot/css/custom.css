@@ -580,3 +580,118 @@ li.dropdown:hover .dropdown-mega {
         margin-bottom: 0;
     }
 }
+
+.triangle-overlay-above {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 120px solid #66aaf3;
+    border-right: 100px solid transparent;
+    z-index: 50;
+}
+
+.triangle-overlay-below {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 140px solid #b3d7ff;
+    border-right: 120px solid transparent;
+    z-index: 49;
+}
+
+.logo {
+    width: 50%;
+    padding: 20px 20px 0px 100px;
+}
+
+.header-banner {
+    width: 50%;
+    margin-left: auto;
+    margin-right: 0px;
+}
+
+.main-menu-slogan {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+}
+
+.text-slogan {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: time new romna;
+    color: red;
+}
+
+.searchBox {
+    width: 50%;
+}
+
+.formSearch {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    padding-right: 10px;
+}
+
+.info-header {
+    display: flex;
+    gap: 25px;
+    justify-content: right;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .info-header {
+        flex-wrap: wrap;
+        gap: 0px;
+        justify-content: center;
+    }
+
+    .flex.gap-8 {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-left: 0;
+    }
+
+    .gap-8 {
+        font-size: 0.85rem;
+    }
+
+    .gap-8,
+    .gap-14 {
+        gap: 0px !important;
+    }
+
+    .contact {
+        display: none;
+    }
+
+    .logo {
+        width: 100%;
+        padding: 0.5rem 1rem;
+    }
+
+    .searchBox {
+        display: none;
+    }
+
+    .text-slogan {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .triangle-overlay-above,
+    .triangle-overlay-below {
+        display: none;
+    }
+}
