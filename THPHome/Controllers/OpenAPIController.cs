@@ -152,16 +152,16 @@ public class OpenAPIController : Controller
         var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == id);
         if (post is null) return NoContent();
 
-        var categories = await (from a in _context.PostCategories
-                                join b in _context.Categories on a.CategoryId equals b.Id
-                                where a.PostId == post.Id
-                                select new
-                                {
-                                    b.Id,
-                                    b.Name,
-                                    b.NormalizeName,
-                                    a.PostId
-                                }).ToListAsync();
+        //var categories = await (from a in _context.PostCategories
+        //                        join b in _context.Categories on a.CategoryId equals b.Id
+        //                        where a.PostId == post.Id
+        //                        select new
+        //                        {
+        //                            b.Id,
+        //                            b.Name,
+        //                            b.NormalizeName,
+        //                            a.PostId
+        //                        }).ToListAsync();
 
         var blocks = await (from a in _context.PostBlocks
                             join b in _context.Blocks on a.BlockId equals b.Id
@@ -175,17 +175,17 @@ public class OpenAPIController : Controller
                                 b.Name
                             }).ToListAsync();
 
-        var htmlBlock = string.Empty;
+        //var htmlBlock = string.Empty;
 
-        foreach (var item in blocks)
-        {
-            var data = _blockService.DeserializeObject(item.NormalizedName, item.Data);
-            if (data is null)
-            {
-                continue;
-            }
-            htmlBlock += await RenderToStringAsync(item.NormalizedName, data);
-        }
+        //foreach (var item in blocks)
+        //{
+        //    var data = _blockService.DeserializeObject(item.NormalizedName, item.Data);
+        //    if (data is null)
+        //    {
+        //        continue;
+        //    }
+        //    htmlBlock += await RenderToStringAsync(item.NormalizedName, data);
+        //}
 
         return Ok(new
         {
@@ -198,7 +198,6 @@ public class OpenAPIController : Controller
             post.CreatedDate,
             post.ModifiedDate,
             post.Content,
-            categories,
             blocks = blocks.Select(x => new
             {
                 x.Id,
@@ -206,7 +205,7 @@ public class OpenAPIController : Controller
                 x.NormalizedName,
                 data = _blockService.DeserializeObject(x.NormalizedName, x.Data)
             }),
-            htmlBlock
+            //htmlBlock
         });
     }
 

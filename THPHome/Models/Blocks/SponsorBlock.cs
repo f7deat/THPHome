@@ -17,5 +17,5 @@ public class SponsorItem
 
 public class AutoPlay
 {
-    public int Delay { get; set; }
+    public int Delay { get; set; } = 0;
 }

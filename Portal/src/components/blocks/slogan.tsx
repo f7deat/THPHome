@@ -20,6 +20,10 @@ const SloganBlock: React.FC<BlockProps> = (props) => {
                 {
                     name: 'title',
                     value: props.data?.title
+                },
+                {
+                    name: 'image',
+                    value: props.data?.image
                 }
             ]);
             setPreviewImage(props.data?.image);

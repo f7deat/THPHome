@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -70,7 +71,7 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
         });
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}"), AllowAnonymous]
     public async Task<IActionResult> GetAsync([FromRoute] Guid id)
     {
         var work = await _context.PostBlocks.FindAsync(id);

@@ -21,6 +21,7 @@ public class BlockService : IBlockService
             nameof(SponsorBlock) => JsonConvert.DeserializeObject<SponsorBlock>(data),
             nameof(SideGalleryBlock) => JsonConvert.DeserializeObject<SideGalleryBlock>(data),
             nameof(MajorGeneralBlock) => JsonConvert.DeserializeObject<MajorGeneralBlock>(data),
+            nameof(SloganBlock) => JsonConvert.DeserializeObject<SloganBlock>(data),
             _ => default,
         };
     }
