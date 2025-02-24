@@ -8,14 +8,14 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 @if (Model != null)
 {
-    <div class="sponsor @Model.ClassName">
+    <div class="sponsor container">
         <div class="swiper swiper-@id">
             <div class="swiper-wrapper">
                 @foreach (var item in Model.Items)
                 {
                     <div class="swiper-slide">
-                        <a href="@item.Link">
-                            <img src="@item.Logo" alt="LOGO" class="logo" />
+                        <a href="@item.Link" class="flex justify-center">
+                            <img src="@item.Logo" alt="LOGO" class="sponsor-logo" />
                         </a>
                     </div>
                 }
