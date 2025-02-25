@@ -8,6 +8,9 @@ namespace THPHome.Controllers;
 
 public class TrainingController(ApplicationDbContext context) : BaseController(context)
 {
-    [HttpGet("list"), AllowAnonymous]
+    [HttpGet("group/list"), AllowAnonymous]
     public async Task<IActionResult> GetListAsync() => Ok(await _context.TrainingGroups.Where(x => x.Active).OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync());
+
+    [HttpGet("group/count"), AllowAnonymous]
+    public async Task<IActionResult> CountGroupAsync() => Ok(await _context.TrainingGroups.CountAsync(x => x.Active));
 }
