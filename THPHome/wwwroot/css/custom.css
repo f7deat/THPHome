@@ -617,7 +617,7 @@ li.dropdown:hover .dropdown-mega {
 .main-menu-slogan {
     display: flex;
     align-items: center;
-    width: 100%;
+    width: auto;
     padding: 15px;
 }
 
