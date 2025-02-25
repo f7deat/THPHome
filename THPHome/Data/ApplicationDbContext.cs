@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using THPHome.Entities;
 using THPHome.Entities.Contacts;
+using THPHome.Entities.Curriculum;
 using THPHome.Entities.Notifications;
 using THPHome.Entities.Utils;
 using WebUI.Entities;
@@ -55,6 +56,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     #region Contacts
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<ContactStatus> ContactStatuses { get; set; }
+    #endregion
+
+    #region Curriculum - Đào tạo
+    public DbSet<TrainingGroup> TrainingGroups { get; set; }
     #endregion
 
     public DbSet<ApplicationLog> Logs { get; set; }
