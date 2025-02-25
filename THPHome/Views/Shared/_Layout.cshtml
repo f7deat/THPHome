@@ -106,24 +106,26 @@
                         </h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
-                    <div class="offcanvas-body">
+                    <div class="offcanvas-body items-center">
                         <div class="navbar-nav justify-content-end flex-grow-1 pe-3 gap-x-6">
                             @await Component.InvokeAsync("Menu", new { type = MenuType.MAIN })
+                        </div>
+
+                        <div class="main-menu-slogan flex justify-end">
+                            <div class="searchBox">
+                                <div class="formSearch">
+                                    <form class="d-flex mt-3 mt-lg-0 items-center border-2 border-dark rounded-[30px]" action="/search">
+                                        <input type="search" class="h-8 md:h-10 px-3 w-full md:w-[200px] text-dark rounded-full" placeholder="Nhập từ khóa..." aria-label="Search" name="searchTerm">
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
-    @* <div class="main-menu-slogan flex justify-end">
-        <div class="searchBox">
-            <div class="formSearch">
-                <form class="d-flex mt-3 mt-lg-0 items-center border-2 border-dark rounded-[30px]" action="/search">
-                    <input type="search" class="h-8 md:h-10 px-3 w-full md:w-64 text-dark rounded-full" placeholder="Nhập từ khóa..." aria-label="Search" name="searchTerm">
-                </form>
-            </div>
-        </div>
-    </div> *@
+    
     <partial name="_CookieConsentPartial" />
     <main role="main" class="main mb-4">
         @RenderBody()
