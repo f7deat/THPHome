@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
+using THPHome.Entities.QA;
 
 namespace WebUI.Entities;
 

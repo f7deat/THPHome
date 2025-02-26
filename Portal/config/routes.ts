@@ -169,6 +169,11 @@ export default [
         component: './posts/admission',
       },
       {
+        name: 'Ngành/Chuyên ngành',
+        path: '/admission/training-group',
+        component: './admission/training-group'
+      },
+      {
         name: 'Liên hệ',
         path: '/admission/contact',
         component: './admission/contact'

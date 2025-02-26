@@ -22,7 +22,7 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
     [HttpGet("group/count"), AllowAnonymous]
     public async Task<IActionResult> CountGroupAsync() => Ok(await _context.TrainingGroups.CountAsync(x => x.Active));
 
-    [HttpGet("group/{id}")]
+    [HttpGet("group/{id}"), AllowAnonymous]
     public async Task<IActionResult> GetGroupAsync([FromRoute] int id) => Ok(await _context.TrainingGroups.FindAsync(id));
     #endregion
 

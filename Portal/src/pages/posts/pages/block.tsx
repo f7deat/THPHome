@@ -68,7 +68,7 @@ const PageBlock: React.FC = () => {
             title: '#',
             dataIndex: 'sortOrder',
             className: 'drag-visible',
-            width: 50,
+            width: 30,
             align: 'center'
         },
         {

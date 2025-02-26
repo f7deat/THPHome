@@ -1,18 +1,26 @@
 ﻿using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Enums;
 using THPCore.Extensions;
 using THPHome.Data;
+using THPHome.Entities.QA;
+using THPHome.Interfaces.IService;
 using THPHome.Models.Results.QAs;
+using THPIdentity.Entities;
 using WebUI.Entities;
 using WebUI.Foundations;
 using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 
-public class QaController(ApplicationDbContext context) : BaseController(context)
+public class QaController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, ILogService _logService) : BaseController(context)
 {
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(new { data = await _context.QaGroups.FindAsync(id) });
+
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] FilterOptions filterOptions)
     {
@@ -79,22 +87,62 @@ public class QaController(ApplicationDbContext context) : BaseController(context
     {
         var query = _context.QaItems.Where(x => x.QaGroupId == id);
         query = query.OrderByDescending(x => x.SortOrder);
-        return Ok(await ListResult<QaItem>.Success(query, filterOptions));
+        var data = await query.Select(x => new QaItemListResult
+        {
+            Id = x.Id,
+            Question = x.Question,
+            Answer = x.Answer,
+            SortOrder = x.SortOrder,
+            CreatedDate = x.CreatedDate,
+            CreatedBy = x.CreatedBy,
+            ModifiedDate = x.ModifiedDate,
+            ModifiedBy = x.ModifiedBy
+        }).AsNoTracking().ToListAsync();
+
+        var users = await _userManager.Users.Where(x => x.UserType != UserType.Student).AsNoTracking().ToListAsync();
+
+        return Ok(new
+        {
+            Data = data.Select(x =>
+            {
+                var createdBy = users.FirstOrDefault(u => u.Id == x.CreatedBy);
+                var modifiedBy = users.FirstOrDefault(u => u.Id == x.ModifiedBy);
+                if (createdBy != null)
+                {
+                    x.CreatedBy = createdBy.Name;
+                }
+                if (modifiedBy != null)
+                {
+                    x.ModifiedBy = modifiedBy.Name;
+                }
+                return x;
+            }),
+            Total = await query.CountAsync()
+        });
     }
 
     [HttpPost("item/update")]
     public async Task<IActionResult> ItemUpdateAsync([FromBody] QaItem args)
     {
-        var data = await _context.QaItems.FindAsync(args.Id);
-        if (data == null) return BadRequest("Data not found!");
-        data.Answer = args.Answer;
-        data.Question = args.Question;
-        data.SortOrder = args.SortOrder;
-        data.ModifiedDate = DateTime.Now;
-        data.ModifiedBy = User.GetId();
-        _context.QaItems.Update(data);
-        await _context.SaveChangesAsync();
-        return Ok();
+        try
+        {
+            var data = await _context.QaItems.FindAsync(args.Id);
+            if (data == null) return BadRequest("Data not found!");
+            data.Answer = args.Answer;
+            data.Question = args.Question;
+            data.SortOrder = args.SortOrder;
+            data.ModifiedDate = DateTime.Now;
+            data.ModifiedBy = User.GetId();
+            _context.QaItems.Update(data);
+            await _logService.AddAsync($"Update QaItem: {data.Question} -> {args.Question}. {data.Answer} -> {args.Answer}");
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            await _logService.ExeptionAsync(ex);
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("item/add")]

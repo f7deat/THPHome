@@ -1,6 +1,6 @@
 import MyEditor from "@/components/my-editor";
 import { apiQaItemAdd, apiQaItemDelete, apiQaItemList, apiQaItemUpdate } from "@/services/qa";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormDigit, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
 import { useParams } from "@umijs/max";
 import { Button, Popconfirm, message } from "antd";
@@ -62,34 +62,44 @@ const QaItemPage: React.FC = () => {
             align: 'center'
         },
         {
-            title: 'Tiêu đề',
+            title: 'Câu hỏi',
             dataIndex: 'question'
         },
         {
-            title: 'Thứ tự',
+            title: 'TT',
             dataIndex: 'sortOrder',
-            width: 100,
+            width: 50,
             align: 'center',
+            search: false
+        },
+        {
+            title: 'Người tạo',
+            dataIndex: 'createdBy',
             search: false
         },
         {
             title: 'Ngày tạo',
             dataIndex: 'createdDate',
-            valueType: 'dateTime',
-            width: 180,
+            valueType: 'fromNow',
+            width: 150,
+            search: false
+        },
+        {
+            title: 'Người cập nhật',
+            dataIndex: 'modifiedBy',
             search: false
         },
         {
             title: 'Ngày cập nhật',
             dataIndex: 'modifiedDate',
-            valueType: 'dateTime',
-            width: 180,
+            valueType: 'fromNow',
+            width: 150,
             search: false
         },
         {
             title: 'Tác vụ',
             valueType: 'option',
-            render: (dom, entity) => [
+            render: (_, entity) => [
                 <Button size="small" icon={<EditOutlined />} type="primary" key="edit" onClick={() => {
                     setqaItem(entity);
                     setOpen(true);
@@ -102,17 +112,18 @@ const QaItemPage: React.FC = () => {
                     <Button type="primary" danger size="small" icon={<DeleteOutlined />} />
                 </Popconfirm>
             ],
-            width: 120
+            width: 60
         }
     ]
 
     return (
-        <PageContainer extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => {
-            setqaItem(null);
-            formRef.current?.resetFields();
-            setOpen(true);
-        }}>Tạo câu hỏi</Button>}>
+        <PageContainer extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <ProTable
+                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => {
+                    setqaItem(null);
+                    formRef.current?.resetFields();
+                    setOpen(true);
+                }}>Tạo câu hỏi</Button>}
                 request={(params) => apiQaItemList(params, id)}
                 columns={columns}
                 actionRef={actionRef}

@@ -1,7 +1,8 @@
 ﻿using ApplicationCore.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebUI.Entities;
 
-namespace WebUI.Entities;
+namespace THPHome.Entities.QA;
 
 public class QaItem : BaseEntity<Guid>
 {

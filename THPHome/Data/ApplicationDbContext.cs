@@ -5,6 +5,7 @@ using THPHome.Entities;
 using THPHome.Entities.Contacts;
 using THPHome.Entities.Curriculum;
 using THPHome.Entities.Notifications;
+using THPHome.Entities.QA;
 using THPHome.Entities.Utils;
 using WebUI.Entities;
 using WebUI.Entities.Articles;
