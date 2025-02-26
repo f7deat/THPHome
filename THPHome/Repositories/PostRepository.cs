@@ -131,8 +131,7 @@ public class PostRepository : EfRepository<Post>, IPostRepository
     public async Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions)
     {
         var query = from a in _context.Posts
-                    where a.Locale == filterOptions.Locale && a.CategoryId == filterOptions.CategoryId && a.Status == PostStatus.PUBLISH
-                    orderby a.CreatedDate descending
+                    where a.Locale == filterOptions.Locale && a.CategoryId == filterOptions.CategoryId
                     select new
                     {
                         a.Id,
@@ -142,8 +141,15 @@ public class PostRepository : EfRepository<Post>, IPostRepository
                         a.Thumbnail,
                         a.Description,
                         a.Url,
-                        a.CreatedDate
+                        a.CreatedDate,
+                        a.Status
                     };
+        if (filterOptions.Status != null)
+        {
+            query = query.Where(x => x.Status == filterOptions.Status);
+        }
+
+        query = query.OrderByDescending(x => x.CreatedDate);
         return await ListResult<dynamic>.Success(query, filterOptions);
     }
 
@@ -346,9 +352,9 @@ public class PostRepository : EfRepository<Post>, IPostRepository
         return returnValue;
     }
 
-    public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, Language language)
+    public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, string locale)
     {
-        return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Language == language)
+        return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Locale == locale)
             .OrderByDescending(x => x.IssuedDate).Skip((current - 1) * pageSize).Take(pageSize).Select(x => new PostView
             {
                 Id = x.Id,

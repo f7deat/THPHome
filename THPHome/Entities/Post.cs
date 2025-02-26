@@ -1,7 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
-using WebUI.Entities;
 
 namespace THPHome.Entities;
 

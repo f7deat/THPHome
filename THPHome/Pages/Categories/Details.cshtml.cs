@@ -67,7 +67,7 @@ public class DetailsModel(IPostService postService, ApplicationDbContext context
         ViewData["Description"] = Category.Description;
         Posts = await _postService.GetListInCategoryAsync(Category.Id, SearchTerm, Current);
         Categories = await _categoryService.GetChildCategoriesAsync(Category.Id);
-        ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Language);
+        ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Locale ?? "vi-VN");
         return Page();
     }
 }

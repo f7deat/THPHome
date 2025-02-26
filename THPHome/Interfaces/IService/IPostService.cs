@@ -33,7 +33,7 @@ public interface IPostService
     Task<PaginatedList<PostView>> GetListInCategoryAsync(int categoryId, string searchTerm, int current);
     Task<int> GetCountInUserAsync(string id);
     Task<PaginatedList<PostView>> GetListInTagSync(string name, string searchTerm);
-    Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, Language language);
+    Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, string locale);
     Task<IEnumerable<PostView>> GetRandomPostsAsync();
     Task<IEnumerable<Post>> GetListPopularAsync();
     Task<IEnumerable<Post>> GetListByUserAsync(string id);

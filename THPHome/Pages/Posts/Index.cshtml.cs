@@ -30,7 +30,7 @@ public class IndexModel(ApplicationDbContext context, ICategoryService categoryS
     public async Task<IActionResult> OnGetAsync()
     {
         Categories = await _categoryService.GetListInPostAsync(PageData.Id);
-        RandomPosts = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 5, Language.VI);
+        RandomPosts = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 5, PageData.Locale ?? "vi-VN");
         if (Categories.Count > 0)
         {
             var categoryId = Categories.Select(c => c.Id).First();

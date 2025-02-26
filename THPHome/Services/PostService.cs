@@ -130,7 +130,7 @@ public class PostService : IPostService
 
     public Task<List<CategoryWithPost>> GetListByAllCategoryAsync() => _postRepository.GetListByAllCategoryAsync();
 
-    public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, Language language) => _postRepository.GetListByTypeAsync(type, current, pageSize, language);
+    public Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, string locale) => _postRepository.GetListByTypeAsync(type, current, pageSize, locale);
 
     public async Task<dynamic> SetActiveAsync(long id)
     {

@@ -36,7 +36,7 @@ namespace THPHome.Interfaces.IRepository
         Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int current, int pageSize);
         Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize);
         Task<List<CategoryWithPost>> GetListByAllCategoryAsync();
-        Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, Language language);
+        Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, string locale);
         Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale);
     }
 }
