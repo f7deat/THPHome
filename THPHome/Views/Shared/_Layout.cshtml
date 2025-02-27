@@ -84,9 +84,9 @@
     </div>
 
     @await Component.InvokeAsync("Logo")
-    <div class="header-banner">
-        <img src="~/img/DHHP.png">
-    </div>
+    @* <div class="header-banner"> *@
+    @*     <img src="~/img/DHHP.png"> *@
+    @* </div> *@
     <header class="text-white mb-0 main-menu shadow mb-md-4">
         <div class="container">
             <div class="navbar navbar-expand-lg">
@@ -107,11 +107,11 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body items-center">
-                        <div class="navbar-nav justify-content-end flex-grow-1 pe-3 gap-x-6">
+                        <div class="navbar-nav justify-content-end flex-grow-1 pe-3 gap-x-6 ml-[10px]">
                             @await Component.InvokeAsync("Menu", new { type = MenuType.MAIN })
                         </div>
 
-                        <div class="main-menu-slogan flex justify-end">
+                        <div class="flex justify-end">
                             <div class="searchBox">
                                 <div class="formSearch">
                                     <form class="d-flex mt-3 mt-lg-0 items-center border-2 border-dark rounded-[30px]" action="/search">
