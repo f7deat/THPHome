@@ -47,6 +47,9 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
     [HttpGet("major/count"), AllowAnonymous]
     public async Task<IActionResult> CountMajorAsync() => Ok(await _context.Majors.CountAsync(x => x.Active));
 
+    [HttpGet("major/{id}"), AllowAnonymous]
+    public async Task<IActionResult> GetMajorAsync([FromRoute] int id) => Ok(new { data = await _context.Majors.FindAsync(id) });
+
     [HttpGet("major/list"), AllowAnonymous]
     public async Task<IActionResult> GetMajorListAsync([FromQuery] MajorFilterOptions filterOptions)
     {

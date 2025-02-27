@@ -183,6 +183,12 @@ export default [
         path: '/admission/contact/status',
         component: './admission/contact/status',
         hideInMenu: true
+      },
+      {
+        name: 'Chi tiết ngành/chuyên ngành',
+        path: '/admission/training-group/center/:id',
+        component: './admission/training-group/center',
+        hideInMenu: true
       }
     ]
   },
