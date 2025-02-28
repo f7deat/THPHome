@@ -19,6 +19,7 @@ public class Major : BaseEntity<int>
     public int? TrainingGroupId { get; set; }
     [ForeignKey(nameof(FieldOfStudy))]
     public int? FieldOfStudyId { get; set; }
+    public bool IsHighQualityProgram { get; set; }
 
     public Post? Post { get; set; }
     public TrainingGroup? TrainingGroup { get; set; }

@@ -186,6 +186,9 @@ public class OpenAPIController : Controller
         //    }
         //    htmlBlock += await RenderToStringAsync(item.NormalizedName, data);
         //}
+        post.View++;
+        _context.Posts.Update(post);
+        await _context.SaveChangesAsync();
 
         return Ok(new
         {

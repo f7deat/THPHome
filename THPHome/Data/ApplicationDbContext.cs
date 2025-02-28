@@ -63,6 +63,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<TrainingGroup> TrainingGroups { get; set; }
     public DbSet<FieldOfStudy> FieldOfStudies { get; set; }
     public DbSet<Major> Majors { get; set; }
+    public DbSet<AcademicProgram> AcademicPrograms { get; set; }
     #endregion
 
     public DbSet<ApplicationLog> Logs { get; set; }

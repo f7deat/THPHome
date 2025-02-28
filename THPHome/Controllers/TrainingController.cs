@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Models.Filters;
+﻿using ApplicationCore.Enums;
+using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -69,7 +70,7 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
 
     #region Major - Ngành đào tạo
     [HttpGet("major/count"), AllowAnonymous]
-    public async Task<IActionResult> CountMajorAsync() => Ok(await _context.Majors.CountAsync(x => x.Active));
+    public async Task<IActionResult> CountMajorAsync() => Ok(await _context.Majors.CountAsync(x => x.Active && !x.IsHighQualityProgram));
 
     [HttpGet("major/{id}"), AllowAnonymous]
     public async Task<IActionResult> GetMajorAsync([FromRoute] int id) => Ok(new { data = await _context.Majors.FindAsync(id) });
@@ -98,7 +99,73 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
         }
     }
 
+    [HttpGet("major/list-with-academic-program"), AllowAnonymous]
+    public async Task<IActionResult> GetAllMajorAsync([FromQuery] int trainingGroupId)
+    {
+        var majors = await _context.Majors.Where(x => x.Active && x.TrainingGroupId == trainingGroupId).OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
+        var results = new List<AllMajorResult>();
+        var academicPrograms = await (from a in _context.AcademicPrograms
+                                      join b in _context.Posts on a.PostId equals b.Id
+                                      where b.Status == PostStatus.PUBLISH
+                                      orderby a.SortOrder ascending
+                                      select new
+                                      {
+                                          a.Id,
+                                          b.Title,
+                                          a.MajorId,
+                                          b.Description,
+                                          b.Thumbnail,
+                                          a.Code,
+                                          b.View,
+                                          b.Url
+                                      }).AsNoTracking().ToListAsync();
+        foreach (var major in majors)
+        {
+            results.Add(new AllMajorResult
+            {
+                Id = major.Id,
+                Name = major.Name,
+                Description = major.Description,
+                Thumbnail = major.Thumbnail,
+                AcademicPrograms = [.. academicPrograms.Where(x => x.MajorId == major.Id).Select(x => new AcademicProgramResult
+                {
+                    Id = x.Id,
+                    Name = x.Title,
+                    Description = x.Description,
+                    Thumbnail = x.Thumbnail,
+                    Code = x.Code,
+                    ViewCount = x.View,
+                    Url = x.Url
+                })]
+            });
+        }
+        return Ok(results);
+    }
+
     [HttpGet("major/options")]
     public async Task<IActionResult> GetMajorOptionsAsync() => Ok(await _context.Majors.Where(x => x.Active).OrderBy(x => x.SortOrder).Select(x => new { label = x.Name, value = x.Id }).AsNoTracking().ToListAsync());
+    #endregion
+
+    #region Academic Program - Chương trình đào tạo
+    [HttpGet("academic-program/all-by-major-id/{id}"), AllowAnonymous]
+    public async Task<IActionResult> AllAcademicProgramAsync([FromRoute] int id)
+    {
+        var academicPrograms = await (from a in _context.AcademicPrograms
+                                      join b in _context.Posts on a.PostId equals b.Id
+                                      where b.Status == PostStatus.PUBLISH && a.MajorId == id
+                                      orderby a.SortOrder ascending
+                                      select new
+                                      {
+                                          a.Id,
+                                          b.Title,
+                                          a.MajorId,
+                                          b.Description,
+                                          b.Thumbnail,
+                                          a.Code,
+                                          b.View,
+                                          b.Url
+                                      }).AsNoTracking().ToListAsync();
+        return Ok(academicPrograms);
+    }
     #endregion
 }
