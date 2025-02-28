@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Entities.Curriculum;
 using THPHome.Models.Filters.Curriculum;
+using THPHome.Models.Results.Curriculum;
 using WebUI.Foundations;
 using WebUI.Models.ViewModel;
 
@@ -17,6 +19,28 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
     {
         var query = from a in _context.TrainingGroups where a.Active select a;
         return Ok(await ListResult<object>.Success(query.OrderBy(x => x.SortOrder), filterOptions));
+    }
+
+    [HttpGet("group/all"), AllowAnonymous]
+    public async Task<IActionResult> GetAllAsync()
+    {
+        var trainingGroups = await _context.TrainingGroups.Where(x => x.Active).OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
+        var results = new List<AllTrainingGroupResult>();
+
+        var majors = await _context.Majors.OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
+
+        foreach (var trainingGroup in trainingGroups)
+        {
+            results.Add(new AllTrainingGroupResult
+            {
+                Id = trainingGroup.Id,
+                Name = trainingGroup.Name,
+                Description = trainingGroup.Description,
+                Thumbnail = trainingGroup.Thumbnail,
+                Majors = majors.Where(x => x.TrainingGroupId == trainingGroup.Id).ToList()
+            });
+        }
+        return Ok(results);
     }
 
     [HttpGet("group/count"), AllowAnonymous]
@@ -53,18 +77,25 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
     [HttpGet("major/list"), AllowAnonymous]
     public async Task<IActionResult> GetMajorListAsync([FromQuery] MajorFilterOptions filterOptions)
     {
-        var query = from a in _context.Majors
-                    where a.Active
-                    select a;
-        if (filterOptions.TrainingGroupId != null)
+        try
         {
-            query = query.Where(x => x.TrainingGroupId == filterOptions.TrainingGroupId);
+            var query = from a in _context.Majors
+                        where a.Active
+                        select a;
+            if (filterOptions.TrainingGroupId != null)
+            {
+                query = query.Where(x => x.TrainingGroupId == filterOptions.TrainingGroupId);
+            }
+            if (filterOptions.FieldStudyId != null)
+            {
+                query = query.Where(x => x.FieldOfStudyId == filterOptions.FieldStudyId);
+            }
+            return Ok(await ListResult<object>.Success(query.OrderBy(x => x.SortOrder), filterOptions));
         }
-        if (filterOptions.FieldStudyId != null)
+        catch (Exception ex)
         {
-            query = query.Where(x => x.FieldOfStudyId == filterOptions.FieldStudyId);
+            return BadRequest(ex.ToString());
         }
-        return Ok(await ListResult<object>.Success(query.OrderBy(x => x.SortOrder), filterOptions));
     }
 
     [HttpGet("major/options")]
