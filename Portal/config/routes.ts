@@ -189,6 +189,12 @@ export default [
         path: '/admission/training-group/center/:id',
         component: './admission/training-group/center',
         hideInMenu: true
+      },
+      {
+        name: 'Chương trình đào tạo',
+        path: '/admission/training-group/major/center/:id',
+        component: './admission/major/center',
+        hideInMenu: true
       }
     ]
   },

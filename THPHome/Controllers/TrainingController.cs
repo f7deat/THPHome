@@ -167,5 +167,29 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
                                       }).AsNoTracking().ToListAsync();
         return Ok(academicPrograms);
     }
+
+    public async Task<IActionResult> ListAcademicProgramAsync([FromQuery] AcademicProgramFilterOptions filterOptions)
+    {
+        var query = from a in _context.AcademicPrograms
+                    join b in _context.Posts on a.PostId equals b.Id
+                    select new
+                    {
+                        a.Id,
+                        b.Title,
+                        a.MajorId,
+                        b.Description,
+                        b.Thumbnail,
+                        a.Code,
+                        b.View,
+                        b.Url,
+                        b.Status,
+                        a.SortOrder
+                    };
+        if (filterOptions.MajorId != null)
+        {
+            query = query.Where(x => x.MajorId == filterOptions.MajorId);
+        }
+        return Ok(await ListResult<object>.Success(query.OrderBy(x => x.Id), filterOptions));
+    }
     #endregion
 }

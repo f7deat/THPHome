@@ -1,8 +1,8 @@
 import { apiGetListMajor, apiGetMajor } from "@/services/admission/major";
 import { apiUploadImage } from "@/services/file";
-import { EditOutlined, LeftOutlined, MoreOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined, LeftOutlined, MoreOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, PageContainer, ProFormDigit, ProFormInstance, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components"
-import { useParams } from "@umijs/max"
+import { history, useParams } from "@umijs/max"
 import { Button, Dropdown, message, Upload } from "antd";
 import { useEffect, useRef, useState } from "react";
 
@@ -90,6 +90,14 @@ const TrainingGroupCenter: React.FC = () => {
                         render: (_, record) => [
                             <Dropdown key="more" menu={{
                                 items: [
+                                    {
+                                        key: 'view',
+                                        label: 'Xem chi tiết',
+                                        icon: <EyeOutlined />,
+                                        onClick: () => {
+                                            history.push(`/admission/training-group/major/center/${record.id}`);
+                                        }
+                                    },
                                     {
                                         key: 'edit',
                                         label: 'Chỉnh sửa',
