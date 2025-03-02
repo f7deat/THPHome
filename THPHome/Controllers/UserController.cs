@@ -19,7 +19,6 @@ using THPHome.Data;
 using THPCore.Extensions;
 using ApplicationCore.Models.Filters;
 using THPHome.Models.Api.Admin.User;
-using NuGet.Protocol.Plugins;
 using THPHome.Models.Filters.Users;
 using THPIdentity.Constants;
 

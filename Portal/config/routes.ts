@@ -13,6 +13,7 @@ export default [
     icon: 'FormOutlined',
     name: 'Nội dung',
     path: '/post',
+    access: 'canEditor',
     routes: [
       {
         name: 'Entry',
@@ -89,6 +90,7 @@ export default [
     name: 'category',
     path: '/category/list',
     component: './categories/category-list',
+    access: 'canEditor'
   },
   {
     icon: 'ApartmentOutlined',
@@ -133,11 +135,13 @@ export default [
     name: 'Đối tác',
     path: '/partners',
     component: './partners/partner-setting',
+    access: 'canEditor',
   },
   {
     icon: 'PictureOutlined',
     name: 'Multimedia',
     path: '/media',
+    access: 'canEditor',
     routes: [
       {
         name: 'Thư viện ảnh',
@@ -180,6 +184,7 @@ export default [
     name: 'Tuyển sinh',
     icon: 'UserAddOutlined',
     path: '/admission',
+    access: 'canEditor',
     routes: [
       {
         name: 'Tin tức',

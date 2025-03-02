@@ -4,7 +4,7 @@ export default function access(initialState: { currentUser?: API.User } | undefi
   const { currentUser } = initialState ?? {};
 
   const canAdmin = currentUser && currentUser?.roles?.includes('Admin');
-  const canEditor = currentUser && currentUser?.roles?.includes('Editor');
+  const canEditor = canAdmin || (currentUser && currentUser?.roles?.includes('Editor'));
 
   const admin = initialState && initialState.currentUser?.roles?.includes('Admin');
   const canOnboard = canAdmin || currentUser?.userType === 3;
