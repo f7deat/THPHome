@@ -1,6 +1,6 @@
-﻿using ApplicationCore.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using THPHome.Entities;
 using WebUI.Models.Filters.Settings;
 using WebUI.Models.ViewModel;
 

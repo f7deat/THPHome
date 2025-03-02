@@ -49,7 +49,7 @@ public class IndexModel : EntryPageModel
                       join post in _context.Posts on slide.PostId equals post.Id
                       into slidePost
                       from post in slidePost.DefaultIfEmpty()
-                      where slide.Type == BannerType.SLIDE && slide.Language == PageData.Language && slide.Active
+                      where slide.Type == BannerType.SLIDE && slide.Locale == PageData.Locale && slide.Active
                       select new Banner
                       {
                           Name = post.Title ?? slide.Name,

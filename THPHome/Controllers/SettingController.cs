@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Models.Filters;
+﻿using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using THPHome.Data;
+using THPHome.Entities;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Settings;
@@ -66,25 +66,17 @@ public class SettingController(ApplicationDbContext context, ISettingService _se
     public async Task<IActionResult> GetLogoAsync([FromQuery] string? locale)
     {
         var query = from a in _context.Banners
-                    where a.Type == BannerType.LOGO && a.Active
+                    where a.Type == BannerType.LOGO && a.Active && a.Locale == locale
                     select a;
-        if (locale == "en-US")
-        {
-            query = query.Where(x => x.Language == ApplicationCore.Enums.Language.EN);
-        }
-        else
-        {
-            query = query.Where(x => x.Language == ApplicationCore.Enums.Language.VI);
-        }
         var data = await query.FirstOrDefaultAsync();
         return Ok(new { data = data?.Image });
     }
 
     [HttpGet("slides")]
-    public async Task<IActionResult> GetSlideAsync()
+    public async Task<IActionResult> GetSlideAsync([FromQuery] string locale)
     {
         var query = from a in _context.Banners
-                    where a.Type == BannerType.SLIDE && a.Active
+                    where a.Type == BannerType.SLIDE && a.Active && a.Locale == locale
                     select new
                     {
                         a.Id,

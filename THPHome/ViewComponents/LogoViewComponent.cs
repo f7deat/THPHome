@@ -1,20 +1,12 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Entities;
 
-namespace WebUI.ViewComponents;
+namespace THPHome.ViewComponents;
 
-public class LogoViewComponent : ViewComponent
+public class LogoViewComponent(ApplicationDbContext _context) : ViewComponent
 {
-    private readonly ApplicationDbContext _context;
-
-    public LogoViewComponent(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     protected Post PageData
     {
         get
@@ -26,7 +18,7 @@ public class LogoViewComponent : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var logo = await _context.Banners.FirstOrDefaultAsync(x => x.Type == BannerType.LOGO && x.Active && x.Language == PageData.Language);
+        var logo = await _context.Banners.FirstOrDefaultAsync(x => x.Type == BannerType.LOGO && x.Active && x.Locale == PageData.Locale);
         if (logo is null)
         {
             return View(new Banner

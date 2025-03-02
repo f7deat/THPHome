@@ -1,7 +1,6 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
-using THPHome.Helpers;
+using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
 using WebUI.Models.Filters.Settings;
@@ -13,8 +12,7 @@ public class BannerRepository(ApplicationDbContext context) : EfRepository<Banne
 {
     public async Task<ListResult<Banner>> GetListAsync(BannerFilterOptions filterOptions)
     {
-        var language = LanguageHelper.GetLanguage(filterOptions.Locale);
-        var query = _context.Banners.Where(x => x.Language == language && x.Type == BannerType.SLIDE);
+        var query = _context.Banners.Where(x => x.Locale == filterOptions.Locale && x.Type == BannerType.SLIDE);
         query = query.OrderByDescending(x => x.CreatedDate);
 
         return await ListResult<Banner>.Success(query, filterOptions);

@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IService;
+﻿using ApplicationCore.Interfaces.IService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;
+using THPHome.Entities;
 using THPHome.Helpers;
 using THPIdentity.Entities;
 using WebUI.Foundations;
@@ -88,13 +88,13 @@ public class BannerController(IBannerService _bannerService, UserManager<Applica
     public async Task<IActionResult> GetLogoAsync([FromQuery] string locale)
     {
         var language = LanguageHelper.GetLanguage(locale);
-        var logo = await _context.Banners.FirstOrDefaultAsync(x => x.Active && x.Language == language && x.Type == BannerType.LOGO);
+        var logo = await _context.Banners.FirstOrDefaultAsync(x => x.Active && x.Locale == locale && x.Type == BannerType.LOGO);
         if (logo is null)
         {
             logo = new Banner
             {
                 Image = "https://dhhp.edu.vn/img/logo.png",
-                Language = language,
+                Locale = locale,
                 Active = true,
                 Type = BannerType.LOGO
             };

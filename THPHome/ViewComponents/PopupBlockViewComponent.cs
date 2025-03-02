@@ -1,19 +1,12 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Entities;
 
-namespace WebUI.ViewComponents;
+namespace THPHome.ViewComponents;
 
-public class PopupBlockViewComponent : ViewComponent
+public class PopupBlockViewComponent(ApplicationDbContext _context) : ViewComponent
 {
-    private readonly ApplicationDbContext _context;
-    public PopupBlockViewComponent(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     protected Post PageData
     {
         get
@@ -25,7 +18,7 @@ public class PopupBlockViewComponent : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var popup = await _context.Banners.FirstOrDefaultAsync(x => x.Type == BannerType.LOGO && x.Active && x.Language == PageData.Language);
+        var popup = await _context.Banners.FirstOrDefaultAsync(x => x.Type == BannerType.LOGO && x.Active && x.Locale == PageData.Locale);
         if (popup is null)
         {
             return View();

@@ -1,8 +1,8 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IService;
+﻿using ApplicationCore.Interfaces.IService;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using WebUI.Models.Filters.Settings;
 using WebUI.Models.ViewModel;
