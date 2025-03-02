@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
-using THPHome.Helpers;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Models.Filters.Settings;
@@ -18,11 +17,12 @@ public class BannerController(IBannerService _bannerService, UserManager<Applica
     public async Task<IActionResult> GetListAsync(BannerFilterOptions filterOptions) => Ok(await _bannerService.GetListAsync(filterOptions));
 
     [Route("add"), HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody] Banner banner)
+    public async Task<IActionResult> AddAsync([FromBody] Banner banner, [FromQuery] string locale)
     {
         banner.CreatedBy = _userManager.GetUserId(User);
         banner.CreatedDate = DateTime.Now;
         banner.Active = true;
+        banner.Locale = locale;
         await _bannerService.AddAsync(banner);
         return CreatedAtAction(nameof(AddAsync), new { succeeded = true });
     }
@@ -87,7 +87,6 @@ public class BannerController(IBannerService _bannerService, UserManager<Applica
     [HttpGet("logo")]
     public async Task<IActionResult> GetLogoAsync([FromQuery] string locale)
     {
-        var language = LanguageHelper.GetLanguage(locale);
         var logo = await _context.Banners.FirstOrDefaultAsync(x => x.Active && x.Locale == locale && x.Type == BannerType.LOGO);
         if (logo is null)
         {

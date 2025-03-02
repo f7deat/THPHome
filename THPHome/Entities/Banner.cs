@@ -17,7 +17,6 @@ public class Banner : BaseEntity<int>, ILocale
     public BannerStatus Status { get; set; }
     public BannerType Type { get; set; }
     public string? Description { get; set; }
-    public Language Language { get; set; }
     public bool Active { get; set; }
 
     [ForeignKey(nameof(Post))]
