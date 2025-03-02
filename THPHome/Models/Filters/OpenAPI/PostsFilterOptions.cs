@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Enums;
+using THPHome.Enums;
 
 namespace WebUI.Models.Filters.OpenAPI;
 

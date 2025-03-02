@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Models.Filters;
+﻿using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Entities.Curriculum;
+using THPHome.Enums;
 using THPHome.Models.Filters.Curriculum;
 using THPHome.Models.Results.Curriculum;
 using WebUI.Foundations;

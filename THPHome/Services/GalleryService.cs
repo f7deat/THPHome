@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Enums;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.Files;
 using WebUI.Models.Galleries;
@@ -19,7 +20,7 @@ public class GalleryService : IGalleryService
         try
         {
             var query = from a in _context.Posts
-                        where a.Type == ApplicationCore.Enums.PostType.GALLERY && a.Language == filterOptions.Language
+                        where a.Type == PostType.GALLERY && a.Language == filterOptions.Language
                         select new GalleryListResponse
                         {
                             Id = a.Id,

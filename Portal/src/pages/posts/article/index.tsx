@@ -1,8 +1,13 @@
+import PostList from "@/components/posts/list";
 import { PostType } from "@/enum/post-enum";
-import PostList from "../post-list";
+import { PageContainer } from "@ant-design/pro-components";
 
-const ArticlePage : React.FC = () => {
-    return <PostList type={PostType.NEWS} />
+const ArticlePage: React.FC = () => {
+    return (
+        <PageContainer>
+            <PostList type={PostType.NEWS} />
+        </PageContainer>
+    )
 }
 
 export default ArticlePage;

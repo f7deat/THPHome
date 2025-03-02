@@ -6,6 +6,7 @@ using THPHome.Entities;
 using THPHome.Interfaces.Base;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
+using THPHome.Enums;
 
 namespace THPHome.Interfaces.IRepository
 {

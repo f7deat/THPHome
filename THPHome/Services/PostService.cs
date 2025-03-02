@@ -2,6 +2,7 @@
 using ApplicationCore.Helpers;
 using ApplicationCore.Models.Posts;
 using THPHome.Entities;
+using THPHome.Enums;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;

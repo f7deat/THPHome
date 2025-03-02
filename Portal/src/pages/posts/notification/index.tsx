@@ -1,8 +1,13 @@
+import PostList from "@/components/posts/list";
 import { PostType } from "@/enum/post-enum";
-import PostList from "../post-list";
+import { PageContainer } from "@ant-design/pro-components";
 
 const NotificationPage : React.FC = () => {
-    return <PostList type={PostType.NOTIFICATION} />
+    return (
+        <PageContainer>
+            <PostList type={PostType.NOTIFICATION} />
+        </PageContainer>
+    )
 }
 
 export default NotificationPage;

@@ -35,7 +35,7 @@ const CustomPage: React.FC = () => {
             title={catalog?.name}
             extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}><span>
                 <FormattedMessage id='general.back' />
-                </span></Button>}
+            </span></Button>}
         >
             <Row gutter={16}>
                 <Col span={14}>

@@ -12,6 +12,7 @@ import { request } from '@umijs/max';
 import { PageContainer, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProFormTreeSelect } from '@ant-design/pro-components';
 import { apiCategoryTreeData } from '@/services/categoy';
 import dayjs from 'dayjs';
+import MyCkEditor from '@/components/my-ckeditor';
 
 const { Dragger } = Upload;
 
@@ -215,10 +216,7 @@ const PostSetting = () => {
                                     message: 'Mô tả tối đa 300 ký tự'
                                 }
                             ]} />
-                            <MyEditor name="content" label="Nội dung" initialValue={content} rules={[{
-                                required: true,
-                                message: 'Vui lòng nhập nội dung bài viết'
-                            }]} />
+                            <MyCkEditor name="content" label="Nội dung" />
                         </Col>
                         <Col span={6}>
                             <Row gutter={16}>
@@ -309,7 +307,6 @@ const PostSetting = () => {
                                     <p className="ant-upload-hint">Hỗ trợ các định dạng thông dụng .docx, .xlsx, .pdf</p>
                                 </Dragger>
                             </div>
-                            <div className='flex gap-2 items-center'><Switch checked /> Chia sẻ lên Zalo OA</div>
                         </Col>
                     </Row>
                 </ProForm>

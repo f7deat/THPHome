@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Helpers;
+﻿using ApplicationCore.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +9,7 @@ using System.Text.Json.Nodes;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Enums;
 using THPHome.Models.Blocks;
 using THPIdentity.Entities;
 using WebUI.Entities;

@@ -15,6 +15,7 @@ using THPHome.Repositories.Base;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
 using THPIdentity.Constants;
+using THPHome.Enums;
 
 namespace THPHome.Repositories;
 

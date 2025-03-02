@@ -33,7 +33,7 @@ const HomePage: React.FC = () => {
           <Col xs={12} md={6}>
             <ProCard className="bg-white rounded mb-4">
               <Statistic
-                title="Lượt xem"
+                title="Xem"
                 value={postView}
                 className="p-4"
               />

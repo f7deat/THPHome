@@ -1,31 +1,21 @@
-﻿import { Button, Dropdown, message, Popconfirm, Spin, Tag } from "antd";
-import { useEffect, useRef, useState } from "react";
-import {
-    EditOutlined,
-    DeleteOutlined,
-    PlusOutlined,
-    ToolOutlined,
-    CopyOutlined,
-    TranslationOutlined,
-    MoreOutlined,
-    SendOutlined,
-    ArrowUpOutlined,
-    ArrowDownOutlined
-} from '@ant-design/icons';
-import IPost from "./interfaces/post-model";
-import Tooltip from "antd/es/tooltip";
-import { history, Link, request, useAccess } from "@umijs/max";
-import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
-import { apiShareZaloOA, queryPosts } from "@/services/post";
-import CopyPost from "./components/copy";
-import { FormattedMessage } from "@umijs/max";
 import { PostType } from "@/enum/post-enum";
+import { ActionType, ProColumnType, ProTable } from "@ant-design/pro-components";
+import { useEffect, useRef, useState } from "react";
+import { FormattedMessage, Link, request, useAccess, history } from "@umijs/max";
+import { apiShareZaloOA, queryPosts } from "@/services/post";
+import { Button, Dropdown, message, Popconfirm, Spin, Tag, Tooltip } from "antd";
 import { PostStatus } from "@/utils/enum";
+import { EditOutlined, ArrowDownOutlined, ArrowUpOutlined, SendOutlined, CopyOutlined, TranslationOutlined, ToolOutlined, MoreOutlined, DeleteOutlined } from "@ant-design/icons";
 import { apiGetAllCategoryOptions } from "@/services/categoy";
+import IPost from "@/pages/posts/interfaces/post-model";
+import NewPost from "@/pages/posts/components/new-post";
+import CopyPost from "@/pages/posts/components/copy";
 
-const PostList: React.FC<{
-    type: PostType
-}> = ({ type }) => {
+type Props = {
+    type: PostType;
+}
+
+const PostList: React.FC<Props> = ({ type }) => {
 
     const actionRef = useRef<ActionType>();
     const [openCopy, setOpenCopy] = useState<boolean>(false);
@@ -65,21 +55,15 @@ const PostList: React.FC<{
     }
 
     const onMoreClick = (info: any, entity: any) => {
-        if (info.key === 'edit') {
-            history.push(`/post/setting/${entity.id}`);
-            return;
-        }
         if (info.key === 'copy') {
             setPost(entity);
             setOpenCopy(true);
-            return;
         }
         if (info.key === 'zalo') {
             apiShareZaloOA(entity.id).then(() => {
                 setLoading(false);
                 message.success('Chia sẻ thành công!');
             });
-            return;
         }
         if (info.key === 'publish') {
             request(`post/active/${entity.id}`, {
@@ -92,19 +76,17 @@ const PostList: React.FC<{
                     message.error(response.message)
                 }
             })
-            return;
         }
         if (info.key === 'builder') {
             history.push(`/post/page/${entity.id}`);
-            return;
         }
     }
 
     const columns: ProColumnType<IPost>[] = [
         {
-            title: 'STT',
+            title: '#',
             valueType: 'indexBorder',
-            width: 40,
+            width: 30,
             align: 'center'
         },
         {
@@ -119,15 +101,14 @@ const PostList: React.FC<{
             fieldProps: {
                 options: categories
             },
-            minWidth: 120
+            minWidth: 150
         },
         {
             title: <FormattedMessage id='general.view' />,
             dataIndex: 'view',
             valueType: 'digit',
             search: false,
-            width: 80,
-            align: 'center'
+            width: 80
         },
         {
             title: 'Trạng thái',
@@ -145,7 +126,7 @@ const PostList: React.FC<{
                     </Tag>
                 </Tooltip>
             ),
-            width: 90
+            width: 100
         },
         {
             title: 'Người đăng',
@@ -168,24 +149,25 @@ const PostList: React.FC<{
             search: false
         },
         {
-            title: 'Ngày xuất bản',
-            dataIndex: 'issuedDate',
-            valueType: 'date',
-            width: 110,
-            search: false
-        },
-        {
             title: 'Tác vụ',
             render: (_, record: any) => [
+                <Button key="edit" type="primary" size="small" icon={<EditOutlined />}
+                onClick={() => {
+                    if (type === PostType.PAGE) {
+                        history.push(`/post/page/setting/${record.id}`);
+                    }
+                    if (type === PostType.NEWS) {
+                        history.push(`/post/article/setting/${record.id}`);
+                    }
+                    if (type === PostType.NOTIFICATION) {
+                        history.push(`/post/notification/setting/${record.id}`);
+                    }
+                }}
+                disabled={!record.canUpdate} />,
                 <Dropdown
                     disabled={!record.canUpdate && !access.canAdmin}
                     key="more" menu={{
                         items: [
-                            {
-                                label: 'Chỉnh sửa',
-                                key: 'edit',
-                                icon: <EditOutlined />
-                            },
                             {
                                 label: record.status === PostStatus.PUBLISH ? 'Quay lại bản nháp' : 'Xuất bản',
                                 key: 'publish',
@@ -224,18 +206,21 @@ const PostList: React.FC<{
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} hidden={type === PostType.DEFAULT} disabled={!record.canUpdate && !access.canAdmin}></Button>
+                    <Button type="primary" size="small" danger icon={<DeleteOutlined />} disabled={!record.canUpdate && !access.canAdmin}></Button>
                 </Popconfirm>
             ],
             valueType: 'option',
-            width: 60,
+            width: 100,
             align: 'center'
         }
     ];
 
     return (
-        <PageContainer extra={<Link to="/post/setting"><Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button></Link>}>
+        <>
             <ProTable
+                headerTitle={<NewPost type={type} reload={() => {
+                    actionRef.current?.reload();
+                }} />}
                 actionRef={actionRef}
                 request={(params) => queryPosts({
                     ...params,
@@ -249,8 +234,8 @@ const PostList: React.FC<{
             />
             <CopyPost open={openCopy} onOpenChange={setOpenCopy} data={post} actionRef={actionRef} setOpen={setOpenCopy} />
             <Spin spinning={loading} fullscreen />
-        </PageContainer>
+        </>
     )
 }
 
-export default PostList
+export default PostList;

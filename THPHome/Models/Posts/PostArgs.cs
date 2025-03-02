@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
+using THPHome.Enums;
 using THPHome.Helpers;
 
 namespace WebUI.Models.Posts;

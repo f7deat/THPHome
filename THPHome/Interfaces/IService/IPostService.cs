@@ -2,6 +2,7 @@
 using ApplicationCore.Helpers;
 using ApplicationCore.Models.Posts;
 using THPHome.Entities;
+using THPHome.Enums;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
 using WebUI.Models.ViewModel;

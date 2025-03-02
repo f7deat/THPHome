@@ -1,5 +1,4 @@
 using ApplicationCore.Entities;
-using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Enums;
 using THPHome.Interfaces.IService;
 using THPIdentity.Entities;
 using WebUI.Foundations;

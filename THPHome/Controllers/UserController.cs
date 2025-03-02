@@ -47,6 +47,12 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         return Ok(await _userManager.FindByIdAsync(id));
     }
 
+    [HttpGet("post-count")]
+    public async Task<IActionResult> GetPostCountAsync() => Ok(await _context.Posts.CountAsync(x => x.CreatedBy == User.GetId()));
+
+    [HttpGet("view-count")]
+    public async Task<IActionResult> GetViewCountAsync() => Ok(await _context.Posts.Where(x => x.CreatedBy == User.GetId()).SumAsync(x => x.View));
+
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {

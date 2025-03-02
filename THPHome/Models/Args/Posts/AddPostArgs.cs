@@ -1,5 +1,5 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
+using THPHome.Enums;
 
 namespace THPHome.Models.Args.Posts;
 

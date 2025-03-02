@@ -48,6 +48,24 @@ export default [
         hideInMenu: true,
       },
       {
+        name: 'Chỉnh sửa tin tức',
+        path: '/post/article/setting/:id',
+        component: './posts/post-setting',
+        hideInMenu: true,
+      },
+      {
+        name: 'Chỉnh sửa trang',
+        path: '/post/page/setting/:id',
+        component: './posts/post-setting',
+        hideInMenu: true,
+      },
+      {
+        name: 'Chỉnh sửa thông báo',
+        path: '/post/notification/setting/:id',
+        component: './posts/post-setting',
+        hideInMenu: true,
+      },
+      {
         name: 'Page Builder',
         path: '/post/page/:id',
         component: './posts/pages',

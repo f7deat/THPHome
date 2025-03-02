@@ -1,5 +1,4 @@
 using ApplicationCore.Constants;
-using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Enums;
 using THPHome.Interfaces.IService;
 
 namespace THPHome.Pages.Categories;

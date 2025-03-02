@@ -1,8 +1,8 @@
-﻿using ApplicationCore.Enums;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Enums;
 using THPHome.Models.Filters.Articles;
 using THPHome.Models.Filters.OpenAPI.Articles;
 using WebUI.Foundations;

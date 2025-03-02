@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Interfaces.IService;
-using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +18,7 @@ using THPHome.Helpers;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters;
 using THPCore.Enums;
+using THPHome.Enums;
 
 namespace THPHome.Controllers;
 
@@ -72,7 +72,7 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
             if (user is null) return Unauthorized();
             if (user.UserType == UserType.Student) return BadRequest("Tài khoản không có quyền truy cập!");
             var url = SeoHelper.ToSeoFriendly(args.Title);
-            if (await _context.Posts.AnyAsync(x => x.Url == url)) return BadRequest("Đường dẫn đã tồn tại!");
+            if (await _context.Posts.AnyAsync(x => x.Url == url)) return BadRequest("Bài viết đã tồn tại!");
             await _context.Posts.AddAsync(new Post
             {
                 CategoryId = args.CategoryId,

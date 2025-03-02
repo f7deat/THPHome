@@ -1,9 +1,10 @@
 ﻿@page "/post/{url}-{postId}.html"
 @model THPHome.Pages.Posts.IndexModel
+@using Microsoft.AspNetCore.Identity
+@using THPHome.Enums
 @using THPHome.Models.Layouts
 @using THPIdentity.Entities
 @using WebUI.Entities;
-@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @{
@@ -22,7 +23,7 @@
 
     <partial name="/Views/Components/_Breadcrumb.cshtml" model="breadcrumbs" />
 
-    @if (Model.Blocks.Any() && Model.PageData.Type == ApplicationCore.Enums.PostType.PAGE)
+    @if (Model.Blocks.Any() && Model.PageData.Type == PostType.PAGE)
     {
         foreach (var item in Model.Blocks)
         {

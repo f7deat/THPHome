@@ -34,7 +34,7 @@ const NotificationPage: React.FC = () => {
                         search: false
                     },
                     {
-                        title: 'Lượt xem',
+                        title: 'Xem',
                         dataIndex: 'readCount',
                         valueType: 'digit',
                         search: false

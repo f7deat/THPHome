@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Helpers;
+﻿using ApplicationCore.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Enums;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Files;
 using THPIdentity.Entities;

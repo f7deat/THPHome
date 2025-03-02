@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Enums;
+﻿using THPHome.Enums;
 
 namespace WebUI.Models.Results.Posts;
 

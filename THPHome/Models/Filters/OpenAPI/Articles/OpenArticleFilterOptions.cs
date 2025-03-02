@@ -1,5 +1,5 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Models.Filters;
+﻿using ApplicationCore.Models.Filters;
+using THPHome.Enums;
 
 namespace THPHome.Models.Filters.OpenAPI.Articles;
 

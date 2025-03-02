@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -9,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using THPHome.Entities;
+using THPHome.Enums;
 
 namespace ApplicationCore.Helpers
 {
