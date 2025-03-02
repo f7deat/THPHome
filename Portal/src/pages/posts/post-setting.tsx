@@ -1,4 +1,4 @@
-﻿import { Button, Col, Form, Input, message, Row, Upload, UploadProps, Image, Empty, Switch } from 'antd'
+﻿import { Button, Col, Form, Input, message, Row, Upload, UploadProps, Image, Empty, Switch, Space } from 'antd'
 import {
     UploadOutlined,
     InboxOutlined,
@@ -6,13 +6,13 @@ import {
 } from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ListPostType, PostType } from '../../enum/post-enum'
-import MyEditor from '../../components/my-editor';
 import { useParams, getLocale, history } from '@umijs/max';
 import { request } from '@umijs/max';
 import { PageContainer, ProCard, ProForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProFormTreeSelect } from '@ant-design/pro-components';
 import { apiCategoryTreeData } from '@/services/categoy';
 import dayjs from 'dayjs';
 import MyCkEditor from '@/components/my-ckeditor';
+import Thumbnail from '@/components/posts/thumbnail';
 
 const { Dragger } = Upload;
 
@@ -197,7 +197,7 @@ const PostSetting = () => {
             <ProCard>
                 <ProForm onFinish={onFinish} layout="vertical" formRef={form} loading={loading}>
                     <Row gutter={16}>
-                        <Col span={18}>
+                        <Col md={18}>
                             <Form.Item name="title" label="Tiêu đề" rules={[
                                 {
                                     required: true,
@@ -218,7 +218,7 @@ const PostSetting = () => {
                             ]} />
                             <MyCkEditor name="content" label="Nội dung" />
                         </Col>
-                        <Col span={6}>
+                        <Col md={6}>
                             <Row gutter={16}>
                                 <Col span={12}>
                                     <ProFormSelect allowClear={false} label="Loại" name="type" initialValue={PostType.NEWS} rules={[
@@ -242,37 +242,44 @@ const PostSetting = () => {
                                 }}
                             />
 
-                            <ProFormText label="Ảnh đại diện" name='thumbnail' initialValue="https://dhhp.edu.vn/files/1a5acea5-4941-4140-a8f5-56a1d5e4eabd.jpg" rules={[
-                                {
-                                    required: true,
-                                    message: 'Vui lòng chọn ảnh đại diện'
-                                }
-                            ]} fieldProps={{
-                                suffix: <Upload beforeUpload={(file) => {
-                                    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-                                    if (!isJPG) {
-                                        message.error('You can only upload JPG or PNG file!');
-                                        return false;
-                                    } else {
-                                        const formData = new FormData();
-                                        formData.append('file', file);
-                                        request('file/image/upload', {
-                                            method: 'POST',
-                                            data: formData
-                                        }).then((response: any) => {
-                                            if (!response.succeeded) {
-                                                message.error(response.message);
-                                                return false;
-                                            }
-                                            form.current?.setFieldValue('thumbnail', response.url);
-                                            setPreviewImage(response.url)
-                                        })
-                                        return false;
+                            <div className='flex gap-2'>
+                                <ProFormText label="Ảnh đại diện" disabled name='thumbnail' initialValue="https://dhhp.edu.vn/files/1a5acea5-4941-4140-a8f5-56a1d5e4eabd.jpg" rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng chọn ảnh đại diện'
                                     }
-                                }} maxCount={1} showUploadList={false}>
-                                    <Button icon={<UploadOutlined />} size='small' type='dashed'>Tải lên</Button>
-                                </Upload>
-                            }} />
+                                ]} />
+                                <Space className='mt-2'>
+                                    <Upload beforeUpload={(file) => {
+                                        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                                        if (!isJPG) {
+                                            message.error('You can only upload JPG or PNG file!');
+                                            return false;
+                                        } else {
+                                            const formData = new FormData();
+                                            formData.append('file', file);
+                                            request('file/image/upload', {
+                                                method: 'POST',
+                                                data: formData
+                                            }).then((response: any) => {
+                                                if (!response.succeeded) {
+                                                    message.error(response.message);
+                                                    return false;
+                                                }
+                                                form.current?.setFieldValue('thumbnail', response.url);
+                                                setPreviewImage(response.url)
+                                            })
+                                            return false;
+                                        }
+                                    }} maxCount={1} showUploadList={false}>
+                                        <Button icon={<UploadOutlined />}>Tải lên</Button>
+                                    </Upload>
+                                    <Thumbnail onSelect={(url) => {
+                                        form.current?.setFieldValue('thumbnail', url);
+                                        setPreviewImage(url);
+                                    }} />
+                                </Space>
+                            </div>
 
                             <div className='mb-4'>
                                 {
