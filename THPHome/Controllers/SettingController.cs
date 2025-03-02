@@ -10,16 +10,10 @@ using WebUI.Interfaces.IService;
 using WebUI.Models.Settings;
 using WebUI.Models.ViewModel;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class SettingController : BaseController
+public class SettingController(ApplicationDbContext context, ISettingService _settingService) : BaseController(context)
 {
-    private readonly ISettingService _settingService;
-    public SettingController(ApplicationDbContext context, ISettingService settingService) : base(context)
-    {
-        _settingService = settingService;
-    }
-
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync() => Ok(await _settingService.ListAsync());
 
@@ -84,5 +78,22 @@ public class SettingController : BaseController
         }
         var data = await query.FirstOrDefaultAsync();
         return Ok(new { data = data?.Image });
+    }
+
+    [HttpGet("slides")]
+    public async Task<IActionResult> GetSlideAsync()
+    {
+        var query = from a in _context.Banners
+                    where a.Type == BannerType.SLIDE && a.Active
+                    select new
+                    {
+                        a.Id,
+                        a.Name,
+                        a.Url,
+                        a.Image,
+                        a.Description
+                    };
+        var data = await query.AsNoTracking().ToListAsync();
+        return Ok(new { data });
     }
 }
