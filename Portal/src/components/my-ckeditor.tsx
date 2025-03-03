@@ -67,6 +67,8 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
         const value = formRef.getFieldValue(props.name);
         if (value) {
             editorRef?.setData(value)
+        } else {
+            editorRef?.setData('');
         }
     }, [formRef.getFieldValue(props.name)]);
 

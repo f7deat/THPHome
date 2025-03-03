@@ -1,4 +1,4 @@
-import MyEditor from "@/components/my-editor";
+import MyCkEditor from "@/components/my-ckeditor";
 import { apiQaItemAdd, apiQaItemDelete, apiQaItemList, apiQaItemUpdate } from "@/services/qa";
 import { DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormDigit, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
@@ -75,7 +75,8 @@ const QaItemPage: React.FC = () => {
         {
             title: 'Người tạo',
             dataIndex: 'createdBy',
-            search: false
+            search: false,
+            width: 150
         },
         {
             title: 'Ngày tạo',
@@ -87,7 +88,8 @@ const QaItemPage: React.FC = () => {
         {
             title: 'Người cập nhật',
             dataIndex: 'modifiedBy',
-            search: false
+            search: false,
+            width: 150
         },
         {
             title: 'Ngày cập nhật',
@@ -138,7 +140,7 @@ const QaItemPage: React.FC = () => {
                         required: true
                     }
                 ]} />
-                <MyEditor label="Nội dung câu trả lời" name="answer" required initialValue={qaItem?.answer} />
+                <MyCkEditor label="Nội dung câu hỏi" name="answer" required />
                 <ProFormDigit name="sortOrder" label="Thứ tự hiển thị" />
             </ModalForm>
         </PageContainer>
