@@ -53,10 +53,10 @@ const Footer: React.FC = () => {
                                 <i className="fa-solid fa-caret-right" />
                                 <a href="https://dttx.dhhp.edu.vn/">TT Ngoại ngữ, Tin học - ĐT Thường xuyên</a>
                             </div>
-                            <div className="mb-2">
+                            {/* <div className="mb-2">
                                 <i className="fa-solid fa-caret-right" />
                                 <a href="https://thptphandangluu.haiphong.edu.vn/homegd2">Trường THPT Phan Đăng Lưu</a>
-                            </div>
+                            </div> */}
                             <div className="mb-2">
                                 <i className="fa-solid fa-caret-right" />
                                 <a href="https://sdh.dhhp.edu.vn/">Phòng quản lý sau Đại học</a>
