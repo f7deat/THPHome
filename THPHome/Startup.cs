@@ -30,6 +30,7 @@ using THPHome.Interfaces.Base;
 using THPHome.ExternalAPI;
 using THPHome.Interfaces.IRepository;
 using THPCore.Services;
+using THPHome.Services.Contacts;
 
 namespace THPHome;
 
@@ -72,6 +73,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ISettingService, SettingService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ILogService, LogService>();
+        services.AddScoped<IContactService, ContactService>();
 
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 

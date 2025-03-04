@@ -57,7 +57,7 @@ import {
           loginOut();
           return;
         } else if (key === 'profile') {
-          history.push(`/user/profile/${initialState?.currentUser?.id}`);
+          history.push(`/account/profile`);
           return;
         } else if (key === 'settings') {
           history.push(`/user/edit/${initialState?.currentUser?.id}`);
@@ -129,7 +129,7 @@ import {
         }}
         arrow
       >
-        <Space className='cursor-pointer mr-4'>
+        <Space className='cursor-pointer min-w-32'>
           <AvatarLogo />
           <AvatarName />
         </Space>

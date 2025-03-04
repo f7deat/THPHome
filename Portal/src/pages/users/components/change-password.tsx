@@ -1,8 +1,14 @@
-﻿import { request } from "@umijs/max";
-import { Button, Form, Input, message } from "antd";
+﻿import { LockOutlined } from "@ant-design/icons";
+import { ModalForm } from "@ant-design/pro-components";
+import { request } from "@umijs/max";
+import { Form, Input, message } from "antd";
+import { useState } from "react";
 
-export const ChangePassword = () => {
-    const onFinish = (values: any) => {
+const ChangePassword: React.FC = () => {
+
+    const [open, setOpen] = useState<boolean>(false);
+
+    const onFinish = async (values: any) => {
         if (values.newPassword !== values.confirmPassword) {
             return message.warning('Password not match')
         }
@@ -21,10 +27,16 @@ export const ChangePassword = () => {
     };
     return (
         <div>
-            <Form
+            <div className="p-2 border-b border-dashed hover:bg-gray-100 cursor-pointer" onClick={() => setOpen(true)}>
+                <LockOutlined className="mr-2 text-gray-500" />
+                Đổi mật khẩu
+            </div>
+            <ModalForm
+                open={open}
+                onOpenChange={setOpen}
                 onFinish={onFinish}
                 autoComplete="off"
-                layout="vertical"
+                title="Đổi mật khẩu"
             >
 
                 <Form.Item
@@ -50,11 +62,9 @@ export const ChangePassword = () => {
                 >
                     <Input.Password />
                 </Form.Item>
-
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">Đổi mật khẩu</Button>
-                </Form.Item>
-            </Form>
+            </ModalForm>
         </div>
     )
 }
+
+export default ChangePassword;

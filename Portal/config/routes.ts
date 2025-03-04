@@ -108,27 +108,25 @@ export default [
     icon: 'TeamOutlined',
     name: 'Tài khoản',
     path: '/account',
-    access: 'canAdmin',
-    component: './users/user-list',
-  },
-  {
-    name: 'Tài khoản',
-    path: '/user',
-    hideInMenu: true,
     routes: [
       {
-        name: 'Chỉnh sửa người dùng',
-        path: '/user/edit/:id',
-        component: './users/user-edit',
-        hideInMenu: true,
+        name: 'Danh sách',
+        path: '/account/list',
+        component: './users/user-list',
+        access: 'canAdmin'
       },
       {
         name: 'Hồ sơ',
-        path: '/user/profile/:id',
-        component: './users/profile',
-        hideInMenu: true,
+        path: '/account/profile',
+        component: './users/profile'
       },
-    ],
+      {
+        name: 'Chỉnh sửa người dùng',
+        path: '/account/profile/edit/:id',
+        component: './users/user-edit',
+        hideInMenu: true,
+      }
+    ]
   },
   {
     icon: 'SolutionOutlined',
@@ -190,6 +188,12 @@ export default [
         name: 'Tin tức',
         path: '/admission/article',
         component: './posts/admission',
+      },
+      {
+        name: 'Chỉnh sửa tuyển sinh',
+        path: '/admission/article/setting/:id',
+        component: './posts/post-setting',
+        hideInMenu: true,
       },
       {
         name: 'Ngành/Chuyên ngành',

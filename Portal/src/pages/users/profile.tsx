@@ -1,15 +1,14 @@
-﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space, Tooltip } from "antd"
+﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space, Tooltip, Divider } from "antd"
 import { useEffect, useState } from "react";
 import {
-    StarOutlined,
-    CommentOutlined,
     EditOutlined,
+    RightOutlined,
     UserOutlined,
-    UsergroupAddOutlined
 } from "@ant-design/icons";
 import { request, useParams } from "@umijs/max";
 import { Link } from "@umijs/max";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
+import ChangePassword from "./components/change-password";
 
 const { TabPane } = Tabs;
 
@@ -18,18 +17,10 @@ const Profile = () => {
     const { id } = useParams();
 
     const [profile, setProfile] = useState<any>()
-    const [postCount, setPostCount] = useState<number>(0)
-    const [commentCount, setCommentCount] = useState<number>(0)
 
     useEffect(() => {
         request(`user/get/${id || ''}`).then(response => {
             setProfile(response);
-            request(`post/get-count-in-user/${response.id}`).then(post => {
-                setPostCount(post)
-            })
-            request(`comment/get-count-in-user/${response.id}`).then(response => {
-                setCommentCount(response)
-            })
         });
     }, [id])
 
@@ -45,14 +36,10 @@ const Profile = () => {
     ]
 
     return (
-        <PageContainer extra={<Link to={`/user/edit/${profile?.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
+        <PageContainer extra={<Link to={`/account/profile/edit/${profile?.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
             <Row gutter={16}>
                 <Col md={6}>
-                    <ProCard className="mb-4" actions={[
-                        <Tooltip key="role" title="Phân quyền">
-                            <UsergroupAddOutlined />
-                        </Tooltip>
-                    ]}>
+                    <ProCard className="mb-4">
                         <div className="flex items-center justify-center p-4 relative">
                             {
                                 profile?.avatar ? (
@@ -73,36 +60,15 @@ const Profile = () => {
                             <div className="text-gray-400">Email: {profile?.email}</div>
                             <div className="text-gray-400">Chức vụ:</div>
                         </Space>
+                        <Divider dashed orientation="left">Cài đặt</Divider>
+                        <div>
+                            <ChangePassword />
+                            <li className="py-2 border-b border-dashed"><RightOutlined className="mr-2 text-gray-500" /><Link to={`/`}>Privacy Setting</Link></li>
+                        </div>
                     </ProCard>
                 </Col>
                 <Col md={18}>
                     <ProCard>
-                        <div className="bg-white rounded mb-4">
-                            <Row gutter={16}>
-                                <Col span={8}>
-                                    <ProCard className="p-4 bg-gray-100 rounded" bordered>
-                                        <div className="flex items-center">
-                                            <CommentOutlined className="text-blue-400 text-xl px-2" />
-                                            <div className="flex-grow px-2">
-                                                <div className="text-gray-400">Bình luận</div>
-                                                <div className="font-bold text-lg">{commentCount}</div>
-                                            </div>
-                                        </div>
-                                    </ProCard>
-                                </Col>
-                                <Col span={8}>
-                                    <ProCard className="p-4 bg-gray-100 rounded" bordered>
-                                        <div className="flex items-center">
-                                            <StarOutlined className="text-yellow-400 text-xl px-2" />
-                                            <div className="flex-grow px-2">
-                                                <div className="text-gray-400">Bài viết</div>
-                                                <div className="font-bold text-lg">{postCount}</div>
-                                            </div>
-                                        </div>
-                                    </ProCard>
-                                </Col>
-                            </Row>
-                        </div>
                         <div className="bg-white rounded">
                             <div className="px-4 py-2">
                                 <Typography.Title level={4}>Hoạt động</Typography.Title>

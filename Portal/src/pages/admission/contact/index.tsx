@@ -1,10 +1,10 @@
 import { apiContactStatusOptions, apiDeleteContact, apiListContact, apiUpdateContactStatus } from "@/services/contact";
-import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, RightOutlined, SettingOutlined } from "@ant-design/icons";
+import {  DeleteOutlined, EditOutlined, ExportOutlined, SettingOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, PageContainer, ProFormInstance, ProFormSelect, ProTable } from "@ant-design/pro-components"
-import { Button, message, Popconfirm, Tag, Tooltip } from "antd";
-import { ContactStatus } from "./constants";
+import { Button, message, Popconfirm, Tooltip } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { history } from "@umijs/max";
+import { apiContactExport } from "@/services/admission/contact";
 
 const Index: React.FC = () => {
 
@@ -13,6 +13,7 @@ const Index: React.FC = () => {
     const [statusOptions, setStatusOptions] = useState<any>();
     const [open, setOpen] = useState<boolean>(false);
     const [contact, setContact] = useState<any>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         apiContactStatusOptions().then(response => setStatusOptions(response));
@@ -34,10 +35,24 @@ const Index: React.FC = () => {
         message.success('Xóa thành công!');
         actionRef.current?.reload();
     }
+    
+    const exportData = async () => {
+        setLoading(true);
+        const response = await apiContactExport();
+        setLoading(false);
+        const url = window.URL.createObjectURL(new Blob([response]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'contact.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    }
 
     return (
         <PageContainer extra={<Button icon={<SettingOutlined />} onClick={() => history.push('/admission/contact/status')}>Cấu hình trạng thái</Button>}>
             <ProTable
+                headerTitle={<Button type="primary" icon={<ExportOutlined />} loading={loading} onClick={exportData}>Xuất dữ liệu</Button>}
                 actionRef={actionRef}
                 request={apiListContact}
                 search={{
@@ -51,7 +66,8 @@ const Index: React.FC = () => {
                     },
                     {
                         title: 'Họ và tên',
-                        dataIndex: 'fullName'
+                        dataIndex: 'fullName',
+                        width: 160
                     },
                     {
                         title: 'SDT',
@@ -88,7 +104,8 @@ const Index: React.FC = () => {
                         valueType: 'select',
                         fieldProps: {
                             options: statusOptions
-                        }
+                        },
+                        width: 100
                     },
                     {
                         title: 'Người tiếp nhận',

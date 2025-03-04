@@ -162,6 +162,9 @@ const PostList: React.FC<Props> = ({ type }) => {
                     if (type === PostType.NOTIFICATION) {
                         history.push(`/post/notification/setting/${record.id}`);
                     }
+                    if (type === PostType.ADMISSION) {
+                        history.push(`/admission/article/setting/${record.id}`);
+                    }
                 }}
                 disabled={!record.canUpdate} />,
                 <Dropdown

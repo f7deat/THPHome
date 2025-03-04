@@ -6,6 +6,7 @@ using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities.Contacts;
 using THPHome.Helpers.Validators;
+using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Contacts;
 using THPIdentity.Constants;
 using WebUI.Foundations;
@@ -14,7 +15,7 @@ using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 
-public class ContactController(ApplicationDbContext context, ITelegramService _telegramService) : BaseController(context)
+public class ContactController(ApplicationDbContext context, ITelegramService _telegramService, IContactService _contactService) : BaseController(context)
 {
     [HttpPost("get-quote"), AllowAnonymous]
     public async Task<IActionResult> GetQuoteAsync([FromBody] Contact args)
@@ -23,6 +24,7 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
         if (!PhoneNumberValidator.ValidateVietnamPhoneNumber(args.PhoneNumber)) return BadRequest("Số điện thoại không hợp lệ!");
         if (await _context.Contacts.AnyAsync(x => x.PhoneNumber == args.PhoneNumber)) return BadRequest("Số điện thoại đã tồn tại!");
         args.CreatedDate = DateTime.Now;
+        args.ContactStatusId = 1;
         await _context.Contacts.AddAsync(args);
 
         await _telegramService.SendMessageAsync($"Liên hệ mới {args.FullName} - {args.PhoneNumber}!");
@@ -152,5 +154,14 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
         await _context.ContactStatuses.AddAsync(args);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+
+    [HttpGet("export"), AllowAnonymous]
+    public async Task<IActionResult> ExportAsync()
+    {
+        var result = await _contactService.ExportAsync();
+        if (!result.Succeeded) return BadRequest(result.Message);
+        if (result.Data is null) return BadRequest("Data not found!");
+        return File(result.Data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"contact-{DateTime.Now:dd-MM-yyyy}.xlsx");
     }
 }
