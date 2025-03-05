@@ -8,6 +8,7 @@ import { useParams, useRequest } from "@umijs/max";
 import ProficiencyPracticeStatusForm from "./components/status-form";
 import { useAccess } from "@umijs/max";
 import ExportPracticeModal from "./components/export-practice";
+import MoveBatch from "./components/move";
 
 const ProficiencyPracticePage: React.FC = () => {
 
@@ -21,6 +22,7 @@ const ProficiencyPracticePage: React.FC = () => {
     const [proficiency, setProficiency] = useState<any>();
     const [statusOptions, setStatusOptions] = useState<any>();
     const [typeOptions, setTypeOptions] = useState<any>();
+    const [openMove, setOpenMove] = useState<boolean>(false);
 
     useEffect(() => {
         apiGetProficiencyStatusOptions().then((response: any) => setStatusOptions(response));
@@ -123,7 +125,7 @@ const ProficiencyPracticePage: React.FC = () => {
                         title: 'Trạng thái',
                         dataIndex: 'status',
                         valueType: 'select',
-                        width: 100,
+                        width: 120,
                         fieldProps: {
                             options: statusOptions
                         }
@@ -161,9 +163,13 @@ const ProficiencyPracticePage: React.FC = () => {
                                     }
                                 ],
                                 onClick: (info) => {
+                                    setProficiency(entity);
                                     if (info.key === 'status') {
-                                        setProficiency(entity);
                                         setOpenStatus(true);
+                                        return;
+                                    }
+                                    if (info.key === 'move') {
+                                        setOpenMove(true);
                                         return;
                                     }
                                 }
@@ -191,6 +197,7 @@ const ProficiencyPracticePage: React.FC = () => {
             />
 
             <ProficiencyPracticeStatusForm open={openStatus} onOpenChange={setOpenStatus} data={proficiency} reload={() => actionRef.current?.reload()} />
+            <MoveBatch open={openMove} onOpenChange={setOpenMove} data={proficiency} reload={() => actionRef.current?.reload()} />
         </PageContainer>
     )
 }

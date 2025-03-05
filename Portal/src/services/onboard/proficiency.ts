@@ -27,4 +27,12 @@ export const apiGetProficiencyStatusOptions = () => request.get(`proficiency/sta
 
 export const apiGetProficiencyTypeOptions = () => request.get(`proficiency/type/options`) as any;
 
-export const apiGetProficiencyPracticeUpdateStatus = (data: any) => request.post(`proficiency/practice/update-status`, data)
+export const apiGetProficiencyPracticeUpdateStatus = (data: any) => request.post(`proficiency/practice/update-status`, data);
+
+export async function apiMoveProficiencyBatch(data: any) {
+    await request.post(`proficiency/batch/move-student`, data);
+}
+
+export async function apiProficiencyBatchAvailableOptions() {
+    return await request.get(`proficiency/batch/available-options`) as any;
+}
