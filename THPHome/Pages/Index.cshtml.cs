@@ -14,12 +14,8 @@ using WebUI.Models.Posts;
 
 namespace THPHome.Pages;
 
-public class IndexModel : EntryPageModel
+public class IndexModel(IPostService postService, IMenuService _menuService, IVideoService _videoService, ICategoryService _categoryService, ApplicationDbContext context) : EntryPageModel(postService, context)
 {
-    private readonly IMenuService _menuService;
-    private readonly IVideoService _videoService;
-    private readonly ICategoryService _categoryService;
-
     public List<GroupCategory> GroupCategories = [];
     public IEnumerable<Menu> BoxMenu = [];
     public IEnumerable<Photo> Albums = [];
@@ -30,13 +26,6 @@ public class IndexModel : EntryPageModel
     public List<Banner> Slides = [];
     public List<BlockList> Blocks = [];
     public IEnumerable<PostView> PressTalks = [];
-
-    public IndexModel(IPostService postService, IMenuService menuService, IVideoService videoService, ICategoryService categoryService, ApplicationDbContext context) : base(postService, context)
-    {
-        _menuService = menuService;
-        _videoService = videoService;
-        _categoryService = categoryService;
-    }
 
     public async Task<IActionResult> OnGetAsync(string locale)
     {
@@ -72,7 +61,7 @@ public class IndexModel : EntryPageModel
         });
         Videos = await _videoService.GetListAsync(5);
         Albums = await _context.Photos.OrderByDescending(x => x.CreatedDate).Take(8).ToListAsync();
-        GroupCategories = await _categoryService.GetGroupCategories(PageData.Language);
+        GroupCategories = await _categoryService.GetGroupCategories(PageData.Locale ?? "vi-VN");
         Blocks = await (from a in _context.PostBlocks.Where(x => x.PostId == PageData.Id)
                         join b in _context.Blocks on a.BlockId equals b.Id
                         where a.Active

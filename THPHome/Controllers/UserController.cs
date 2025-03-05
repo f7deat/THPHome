@@ -336,15 +336,12 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     public async Task<IActionResult> UpdateAsync([FromBody] ApplicationUser args)
     {
         var user = await _userManager.FindByIdAsync(args.Id);
-        if (user is null)
-        {
-            return Ok(IdentityResult.Failed(new IdentityError
-            {
-                Description = "User not found!"
-            }));
-        }
+        if (user is null) return BadRequest("User not found!");
         user.Name = args.Name;
-        user.Avatar = args.Avatar;
+        user.Address = args.Address;
+        user.DateOfBirth = args.DateOfBirth;
+        user.CityId = args.CityId;
+        user.Gender = args.Gender;
         return Ok(await _userManager.UpdateAsync(user));
     }
 
@@ -485,7 +482,7 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     #endregion
 
     [HttpGet("type/options")]
-    public IActionResult GetUserTypeOptions() => Ok(EnumHelper.EnumToList<UserType>().Select(x => new
+    public IActionResult GetUserTypeOptions() => Ok(EnumHelper.EnumToList<THPIdentity.Entities.UserType>().Select(x => new
     {
         label = EnumHelper.GetEnumDisplayName(x),
         value = x

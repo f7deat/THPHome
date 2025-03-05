@@ -1,4 +1,4 @@
-﻿using WebUI.ExternalAPI.Models;
+﻿using THPHome.ExternalAPI.Models;
 using WebUI.Models.Args.Communications;
 
 namespace WebUI.ExternalAPI.Interfaces;

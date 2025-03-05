@@ -1,6 +1,5 @@
 using ApplicationCore.Constants;
 using ApplicationCore.Helpers;
-using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -55,9 +54,9 @@ public class DetailsModel(IPostService postService, ApplicationDbContext context
         {
             return Redirect(SpecialPages.NotFound);
         }
-        if (Category.ParrentId != null)
+        if (Category.ParentId != null)
         {
-            ParentCategory = await _categoryService.GetParentAsync(Category.ParrentId ?? 0) ?? new Category();
+            ParentCategory = await _categoryService.GetParentAsync(Category.ParentId ?? 0) ?? new Category();
         }
         ViewData["Title"] = Category.Name;
         if (!string.IsNullOrEmpty(SearchTerm))

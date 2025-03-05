@@ -1,9 +1,9 @@
-import { apiGetListMajor, apiGetMajor } from "@/services/admission/major";
-import { apiUploadImage } from "@/services/file";
-import { EditOutlined, EyeOutlined, LeftOutlined, MoreOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { apiGetListMajor, apiGetMajor, apiUpdateMajor } from "@/services/admission/major";
+import { apiTrainingGroupDetail } from "@/services/admission/training-group";
+import { DeleteOutlined, EditOutlined, EyeOutlined, LeftOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, PageContainer, ProFormDigit, ProFormInstance, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components"
 import { history, useParams } from "@umijs/max"
-import { Button, Dropdown, message, Upload } from "antd";
+import { Button, Dropdown, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 
 const TrainingGroupCenter: React.FC = () => {
@@ -13,8 +13,12 @@ const TrainingGroupCenter: React.FC = () => {
     const [major, setMajor] = useState<any>(null);
     const formRef = useRef<ProFormInstance>();
     const actionRef = useRef<ActionType>();
+    const [data, setData] = useState<any>();
 
     useEffect(() => {
+        apiTrainingGroupDetail(id).then(response => {
+            setData(response);
+        });
         if (major) {
             apiGetMajor(major.id).then(response => {
                 const res = response.data;
@@ -48,8 +52,18 @@ const TrainingGroupCenter: React.FC = () => {
         }
     }, [major]);
 
+    const onFinish = async (values: any) => {
+        if (values.id) {
+            // Update
+            await apiUpdateMajor(values);
+        }
+        message.success('Thành công');
+        actionRef.current?.reload();
+        setOpen(false);
+    }
+
     return (
-        <PageContainer extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
+        <PageContainer title={data?.name} extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <ProTable
                 actionRef={actionRef}
                 headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}
@@ -59,9 +73,10 @@ const TrainingGroupCenter: React.FC = () => {
                 })}
                 columns={[
                     {
-                        title: '#',
-                        valueType: 'indexBorder',
-                        width: 30
+                        title: 'TT',
+                        dataIndex: 'sortOrder',
+                        width: 30,
+                        search: false
                     },
                     {
                         title: 'Mã',
@@ -110,7 +125,8 @@ const TrainingGroupCenter: React.FC = () => {
                                 ]
                             }}>
                                 <Button size="small" type="dashed" icon={<MoreOutlined />} />
-                            </Dropdown>
+                            </Dropdown>,
+                            <Button type="primary" size="small" danger icon={<DeleteOutlined />} key="delete" disabled />
                         ],
                         width: 60
                     }
@@ -119,7 +135,7 @@ const TrainingGroupCenter: React.FC = () => {
                     layout: 'vertical'
                 }}
             />
-            <ModalForm open={open} onOpenChange={setOpen} title="Cài đặt" formRef={formRef}>
+            <ModalForm open={open} onOpenChange={setOpen} title="Cài đặt" formRef={formRef} onFinish={onFinish}>
                 <ProFormText name="id" hidden />
                 <ProFormText name="code" label="Mã" rules={[
                     {
@@ -133,29 +149,6 @@ const TrainingGroupCenter: React.FC = () => {
                 ]} />
                 <ProFormTextArea name="description" label="Mô tả" />
                 <ProFormDigit name="sortOrder" label="Thứ tự" />
-
-                <ProFormText label="Ảnh đại diện" name='thumbnail' rules={[
-                    {
-                        required: true,
-                        message: 'Vui lòng chọn ảnh đại diện'
-                    }
-                ]} fieldProps={{
-                    suffix: <Upload beforeUpload={async (file) => {
-                        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-                        if (!isJPG) {
-                            message.error('You can only upload JPG or PNG file!');
-                            return false;
-                        } else {
-                            const formData = new FormData();
-                            formData.append('file', file);
-                            const response = await apiUploadImage(formData);
-                            formRef.current?.setFieldValue('thumbnail', response.url);
-                            return false;
-                        }
-                    }} maxCount={1} showUploadList={false}>
-                        <Button icon={<UploadOutlined />} size='small' type='dashed'>Tải lên</Button>
-                    </Upload>
-                }} />
             </ModalForm>
         </PageContainer>
     )

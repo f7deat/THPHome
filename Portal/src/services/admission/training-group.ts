@@ -5,3 +5,7 @@ export async function apiTrainingGroupList(params: any) {
         params
     });
 }
+
+export async function apiTrainingGroupDetail(id?: string) {
+    return request(`training/group/${id}`);
+}

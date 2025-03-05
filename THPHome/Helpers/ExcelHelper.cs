@@ -71,7 +71,7 @@ namespace ApplicationCore.Helpers
                 worksheet2.Cells[row, 1].Value = categories[i].Id;
                 worksheet2.Cells[row, 2].Value = categories[i].Name;
                 worksheet2.Cells[row, 3].Value = categories[i].Description;
-                worksheet2.Cells[row, 4].Value = categories[i].ParrentId;
+                worksheet2.Cells[row, 4].Value = categories[i].ParentId;
                 worksheet2.Cells[row, 5].Value = categories[i].NormalizeName;
                 worksheet2.Cells[row, 6].Value = categories[i].Thumbnail;
                 i++;

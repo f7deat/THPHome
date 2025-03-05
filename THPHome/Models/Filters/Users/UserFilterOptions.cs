@@ -1,5 +1,5 @@
 ﻿using ApplicationCore.Models.Filters;
-using THPCore.Enums;
+using THPIdentity.Entities;
 
 namespace THPHome.Models.Filters.Users;
 

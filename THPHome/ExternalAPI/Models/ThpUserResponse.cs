@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using THPCore.Enums;
+using THPIdentity.Entities;
 
-namespace WebUI.ExternalAPI.Models;
+namespace THPHome.ExternalAPI.Models;
 
 public class ThpUserResponse
 {

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using THPHome.ExternalAPI.Models;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
 using WebUI.Models.Args.Communications;

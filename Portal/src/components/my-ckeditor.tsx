@@ -9,7 +9,6 @@ import {
     Autosave,
     BlockQuote,
     Bold,
-    CloudServices,
     Essentials,
     GeneralHtmlSupport,
     Heading,
@@ -31,8 +30,6 @@ import {
     ListProperties,
     Paragraph,
     SelectAll,
-    ShowBlocks,
-    SourceEditing,
     Table,
     TableCaption,
     TableCellProperties,
@@ -44,7 +41,13 @@ import {
     Underline,
     Undo,
     EditorConfig,
-    Editor
+    Editor,
+    Alignment,
+    Code,
+    FontSize,
+    FontColor,
+    FontBackgroundColor,
+    FontFamily
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
@@ -78,9 +81,6 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
                 'undo',
                 'redo',
                 '|',
-                'sourceEditing',
-                'showBlocks',
-                '|',
                 'heading',
                 '|',
                 'bold',
@@ -96,7 +96,14 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
                 'todoList',
                 'outdent',
                 'indent',
-                'imageUpload'
+                'imageUpload',
+                'alignment',
+                'code',
+                'blockQuote',
+                'fontSize',
+                'fontColor',
+                'fontBackgroundColor',
+                'fontFamily'
             ],
             shouldNotGroupWhenFull: false
         },
@@ -108,7 +115,6 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
             Autosave,
             BlockQuote,
             Bold,
-            CloudServices,
             Essentials,
             GeneralHtmlSupport,
             Heading,
@@ -130,8 +136,6 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
             ListProperties,
             Paragraph,
             SelectAll,
-            ShowBlocks,
-            SourceEditing,
             Table,
             TableCaption,
             TableCellProperties,
@@ -141,7 +145,13 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
             TextTransformation,
             TodoList,
             Underline,
-            Undo
+            Undo,
+            Alignment,
+            Code,
+            FontSize,
+            FontColor,
+            FontBackgroundColor,
+            FontFamily
         ],
         heading: {
             options: [
@@ -248,7 +258,7 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
                                 onReady={(editor) => {
                                     setEditorRef(editor);
                                 }}
-                                onChange={(event, editor) => {
+                                onChange={(_, editor) => {
                                     formRef.setFieldValue(props.name, editor.getData());
                                 }} />}</div>
                         </div>

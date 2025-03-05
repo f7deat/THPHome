@@ -1,18 +1,21 @@
 ﻿using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities.Curriculum;
 using THPHome.Enums;
 using THPHome.Models.Filters.Curriculum;
 using THPHome.Models.Results.Curriculum;
+using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 
-public class TrainingController(ApplicationDbContext context) : BaseController(context)
+public class TrainingController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager) : BaseController(context)
 {
     #region Training Group
     [HttpGet("group/list"), AllowAnonymous]
@@ -99,6 +102,32 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
         }
     }
 
+    [HttpPost("major/update")]
+    public async Task<IActionResult> UpdateMajorAsync([FromBody] Major major)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(User.GetId());
+            if (user is null) return BadRequest("User not found!");
+            if (user.UserType == UserType.Student) return BadRequest("Permission denied!");
+            var entity = await _context.Majors.FindAsync(major.Id);
+            if (entity is null) return BadRequest("Data not found!");
+            if (string.IsNullOrWhiteSpace(major.Name)) return BadRequest("Name is required!");
+            if (string.IsNullOrWhiteSpace(major.Code)) return BadRequest("Code is required!");
+            entity.Name = major.Name;
+            entity.Code = major.Code;
+            entity.Description = major.Description;
+            entity.SortOrder = major.SortOrder;
+            _context.Majors.Update(entity);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+    }
+
     [HttpGet("major/list-with-academic-program"), AllowAnonymous]
     public async Task<IActionResult> GetAllMajorAsync([FromQuery] int trainingGroupId)
     {
@@ -168,6 +197,7 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
         return Ok(academicPrograms);
     }
 
+    [HttpGet("academic-program/list")]
     public async Task<IActionResult> ListAcademicProgramAsync([FromQuery] AcademicProgramFilterOptions filterOptions)
     {
         var query = from a in _context.AcademicPrograms
@@ -183,13 +213,22 @@ public class TrainingController(ApplicationDbContext context) : BaseController(c
                         b.View,
                         b.Url,
                         b.Status,
-                        a.SortOrder
+                        a.SortOrder,
+                        a.PostId,
+                        b.CreatedDate,
+                        b.ModifiedDate,
+                        b.CreatedBy,
+                        b.ModifiedBy
                     };
         if (filterOptions.MajorId != null)
         {
             query = query.Where(x => x.MajorId == filterOptions.MajorId);
         }
-        return Ok(await ListResult<object>.Success(query.OrderBy(x => x.Id), filterOptions));
+        return Ok(await ListResult<object>.Success(query.OrderBy(x => x.SortOrder), filterOptions));
     }
+
+    [HttpGet("academic-program/{id}")]
+    public async Task<IActionResult> GetAcademicProgramAsync([FromRoute] int id) => Ok(new { data = await _context.AcademicPrograms.FindAsync(id) });
+
     #endregion
 }

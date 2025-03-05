@@ -16,6 +16,7 @@ using THPHome.Models.Categories;
 using THPHome.Models.Filters;
 using THPIdentity.Constants;
 using THPHome.Enums;
+using UserType = THPIdentity.Entities.UserType;
 
 namespace THPHome.Repositories;
 

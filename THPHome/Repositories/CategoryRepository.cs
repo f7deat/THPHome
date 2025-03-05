@@ -16,19 +16,19 @@ public class CategoryRepository(ApplicationDbContext context) : EfRepository<Cat
         return await _context.Categories.Take(pageSize).ToListAsync();
     }
 
-    public async Task<IEnumerable<Category>> GetChildAsync(int parentId) => await _context.Categories.Where(x => x.ParrentId == parentId).ToListAsync();
+    public async Task<IEnumerable<Category>> GetChildAsync(int parentId) => await _context.Categories.Where(x => x.ParentId == parentId).ToListAsync();
 
-    public async Task<List<GroupCategory>> GetGroupCategories(Language language)
+    public async Task<List<GroupCategory>> GetGroupCategories(string locale)
     {
         var returnValue = new List<GroupCategory>();
         var parrents = await _context.Categories
-            .Where(x => x.Language == language)
-            .Where(x => (x.ParrentId == null || x.ParrentId < 1) && x.IsDisplayOnHome == true).ToListAsync();
+            .Where(x => x.Locale == locale)
+            .Where(x => (x.ParentId == null || x.ParentId < 1) && x.IsDisplayOnHome == true).ToListAsync();
         foreach (var item in parrents)
         {
             var childs = await _context.Categories
-                .Where(x => x.Language == language)
-                .Where(x => x.ParrentId == item.Id && x.IsDisplayOnHome == true).ToListAsync();
+                .Where(x => x.Locale == locale)
+                .Where(x => x.ParentId == item.Id && x.IsDisplayOnHome == true).ToListAsync();
             returnValue.Add(new GroupCategory
             {
                 Id = item.Id,
@@ -40,15 +40,15 @@ public class CategoryRepository(ApplicationDbContext context) : EfRepository<Cat
         return returnValue;
     }
 
-    public async Task<IEnumerable<Category>> GetListAsyc(int id, Language lang)
+    public async Task<IEnumerable<Category>> GetListAsyc(int id, string locale)
     {
         if (id == 0)
-            return await _context.Categories.Where(x => x.ParrentId == null || x.ParrentId == -1)
-                    .Where(x => x.Language == lang)
+            return await _context.Categories.Where(x => x.ParentId == null || x.ParentId == -1)
+                    .Where(x => x.Locale == locale)
                     .ToListAsync();
         else
-            return await _context.Categories.Where(x => x.ParrentId == id)
-                    .Where(x => x.Language == lang)
+            return await _context.Categories.Where(x => x.ParentId == id)
+                    .Where(x => x.Locale == locale)
                     .ToListAsync();
     }
 
@@ -90,5 +90,5 @@ public class CategoryRepository(ApplicationDbContext context) : EfRepository<Cat
             .OrderBy(x => x.Index)
             .ToListAsync();
 
-    public IQueryable<Category> ListByParrentId(int? parrentId) => _context.Categories.Where(x => x.ParrentId == parrentId);
+    public IQueryable<Category> ListByParrentId(int? parrentId) => _context.Categories.Where(x => x.ParentId == parrentId);
 }

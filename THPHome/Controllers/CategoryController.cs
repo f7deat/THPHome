@@ -1,5 +1,3 @@
-using ApplicationCore.Enums;
-using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +16,7 @@ namespace THPHome.Controllers;
 public class CategoryController(ICategoryService _categoryService, ApplicationDbContext context, IPostService _postService) : BaseController(context)
 {
     [HttpGet("parent/options")]
-    public async Task<IActionResult> GetParentOptionsAsync([FromQuery] Language language) => Ok(await _context.Categories.Where(x => x.ParrentId == null && x.Language == language).Select(x => new
+    public async Task<IActionResult> GetParentOptionsAsync([FromQuery] string locale) => Ok(await _context.Categories.Where(x => x.ParentId == null && x.Locale == locale).Select(x => new
     {
         label = x.Name,
         value = x.Id
@@ -32,11 +30,11 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
     {
         var result = new List<TreeCategoryItem>();
         var raw = await _context.Categories
-            .Where(x => x.Language == filterOptions.Language)
+            .Where(x => x.Locale == filterOptions.Locale)
             .Where(x => string.IsNullOrEmpty(filterOptions.Name) || !string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower()))
             .Select(x => new TreeCategoryItem
             {
-                ParentId = x.ParrentId,
+                ParentId = x.ParentId,
                 Name = x.Name,
                 Id = x.Id,
                 Description = x.Description,
@@ -76,7 +74,12 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> AddAsync([FromBody] Category category) => CreatedAtAction(nameof(AddAsync), await _categoryService.AddAsync(category));
+    public async Task<IActionResult> AddAsync([FromBody] Category category, [FromQuery] string locale)
+    {
+        var result = await _categoryService.AddAsync(category, locale);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return CreatedAtAction(nameof(AddAsync), result);
+    }
 
     [HttpPost("delete/{id}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] int id)
@@ -96,7 +99,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
         data.Icon = category.Icon;
         data.Index = category.Index;
         data.Name = category.Name;
-        data.ParrentId = category.ParrentId;
+        data.ParentId = category.ParentId;
         data.NormalizeName = category.NormalizeName;
         data.Thumbnail = category.Thumbnail;
         return Ok(await _categoryService.UpdateAsync(data));
@@ -115,7 +118,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
     {
         var result = default(IEnumerable<TreeCategoryData>);
         if (parentId == null || parentId == 0) return result;
-        var categories = raw.Where(x => x.ParrentId == parentId).Select(x => new TreeCategoryData
+        var categories = raw.Where(x => x.ParentId == parentId).Select(x => new TreeCategoryData
         {
             Value = x.Id,
             Label = x.Name
@@ -153,10 +156,10 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
     {
         var result = new List<TreeCategoryData>();
         var raw = await _context.Categories.Where(x => x.Status == CategoryStatus.Active).Where(x => x.Locale == args.Locale).AsNoTracking().ToListAsync();
-        var categories = raw.Where(x => x.ParrentId == null || x.ParrentId == 0)
+        var categories = raw.Where(x => x.ParentId == null || x.ParentId == 0)
             .Select(x => new
             {
-                x.ParrentId,
+                x.ParentId,
                 x.Name,
                 x.Id
             });
@@ -190,8 +193,8 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
             category.Name,
             category.Description,
             category.Status,
-            category.Language,
-            ParentId = category.ParrentId,
+            category.Locale,
+            category.ParentId,
             category.NormalizeName,
             category.IsDisplayOnHome,
             category.Icon,

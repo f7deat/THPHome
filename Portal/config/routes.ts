@@ -201,6 +201,12 @@ export default [
         component: './admission/training-group'
       },
       {
+        name: 'Chỉnh sửa ngành/chuyên ngành',
+        path: '/admission/training-group/major/setting/:id',
+        component: './posts/pages',
+        hideInMenu: true,
+      },
+      {
         name: 'Liên hệ',
         path: '/admission/contact',
         component: './admission/contact'

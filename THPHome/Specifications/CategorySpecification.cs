@@ -6,9 +6,9 @@ namespace ApplicationCore.Specifications
     public class CategorySpecification : BaseSpecification<Category>
     {
         public CategorySpecification()
-            : base(b => b.ParrentId == null)
+            : base(b => b.ParentId == null)
         {
-            ApplyIsNull(b => b.ParrentId == null);
+            ApplyIsNull(b => b.ParentId == null);
         }
         //public CategorySpecification(int? id) : base(b => b.CategoryType == id)
         //{

@@ -1,28 +1,26 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
+﻿using ApplicationCore.Enums;
 using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces;
-using ApplicationCore.Interfaces.IService;
+using THPCore.Models;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
+using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
 
 namespace THPHome.Services;
 
 public class CategoryService(ICategoryRepository _categoryRepository, IPostRepository _postRepository) : ICategoryService
 {
-    public async Task<dynamic> AddAsync(Category category)
+    public async Task<THPResult> AddAsync(Category category, string locale)
     {
         if (string.IsNullOrEmpty(category.NormalizeName))
         {
             category.NormalizeName = SeoHelper.ToSeoFriendly(category.Name);
         }
-        if (await _categoryRepository.IsExistAsync(category.NormalizeName.ToLower()))
-        {
-            return new { succeeded = false, message = "Category exists!!!" };
-        }
+        if (await _categoryRepository.IsExistAsync(category.NormalizeName.ToLower())) return THPResult.Failed("Danh mục đã tồn tại");
+        category.Locale = locale;
         await _categoryRepository.AddAsync(category);
-        return new { succeeded = true, message = "Created Success!!!" };
+        return THPResult.Success;
     }
 
     public Task<IReadOnlyList<Category>> CategoriesByType(int pageSize) => _categoryRepository.CategoriesByType(pageSize);
@@ -45,9 +43,9 @@ public class CategoryService(ICategoryRepository _categoryRepository, IPostRepos
 
     public Task<IEnumerable<Category>> GetChildCategoriesAsync(int parentId) => _categoryRepository.GetChildAsync(parentId);
 
-    public Task<List<GroupCategory>> GetGroupCategories(Language language) => _categoryRepository.GetGroupCategories(language);
+    public Task<List<GroupCategory>> GetGroupCategories(string locale) => _categoryRepository.GetGroupCategories(locale);
 
-    public Task<IEnumerable<Category>> GetListAsyc(int id, Language lang) => _categoryRepository.GetListAsyc(id, lang);
+    public Task<IEnumerable<Category>> GetListAsyc(int id, string lang) => _categoryRepository.GetListAsyc(id, lang);
 
     public Task<List<Category>> GetListInPostAsync(long postId) => _categoryRepository.GetListInPostAsync(postId);
 

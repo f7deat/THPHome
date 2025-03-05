@@ -99,7 +99,7 @@ public class QaController(ApplicationDbContext context, UserManager<ApplicationU
             ModifiedBy = x.ModifiedBy
         }).AsNoTracking().ToListAsync();
 
-        var users = await _userManager.Users.Where(x => x.UserType != UserType.Student).AsNoTracking().ToListAsync();
+        var users = await _userManager.Users.Where(x => x.UserType != THPIdentity.Entities.UserType.Student).AsNoTracking().ToListAsync();
 
         return Ok(new
         {

@@ -1,7 +1,4 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Models.Posts;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ApplicationCore.Models.Posts;
 using THPHome.Entities;
 using THPHome.Interfaces.Base;
 using THPHome.Models.Categories;
@@ -15,9 +12,9 @@ public interface ICategoryRepository : IAsyncRepository<Category>
     Task<IEnumerable<Category>> GetChildAsync(int parentId);
     Task<IEnumerable<PostView>> GetRandomPostsAsync(int categoryId, int pageSize);
     Task<Category?> GetParrentAsync(int categoryId);
-    Task<IEnumerable<Category>> GetListAsyc(int id, Language lang);
+    Task<IEnumerable<Category>> GetListAsyc(int id, string locale);
     Task<List<Category>> GetListInPostAsync(long postId);
     Task<bool> IsExistAsync(string normalizeName);
-    Task<List<GroupCategory>> GetGroupCategories(Language language);
+    Task<List<GroupCategory>> GetGroupCategories(string locale);
     Task<IReadOnlyList<Category>> ListAllAsync(string? locale);
 }

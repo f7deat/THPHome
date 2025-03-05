@@ -253,10 +253,8 @@ const CategoryList = () => {
                 }}
                 columns={columns}
                 rowKey="id"
-                request={(params) => apiGetCategories({
-                    ...params,
-                    language: language(intl.locale)
-                })}
+                request={apiGetCategories}
+                actionRef={actionRef}
             />
             <Drawer
                 title={category?.name}
@@ -271,7 +269,6 @@ const CategoryList = () => {
                     search={{
                         layout: 'vertical'
                     }}
-                    actionRef={postActionRef}
                     request={(params) => apiGetPostsCategory({
                         ...params,
                         language: language(intl.locale),

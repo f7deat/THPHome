@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Helpers;
-using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
