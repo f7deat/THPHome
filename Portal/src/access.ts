@@ -9,12 +9,14 @@ export default function access(initialState: { currentUser?: API.User } | undefi
   const admin = initialState && initialState.currentUser?.roles?.includes('Admin');
   const canOnboard = canAdmin || currentUser?.userType === 3;
   const qualityAssurance = canAdmin || (initialState && initialState?.currentUser?.departmentId === Department.QualityAssuranceOffice)
+  const training = canAdmin || (initialState && initialState?.currentUser?.departmentId === Department.TrainingDepartment)
 
   return {
     canAdmin,
     canEditor,
     admin,
     canOnboard,
-    qualityAssurance
+    qualityAssurance,
+    training
   };
 };

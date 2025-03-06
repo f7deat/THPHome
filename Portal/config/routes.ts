@@ -97,6 +97,7 @@ export default [
     name: 'Phòng ban',
     path: '/departments',
     component: './departments',
+    access: 'canEditor'
   },
   {
     name: 'Phòng ban',
@@ -232,6 +233,25 @@ export default [
     ]
   },
   {
+    name: 'Đào tạo',
+    path: '/training',
+    icon: 'ReadOutlined',
+    access: 'training',
+    routes: [
+      {
+        name: 'Chuẩn đầu ra',
+        path: '/training/proficiency',
+        component: './onboard/proficiency/practice'
+      },
+      {
+        name: 'Đợt ôn tập',
+        path: '/training/proficiency/batch/:id',
+        component: './onboard/proficiency/practice/batch',
+        hideInMenu: true
+      }
+    ]
+  },
+  {
     name: 'Khảo thí',
     path: '/quality-assurance',
     icon: 'SafetyOutlined',
@@ -332,23 +352,6 @@ export default [
         name: 'Tuần CDSV',
         path: '/onboard/fist-week',
         component: './onboard/fist-week',
-      },
-      {
-        name: 'Chuẩn đầu ra',
-        path: '/onboard/proficiency',
-        routes: [
-          {
-            name: 'Ôn chuẩn đầu ra',
-            path: '/onboard/proficiency/practice',
-            component: './onboard/proficiency/practice'
-          },
-          {
-            name: 'Đợt ôn tập',
-            path: '/onboard/proficiency/practice/batch/:id',
-            component: './onboard/proficiency/practice/batch',
-            hideInMenu: true
-          }
-        ]
       },
       {
         name: 'Lịch sử',

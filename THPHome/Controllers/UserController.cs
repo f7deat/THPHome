@@ -11,7 +11,6 @@ using WebUI.Models.ViewModel;
 using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
 using THPCore.Helpers;
-using THPCore.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using THPIdentity.Entities;
 using THPHome.Models.Roles;
@@ -21,10 +20,12 @@ using ApplicationCore.Models.Filters;
 using THPHome.Models.Api.Admin.User;
 using THPHome.Models.Filters.Users;
 using THPIdentity.Constants;
+using THPIdentity.Data;
+using THPHome.Helpers;
 
 namespace THPHome.Controllers;
 
-public class UserController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
+public class UserController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen, IdentityDbTHPContext _identityContext) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
 
@@ -73,31 +74,94 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         });
     }
 
-    [HttpGet("detail/{id}")]
-    public async Task<IActionResult> GetDetailAsync([FromRoute] Guid id)
+    [HttpGet("my-detail")]
+    public async Task<IActionResult> GetDetailAsync([FromQuery] string locale)
     {
         var user = await _userManager.FindByIdAsync(User.GetId());
         if (user is null) return Unauthorized();
         var roles = await _userManager.GetRolesAsync(user);
+        var userDetail = await _identityContext.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id);
+        if (userDetail is null)
+        {
+            if (!LanguageHelper.IsAvailable(locale)) return BadRequest("Language not available!");
+            await _identityContext.UserDetails.AddAsync(new UserDetail
+            {
+                UserId = user.Id,
+                Locale = locale
+            });
+            await _identityContext.SaveChangesAsync();
+        }
 
         return Ok(new
         {
-            user.Id,
-            user.UserName,
-            user.Email,
-            user.Avatar,
-            user.PhoneNumber,
-            user.DepartmentId,
-            user.UserType,
-            user.Name,
-            roles,
-            user.EmailConfirmed,
-            user.Address,
-            user.PhoneNumberConfirmed,
-            user.LockoutEnabled,
-            user.LockoutEnd,
-            user.TwoFactorEnabled
+            data = new
+            {
+                user.Id,
+                user.UserName,
+                user.Email,
+                user.Avatar,
+                user.PhoneNumber,
+                user.DepartmentId,
+                user.UserType,
+                user.Name,
+                roles,
+                user.EmailConfirmed,
+                user.Address,
+                user.PhoneNumberConfirmed,
+                user.LockoutEnabled,
+                user.LockoutEnd,
+                user.TwoFactorEnabled,
+                user.DateOfBirth,
+                user.Gender
+            }
         });
+    }
+
+    [HttpGet("foreign-language-proficiency/list")]
+    public async Task<IActionResult> GetForeignLanguageProficienciesAsync([FromQuery] FilterOptions filterOptions)
+    {
+        var userDetailId = await (from a in _userManager.Users
+                          join b in _identityContext.UserDetails on a.Id equals b.UserId
+                          where a.Id == User.GetId()
+                          select b.Id).FirstOrDefaultAsync();
+        var query = _identityContext.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetailId);
+        return Ok(await ListResult<object>.Success(query, filterOptions));
+    }
+
+    [HttpGet("foreign-language-proficiency/add")]
+    public async Task<IActionResult> AddForeignLanguageProficiencyAsync([FromBody] ForeignLanguageProficiency args, [FromQuery] string locale)
+    {
+        var userDetailId = await (from a in _userManager.Users
+                                  join b in _identityContext.UserDetails on a.Id equals b.UserId
+                                  where a.Id == User.GetId() && b.Locale == locale
+                                  select b.Id).FirstOrDefaultAsync();
+        args.UserDetailId = userDetailId;
+        await _identityContext.ForeignLanguageProficiencies.AddAsync(args);
+        await _identityContext.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpPost("foreign-language-proficiency/delete/{id}")]
+    public async Task<IActionResult> ForeignLanguageProficiencyDeleteAsync([FromRoute] Guid id)
+    {
+        var data = await _identityContext.ForeignLanguageProficiencies.FindAsync(id);
+        if (data is null) return BadRequest("Data not found!");
+        _identityContext.ForeignLanguageProficiencies.Remove(data);
+        await _identityContext.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpPost("foreign-language-proficiency/update")]
+    public async Task<IActionResult> ForeignLanguageProficiencyUpdateAsync([FromBody] ForeignLanguageProficiency args)
+    {
+        var data = await _identityContext.ForeignLanguageProficiencies.FindAsync(args.Id);
+        if (data is null) return BadRequest("Data not found!");
+        data.Language = args.Language;
+        data.Level = args.Level;
+        data.Certificate = args.Certificate;
+        _identityContext.Update(data);
+        await _identityContext.SaveChangesAsync();
+        return Ok();
     }
 
     [HttpGet("list")]

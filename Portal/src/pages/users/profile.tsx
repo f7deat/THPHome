@@ -1,28 +1,19 @@
 ﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space, Tooltip, Divider } from "antd"
-import { useEffect, useState } from "react";
 import {
     EditOutlined,
     RightOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { request, useParams } from "@umijs/max";
+import { useModel } from "@umijs/max";
 import { Link } from "@umijs/max";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import ChangePassword from "./components/change-password";
 
 const { TabPane } = Tabs;
 
-const Profile = () => {
+const Profile: React.FC = () => {
 
-    const { id } = useParams();
-
-    const [profile, setProfile] = useState<any>()
-
-    useEffect(() => {
-        request(`user/get/${id || ''}`).then(response => {
-            setProfile(response);
-        });
-    }, [id])
+    const { initialState } = useModel('@@initialState');
 
     const columns = [
         {
@@ -36,14 +27,14 @@ const Profile = () => {
     ]
 
     return (
-        <PageContainer extra={<Link to={`/account/profile/edit/${profile?.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
+        <PageContainer extra={<Link to={`/account/profile/edit/${initialState?.currentUser.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
             <Row gutter={16}>
-                <Col md={6}>
+                <Col md={6} xs={24}>
                     <ProCard className="mb-4">
                         <div className="flex items-center justify-center p-4 relative">
                             {
-                                profile?.avatar ? (
-                                    <Avatar size={150} src={profile?.avatar} />
+                                initialState?.currentUser?.avatar ? (
+                                    <Avatar size={150} src={initialState?.currentUser?.avatar} />
                                 ) : (
                                     <Avatar size={150} icon={<UserOutlined />} />
                                 )
@@ -53,12 +44,12 @@ const Profile = () => {
                             </Tooltip>
                         </div>
                         <div className="flex items-center justify-center flex-col">
-                            <Typography.Title level={3}>{profile?.name}</Typography.Title>
-                            <div className="mb-4">{profile?.userName}</div>
+                            <Typography.Title level={3}>{initialState?.currentUser.name}</Typography.Title>
+                            <div className="mb-4">{initialState?.currentUser.userName}</div>
                         </div>
                         <Space direction="vertical">
-                            <div className="text-gray-400">Email: {profile?.email}</div>
-                            <div className="text-gray-400">Chức vụ:</div>
+                            <div className="text-gray-400">Email: {initialState?.currentUser.email}</div>
+                            <div className="text-gray-400">Điện thoại: {initialState?.currentUser.phoneNumber}</div>
                         </Space>
                         <Divider dashed orientation="left">Cài đặt</Divider>
                         <div>
@@ -67,7 +58,7 @@ const Profile = () => {
                         </div>
                     </ProCard>
                 </Col>
-                <Col md={18}>
+                <Col md={18} xs={24}>
                     <ProCard>
                         <div className="bg-white rounded">
                             <div className="px-4 py-2">

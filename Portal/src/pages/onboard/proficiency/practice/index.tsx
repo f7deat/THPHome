@@ -54,7 +54,7 @@ const Index: React.FC = () => {
                         valueType: 'option',
                         render: (_, entity) => [
                             <Tooltip key="view" title="Xem chi tiết">
-                                <Link to={`/onboard/proficiency/practice/batch/${entity.id}`}>
+                                <Link to={`/training/proficiency/batch/${entity.id}`}>
                                 <Button type="primary" size="small" icon={<FolderOutlined />} />
                                 </Link>
                             </Tooltip>

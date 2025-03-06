@@ -1,5 +1,5 @@
 import { apiDeleteProficiency, apiGetProficiencyBatch, apiGetProficiencyStatusOptions, apiGetProficiencyTypeOptions, apiProficiencyList } from "@/services/onboard/proficiency";
-import { DeleteOutlined, EditOutlined, EyeOutlined, ManOutlined, MoreOutlined, WomanOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, LeftOutlined, ManOutlined, MoreOutlined, WomanOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
 import { Button, Dropdown, Image, message, Popconfirm, Popover } from "antd";
 import { useEffect, useRef, useState } from "react";
@@ -34,15 +34,16 @@ const ProficiencyPracticePage: React.FC = () => {
     return (
         <PageContainer
             title={data?.name}
-            extra={(
-                <>
-                    <ExportPracticeModal />
-                    <ProFiciencyForm reload={() => {
-                        actionRef.current?.reload();
-                    }} />
-                </>
-            )}>
+            extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <ProTable
+                headerTitle={(
+                    <>
+                        <ExportPracticeModal />
+                        <ProFiciencyForm reload={() => {
+                            actionRef.current?.reload();
+                        }} />
+                    </>
+                )}
                 actionRef={actionRef}
                 search={{
                     layout: 'vertical'

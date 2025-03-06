@@ -2,6 +2,8 @@
 import { history, useModel } from "@umijs/max";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { LeftOutlined } from "@ant-design/icons";
+import ProFileInfo from "./profile/components/info";
+import ForeignLanguageProficiency from "./profile/components/foreign-language-proficiency";
 
 const UserEdit = () => {
 
@@ -14,7 +16,8 @@ const UserEdit = () => {
                     items: [
                         {
                             key: 'general',
-                            label: 'Thông tin chung'
+                            label: 'Thông tin chung',
+                            children: <ProFileInfo />
                         },
                         {
                             key: 'detail',
@@ -26,7 +29,8 @@ const UserEdit = () => {
                         },
                         {
                             key: 'language',
-                            label: 'Ngoại ngữ'
+                            label: 'Ngoại ngữ',
+                            children: <ForeignLanguageProficiency />
                         },
                         {
                             key: 'working-experience',
