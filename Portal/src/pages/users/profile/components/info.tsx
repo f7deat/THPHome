@@ -1,9 +1,37 @@
-import { ProForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components"
+import { apiMyProfile } from "@/services/user";
+import { ProForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components"
+import { useRequest } from "@umijs/max";
 import { Col, Row } from "antd";
+import { useEffect, useRef } from "react";
 
 const ProFileInfo: React.FC = () => {
+
+    const { data } = useRequest(apiMyProfile);
+    const formRef = useRef<ProFormInstance>();
+
+    useEffect(() => {
+        formRef.current?.setFields([
+            {
+                name: 'name',
+                value: data?.name
+            },
+            {
+                name: 'dateOfBirth',
+                value: data?.dateOfBirth
+            },
+            {
+                name: 'gender',
+                value: data?.gender
+            },
+            {
+                name: 'address',
+                value: data?.address
+            }
+        ])
+    }, [data]);
+
     return (
-        <ProForm>
+        <ProForm formRef={formRef}>
             <Row gutter={16}>
                 <Col md={14} xs={24}>
                     <ProFormText name="name" label="Họ và tên" rules={[
@@ -27,8 +55,16 @@ const ProFileInfo: React.FC = () => {
                         }
                     ]} />
                 </Col>
+                <Col md={6} xs={24}>
+                    <ProFormText name="phoneNumber" label="Số điện thoại" />
+                </Col>
+                <Col md={6} xs={24}>
+                    <ProFormText name="email" label="Email" />
+                </Col>
+                <Col md={12} xs={24}>
+                    <ProFormText name="address" label="Địa chỉ" />
+                </Col>
             </Row>
-            <ProFormText name="address" label="Địa chỉ" />
         </ProForm>
     )
 }

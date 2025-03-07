@@ -128,17 +128,24 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
-    [HttpGet("foreign-language-proficiency/add")]
+    [HttpPost("foreign-language-proficiency/add")]
     public async Task<IActionResult> AddForeignLanguageProficiencyAsync([FromBody] ForeignLanguageProficiency args, [FromQuery] string locale)
     {
-        var userDetailId = await (from a in _userManager.Users
-                                  join b in _identityContext.UserDetails on a.Id equals b.UserId
-                                  where a.Id == User.GetId() && b.Locale == locale
-                                  select b.Id).FirstOrDefaultAsync();
-        args.UserDetailId = userDetailId;
-        await _identityContext.ForeignLanguageProficiencies.AddAsync(args);
-        await _identityContext.SaveChangesAsync();
-        return Ok();
+        try
+        {
+            var userDetailId = await (from a in _userManager.Users
+                                      join b in _identityContext.UserDetails on a.Id equals b.UserId
+                                      where a.Id == User.GetId() && b.Locale == locale
+                                      select b.Id).FirstOrDefaultAsync();
+            args.UserDetailId = userDetailId;
+            await _identityContext.ForeignLanguageProficiencies.AddAsync(args);
+            await _identityContext.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("foreign-language-proficiency/delete/{id}")]
@@ -154,14 +161,21 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     [HttpPost("foreign-language-proficiency/update")]
     public async Task<IActionResult> ForeignLanguageProficiencyUpdateAsync([FromBody] ForeignLanguageProficiency args)
     {
-        var data = await _identityContext.ForeignLanguageProficiencies.FindAsync(args.Id);
-        if (data is null) return BadRequest("Data not found!");
-        data.Language = args.Language;
-        data.Level = args.Level;
-        data.Certificate = args.Certificate;
-        _identityContext.Update(data);
-        await _identityContext.SaveChangesAsync();
-        return Ok();
+        try
+        {
+            var data = await _identityContext.ForeignLanguageProficiencies.FindAsync(args.Id);
+            if (data is null) return BadRequest("Data not found!");
+            data.Language = args.Language;
+            data.Level = args.Level;
+            data.Certificate = args.Certificate;
+            _identityContext.Update(data);
+            await _identityContext.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpGet("list")]
