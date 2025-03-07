@@ -34,9 +34,11 @@ export async function apiForeignLanguageProficiencyUpdate(data: any) {
 }
 
 export async function apiForeignLanguageProficiencyDelete(id: string) {
-    return request(`user/foreign-language-proficiency/delete/${id}`);
+    return request(`user/foreign-language-proficiency/delete/${id}`, {
+        method: 'POST'
+    });
 }
 
-export async function apiMyProfile() {
-    return request(`user/my-detail`);
+export async function apiGetUserDetail(userName?: string) {
+    return request(`user/detail/${userName}`);
 }

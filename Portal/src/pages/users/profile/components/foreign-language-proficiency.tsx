@@ -1,6 +1,7 @@
-import { apiForeignLanguageProficiencyCreate, apiForeignLanguageProficiencyUpdate } from "@/services/user";
-import { PlusOutlined } from "@ant-design/icons";
+import { apiForeignLanguageProficiencyCreate, apiForeignLanguageProficiencyDelete, apiForeignLanguageProficiencyList, apiForeignLanguageProficiencyUpdate } from "@/services/user";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ProTable, ModalForm, ProFormText, ProFormInstance, ActionType } from "@ant-design/pro-components";
+import { useModel } from "@umijs/max";
 import { Button, message, Popconfirm } from "antd";
 import { useEffect, useRef, useState } from "react";
 
@@ -10,6 +11,7 @@ const ForeignLanguageProficiency: React.FC = () => {
     const [language, setLanguage] = useState<any>();
     const formRef = useRef<ProFormInstance>();
     const actionRef = useRef<ActionType>();
+    const { initialState } = useModel('@@initialState');
 
     useEffect(() => {
         if (open) {
@@ -36,7 +38,7 @@ const ForeignLanguageProficiency: React.FC = () => {
 
     const onFinish = async (values: any) => {
         if (values.id) {
-           await apiForeignLanguageProficiencyUpdate(values);
+            await apiForeignLanguageProficiencyUpdate(values);
         } else {
             await apiForeignLanguageProficiencyCreate(values);
         }
@@ -46,11 +48,21 @@ const ForeignLanguageProficiency: React.FC = () => {
         formRef.current?.resetFields();
     }
 
+    const onConfirm = async (id: string) => {
+        await apiForeignLanguageProficiencyDelete(id);
+        message.success('Thành công');
+        actionRef.current?.reload();
+    }
+
     return (
         <>
             <ProTable
                 actionRef={actionRef}
                 ghost
+                request={(params) => apiForeignLanguageProficiencyList({
+                    ...params,
+                    userName: initialState?.currentUser.userName
+                })}
                 headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}
                 columns={[
                     {
@@ -68,17 +80,22 @@ const ForeignLanguageProficiency: React.FC = () => {
                         dataIndex: 'level'
                     },
                     {
+                        title: 'Chứng chỉ',
+                        dataIndex: 'certificate'
+                    },
+                    {
                         title: 'Tác vụ',
                         valueType: 'option',
                         render: (_, entity) => [
                             <Button type="primary" key="edit" onClick={() => {
                                 setLanguage(entity);
                                 setOpen(true);
-                            }}>Chỉnh sửa</Button>,
-                            <Popconfirm title="Bạn có chắc chắn muốn xóa?" okText="Có" cancelText="Không" key="delete">
-                                <Button danger>Xóa</Button>
+                            }} icon={<EditOutlined />} size="small" />,
+                            <Popconfirm title="Bạn có chắc chắn muốn xóa?" okText="Có" cancelText="Không" key="delete" onConfirm={() => onConfirm(entity.id)}>
+                                <Button danger size="small" type="primary" icon={<DeleteOutlined />}></Button>
                             </Popconfirm>
-                        ]
+                        ],
+                        width: 60
                     }
                 ]}
                 search={false}

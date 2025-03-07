@@ -74,10 +74,10 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         });
     }
 
-    [HttpGet("my-detail")]
-    public async Task<IActionResult> GetDetailAsync([FromQuery] string locale)
+    [HttpGet("detail/{userName}")]
+    public async Task<IActionResult> GetDetailAsync([FromRoute] string userName, [FromQuery] string locale)
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByNameAsync(userName);
         if (user is null) return Unauthorized();
         var roles = await _userManager.GetRolesAsync(user);
         var userDetail = await _identityContext.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id);
@@ -91,6 +91,7 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
             });
             await _identityContext.SaveChangesAsync();
         }
+        if (userDetail is null) return BadRequest("Detail not found!");
 
         return Ok(new
         {
@@ -112,19 +113,30 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
                 user.LockoutEnd,
                 user.TwoFactorEnabled,
                 user.DateOfBirth,
-                user.Gender
+                user.Gender,
+                userDetail.CountryId,
+                userDetail.YearOfPromotion,
+                userDetail.Position,
+                userDetail.AcademicTitle,
+                userDetail.AcademicDegree,
+                userDetail.CurrentResidence,
+                userDetail.CurrentWorkplace,
+                IdentityPlace = userDetail.IdentityAddress,
+                userDetail.IdentityDate,
+                userDetail.IdentityNumber
             }
         });
     }
 
-    [HttpGet("foreign-language-proficiency/list")]
-    public async Task<IActionResult> GetForeignLanguageProficienciesAsync([FromQuery] FilterOptions filterOptions)
+    [HttpGet("foreign-language-proficiency/list"), AllowAnonymous]
+    public async Task<IActionResult> GetForeignLanguageProficienciesAsync([FromQuery] UserFilterOptions filterOptions)
     {
-        var userDetailId = await (from a in _userManager.Users
-                          join b in _identityContext.UserDetails on a.Id equals b.UserId
-                          where a.Id == User.GetId()
-                          select b.Id).FirstOrDefaultAsync();
-        var query = _identityContext.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetailId);
+        if (string.IsNullOrWhiteSpace(filterOptions.UserName)) return BadRequest("User name is required!");
+        var user = await _userManager.FindByNameAsync(filterOptions.UserName);
+        if (user is null) return BadRequest("User not found!");
+        var userDetail = await _identityContext.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id && x.Locale == filterOptions.Locale);
+        if (userDetail is null) return BadRequest("Detail not found!");
+        var query = _identityContext.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetail.Id);
         return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
