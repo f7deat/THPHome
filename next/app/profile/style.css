@@ -1,0 +1,13 @@
+.my-anchor {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.15rem;
+}
+
+.my-anchor .ant-anchor-link-title-active {
+    color: #ffd201 !important;
+}
+
+.my-anchor .ant-anchor-ink-visible {
+    background-color: #ffd201 !important;
+}
