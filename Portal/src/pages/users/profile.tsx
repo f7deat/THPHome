@@ -1,4 +1,4 @@
-﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space, Tooltip, Divider } from "antd"
+﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space, Tooltip, Divider, Upload } from "antd"
 import {
     EditOutlined,
     RightOutlined,
@@ -8,6 +8,7 @@ import { useModel } from "@umijs/max";
 import { Link } from "@umijs/max";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import ChangePassword from "./components/change-password";
+import { apiChangeAvatar } from "@/services/user";
 
 const { TabPane } = Tabs;
 
@@ -24,7 +25,7 @@ const Profile: React.FC = () => {
             title: 'Date',
             dataIndex: 'createdDate'
         }
-    ]
+    ];
 
     return (
         <PageContainer extra={<Link to={`/account/profile/edit/${initialState?.currentUser.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
@@ -34,13 +35,24 @@ const Profile: React.FC = () => {
                         <div className="flex items-center justify-center p-4 relative">
                             {
                                 initialState?.currentUser?.avatar ? (
-                                    <Avatar size={150} src={initialState?.currentUser?.avatar} />
+                                    <Avatar size={200} src={initialState?.currentUser?.avatar} />
                                 ) : (
-                                    <Avatar size={150} icon={<UserOutlined />} />
+                                    <Avatar size={200} icon={<UserOutlined />} />
                                 )
                             }
-                            <Tooltip title="Chỉnh sửa ảnh đại diện" className="absolute right-0 bottom-0">
-                                <Button type="text" className="absolute right-0 top-0" icon={<EditOutlined />} size="small" />
+                            <Tooltip title="Chỉnh sửa ảnh đại diện">
+                                <Upload className="absolute top-0 right-0"
+                                showUploadList={false}
+                                beforeUpload={async (file) => {
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+                                    await apiChangeAvatar(formData);
+                                    window.location.reload();
+                                    return false;
+                                }}
+                                >
+                                    <Button type="text" icon={<EditOutlined />} size="small">Thay đổi</Button>
+                                </Upload>
                             </Tooltip>
                         </div>
                         <div className="flex items-center justify-center flex-col">

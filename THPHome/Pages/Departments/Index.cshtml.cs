@@ -2,6 +2,7 @@ using ApplicationCore.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Entities;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 

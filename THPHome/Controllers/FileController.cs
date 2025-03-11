@@ -17,7 +17,7 @@ using WebUI.Options;
 
 namespace THPHome.Controllers;
 
-public class FileController(IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, UserManager<ApplicationUser> _userManager, IConfiguration _configuration, IOptions<SettingOptions> _optionsAccessor) : BaseController(context)
+public class FileController(IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, UserManager<ApplicationUser> _userManager, IOptions<SettingOptions> _optionsAccessor) : BaseController(context)
 {
     public SettingOptions Options { get; } = _optionsAccessor.Value;
 

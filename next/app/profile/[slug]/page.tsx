@@ -4,10 +4,26 @@ import { CaretDownFilled, FacebookFilled, GlobalOutlined, HomeOutlined, Linkedin
 import Link from 'next/link'
 import { Anchor, ConfigProvider, Dropdown } from 'antd';
 import '../style.css';
+import { apiLecturePublicInfo } from '@/services/user';
+import { Metadata } from 'next';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
-export default function Page() {
+export const metadata: Metadata = {
+    title: 'Sơ yếu lý lịch khoa học Giảng viên',
+    description: 'Sơ yếu lý lịch khoa học Giảng viên',
+  }
+
+export default async function Page({
+    params,
+}: {
+    params: Promise<{ slug: string }>
+}) {
+    const { slug } = await params;
+
+    const data = await apiLecturePublicInfo(slug);
+    console.log(data.data);
+
     return (
         <ConfigProvider
             theme={{
@@ -24,7 +40,7 @@ export default function Page() {
                     <div className="w-52 h-52 rounded-full border-4 border-slate-100 mb-4">
                         <Image src='https://dhhp.edu.vn/img/2024-01-26/HT%20-%20Bui%20Xuan%20Hai.jpg' alt="John Doe" className="rounded-full object-cover w-full h-full" width={200} height={200} />
                     </div>
-                    <h1 className="text-2xl font-semibold 2xl:text-3xl mb-2">PGS.TS Bùi Xuân Hải</h1>
+                    <h1 className="text-2xl font-semibold 2xl:text-3xl mb-2">{data.data.name}</h1>
                     <div className='mb-2'>Ban giám hiệu</div>
                     <div className="flex gap-4 mt-6 mb-4 text-2xl">
                         <Link href="#"><FacebookFilled /></Link>

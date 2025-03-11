@@ -42,3 +42,14 @@ export async function apiForeignLanguageProficiencyDelete(id: string) {
 export async function apiGetUserDetail(userName?: string) {
     return request(`user/detail/${userName}`);
 }
+
+export async function apiChangeAvatar(data: any) {
+    return request(`user/change-avatar`, {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    
+}

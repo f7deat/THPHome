@@ -20,12 +20,20 @@ using ApplicationCore.Models.Filters;
 using THPHome.Models.Api.Admin.User;
 using THPHome.Models.Filters.Users;
 using THPIdentity.Constants;
-using THPIdentity.Data;
 using THPHome.Helpers;
+using THPHome.Interfaces.IService;
+using THPHome.Interfaces.IService.IUsers;
+using THPHome.Models.Args.Users;
+using WebUI.Interfaces.IService;
 
 namespace THPHome.Controllers;
 
-public class UserController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen, IdentityDbTHPContext _identityContext) : BaseController(context)
+public class UserController(
+    IAcademicTitleService _academicTitleService,
+    IAcademicDegreeService _academicDegreeService,
+    ITelegramService _telegramService,
+    IWebHostEnvironment _webHostEnvironment,
+    UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
 
@@ -80,16 +88,16 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         var user = await _userManager.FindByNameAsync(userName);
         if (user is null) return Unauthorized();
         var roles = await _userManager.GetRolesAsync(user);
-        var userDetail = await _identityContext.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id);
+        var userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id);
         if (userDetail is null)
         {
             if (!LanguageHelper.IsAvailable(locale)) return BadRequest("Language not available!");
-            await _identityContext.UserDetails.AddAsync(new UserDetail
+            await _context.UserDetails.AddAsync(new Entities.Users.UserDetail
             {
                 UserId = user.Id,
                 Locale = locale
             });
-            await _identityContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
         if (userDetail is null) return BadRequest("Detail not found!");
 
@@ -114,14 +122,11 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
                 user.TwoFactorEnabled,
                 user.DateOfBirth,
                 user.Gender,
-                userDetail.CountryId,
                 userDetail.YearOfPromotion,
                 userDetail.Position,
-                userDetail.AcademicTitle,
-                userDetail.AcademicDegree,
                 userDetail.CurrentResidence,
                 userDetail.CurrentWorkplace,
-                IdentityPlace = userDetail.IdentityAddress,
+                userDetail.IdentityPlace,
                 userDetail.IdentityDate,
                 userDetail.IdentityNumber
             }
@@ -134,10 +139,11 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         if (string.IsNullOrWhiteSpace(filterOptions.UserName)) return BadRequest("User name is required!");
         var user = await _userManager.FindByNameAsync(filterOptions.UserName);
         if (user is null) return BadRequest("User not found!");
-        var userDetail = await _identityContext.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id && x.Locale == filterOptions.Locale);
+        var userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id && x.Locale == filterOptions.Locale);
         if (userDetail is null) return BadRequest("Detail not found!");
-        var query = _identityContext.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetail.Id);
-        return Ok(await ListResult<object>.Success(query, filterOptions));
+        //var query = _identityContext.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetail.Id);
+        //return Ok(await ListResult<object>.Success(query, filterOptions));
+        return Ok();
     }
 
     [HttpPost("foreign-language-proficiency/add")]
@@ -146,12 +152,12 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
         try
         {
             var userDetailId = await (from a in _userManager.Users
-                                      join b in _identityContext.UserDetails on a.Id equals b.UserId
+                                      join b in _context.UserDetails on a.Id equals b.UserId
                                       where a.Id == User.GetId() && b.Locale == locale
                                       select b.Id).FirstOrDefaultAsync();
             args.UserDetailId = userDetailId;
-            await _identityContext.ForeignLanguageProficiencies.AddAsync(args);
-            await _identityContext.SaveChangesAsync();
+            //await _identityContext.ForeignLanguageProficiencies.AddAsync(args);
+            await _context.SaveChangesAsync();
             return Ok();
         }
         catch (Exception ex)
@@ -163,10 +169,10 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     [HttpPost("foreign-language-proficiency/delete/{id}")]
     public async Task<IActionResult> ForeignLanguageProficiencyDeleteAsync([FromRoute] Guid id)
     {
-        var data = await _identityContext.ForeignLanguageProficiencies.FindAsync(id);
-        if (data is null) return BadRequest("Data not found!");
-        _identityContext.ForeignLanguageProficiencies.Remove(data);
-        await _identityContext.SaveChangesAsync();
+        //var data = await _context.ForeignLanguageProficiencies.FindAsync(id);
+        //if (data is null) return BadRequest("Data not found!");
+        //_context.ForeignLanguageProficiencies.Remove(data);
+        await _context.SaveChangesAsync();
         return Ok();
     }
 
@@ -175,13 +181,13 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     {
         try
         {
-            var data = await _identityContext.ForeignLanguageProficiencies.FindAsync(args.Id);
-            if (data is null) return BadRequest("Data not found!");
-            data.Language = args.Language;
-            data.Level = args.Level;
-            data.Certificate = args.Certificate;
-            _identityContext.Update(data);
-            await _identityContext.SaveChangesAsync();
+            //var data = await _identityContext.ForeignLanguageProficiencies.FindAsync(args.Id);
+            //if (data is null) return BadRequest("Data not found!");
+            //data.Language = args.Language;
+            //data.Level = args.Level;
+            //data.Certificate = args.Certificate;
+            //_context.Update(data);
+            await _context.SaveChangesAsync();
             return Ok();
         }
         catch (Exception ex)
@@ -423,16 +429,41 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
     }
 
     [HttpPost("update")]
-    public async Task<IActionResult> UpdateAsync([FromBody] ApplicationUser args)
+    public async Task<IActionResult> UpdateAsync([FromBody] UpdateUserArgs args)
     {
-        var user = await _userManager.FindByIdAsync(args.Id);
-        if (user is null) return BadRequest("User not found!");
-        user.Name = args.Name;
-        user.Address = args.Address;
-        user.DateOfBirth = args.DateOfBirth;
-        user.CityId = args.CityId;
-        user.Gender = args.Gender;
-        return Ok(await _userManager.UpdateAsync(user));
+        try
+        {
+            var user = await _userManager.FindByIdAsync(args.Id);
+            if (user is null) return BadRequest("User not found!");
+            user.Name = args.Name;
+            user.Address = args.Address;
+            user.DateOfBirth = args.DateOfBirth;
+            user.CityId = args.CityId;
+            user.Gender = args.Gender == false ? 0 : 1;
+            user.PhoneNumber = args.PhoneNumber;
+            var detail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            if (detail is null) return BadRequest("Detail not found!");
+            detail.Position = args.Position;
+            detail.CurrentResidence = args.CurrentResidence;
+            detail.AcademicTitleId = args.AcademicTitleId;
+            detail.AcademicDegreeId = args.AcademicDegreeId;
+            detail.IdentityNumber = args.IdentityNumber;
+            detail.IdentityDate = args.IdentityDate;
+            detail.IdentityPlace = args.IdentityPlace;
+            detail.Website = args.Website;
+            detail.Facebook = args.Facebook;
+            detail.Linkedin = args.Linkedin;
+            detail.Address = args.Address;
+            detail.Bio = args.Bio;
+            await _userManager.UpdateAsync(user);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            await _telegramService.SendMessageAsync(ex.ToString());
+            return BadRequest(ex.ToString());
+        }
     }
 
     [HttpPost("create")]
@@ -600,5 +631,48 @@ public class UserController(UserManager<ApplicationUser> _userManager, SignInMan
             data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
             total = await query.CountAsync()
         });
+    }
+
+    [HttpGet("lecturer/list"), AllowAnonymous]
+    public async Task<IActionResult> ListLecturerAsync([FromQuery] UserFilterOptions filterOptions) => Ok(await _userService.ListLecturerAsync(filterOptions));
+
+    [HttpGet("lecturer/public-info/{userName}"), AllowAnonymous]
+    public async Task<IActionResult> GetLecturerPublicInfoAsync([FromRoute] string userName) => Ok(await _userService.GetLecturerPublicInfoAsync(userName));
+
+    [HttpGet("academic-title/options")]
+    public async Task<IActionResult> GetAcademicTitleOptionsAsync() => Ok(await _academicTitleService.GetOptionsAsync());
+
+    [HttpGet("academic-degree/options")]
+    public async Task<IActionResult> GetAcademicDegreeOptionsAsync() => Ok(await _academicDegreeService.GetOptionsAsync());
+
+    [HttpPost("change-avatar")]
+    public async Task<IActionResult> ChangeAvatarAsync([FromForm] IFormFile? file)
+    {
+        try
+        {
+            if (file is null) return BadRequest("File not found!");
+            if (!file.ContentType.Contains("image")) return BadRequest("Định dạng tệp tin không được hỗ trợ!");
+            var user = await _userManager.FindByIdAsync(User.GetId());
+            if (user is null) return BadRequest("User not found!");
+            var rootPath = Path.Combine(_webHostEnvironment.WebRootPath, "avatars");
+            var folder = user.UserName ?? "files";
+            var folderPath = Path.Combine(rootPath, folder);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            var filePath = Path.Combine(folderPath, file.FileName);
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await file.CopyToAsync(stream);
+            }
+            user.Avatar = $"https://dhhp.edu.vn/avatars/{folder}/{file.FileName}";
+            await _userManager.UpdateAsync(user);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
     }
 }

@@ -6,6 +6,7 @@ using THPHome.Entities.Contacts;
 using THPHome.Entities.Curriculum;
 using THPHome.Entities.Notifications;
 using THPHome.Entities.QA;
+using THPHome.Entities.Users;
 using THPHome.Entities.Utils;
 using WebUI.Entities;
 using WebUI.Entities.Articles;
@@ -64,6 +65,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<FieldOfStudy> FieldOfStudies { get; set; }
     public DbSet<Major> Majors { get; set; }
     public DbSet<AcademicProgram> AcademicPrograms { get; set; }
+    #endregion
+
+    #region Users
+    public DbSet<AcademicDegree> AcademicDegrees { get; set; }
+    public DbSet<AcademicTitle> AcademicTitles { get; set; }
+    public DbSet<UserDetail> UserDetails { get; set; }
+    public DbSet<Country> Countries { get; set; }
     #endregion
 
     public DbSet<ApplicationLog> Logs { get; set; }
