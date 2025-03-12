@@ -101,7 +101,7 @@ public class UserController(
         }
         if (userDetail is null) return BadRequest("Detail not found!");
 
-        var languages = await _context.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetail.Id).AsNoTracking().ToListAsync();
+        var languages = await _context.ForeignLanguageProficiencies.Where(x => x.UserName == user.UserName).AsNoTracking().ToListAsync();
 
         return Ok(new
         {
@@ -132,6 +132,8 @@ public class UserController(
                 userDetail.IdentityPlace,
                 userDetail.IdentityDate,
                 userDetail.IdentityNumber,
+                userDetail.AcademicDegreeId,
+                userDetail.AcademicTitleId,
                 CountryId = user.CityId == null ? null : (await _context.Cities.Where(x => x.Id == user.CityId).FirstOrDefaultAsync())?.CountryId,
                 languages
             }
@@ -144,22 +146,17 @@ public class UserController(
         if (string.IsNullOrWhiteSpace(filterOptions.UserName)) return BadRequest("User name is required!");
         var user = await _userManager.FindByNameAsync(filterOptions.UserName);
         if (user is null) return BadRequest("User not found!");
-        var userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id && x.Locale == filterOptions.Locale);
-        if (userDetail is null) return BadRequest("Detail not found!");
-        var query = _context.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetail.Id);
+        var query = _context.ForeignLanguageProficiencies.Where(x => x.UserName == user.UserName);
         return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
     [HttpPost("foreign-language-proficiency/add")]
-    public async Task<IActionResult> AddForeignLanguageProficiencyAsync([FromBody] Entities.Users.ForeignLanguageProficiency args, [FromQuery] string locale)
+    public async Task<IActionResult> AddForeignLanguageProficiencyAsync([FromBody] Entities.Users.ForeignLanguageProficiency args)
     {
         try
         {
-            var userDetailId = await (from a in _userManager.Users
-                                      join b in _context.UserDetails on a.Id equals b.UserId
-                                      where a.Id == User.GetId() && b.Locale == locale
-                                      select b.Id).FirstOrDefaultAsync();
-            args.UserDetailId = userDetailId;
+            args.UserName = User.GetUserName();
+            args.CreatedDate = DateTime.Now;
             await _context.ForeignLanguageProficiencies.AddAsync(args);
             await _context.SaveChangesAsync();
             return Ok();

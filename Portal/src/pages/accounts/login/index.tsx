@@ -15,7 +15,6 @@ const Login: React.FC = () => {
 
     const { initialState, setInitialState } = useModel('@@initialState');
     const [open, setOpen] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchUserInfo = async () => {
         const userInfo = await initialState?.fetchUserInfo?.();
@@ -30,9 +29,7 @@ const Login: React.FC = () => {
     };
 
     const onFinish = async (values: any) => {
-        setLoading(true);
         const response = await apiLogin(values);
-        setLoading(false);
         if (response.succeeded) {
             message.success('Đăng nhập thành công!')
             localStorage.setItem('thp_token', response.token || '');
@@ -40,7 +37,7 @@ const Login: React.FC = () => {
             const urlParams = new URL(window.location.href).searchParams;
             history.push(urlParams.get('redirect') || '/');
         } else {
-            message.error('Sai tên đăng nhập hoặc mật khẩu!')
+            message.error('Sai tên đăng nhập hoặc mật khẩu!');
         }
     }
 
@@ -73,7 +70,7 @@ const Login: React.FC = () => {
                                             }}
                                             rules={[{ required: true }]}
                                         />
-                                        <Button type="primary" loading={loading} htmlType="submit" icon={<LoginOutlined />} className="shadow w-full" size="large">Đăng nhập</Button>
+                                        <Button type="primary" htmlType="submit" icon={<LoginOutlined />} className="shadow w-full" size="large">Đăng nhập</Button>
                                     </Form>
                                 </div>
                                 <div className="flex justify-end w-full">

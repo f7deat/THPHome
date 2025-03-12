@@ -2,13 +2,23 @@ import { apiAcademicDegreeOptions, apiAcademicTitleOptions, apiCityOptions, apiC
 import { ProForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea } from "@ant-design/pro-components"
 import { useModel, useRequest } from "@umijs/max";
 import { Col, Divider, message, Row } from "antd";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ProFileInfo: React.FC = () => {
 
     const { initialState } = useModel('@@initialState');
     const { data } = useRequest(() => apiGetUserDetail(initialState?.currentUser.userName));
     const formRef = useRef<ProFormInstance>();
+    const [cities, setCities] = useState([]);
+    const [countryId, setCountryId] = useState<any>();
+
+    useEffect(() => {
+        if (countryId) {
+            apiCityOptions({ countryId }).then((res) => {
+                setCities(res);
+            });
+        }
+    }, [countryId]);
 
     useEffect(() => {
         formRef.current?.setFields([
@@ -59,8 +69,25 @@ const ProFileInfo: React.FC = () => {
             {
                 name: 'linkedin',
                 value: data?.linkedin
+            },
+            {
+                name: 'academicTitleId',
+                value: data?.academicTitleId
+            },
+            {
+                name: 'academicDegreeId',
+                value: data?.academicDegreeId
+            },
+            {
+                name: 'countryId',
+                value: data?.countryId
+            },
+            {
+                name: 'cityId',
+                value: data?.cityId
             }
         ])
+        setCountryId(data?.countryId);
     }, [data]);
 
     const onFinish = async (values: any) => {
@@ -104,10 +131,10 @@ const ProFileInfo: React.FC = () => {
                     ]} />
                 </Col>
                 <Col md={4} xs={24}>
-                    <ProFormSelect name="countryId" label="Quốc gia" request={apiCountryOptions} allowClear={false} />
+                    <ProFormSelect name="countryId" label="Quốc gia" request={apiCountryOptions} allowClear={false} onChange={(value) => setCountryId(value)} />
                 </Col>
                 <Col md={4} xs={24}>
-                    <ProFormSelect name="cityId" label="Tỉnh/thành" request={apiCityOptions} showSearch />
+                    <ProFormSelect name="cityId" label="Tỉnh/thành" options={cities} showSearch />
                 </Col>
                 <Col md={10} xs={24}>
                     <ProFormText name="address" label="Địa chỉ" />
