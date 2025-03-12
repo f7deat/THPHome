@@ -1,4 +1,6 @@
-﻿using THPHome.Interfaces.IService.IUsers;
+﻿using THPHome.Interfaces.IRepository.IUsers;
+using THPHome.Interfaces.IService.IUsers;
+using THPHome.Repositories.Users;
 using THPHome.Services.Users;
 
 namespace THPHome.Extentions.ServiceCollections;
@@ -9,6 +11,13 @@ public static class UserServiceCollectionExtension
     {
         services.AddScoped<IAcademicTitleService, AcademicTitleService>();
         services.AddScoped<IAcademicDegreeService, AcademicDegreeService>();
+
+        services.AddScoped<ICityService, CityService>();
+        services.AddScoped<ICityRepository, CityRepository>();
+
+        services.AddScoped<IAwardService, AwardService>();
+        services.AddScoped<IAwardRepository, AwardRepository>();
+
         return services;
     }
 }

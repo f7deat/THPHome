@@ -53,3 +53,26 @@ export async function apiChangeAvatar(data: any) {
     });
     
 }
+
+export async function apiAcademicTitleOptions(params: any) {
+    return request(`user/academic-title/options`, { params });
+}
+
+export async function apiAcademicDegreeOptions() {
+    return request(`user/academic-degree/options`);
+}
+
+export async function apiUserUpdate(data: any) {
+    return request(`user/update`, {
+        data,
+        method: 'POST'
+    });
+}
+
+export async function apiCountryOptions(params: any) {
+    return request(`country/options`, { params });
+}
+
+export async function apiCityOptions(params: any) {
+    return request(`city/options`, { params });
+}

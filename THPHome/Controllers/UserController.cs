@@ -101,6 +101,8 @@ public class UserController(
         }
         if (userDetail is null) return BadRequest("Detail not found!");
 
+        var languages = await _context.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetail.Id).AsNoTracking().ToListAsync();
+
         return Ok(new
         {
             data = new
@@ -121,14 +123,17 @@ public class UserController(
                 user.LockoutEnd,
                 user.TwoFactorEnabled,
                 user.DateOfBirth,
-                user.Gender,
+                user.CityId,
+                Gender = user.Gender != 0,
                 userDetail.YearOfPromotion,
                 userDetail.Position,
                 userDetail.CurrentResidence,
                 userDetail.CurrentWorkplace,
                 userDetail.IdentityPlace,
                 userDetail.IdentityDate,
-                userDetail.IdentityNumber
+                userDetail.IdentityNumber,
+                CountryId = user.CityId == null ? null : (await _context.Cities.Where(x => x.Id == user.CityId).FirstOrDefaultAsync())?.CountryId,
+                languages
             }
         });
     }
@@ -141,13 +146,12 @@ public class UserController(
         if (user is null) return BadRequest("User not found!");
         var userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id && x.Locale == filterOptions.Locale);
         if (userDetail is null) return BadRequest("Detail not found!");
-        //var query = _identityContext.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetail.Id);
-        //return Ok(await ListResult<object>.Success(query, filterOptions));
-        return Ok();
+        var query = _context.ForeignLanguageProficiencies.Where(x => x.UserDetailId == userDetail.Id);
+        return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
     [HttpPost("foreign-language-proficiency/add")]
-    public async Task<IActionResult> AddForeignLanguageProficiencyAsync([FromBody] ForeignLanguageProficiency args, [FromQuery] string locale)
+    public async Task<IActionResult> AddForeignLanguageProficiencyAsync([FromBody] Entities.Users.ForeignLanguageProficiency args, [FromQuery] string locale)
     {
         try
         {
@@ -156,7 +160,7 @@ public class UserController(
                                       where a.Id == User.GetId() && b.Locale == locale
                                       select b.Id).FirstOrDefaultAsync();
             args.UserDetailId = userDetailId;
-            //await _identityContext.ForeignLanguageProficiencies.AddAsync(args);
+            await _context.ForeignLanguageProficiencies.AddAsync(args);
             await _context.SaveChangesAsync();
             return Ok();
         }
@@ -169,9 +173,9 @@ public class UserController(
     [HttpPost("foreign-language-proficiency/delete/{id}")]
     public async Task<IActionResult> ForeignLanguageProficiencyDeleteAsync([FromRoute] Guid id)
     {
-        //var data = await _context.ForeignLanguageProficiencies.FindAsync(id);
-        //if (data is null) return BadRequest("Data not found!");
-        //_context.ForeignLanguageProficiencies.Remove(data);
+        var data = await _context.ForeignLanguageProficiencies.FindAsync(id);
+        if (data is null) return BadRequest("Data not found!");
+        _context.ForeignLanguageProficiencies.Remove(data);
         await _context.SaveChangesAsync();
         return Ok();
     }
@@ -181,12 +185,12 @@ public class UserController(
     {
         try
         {
-            //var data = await _identityContext.ForeignLanguageProficiencies.FindAsync(args.Id);
-            //if (data is null) return BadRequest("Data not found!");
-            //data.Language = args.Language;
-            //data.Level = args.Level;
-            //data.Certificate = args.Certificate;
-            //_context.Update(data);
+            var data = await _context.ForeignLanguageProficiencies.FindAsync(args.Id);
+            if (data is null) return BadRequest("Data not found!");
+            data.Language = args.Language;
+            data.Level = args.Level;
+            data.Certificate = args.Certificate;
+            _context.Update(data);
             await _context.SaveChangesAsync();
             return Ok();
         }
@@ -433,13 +437,14 @@ public class UserController(
     {
         try
         {
-            var user = await _userManager.FindByIdAsync(args.Id);
+            var user = await _userManager.FindByIdAsync(User.GetId());
             if (user is null) return BadRequest("User not found!");
             user.Name = args.Name;
             user.Address = args.Address;
             user.DateOfBirth = args.DateOfBirth;
             user.CityId = args.CityId;
             user.Gender = args.Gender == false ? 0 : 1;
+            user.Email = args.Email;
             user.PhoneNumber = args.PhoneNumber;
             var detail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id);
             if (detail is null) return BadRequest("Detail not found!");

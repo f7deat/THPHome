@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;

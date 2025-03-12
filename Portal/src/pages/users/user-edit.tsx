@@ -20,10 +20,6 @@ const UserEdit = () => {
                             children: <ProFileInfo />
                         },
                         {
-                            key: 'detail',
-                            label: 'Thông tin cá nhân'
-                        },
-                        {
                             key: 'education',
                             label: 'Quá trình đào tạo'
                         },
@@ -35,10 +31,6 @@ const UserEdit = () => {
                         {
                             key: 'working-experience',
                             label: 'Quá trình công tác'
-                        },
-                        {
-                            key: 'teaching-experience',
-                            label: 'Quá trình giảng dạy'
                         },
                         {
                             key: 'adward',
