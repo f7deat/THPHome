@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
     title: 'Sơ yếu lý lịch khoa học Giảng viên',
     description: 'Sơ yếu lý lịch khoa học Giảng viên',
-  }
+}
 
 export default async function Page({
     params,
@@ -38,7 +38,7 @@ export default async function Page({
             <main className="flex" style={inter.style}>
                 <div className="w-96 shadow h-screen flex flex-col items-center justify-center bg-[#0077c1] text-white">
                     <div className="w-52 h-52 rounded-full border-4 border-slate-100 mb-4">
-                        <Image src='https://dhhp.edu.vn/img/2024-01-26/HT%20-%20Bui%20Xuan%20Hai.jpg' alt="John Doe" className="rounded-full object-cover w-full h-full" width={200} height={200} />
+                        <Image src={data.data.avatar || 'https://dhhp.edu.vn/logo/logo-65.png'} alt="John Doe" className="rounded-full object-cover w-full h-full" width={200} height={200} />
                     </div>
                     <h1 className="text-2xl font-semibold 2xl:text-3xl mb-2">{data.data.name}</h1>
                     <div className='mb-2'>Ban giám hiệu</div>
@@ -104,11 +104,14 @@ export default async function Page({
                         </div>
                     </div>
                     <div className='p-4' id='introduction'>
-                        <div className='text-2xl'>
+                        <div className='text-lg uppercase font-medium text-[#0077c1]'>
                             <h1>Giới thiệu</h1>
                         </div>
-                        <div className='text-gray-600'>
-                            <p>PGS.TS Bùi Xuân Hải, sinh năm 1963 tại Hà Nội, là người có nhiều năm kinh nghiệm trong lĩnh vực giáo dục và nghiên cứu khoa học. Ông hiện đang là Phó Hiệu trưởng trường Đại học Hà Nội.</p>
+                        <div className='text-gray-600'>{data.data.bio}</div>
+                    </div>
+                    <div className='p-4' id='language'>
+                        <div className='text-lg uppercase font-medium text-[#0077c1]'>
+                            <h1>Ngoại ngữ</h1>
                         </div>
                     </div>
                 </div>
@@ -116,3 +119,5 @@ export default async function Page({
         </ConfigProvider>
     )
 }
+
+Page.noLayout = true;

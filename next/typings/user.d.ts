@@ -6,4 +6,6 @@ export interface UserListItem {
     address: string;
     avatar: string;
     userName: string;
+    department: string;
+    position: string;
 }

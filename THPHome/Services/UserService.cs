@@ -43,6 +43,11 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         {
             department = await _context.Departments.FirstOrDefaultAsync(x => x.Code == user.DepartmentId);
         }
+        var city = string.Empty;
+        if (user.CityId != null)
+        {
+            city = (await _context.Cities.FirstOrDefaultAsync())?.Name;
+        }
 
         return new
         {
@@ -51,6 +56,9 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             user.UserName,
             user.Email,
             user.PhoneNumber,
+            user.Avatar,
+            user.DateOfBirth,
+            Gender = user.Gender != 0,
             detail.Position,
             detail.CurrentResidence,
             detail.CurrentWorkplace,
@@ -63,7 +71,8 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             detail.Bio,
             academicDegree,
             academicTitle,
-            department
+            department,
+            city
         };
     }
 
