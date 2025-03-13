@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { CaretDownFilled, FacebookFilled, GlobalOutlined, HomeOutlined, LinkedinFilled, TranslationOutlined } from '@ant-design/icons'
+import { CaretDownFilled, EnvironmentFilled, FacebookFilled, GlobalOutlined, HomeOutlined, LinkedinFilled, MailFilled, PhoneFilled, TranslationOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import { Anchor, ConfigProvider, Dropdown } from 'antd';
 import '../style.css';
@@ -112,12 +112,26 @@ export default async function Page({
                         </div>
                     </div>
                     <div className='p-4'>
-                        <div id='introduction' className='mb-4'>
+                        <div id='introduction' className='mb-4 2xl:mb-8'>
                             <HeadTitle title='Giới thiệu' />
-                            <div className='text-gray-600'>{data.bio}</div>
+                            <div className='text-gray-600 mb-4'>{data.bio}</div>
+                            <div className='mb-2'>
+                                <span className='text-blue-500 mr-2'><EnvironmentFilled /></span>Địa chỉ: <span className='text-slate-600'>{data.address}</span>
+                            </div>
+                            <div className='mb-2'>
+                                <span className='text-blue-500 mr-2'><MailFilled /></span>Email: <span className='text-slate-600'>{data.email}</span>
+                            </div>
+                            <div className='mb-2'>
+                                <span className='text-blue-500 mr-2'><PhoneFilled /></span>Điện thoại: <span className='text-slate-600'>{data.phoneNumber}</span>
+                            </div>
                         </div>
-                        <div id='language' className='mb-4'>
+                        <div id='language' className='mb-4 2xl:mb-8'>
                             <HeadTitle title='Ngoại ngữ' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='flex-1 py-1 font-medium px-2'>Ngôn ngữ</div>
+                                <div className='flex-1 py-1 px-2'>Chứng chỉ</div>
+                                <div className='flex-1 py-1 px-2'>Trình độ</div>
+                            </div>
                             {
                                 data.languages?.map((lang: Language, index: number) => (
                                     <div key={index} className='flex mb-1'>
@@ -128,8 +142,24 @@ export default async function Page({
                                 ))
                             }
                         </div>
-                        <div id='edu'>
+                        <div id='edu' className='mb-4 2xl:mb-8'>
                             <HeadTitle title='Học vấn' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='flex-1 py-1 font-medium px-2'>Bằng cấp</div>
+                                <div className='flex-1 py-1 px-2'>Ngành / Chuyên ngành</div>
+                                <div className='flex-1 py-1 px-2'>Nơi đào tạo</div>
+                                <div className='flex-1 py-1 px-2'>Năm tốt nghiệp</div>
+                            </div>
+                            {
+                                data.educationHistories?.map((edu, index) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{edu.degree}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{edu.major}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{edu.institution}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{edu.graduationYear}</div>
+                                    </div>
+                                ))
+                            }
                         </div>
                         <div id='research'>
                             <HeadTitle title='Nghiên cứu khoa học' />

@@ -30,6 +30,20 @@ export interface Language {
     language: string;
 }
 
+export interface AcademicTitle {
+    id: string;
+    name: string;
+    shortName: string;
+}
+
+export interface EducationHistory {
+    id: string;
+    degree: string;
+    major: string;
+    institution: string;
+    graduationYear: number;
+}
+
 export interface LecturerDetail {
     id: string;
     name: string;
@@ -38,4 +52,9 @@ export interface LecturerDetail {
     awards?: Award[];
     department?: Department;
     languages?: Language[];
+    educationHistories?: EducationHistory[];
+    address?: string;
+    email?: string;
+    phoneNumber?: string;
+    academicTitle?: AcademicTitle;
 }

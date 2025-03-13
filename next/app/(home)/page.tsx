@@ -3,7 +3,6 @@ import { apiLecturerList } from "@/services/user";
 import { UserListItem } from "@/typings/user";
 import { DoubleLeftOutlined, DoubleRightOutlined, HomeOutlined } from "@ant-design/icons";
 import { Inter } from "next/font/google";
-import Image from "next/image";
 import Link from "next/link";
 import { Search } from "./components/search";
 import { Filter } from "./components/filter";
@@ -28,7 +27,7 @@ export default async function Home({ searchParams }: Props) {
             <header className="mb-4">
                 <div className="container mx-auto py-4 flex justify-between items-center">
                     <Link href='/'>
-                        <Image src='https://dhhp.edu.vn/files/fa05873c-d71e-4b54-b82e-a76e73a2fbcd/logoUniversity.jpg' alt="LOGO" width={300} height={100} />
+                        <img src='https://dhhp.edu.vn/files/fa05873c-d71e-4b54-b82e-a76e73a2fbcd/logoUniversity.jpg' alt="LOGO" width={300} height={100} className="object-cover" />
                     </Link>
                     <Search />
                 </div>

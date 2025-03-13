@@ -112,7 +112,8 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             },
             city,
             languages,
-            awards
+            awards,
+            educationHistories
         };
     }
 

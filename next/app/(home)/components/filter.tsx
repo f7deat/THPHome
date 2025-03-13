@@ -22,7 +22,7 @@ export const Filter: React.FC = () => {
                     return;
                 }
                 router.push(`/?departmentCode=${value}`);
-            }} />
+            }} popupMatchSelectWidth={false} />
         </div>
     )
 }
