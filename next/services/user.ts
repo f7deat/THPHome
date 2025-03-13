@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function apiLecturerList(params: { current: number, name?: string | string[] | undefined }) {
+export async function apiLecturerList(params: { current: number, departmentCode?: string | string[] | undefined, name?: string | string[] | undefined }) {
     return axios.get(`https://dhhp.edu.vn/api/user/lecturer/list`, { 
         params: {
             ...params,

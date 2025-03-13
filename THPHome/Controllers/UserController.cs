@@ -33,6 +33,7 @@ public class UserController(
     IAcademicDegreeService _academicDegreeService,
     ITelegramService _telegramService,
     IWebHostEnvironment _webHostEnvironment,
+    IEducationHistoryService _educationHistoryService,
     UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
@@ -134,6 +135,10 @@ public class UserController(
                 userDetail.IdentityNumber,
                 userDetail.AcademicDegreeId,
                 userDetail.AcademicTitleId,
+                userDetail.Facebook,
+                userDetail.Website,
+                userDetail.Linkedin,
+                userDetail.Bio,
                 CountryId = user.CityId == null ? null : (await _context.Cities.Where(x => x.Id == user.CityId).FirstOrDefaultAsync())?.CountryId,
                 languages
             }
@@ -639,7 +644,17 @@ public class UserController(
     public async Task<IActionResult> ListLecturerAsync([FromQuery] UserFilterOptions filterOptions) => Ok(await _userService.ListLecturerAsync(filterOptions));
 
     [HttpGet("lecturer/public-info/{userName}"), AllowAnonymous]
-    public async Task<IActionResult> GetLecturerPublicInfoAsync([FromRoute] string userName) => Ok(await _userService.GetLecturerPublicInfoAsync(userName));
+    public async Task<IActionResult> GetLecturerPublicInfoAsync([FromRoute] string userName)
+    {
+        try
+        {
+            return Ok(await _userService.GetLecturerPublicInfoAsync(userName));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+    }
 
     [HttpGet("academic-title/options")]
     public async Task<IActionResult> GetAcademicTitleOptionsAsync() => Ok(await _academicTitleService.GetOptionsAsync());
@@ -676,5 +691,41 @@ public class UserController(
         {
             return BadRequest(ex.ToString());
         }
+    }
+
+    [HttpGet("education-history/list")]
+    public async Task<IActionResult> GetEducationHistoryListAsync([FromQuery] UserFilterOptions filterOptions)
+    {
+        var query = _context.EducationHistories.AsQueryable();
+        if (!string.IsNullOrWhiteSpace(filterOptions.UserName))
+        {
+            query = query.Where(x => x.UserName == filterOptions.UserName);
+        }
+        return Ok(await ListResult<EducationHistory>.Success(query, filterOptions));
+    }
+
+    [HttpPost("education-history/add")]
+    public async Task<IActionResult> AddEducationHistoryAsync([FromBody] Entities.Users.EducationHistory args)
+    {
+        args.UserName = User.GetUserName();
+        var result = await _educationHistoryService.AddAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("education-history/update")]
+    public async Task<IActionResult> UpdateEducationHistoryAsync([FromBody] Entities.Users.EducationHistory args)
+    {
+        var result = await _educationHistoryService.UpdateAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("education-history/delete/{id}")]
+    public async Task<IActionResult> DeleteEducationHistoryAsync([FromRoute] Guid id)
+    {
+        var result = await _educationHistoryService.DeleteAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
     }
 }

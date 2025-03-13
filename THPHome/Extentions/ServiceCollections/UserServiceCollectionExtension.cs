@@ -18,6 +18,12 @@ public static class UserServiceCollectionExtension
         services.AddScoped<IAwardService, AwardService>();
         services.AddScoped<IAwardRepository, AwardRepository>();
 
+        services.AddScoped<IEducationHistoryService, EducationHistoryService>();
+        services.AddScoped<IEducationHistoryRepository, EducationHistoryRepository>();
+
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<IDepartmentService, DepartmentService>();
+
         return services;
     }
 }

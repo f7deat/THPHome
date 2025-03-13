@@ -1,0 +1,1 @@
+export { default as EducationHistory } from './education-history';

@@ -4,6 +4,7 @@ import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { LeftOutlined } from "@ant-design/icons";
 import ProFileInfo from "./profile/components/info";
 import ForeignLanguageProficiency from "./profile/components/foreign-language-proficiency";
+import EducationHistoryTab from "./profile/components/education-history";
 
 const UserEdit = () => {
 
@@ -21,7 +22,8 @@ const UserEdit = () => {
                         },
                         {
                             key: 'education',
-                            label: 'Quá trình đào tạo'
+                            label: 'Quá trình đào tạo',
+                            children: <EducationHistoryTab />
                         },
                         {
                             key: 'language',

@@ -1,11 +1,13 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Models.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Interfaces.IService.IUsers;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Models.Args.Departments;
@@ -13,15 +15,8 @@ using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 
-public class DepartmentController : BaseController
+public class DepartmentController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, IDepartmentService _departmentService) : BaseController(context)
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public DepartmentController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : base(context)
-    {
-        _userManager = userManager;
-    }
-
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] DepartmentFilterOptions filterOptions)
     {
@@ -213,4 +208,7 @@ public class DepartmentController : BaseController
         label = x.Name,
         value = x.Id
     }).ToListAsync());
+
+    [HttpGet("code-options"), AllowAnonymous]
+    public async Task<IActionResult> GetCodeOptionsAsync() => Ok(await _departmentService.GetCodeOptionsAsync());
 }

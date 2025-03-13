@@ -49,6 +49,30 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             city = (await _context.Cities.FirstOrDefaultAsync())?.Name;
         }
 
+        var languages = await _context.ForeignLanguageProficiencies.Where(x => x.UserName == userName).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.Certificate,
+            x.Level,
+            x.Language
+        }).ToListAsync();
+
+        var educationHistories = await _context.EducationHistories.Where(x => x.UserName == userName).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.Major,
+            x.Degree,
+            x.GraduationYear,
+            x.Institution
+        }).ToListAsync();
+
+        var awards = await _context.Awards.Where(x => x.UserName == userName).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.Year,
+            x.Name
+        }).ToListAsync();
+
         return new
         {
             user.Id,
@@ -69,16 +93,32 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             detail.Facebook,
             detail.Linkedin,
             detail.Bio,
-            academicDegree,
-            academicTitle,
-            department,
-            city
+            AcademicDegree = new
+            {
+                academicDegree?.Id,
+                academicDegree?.Name,
+                academicDegree?.ShortName
+            },
+            AcademicTitle = new
+            {
+                academicTitle?.Id,
+                academicTitle?.Name,
+                academicTitle?.ShortName
+            },
+            Department = new
+            {
+                department?.Name,
+                department?.Code
+            },
+            city,
+            languages,
+            awards
         };
     }
 
     public async Task<object?> ListLecturerAsync(UserFilterOptions filterOptions)
     {
-        var query = from a in _userManager.Users.Where(x => x.UserType == UserType.Lecturer)
+        var query = from a in _userManager.Users.Where(x => x.UserType != UserType.Student)
                     select new
                     {
                         a.Id,
@@ -89,15 +129,23 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
                         a.Gender,
                         a.DateOfBirth,
                         a.Avatar,
-                        a.DepartmentId
+                        a.DepartmentId,
+                        a.UserType
                     };
+
+        query = query.Where(x => x.UserName != "admin@dhhp.edu.vn" && x.UserName != "btv@dhhp.edu.vn" && x.UserName != "admin.dhhp");
 
         if (!string.IsNullOrWhiteSpace(filterOptions.Name))
         {
             query = query.Where(x => x.Name.ToLower().Contains(filterOptions.Name.ToLower()));
         }
 
-        var result = await query.OrderBy(x => x.Name).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
+        if (filterOptions.DepartmentCode != null)
+        {
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentCode);
+        }
+
+        var result = await query.OrderByDescending(x => x.UserType).ThenBy(x => x.UserName).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
         var academicDegrees = await _context.AcademicDegrees.AsNoTracking().ToListAsync();
         var academicTitles = await _context.AcademicTitles.AsNoTracking().ToListAsync();
         var data = new List<UserListItem>();
@@ -112,13 +160,14 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
                 PhoneNumber = item.PhoneNumber,
                 DateOfBirth = item.DateOfBirth,
                 Gender = item.Gender != 0,
-                Avatar = item.Avatar
+                Avatar = item.Avatar,
             };
             var detail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == item.Id);
             if (detail != null)
             {
                 listItem.AcademicDegree = detail.AcademicDegreeId != null ? academicDegrees.FirstOrDefault(x => x.Id == detail.AcademicDegreeId)?.Name : null;
                 listItem.AcademicTitle = detail.AcademicTitleId != null ? academicTitles.FirstOrDefault(x => x.Id == detail.AcademicTitleId)?.Name : null;
+                listItem.Position = detail.Position;
             }
             var department = await _context.Departments.FirstOrDefaultAsync(x => x.Code == item.DepartmentId);
             if (department != null)

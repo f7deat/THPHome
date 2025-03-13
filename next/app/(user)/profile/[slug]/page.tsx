@@ -6,6 +6,7 @@ import { Anchor, ConfigProvider, Dropdown } from 'antd';
 import '../style.css';
 import { apiLecturePublicInfo } from '@/services/user';
 import { Metadata } from 'next';
+import { Language, LecturerDetail } from '@/typings/user';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,8 +22,15 @@ export default async function Page({
 }) {
     const { slug } = await params;
 
-    const data = await apiLecturePublicInfo(slug);
-    console.log(data.data);
+    const response = await apiLecturePublicInfo(slug);
+    const data = response.data as LecturerDetail;
+    console.log(data);
+
+    const HeadTitle = (props: { title: string }) => (
+        <div className='text-lg uppercase font-semibold text-[#0077c1] mb-2'>
+            <h1>{props.title}</h1>
+        </div>
+    )
 
     return (
         <ConfigProvider
@@ -38,10 +46,10 @@ export default async function Page({
             <main className="flex" style={inter.style}>
                 <div className="w-96 shadow h-screen flex flex-col items-center justify-center bg-[#0077c1] text-white">
                     <div className="w-52 h-52 rounded-full border-4 border-slate-100 mb-4">
-                        <Image src={data.data.avatar || 'https://dhhp.edu.vn/logo/logo-65.png'} alt="John Doe" className="rounded-full object-cover w-full h-full" width={200} height={200} />
+                        <Image src={data.avatar || 'https://dhhp.edu.vn/logo/logo-65.png'} alt="John Doe" className="rounded-full object-cover w-full h-full" width={200} height={200} />
                     </div>
-                    <h1 className="text-2xl font-semibold 2xl:text-3xl mb-2">{data.data.name}</h1>
-                    <div className='mb-2'>Ban giám hiệu</div>
+                    <h1 className="text-2xl font-semibold 2xl:text-3xl mb-2">{data.name}</h1>
+                    <div className='mb-2'>{data.department?.name}</div>
                     <div className="flex gap-4 mt-6 mb-4 text-2xl">
                         <Link href="#"><FacebookFilled /></Link>
                         <Link href="#"><LinkedinFilled /></Link>
@@ -103,15 +111,31 @@ export default async function Page({
                             </Dropdown>
                         </div>
                     </div>
-                    <div className='p-4' id='introduction'>
-                        <div className='text-lg uppercase font-medium text-[#0077c1]'>
-                            <h1>Giới thiệu</h1>
+                    <div className='p-4'>
+                        <div id='introduction' className='mb-4'>
+                            <HeadTitle title='Giới thiệu' />
+                            <div className='text-gray-600'>{data.bio}</div>
                         </div>
-                        <div className='text-gray-600'>{data.data.bio}</div>
-                    </div>
-                    <div className='p-4' id='language'>
-                        <div className='text-lg uppercase font-medium text-[#0077c1]'>
-                            <h1>Ngoại ngữ</h1>
+                        <div id='language' className='mb-4'>
+                            <HeadTitle title='Ngoại ngữ' />
+                            {
+                                data.languages?.map((lang: Language, index: number) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{lang.language}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{lang.certificate}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{lang.level}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div id='edu'>
+                            <HeadTitle title='Học vấn' />
+                        </div>
+                        <div id='research'>
+                            <HeadTitle title='Nghiên cứu khoa học' />
+                        </div>
+                        <div id='awards'>
+                            <HeadTitle title='Giải thưởng' />
                         </div>
                     </div>
                 </div>
