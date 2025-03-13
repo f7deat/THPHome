@@ -76,3 +76,27 @@ export async function apiCountryOptions(params: any) {
 export async function apiCityOptions(params: any) {
     return request(`city/options`, { params });
 }
+
+export async function apiEducationHistoryAdd(data: any) {
+    return request(`user/education-history/add`, {
+        method: 'POST',
+        data
+    })
+}
+
+export async function apiEducationHistoryUpdate(data: any) {
+    return request(`user/education-history/update`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiEducationHistoryDelete(id: string) {
+    return request(`user/education-history/delete/${id}`, {
+        method: 'POST'
+    });
+}
+
+export async function apiEducationHistoryList(params: any) {
+    return request(`user/education-history/list`, { params });
+}
