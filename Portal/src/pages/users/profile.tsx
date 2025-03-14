@@ -1,6 +1,9 @@
 ﻿import { Col, Row, Typography, Button, Avatar, Space, Tooltip, Divider, Upload, Empty } from "antd"
 import {
     EditOutlined,
+    EyeOutlined,
+    MailOutlined,
+    PhoneOutlined,
     RightOutlined,
     UserOutlined,
 } from "@ant-design/icons";
@@ -18,7 +21,12 @@ const Profile: React.FC = () => {
         <PageContainer extra={<Link to={`/account/profile/edit/${initialState?.currentUser.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
             <Row gutter={16}>
                 <Col md={6} xs={24}>
-                    <ProCard className="mb-4">
+                    <ProCard className="mb-4"
+                        actions={[
+                        <Link to={`/account/profile/edit/${initialState?.currentUser.id}`} key="edit"><EditOutlined className="mr-2" />Chỉnh sửa</Link>,
+                        <a href={`https://next.dhhp.edu.vn/profile/${initialState?.currentUser?.userName}`} key="privacy" target="_blank"><EyeOutlined className="mr-2" />Xem hồ sơ</a>,
+                    ]}
+                        title="Thông tin cá nhân" headerBordered>
                         <div className="flex items-center justify-center p-4 relative">
                             {
                                 initialState?.currentUser?.avatar ? (
@@ -29,14 +37,14 @@ const Profile: React.FC = () => {
                             }
                             <Tooltip title="Chỉnh sửa ảnh đại diện">
                                 <Upload className="absolute top-0 right-0"
-                                showUploadList={false}
-                                beforeUpload={async (file) => {
-                                    const formData = new FormData();
-                                    formData.append('file', file);
-                                    await apiChangeAvatar(formData);
-                                    window.location.reload();
-                                    return false;
-                                }}
+                                    showUploadList={false}
+                                    beforeUpload={async (file) => {
+                                        const formData = new FormData();
+                                        formData.append('file', file);
+                                        await apiChangeAvatar(formData);
+                                        window.location.reload();
+                                        return false;
+                                    }}
                                 >
                                     <Button type="text" icon={<EditOutlined />} size="small">Thay đổi</Button>
                                 </Upload>
@@ -47,8 +55,8 @@ const Profile: React.FC = () => {
                             <div className="mb-4">{initialState?.currentUser.userName}</div>
                         </div>
                         <Space direction="vertical">
-                            <div className="text-gray-400">Email: {initialState?.currentUser.email}</div>
-                            <div className="text-gray-400">Điện thoại: {initialState?.currentUser.phoneNumber}</div>
+                            <div className="text-gray-600"><MailOutlined className="mr-2" />{initialState?.currentUser.email}</div>
+                            <div className="text-gray-600"><PhoneOutlined className="mr-2" />{initialState?.currentUser.phoneNumber}</div>
                         </Space>
                         <Divider dashed orientation="left">Cài đặt</Divider>
                         <div>

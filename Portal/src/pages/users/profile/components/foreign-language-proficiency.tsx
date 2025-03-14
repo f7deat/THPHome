@@ -45,6 +45,7 @@ const ForeignLanguageProficiency: React.FC = () => {
         message.success('Thành công');
         actionRef.current?.reload();
         setOpen(false);
+        setLanguage(null);
         formRef.current?.resetFields();
     }
 

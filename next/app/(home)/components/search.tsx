@@ -17,8 +17,8 @@ export const Search: React.FC = () => {
 
     return (
         <div className="flex">
-            <input type="search" className="border p-2 border-slate-300 min-w-72" placeholder="Nhập từ khóa tìm kiếm..." onChange={(e) => setSearch(e.currentTarget.value)} />
-            <button type="button" className="border px-4 border-slate-400 cursor-pointer hover:bg-slate-800 hover:text-white" onClick={onSearch}>Tìm kiếm</button>
+            <input type="search" className="border p-1 md:p-2 border-slate-300 min-w-72 mr-1" placeholder="Nhập từ khóa tìm kiếm..." onChange={(e) => setSearch(e.currentTarget.value)} />
+            <button type="button" className="border px-4 border-slate-300 cursor-pointer hover:bg-slate-800 hover:text-white" onClick={onSearch}>Tìm</button>
         </div>
     )
 }

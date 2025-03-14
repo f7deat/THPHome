@@ -15,7 +15,7 @@ export const Filter: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex justify-end gap-2 items-center mb-4 2xl:mb-8">
+        <div className="flex justify-center md:justify-end gap-2 items-center mb-4 2xl:mb-8">
             <Select className="min-w-52" showSearch options={options} placeholder="Chọn đơn vị" onChange={(value) => {
                 if (!value) {
                     return;

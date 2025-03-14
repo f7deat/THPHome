@@ -124,3 +124,27 @@ export async function apiAwardDelete(id: string) {
 export async function apiAwardList(params: any) {
     return request(`award/list`, { params });
 }
+
+export async function apiResearchProjectAdd(data: any) {
+    return request(`user/research-project/add`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiResearchProjectUpdate(data: any) {
+    return request(`user/research-project/update`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiResearchProjectDelete(id: string) {
+    return request(`user/research-project/delete/${id}`, {
+        method: 'POST'
+    });
+}
+
+export async function apiResearchProjectList(params: any) {
+    return request(`user/research-project/list`, { params });
+}

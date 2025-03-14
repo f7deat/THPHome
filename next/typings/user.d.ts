@@ -44,6 +44,13 @@ export interface EducationHistory {
     graduationYear: number;
 }
 
+export interface ResearchProject {
+    id: string;
+    name: string;
+    startYear: number;
+    endYear: number;
+}
+
 export interface LecturerDetail {
     id: string;
     name: string;
@@ -57,4 +64,6 @@ export interface LecturerDetail {
     email?: string;
     phoneNumber?: string;
     academicTitle?: AcademicTitle;
+    researchProjects?: ResearchProject[];
+    city?: string;
 }

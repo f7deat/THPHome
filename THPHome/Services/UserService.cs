@@ -46,7 +46,7 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         var city = string.Empty;
         if (user.CityId != null)
         {
-            city = (await _context.Cities.FirstOrDefaultAsync())?.Name;
+            city = (await _context.Cities.FirstOrDefaultAsync(x => x.Id == user.CityId))?.Name;
         }
 
         var languages = await _context.ForeignLanguageProficiencies.Where(x => x.UserName == userName).AsNoTracking().Select(x => new

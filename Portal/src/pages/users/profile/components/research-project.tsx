@@ -1,43 +1,58 @@
-import { apiAwardAdd, apiAwardDelete, apiAwardList, apiAwardUpdate } from "@/services/user";
+import { apiResearchProjectAdd, apiResearchProjectDelete, apiResearchProjectList, apiResearchProjectUpdate } from "@/services/user";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, ProFormDatePicker, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
 import { useModel } from "@umijs/max";
 import { Button, message, Popconfirm } from "antd";
+import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 
-const AwardTab: React.FC = () => {
+const ResearchProjectTab: React.FC = () => {
 
     const actionRef = useRef<ActionType>();
     const formRef = useRef<ProFormInstance>();
     const [open, setOpen] = useState<boolean>(false);
-    const [award, setAward] = useState<any>();
+    const [researchProject, setresearchProject] = useState<any>();
     const { initialState } = useModel('@@initialState');
 
     useEffect(() => {
-        formRef.current?.setFields([
-            {
-                name: 'name',
-                value: award?.name
-            }
-        ]);
-    }, [open, award]);
+        if (open) {
+            formRef.current?.setFields([
+                {
+                    name: 'id',
+                    value: researchProject?.id
+                },
+                {
+                    name: 'name',
+                    value: researchProject?.name
+                },
+                {
+                    name: 'startYear',
+                    value: researchProject?.startYear ? dayjs(`${researchProject?.startYear}-01-01`) : null
+                },
+                {
+                    name: 'endYear',
+                    value: researchProject?.endYear ? dayjs(`${researchProject?.endYear}-01-01`) : null
+                }
+            ]);
+        }
+    }, [open, researchProject]);
 
     const onFinish = async (values: any) => {
         values.year = values.year ? Number(values.year) : null;
         if (values.id) {
-            await apiAwardUpdate(values);
+            await apiResearchProjectUpdate(values);
         } else {
-            await apiAwardAdd(values);
+            await apiResearchProjectAdd(values);
         }
         setOpen(false);
         formRef.current?.resetFields();
         actionRef.current?.reload();
-        setAward(null);
+        setresearchProject(null);
         message.success('Thành công');
     }
 
     const onDelete = async (id: string) => {
-        await apiAwardDelete(id);
+        await apiResearchProjectDelete(id);
         actionRef.current?.reload();
         message.success('Thành công');
     }
@@ -52,19 +67,23 @@ const AwardTab: React.FC = () => {
                         width: 30
                     },
                     {
-                        title: "Giải thưởng",
+                        title: "Đề tài nghiên cứu",
                         dataIndex: "name"
                     },
                     {
-                        title: 'Năm',
-                        dataIndex: 'year'
+                        title: 'Năm bắt đầu',
+                        dataIndex: 'startYear'
+                    },
+                    {
+                        title: 'Năm hoàn thành',
+                        dataIndex: 'endYear'
                     },
                     {
                         title: 'Tác vụ',
                         valueType: 'option',
                         render: (_, record) => [
                             <Button type="primary" icon={<EditOutlined />} size="small" onClick={() => {
-                                setAward(record);
+                                setresearchProject(record);
                                 setOpen(true);
                             }} key="edit" />,
                             <Popconfirm key="delete" title="Bạn có chắc chắn muốn xóa?" onConfirm={() => onDelete(record.id)}>
@@ -74,7 +93,7 @@ const AwardTab: React.FC = () => {
                         width: 60
                     }
                 ]}
-                request={(params) => apiAwardList({
+                request={(params) => apiResearchProjectList({
                     ...params,
                     userName: initialState?.currentUser?.userName
                 })}
@@ -88,17 +107,18 @@ const AwardTab: React.FC = () => {
                 <ProFormText name="id" hidden />
                 <div className="flex gap-4">
                     <div className="flex-1">
-                        <ProFormText name="name" label="Giải thưởng" rules={[
+                        <ProFormText name="name" label="Đề tài nghiên cứu" rules={[
                             {
                                 required: true
                             }
                         ]} />
                     </div>
-                    <ProFormDatePicker.Year name="year" label="Năm" />
+                    <ProFormDatePicker.Year name="startYear" label="Năm bắt đầu" />
+                    <ProFormDatePicker.Year name="endYear" label="Năm hoàn thành" />
                 </div>
             </ModalForm>
         </>
     )
 }
 
-export default AwardTab;
+export default ResearchProjectTab;

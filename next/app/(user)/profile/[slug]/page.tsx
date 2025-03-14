@@ -1,5 +1,5 @@
 import { Inter } from 'next/font/google'
-import { CaretDownFilled, EnvironmentFilled, FacebookFilled, GlobalOutlined, HomeOutlined, LinkedinFilled, MailFilled, PhoneFilled, TranslationOutlined } from '@ant-design/icons'
+import { BarsOutlined, CaretDownFilled, EnvironmentFilled, FacebookFilled, GlobalOutlined, HomeOutlined, LinkedinFilled, MailFilled, PhoneFilled, TranslationOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import { Anchor, ConfigProvider, Dropdown, Image } from 'antd';
 import '../style.css';
@@ -42,8 +42,8 @@ export default async function Page({
                 }
             }}
         >
-            <main className="flex" style={inter.style}>
-                <div className="w-96 shadow h-screen flex flex-col items-center justify-center bg-[#0077c1] text-white">
+            <main style={inter.style}>
+                <div className="w-96 shadow hidden md:flex flex-col items-center justify-center bg-[#0077c1] text-white fixed top-0 left-0 bottom-0">
                     <div className="w-52 h-52 rounded-full border-4 border-slate-100 mb-4">
                         <Image src={data.avatar || 'https://dhhp.edu.vn/logo/logo-65.png'} alt="John Doe" className="rounded-full object-cover w-full h-full" width={200} height={200} />
                     </div>
@@ -89,8 +89,11 @@ export default async function Page({
                         </ul>
                     </div>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 md:ml-96">
                     <div className='flex justify-end border-b border-gray-200'>
+                        <div className='h-14 w-14 flex md:hidden items-center justify-center border-r border-gray-200 text-xl text-gray-600'>
+                            <Link href='/' className='hover:text-blue-500'><BarsOutlined /></Link>
+                        </div>
                         <div className='h-14 w-14 flex items-center justify-center border-r border-gray-200 text-xl text-gray-600'>
                             <Link href='/' className='hover:text-blue-500'><HomeOutlined /></Link>
                         </div>
@@ -115,7 +118,7 @@ export default async function Page({
                             <HeadTitle title='Giới thiệu' />
                             <div className='text-gray-600 mb-4'>{data.bio}</div>
                             <div className='mb-2'>
-                                <span className='text-blue-500 mr-2'><EnvironmentFilled /></span>Địa chỉ: <span className='text-slate-600'>{data.address}</span>
+                                <span className='text-blue-500 mr-2'><EnvironmentFilled /></span>Địa chỉ: <span className='text-slate-600'>{data.address}, {data?.city}</span>
                             </div>
                             <div className='mb-2'>
                                 <span className='text-blue-500 mr-2'><MailFilled /></span>Email: <span className='text-slate-600'>{data.email}</span>
@@ -164,8 +167,24 @@ export default async function Page({
                                 ))
                             }
                         </div>
-                        <div id='research'>
+                        <div id='research' className='mb-4 2xl:mb-8'>
                             <HeadTitle title='Nghiên cứu khoa học' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
+                                <div className='flex-1 py-1 font-medium px-2'>Tên đề tài</div>
+                                <div className='flex-1 py-1 px-2'>Năm bắt đầu</div>
+                                <div className='flex-1 py-1 px-2'>Năm kết thúc</div>
+                                </div>
+                            {
+                                data.researchProjects?.map((research, index) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
+                                        <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{research.name}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{research.startYear}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{research.endYear}</div>
+                                    </div>
+                                ))
+                            }
                         </div>
                         <div id='awards'>
                             <HeadTitle title='Giải thưởng' />

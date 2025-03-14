@@ -47,6 +47,7 @@ const EducationHistoryTab: React.FC = () => {
         }
         message.success('Thành công!');
         formRef.current?.resetFields();
+        setEducationHistory(null);
         actionRef.current?.reload();
         setOpen(false);
     }

@@ -24,9 +24,9 @@ export default async function Home({ searchParams }: Props) {
 
     return (
         <main className={inter.className}>
-            <header className="mb-4">
-                <div className="container mx-auto py-4 flex justify-between items-center">
-                    <Link href='/'>
+            <header className="mb-4 px-4 md:px-0">
+                <div className="container mx-auto py-4 md:flex justify-between items-center">
+                    <Link href='/' className="pb-4 block md:mb-0">
                         <img src='https://dhhp.edu.vn/files/fa05873c-d71e-4b54-b82e-a76e73a2fbcd/logoUniversity.jpg' alt="LOGO" width={300} height={100} className="object-cover" />
                     </Link>
                     <Search />
