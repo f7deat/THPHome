@@ -1,4 +1,4 @@
-﻿import { Col, Empty, Row, Table, Tabs, Typography, Button, Avatar, Space, Tooltip, Divider, Upload } from "antd"
+﻿import { Col, Row, Typography, Button, Avatar, Space, Tooltip, Divider, Upload, Empty } from "antd"
 import {
     EditOutlined,
     RightOutlined,
@@ -10,22 +10,9 @@ import { PageContainer, ProCard } from "@ant-design/pro-components";
 import ChangePassword from "./components/change-password";
 import { apiChangeAvatar } from "@/services/user";
 
-const { TabPane } = Tabs;
-
 const Profile: React.FC = () => {
 
     const { initialState } = useModel('@@initialState');
-
-    const columns = [
-        {
-            title: "Title",
-            dataIndex: "title"
-        },
-        {
-            title: 'Date',
-            dataIndex: 'createdDate'
-        }
-    ];
 
     return (
         <PageContainer extra={<Link to={`/account/profile/edit/${initialState?.currentUser.id}`}><Button type="primary" icon={<EditOutlined />}>Chỉnh sửa</Button></Link>}>
@@ -71,30 +58,15 @@ const Profile: React.FC = () => {
                     </ProCard>
                 </Col>
                 <Col md={18} xs={24}>
-                    <ProCard>
+                    <ProCard title="Hoạt động" headerBordered>
                         <div className="bg-white rounded">
-                            <div className="px-4 py-2">
-                                <Typography.Title level={4}>Hoạt động</Typography.Title>
-                            </div>
                             <div className="px-4">
-                                <Tabs defaultActiveKey="1">
-                                    <TabPane tab="Bài viết" key="1">
-                                        <Table rowKey="id" columns={columns} pagination={{ pageSize: 5 }} />
-                                    </TabPane>
-                                    <TabPane tab="Comment" key="2">
-                                        <Empty />
-                                    </TabPane>
-                                    <TabPane tab="History" key="3">
-                                        <Empty />
-                                    </TabPane>
-                                </Tabs>
+                                <Empty />
                             </div>
                         </div>
                     </ProCard>
                 </Col>
             </Row>
-
-
         </PageContainer>
     )
 }

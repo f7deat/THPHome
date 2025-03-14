@@ -5,6 +5,7 @@ import { LeftOutlined } from "@ant-design/icons";
 import ProFileInfo from "./profile/components/info";
 import ForeignLanguageProficiency from "./profile/components/foreign-language-proficiency";
 import EducationHistoryTab from "./profile/components/education-history";
+import { AwardTab } from "./profile/components";
 
 const UserEdit = () => {
 
@@ -36,7 +37,8 @@ const UserEdit = () => {
                         },
                         {
                             key: 'adward',
-                            label: 'Giải thưởng'
+                            label: 'Giải thưởng',
+                            children: <AwardTab />
                         }
                     ]
                 }}

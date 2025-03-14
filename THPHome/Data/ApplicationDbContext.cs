@@ -76,6 +76,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Award> Awards { get; set; }
     public DbSet<ForeignLanguageProficiency> ForeignLanguageProficiencies { get; set; }
     public DbSet<EducationHistory> EducationHistories { get; set; }
+    public DbSet<TeachingExperience> TeachingExperiences { get; set; }
+    public DbSet<ResearchProject> ResearchProjects { get; set; }
     #endregion
 
     public DbSet<ApplicationLog> Logs { get; set; }

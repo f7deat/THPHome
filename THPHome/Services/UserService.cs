@@ -73,6 +73,14 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             x.Name
         }).ToListAsync();
 
+        var researchProjects = await _context.ResearchProjects.Where(x => x.UserName == userName).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.Name,
+            x.StartYear,
+            x.EndYear
+        }).ToListAsync();
+
         return new
         {
             user.Id,
@@ -113,7 +121,8 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             city,
             languages,
             awards,
-            educationHistories
+            educationHistories,
+            researchProjects
         };
     }
 

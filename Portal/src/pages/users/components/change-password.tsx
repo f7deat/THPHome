@@ -1,4 +1,4 @@
-﻿import { LockOutlined } from "@ant-design/icons";
+﻿import { RightOutlined } from "@ant-design/icons";
 import { ModalForm } from "@ant-design/pro-components";
 import { request } from "@umijs/max";
 import { Form, Input, message } from "antd";
@@ -27,8 +27,8 @@ const ChangePassword: React.FC = () => {
     };
     return (
         <div>
-            <div className="p-2 border-b border-dashed hover:bg-gray-100 cursor-pointer" onClick={() => setOpen(true)}>
-                <LockOutlined className="mr-2 text-gray-500" />
+            <div className="py-2 border-b border-dashed hover:bg-gray-100 cursor-pointer" onClick={() => setOpen(true)}>
+                <RightOutlined className="mr-2 text-gray-500" />
                 Đổi mật khẩu
             </div>
             <ModalForm

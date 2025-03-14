@@ -13,11 +13,11 @@ public class AwardRepository(ApplicationDbContext context) : EfRepository<Award>
     {
         var query = from a in _context.Awards
                     select a;
-        if (filterOptions.UserDetailId != null)
+        if (!string.IsNullOrEmpty(filterOptions.UserName))
         {
-            query = query.Where(x => x.UserDetailId == filterOptions.UserDetailId);
+            query = query.Where(x => x.UserName == filterOptions.UserName);
         }
-        query = query.OrderByDescending(x => x.Id);
+        query = query.OrderByDescending(x => x.Year);
         return await ListResult<object>.Success(query, filterOptions);
     }
 }

@@ -25,6 +25,8 @@ using THPHome.Interfaces.IService;
 using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Args.Users;
 using WebUI.Interfaces.IService;
+using THPHome.Entities.Users;
+using ForeignLanguageProficiency = THPHome.Entities.Users.ForeignLanguageProficiency;
 
 namespace THPHome.Controllers;
 
@@ -34,6 +36,8 @@ public class UserController(
     ITelegramService _telegramService,
     IWebHostEnvironment _webHostEnvironment,
     IEducationHistoryService _educationHistoryService,
+    ITeachingExperienceService _teachingExperienceService,
+    IResearchProjectService _researchProjectService,
     UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
@@ -299,29 +303,6 @@ public class UserController(
         return Ok(result);
     }
 
-    [HttpGet("access-token-for-user"), AllowAnonymous]
-    public async Task<IActionResult> GetAccessTokenForUserAsync()
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var user = await _userManager.FindByEmailAsync("f7deat@gmail.com");
-        if (user is null) return BadRequest("User not found!");
-        var key = Encoding.ASCII.GetBytes(Guid.NewGuid().ToString());
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.Name, user.Id.ToString())
-            }),
-            Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-        var tokenCreated = tokenHandler.CreateToken(tokenDescriptor);
-        return Ok(new
-        {
-            token = tokenHandler.WriteToken(tokenCreated)
-        });
-    }
-
     [HttpPost("delete-personal-data")]
     public async Task<IActionResult> DeletePersonalDataAsync([FromBody] string password)
     {
@@ -556,8 +537,14 @@ public class UserController(
                 user.DepartmentId = thpUser.DepartmentId;
                 user.Name = $"{thpUser.LastName} {thpUser.FirstName}";
                 user.UserType = thpUser.UserType;
-                user.PhoneNumber = thpUser.PhoneNumber;
-                user.Email = thpUser.Email;
+                if (!string.IsNullOrWhiteSpace(thpUser.PhoneNumber) && string.IsNullOrEmpty(user.PhoneNumber))
+                {
+                    user.PhoneNumber = thpUser.PhoneNumber;
+                }
+                if (!string.IsNullOrWhiteSpace(thpUser.Email) && string.IsNullOrEmpty(user.Email))
+                {
+                    user.Email = thpUser.Email;
+                }
                 user.Address = thpUser.Address;
                 user.Gender = thpUser.Gender;
                 user.DateOfBirth = thpUser.DateOfBirth;
@@ -701,7 +688,8 @@ public class UserController(
         {
             query = query.Where(x => x.UserName == filterOptions.UserName);
         }
-        return Ok(await ListResult<EducationHistory>.Success(query, filterOptions));
+        query = query.OrderBy(x => x.GraduationYear);
+        return Ok(await ListResult<Entities.Users.EducationHistory>.Success(query, filterOptions));
     }
 
     [HttpPost("education-history/add")]
@@ -725,6 +713,71 @@ public class UserController(
     public async Task<IActionResult> DeleteEducationHistoryAsync([FromRoute] Guid id)
     {
         var result = await _educationHistoryService.DeleteAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpGet("teaching-experience/list"), AllowAnonymous]
+    public async Task<IActionResult> GetTeachingExperienceListAsync([FromQuery] UserFilterOptions filterOptions) => Ok(await _teachingExperienceService.ListAsync(filterOptions));
+
+    [HttpPost("teaching-experience/add")]
+    public async Task<IActionResult> AddTeachingExperienceAsync([FromBody] Entities.Users.TeachingExperience args)
+    {
+        args.UserName = User.GetUserName();
+        var result = await _teachingExperienceService.AddAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("teaching-experience/update")]
+    public async Task<IActionResult> ActionResult([FromBody] Entities.Users.TeachingExperience args)
+    {
+        var result = await _teachingExperienceService.UpdateAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("teaching-experience/delete/{id}")]
+    public async Task<IActionResult> DeleteTeachingExperienceAsync([FromRoute] Guid id)
+    {
+        var result = await _teachingExperienceService.DeleteAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpGet("research-project/list")]
+    public async Task<IActionResult> GetResearchProjectListAsync([FromQuery] UserFilterOptions filterOptions)
+    {
+        var query = _context.ResearchProjects.AsQueryable();
+        if (!string.IsNullOrWhiteSpace(filterOptions.UserName))
+        {
+            query = query.Where(x => x.UserName == filterOptions.UserName);
+        }
+        query = query.OrderBy(x => x.StartYear);
+        return Ok(await ListResult<ResearchProject>.Success(query, filterOptions));
+    }
+
+    [HttpPost("research-project/add")]
+    public async Task<IActionResult> AddResearchProjectAsync([FromBody] Entities.Users.ResearchProject args)
+    {
+        args.UserName = User.GetUserName();
+        var result = await _researchProjectService.AddAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("research-project/update")]
+    public async Task<IActionResult> UpdateResearchProjectAsync([FromBody] Entities.Users.ResearchProject args)
+    {
+        var result = await _researchProjectService.UpdateAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("research-project/delete/{id}")]
+    public async Task<IActionResult> DeleteResearchProjectAsync([FromRoute] Guid id)
+    {
+        var result = await _researchProjectService.DeleteAsync(id);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
     }

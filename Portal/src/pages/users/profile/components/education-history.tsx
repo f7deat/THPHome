@@ -1,14 +1,43 @@
 import { apiEducationHistoryAdd, apiEducationHistoryList, apiEducationHistoryUpdate } from "@/services/user";
-import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, ProFormDatePicker, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
-import { Button, message } from "antd";
-import { useRef, useState } from "react";
+import { useModel } from "@umijs/max";
+import { Button, message, Popconfirm } from "antd";
+import dayjs from "dayjs";
+import { useEffect, useRef, useState } from "react";
 
 const EducationHistoryTab: React.FC = () => {
 
     const [open, setOpen] = useState<boolean>(false);
     const formRef = useRef<ProFormInstance>();
     const actionRef = useRef<ActionType>();
+    const [educationHistory, setEducationHistory] = useState<any>();
+    const { initialState } = useModel('@@initialState');
+
+    useEffect(() => {
+        formRef.current?.setFields([
+            {
+                name: 'id',
+                value: educationHistory?.id
+            },
+            {
+                name: 'degree',
+                value: educationHistory?.degree
+            },
+            {
+                name: 'institution',
+                value: educationHistory?.institution
+            },
+            {
+                name: 'major',
+                value: educationHistory?.major
+            },
+            {
+                name: 'graduationYear',
+                value: educationHistory?.graduationYear ? dayjs(`${educationHistory.graduationYear}-01-01`) : null
+            }
+        ])
+    }, [educationHistory, open])
 
     const onFinish = async (values: any) => {
         if (values.id) {
@@ -25,7 +54,10 @@ const EducationHistoryTab: React.FC = () => {
     return (
         <>
             <ProTable
-                request={apiEducationHistoryList}
+                request={(params) => apiEducationHistoryList({
+                    ...params,
+                    userName: initialState?.currentUser?.userName
+                })}
                 actionRef={actionRef}
                 headerTitle={<Button icon={<PlusOutlined />} type="primary" onClick={() => setOpen(true)}>Thêm mới</Button>}
                 search={false}
@@ -49,10 +81,20 @@ const EducationHistoryTab: React.FC = () => {
                         dataIndex: 'major'
                     },
                     {
+                        title: 'Năm tốt nghiệp',
+                        dataIndex: 'graduationYear'
+                    },
+                    {
                         title: 'Tác vụ',
                         valueType: 'option',
-                        render: () => [
-                            <Button key="edit" size="small" type="primary" icon={<EditOutlined />} />
+                        render: (_, record) => [
+                            <Button key="edit" size="small" type="primary" icon={<EditOutlined />} onClick={() => {
+                                setEducationHistory(record);
+                                setOpen(true);
+                            }} />,
+                            <Popconfirm key="delete" title="Xác nhận xóa?">
+                                <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
+                            </Popconfirm>
                         ],
                         width: 60
                     }

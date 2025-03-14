@@ -1,4 +1,5 @@
-﻿using THPCore.Models;
+﻿using THPCore.Interfaces;
+using THPCore.Models;
 using THPHome.Entities.Users;
 using THPHome.Interfaces.IRepository.IUsers;
 using THPHome.Interfaces.IService.IUsers;
@@ -6,10 +7,12 @@ using THPHome.Models.Filters.Users;
 
 namespace THPHome.Services.Users;
 
-public class AwardService(IAwardRepository _awardRepository) : IAwardService
+public class AwardService(IAwardRepository _awardRepository, IHCAService _hcaService) : IAwardService
 {
     public async Task<THPResult> AddAsync(Award args)
     {
+        args.UserName = _hcaService.GetUserName();
+        args.CreatedDate = DateTime.Now;
         await _awardRepository.AddAsync(args);
         return THPResult.Success;
     }
@@ -29,6 +32,7 @@ public class AwardService(IAwardRepository _awardRepository) : IAwardService
         var award = await _awardRepository.FindAsync(args.Id);
         if (award is null) return THPResult.Failed("Không tìm thấy giải thưởng!");
         award.Name = args.Name;
+        award.ModifiedDate = DateTime.Now;
         await _awardRepository.UpdateAsync(award);
         return THPResult.Success;
     }

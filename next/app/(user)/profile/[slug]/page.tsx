@@ -1,8 +1,7 @@
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { CaretDownFilled, EnvironmentFilled, FacebookFilled, GlobalOutlined, HomeOutlined, LinkedinFilled, MailFilled, PhoneFilled, TranslationOutlined } from '@ant-design/icons'
 import Link from 'next/link'
-import { Anchor, ConfigProvider, Dropdown } from 'antd';
+import { Anchor, ConfigProvider, Dropdown, Image } from 'antd';
 import '../style.css';
 import { apiLecturePublicInfo } from '@/services/user';
 import { Metadata } from 'next';
@@ -128,6 +127,7 @@ export default async function Page({
                         <div id='language' className='mb-4 2xl:mb-8'>
                             <HeadTitle title='Ngoại ngữ' />
                             <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
                                 <div className='flex-1 py-1 font-medium px-2'>Ngôn ngữ</div>
                                 <div className='flex-1 py-1 px-2'>Chứng chỉ</div>
                                 <div className='flex-1 py-1 px-2'>Trình độ</div>
@@ -135,6 +135,7 @@ export default async function Page({
                             {
                                 data.languages?.map((lang: Language, index: number) => (
                                     <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
                                         <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{lang.language}</div>
                                         <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{lang.certificate}</div>
                                         <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{lang.level}</div>
@@ -145,6 +146,7 @@ export default async function Page({
                         <div id='edu' className='mb-4 2xl:mb-8'>
                             <HeadTitle title='Học vấn' />
                             <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
                                 <div className='flex-1 py-1 font-medium px-2'>Bằng cấp</div>
                                 <div className='flex-1 py-1 px-2'>Ngành / Chuyên ngành</div>
                                 <div className='flex-1 py-1 px-2'>Nơi đào tạo</div>
@@ -153,6 +155,7 @@ export default async function Page({
                             {
                                 data.educationHistories?.map((edu, index) => (
                                     <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
                                         <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{edu.degree}</div>
                                         <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{edu.major}</div>
                                         <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{edu.institution}</div>
@@ -166,6 +169,20 @@ export default async function Page({
                         </div>
                         <div id='awards'>
                             <HeadTitle title='Giải thưởng' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
+                                <div className='flex-1 py-1 px-2'>Giải thưởng</div>
+                                <div className='flex-1 py-1 px-2'>Năm</div>
+                            </div>
+                            {
+                                data.awards?.map((award, index) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
+                                        <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{award.name}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{award.year}</div>
+                                    </div>
+                                ))
+                            }
                         </div>
                     </div>
                 </div>

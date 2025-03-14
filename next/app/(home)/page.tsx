@@ -40,7 +40,7 @@ export default async function Home({ searchParams }: Props) {
                         data.data.data.map((item: UserListItem) => (
                             <div className="flex gap-4" key={item.id}>
                                 <div className="w-40 h-40 bg-gray-300 rounded-full">
-                                    <img src={item.avatar || 'https://dhhp.edu.vn/logo/logo-65.png'} width={160} height={160} alt="AVATAR" className="rounded-full h-40 object-cover" />
+                                    <img src={item.avatar || 'https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg'} width={160} height={160} alt="AVATAR" className="rounded-full h-40 object-cover" />
                                 </div>
                                 <div className="flex flex-col flex-1">
                                     <div className="text-xl font-medium">
@@ -53,7 +53,7 @@ export default async function Home({ searchParams }: Props) {
                                         <div className="flex flex-col gap-2">
                                             <div className="line-clamp-1">
                                                 <span className="font-medium mr-1">Đơn vị:</span>
-                                                <span>{item.department}</span>
+                                                <span className="text-gray-600">{item.department}</span>
                                             </div>
                                             <div className="flex gap-2">
                                                 <div className="font-medium">Email:</div>

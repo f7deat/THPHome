@@ -100,3 +100,27 @@ export async function apiEducationHistoryDelete(id: string) {
 export async function apiEducationHistoryList(params: any) {
     return request(`user/education-history/list`, { params });
 }
+
+export async function apiAwardAdd(data: any) {
+    return request(`award/add`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiAwardUpdate(data: any) {
+    return request(`award/update`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiAwardDelete(id: string) {
+    return request(`award/delete/${id}`, {
+        method: 'POST'
+    });
+}
+
+export async function apiAwardList(params: any) {
+    return request(`award/list`, { params });
+}

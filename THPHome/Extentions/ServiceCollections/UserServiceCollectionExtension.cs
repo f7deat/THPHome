@@ -24,6 +24,12 @@ public static class UserServiceCollectionExtension
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IDepartmentService, DepartmentService>();
 
+        services.AddScoped<ITeachingExperienceRepository, TeachingExperienceRepository>();
+        services.AddScoped<ITeachingExperienceService, TeachingExperienceService>();
+
+        services.AddScoped<IResearchProjectRepository, ResearchProjectRepository>();
+        services.AddScoped<IResearchProjectService, ResearchProjectService>();
+
         return services;
     }
 }

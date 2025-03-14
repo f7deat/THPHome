@@ -60,7 +60,7 @@ import {
           history.push(`/account/profile`);
           return;
         } else if (key === 'settings') {
-          history.push(`/user/edit/${initialState?.currentUser?.id}`);
+          history.push(`/account/profile/edit/${initialState?.currentUser?.id}`);
           return;
         }
         history.push(`/accounts/${key}`);

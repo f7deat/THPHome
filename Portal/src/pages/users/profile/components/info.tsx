@@ -85,6 +85,10 @@ const ProFileInfo: React.FC = () => {
             {
                 name: 'cityId',
                 value: data?.cityId
+            },
+            {
+                name: 'bio',
+                value: data?.bio
             }
         ])
         setCountryId(data?.countryId);
@@ -155,7 +159,7 @@ const ProFileInfo: React.FC = () => {
                     <ProFormText name="identityPlace" label="Nơi cấp" />
                 </Col>
             </Row>
-            <ProFormTextArea label="Giới thiệu" name="introduction" />
+            <ProFormTextArea label="Giới thiệu" name="bio" />
             <Divider orientation="left">Mạng xã hội</Divider>
             <Row gutter={16}>
                 <Col md={8}>
