@@ -58,6 +58,10 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
         {
             query = query.Where(x => x.ContactStatusId == filterOptions.ContactStatusId);
         }
+        if (filterOptions.Source != null)
+        {
+            query = query.Where(x => x.Source == filterOptions.Source);
+        }
         return Ok(new
         {
             data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),

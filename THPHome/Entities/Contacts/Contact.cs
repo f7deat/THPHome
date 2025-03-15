@@ -16,6 +16,13 @@ public class Contact : BaseEntity
     public string? UserName { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
+    public ContactSource Source { get; set; }
 
     public ContactStatus? ContactStatus { get; set; }
+}
+
+public enum ContactSource
+{
+    Website = 1,
+    Opportunity = 2
 }

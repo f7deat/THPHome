@@ -10,6 +10,7 @@ export interface UserListItem {
     position: string;
     academicDegree?: string;
     academicTitle?: string;
+    dateOfBirth?: string;
 }
 
 interface Award {
