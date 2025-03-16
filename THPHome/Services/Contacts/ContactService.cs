@@ -2,6 +2,7 @@
 using OfficeOpenXml;
 using THPCore.Models;
 using THPHome.Data;
+using THPHome.Entities.Contacts;
 using THPHome.Interfaces.IService;
 
 namespace THPHome.Services.Contacts;
@@ -23,7 +24,8 @@ public class ContactService(ApplicationDbContext _context) : IContactService
                         a.CreatedDate,
                         a.Email,
                         a.Note,
-                        Status = b.Name
+                        Status = b.Name,
+                        a.Source
                     };
         var contacts = await query.AsNoTracking().ToListAsync();
         using var pgk = new ExcelPackage();
@@ -37,6 +39,7 @@ public class ContactService(ApplicationDbContext _context) : IContactService
         ws.Cells["G1"].Value = "Ghi chú";
         ws.Cells["H1"].Value = "Trạng thái";
         ws.Cells["I1"].Value = "Ngày tạo";
+        ws.Cells["J1"].Value = "Nguồn";
         var row = 2;
         foreach (var contact in contacts)
         {
@@ -49,10 +52,11 @@ public class ContactService(ApplicationDbContext _context) : IContactService
             ws.Cells[$"G{row}"].Value = contact.Note;
             ws.Cells[$"H{row}"].Value = contact.Status;
             ws.Cells[$"I{row}"].Value = contact.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss");
+            ws.Cells[$"J{row}"].Value = contact.Source == ContactSource.Opportunity ? "Trắc nghiệm" : "Mặc định";
             row++;
         }
         ws.Row(1).Style.Font.Bold = true;
-        for (int i = 1; i < 10; i++)
+        for (int i = 1; i < 11; i++)
         {
             ws.Column(i).AutoFit();
         }

@@ -23,6 +23,6 @@ public class Contact : BaseEntity
 
 public enum ContactSource
 {
-    Website = 1,
-    Opportunity = 2
+    Website,
+    Opportunity
 }
