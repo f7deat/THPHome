@@ -30,6 +30,10 @@ public class ResearchProjectService(IResearchProjectRepository _researchProjectR
         data.StartYear = args.StartYear;
         data.EndYear = args.EndYear;
         data.ModifiedDate = DateTime.Now;
+        data.Status = args.Status;
+        data.Result = args.Result;
+        data.Role = args.Role;
+        data.Level = args.Level;
         await _researchProjectRepository.UpdateAsync(data);
         return THPResult.Success;
     }

@@ -148,3 +148,7 @@ export async function apiResearchProjectDelete(id: string) {
 export async function apiResearchProjectList(params: any) {
     return request(`user/research-project/list`, { params });
 }
+
+export async function apiMyDepartment() {
+    return request(`user/my-department`);
+}

@@ -10,3 +10,5 @@ export const apiUpdateDepartment = (data: any) => request(`department/update`, {
     method: 'POST',
     data
 });
+
+export const apiDepartmentUsers = (params: any) => request(`department/users`, { params });

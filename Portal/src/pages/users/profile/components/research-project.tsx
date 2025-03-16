@@ -1,8 +1,8 @@
 import { apiResearchProjectAdd, apiResearchProjectDelete, apiResearchProjectList, apiResearchProjectUpdate } from "@/services/user";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { ActionType, ModalForm, ProFormDatePicker, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
+import { ActionType, ModalForm, ProFormDatePicker, ProFormInstance, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
 import { useModel } from "@umijs/max";
-import { Button, message, Popconfirm } from "antd";
+import { Button, Col, message, Popconfirm, Row } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 
@@ -32,6 +32,18 @@ const ResearchProjectTab: React.FC = () => {
                 {
                     name: 'endYear',
                     value: researchProject?.endYear ? dayjs(`${researchProject?.endYear}-01-01`) : null
+                },
+                {
+                    name: 'level',
+                    value: researchProject?.level
+                },
+                {
+                    name: 'role',
+                    value: researchProject?.role
+                },
+                {
+                    name: 'result',
+                    value: researchProject?.result
                 }
             ]);
         }
@@ -67,16 +79,24 @@ const ResearchProjectTab: React.FC = () => {
                         width: 30
                     },
                     {
-                        title: "Đề tài nghiên cứu",
+                        title: "Đề tài, dự án đã chủ trì hoặc tham gia",
                         dataIndex: "name"
                     },
                     {
-                        title: 'Năm bắt đầu',
-                        dataIndex: 'startYear'
+                        title: 'Thời gian',
+                        render: (_, record: any) => `${record.startYear} - ${record.endYear}`
                     },
                     {
-                        title: 'Năm hoàn thành',
-                        dataIndex: 'endYear'
+                        title: 'Cấp quản lý',
+                        dataIndex: 'level'
+                    },
+                    {
+                        title: 'Vai trò',
+                        dataIndex: 'role'
+                    },
+                    {
+                        title: 'Kết quả',
+                        dataIndex: 'result'
                     },
                     {
                         title: 'Tác vụ',
@@ -105,17 +125,26 @@ const ResearchProjectTab: React.FC = () => {
             />
             <ModalForm title="Cài đặt" open={open} onOpenChange={setOpen} formRef={formRef} onFinish={onFinish}>
                 <ProFormText name="id" hidden />
-                <div className="flex gap-4">
+                <ProFormTextArea name="name" label="Đề tài, dự án đã chủ trì hoặc tham gia" rules={[
+                    {
+                        required: true
+                    }
+                ]} />
+                <div className="md:flex gap-4">
                     <div className="flex-1">
-                        <ProFormText name="name" label="Đề tài nghiên cứu" rules={[
-                            {
-                                required: true
-                            }
-                        ]} />
+                        <Row gutter={16}>
+                            <Col md={12} xs={24}>
+                                <ProFormText name="level" label="Cấp quản lý" />
+                            </Col>
+                            <Col md={12} xs={24}>
+                                <ProFormText name="role" label="Vai trò" />
+                            </Col>
+                        </Row>
                     </div>
                     <ProFormDatePicker.Year name="startYear" label="Năm bắt đầu" />
                     <ProFormDatePicker.Year name="endYear" label="Năm hoàn thành" />
                 </div>
+                <ProFormTextArea name="result" label="Kết quả" />
             </ModalForm>
         </>
     )

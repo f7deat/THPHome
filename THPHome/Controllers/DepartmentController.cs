@@ -8,6 +8,7 @@ using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService.IUsers;
+using THPHome.Models.Filters.Users;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Models.Args.Departments;
@@ -211,4 +212,7 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
 
     [HttpGet("code-options"), AllowAnonymous]
     public async Task<IActionResult> GetCodeOptionsAsync() => Ok(await _departmentService.GetCodeOptionsAsync());
+
+    [HttpGet("users")]
+    public async Task<IActionResult> UsersAsync([FromQuery] DepartmentUserFilterOptions filterOptions) => Ok(await _departmentService.UsersAsync(filterOptions));
 }

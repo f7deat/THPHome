@@ -4,7 +4,6 @@ import {
     EyeOutlined,
     MailOutlined,
     PhoneOutlined,
-    RightOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import { useModel } from "@umijs/max";
@@ -12,6 +11,8 @@ import { Link } from "@umijs/max";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import ChangePassword from "./components/change-password";
 import { apiChangeAvatar } from "@/services/user";
+import PrivacySetting from "./components/privacy-setting";
+import Department from "./profile/components/department";
 
 const Profile: React.FC = () => {
 
@@ -24,7 +25,7 @@ const Profile: React.FC = () => {
                     <ProCard className="mb-4"
                         actions={[
                         <Link to={`/account/profile/edit/${initialState?.currentUser.id}`} key="edit"><EditOutlined className="mr-2" />Chỉnh sửa</Link>,
-                        <a href={`https://next.dhhp.edu.vn/profile/${initialState?.currentUser?.userName}`} key="privacy" target="_blank"><EyeOutlined className="mr-2" />Xem hồ sơ</a>,
+                        <a href={`https://next.dhhp.edu.vn/profile/${initialState?.currentUser?.userName}`} rel="noreferrer" key="privacy" target="_blank"><EyeOutlined className="mr-2" />Xem hồ sơ</a>,
                     ]}
                         title="Thông tin cá nhân" headerBordered>
                         <div className="flex items-center justify-center p-4 relative">
@@ -60,19 +61,20 @@ const Profile: React.FC = () => {
                         </Space>
                         <Divider dashed orientation="left">Cài đặt</Divider>
                         <div>
+                            <PrivacySetting />
                             <ChangePassword />
-                            <li className="py-2 border-b border-dashed"><RightOutlined className="mr-2 text-gray-500" /><Link to={`/`}>Privacy Setting</Link></li>
                         </div>
                     </ProCard>
                 </Col>
                 <Col md={18} xs={24}>
-                    <ProCard title="Hoạt động" headerBordered>
+                    <ProCard title="Hoạt động" headerBordered className="mb-4">
                         <div className="bg-white rounded">
                             <div className="px-4">
                                 <Empty />
                             </div>
                         </div>
                     </ProCard>
+                    <Department />
                 </Col>
             </Row>
         </PageContainer>

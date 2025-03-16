@@ -38,6 +38,7 @@ public class UserController(
     IEducationHistoryService _educationHistoryService,
     ITeachingExperienceService _teachingExperienceService,
     IResearchProjectService _researchProjectService,
+    IDepartmentService _departmentService,
     UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
@@ -534,9 +535,7 @@ public class UserController(
             }
             else
             {
-                user.DepartmentId = thpUser.DepartmentId;
-                user.Name = $"{thpUser.LastName} {thpUser.FirstName}";
-                user.UserType = thpUser.UserType;
+                user.DepartmentId ??= thpUser.DepartmentId;
                 if (!string.IsNullOrWhiteSpace(thpUser.PhoneNumber) && string.IsNullOrEmpty(user.PhoneNumber))
                 {
                     user.PhoneNumber = thpUser.PhoneNumber;
@@ -545,9 +544,6 @@ public class UserController(
                 {
                     user.Email = thpUser.Email;
                 }
-                user.Address = thpUser.Address;
-                user.Gender = thpUser.Gender;
-                user.DateOfBirth = thpUser.DateOfBirth;
                 await _userManager.UpdateAsync(user);
             }
 
@@ -781,4 +777,13 @@ public class UserController(
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
     }
+
+    [HttpGet("my-department")]
+    public async Task<IActionResult> MyDepartmentAsync()
+    {
+        var user = await _userManager.FindByIdAsync(User.GetId());
+        if (user is null) return Unauthorized();
+        if (user.DepartmentId is null) return Ok();
+        return Ok(new { data = await _departmentService.GetByIdAsync(user.DepartmentId) });
+}
 }

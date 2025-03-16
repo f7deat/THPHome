@@ -52,7 +52,7 @@ const AwardTab: React.FC = () => {
                         width: 30
                     },
                     {
-                        title: "Giải thưởng",
+                        title: "Hình thức và nội dung giải thưởng",
                         dataIndex: "name"
                     },
                     {
@@ -88,7 +88,7 @@ const AwardTab: React.FC = () => {
                 <ProFormText name="id" hidden />
                 <div className="flex gap-4">
                     <div className="flex-1">
-                        <ProFormText name="name" label="Giải thưởng" rules={[
+                        <ProFormText name="name" label="Hình thức và nội dung giải thưởng" rules={[
                             {
                                 required: true
                             }

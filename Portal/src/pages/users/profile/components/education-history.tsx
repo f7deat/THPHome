@@ -1,4 +1,4 @@
-import { apiEducationHistoryAdd, apiEducationHistoryList, apiEducationHistoryUpdate } from "@/services/user";
+import { apiEducationHistoryAdd, apiEducationHistoryDelete, apiEducationHistoryList, apiEducationHistoryUpdate } from "@/services/user";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, ProFormDatePicker, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
 import { useModel } from "@umijs/max";
@@ -52,6 +52,12 @@ const EducationHistoryTab: React.FC = () => {
         setOpen(false);
     }
 
+    const onDelete = async (id: string) => {
+        await apiEducationHistoryDelete(id);
+        message.success('Thành công!');
+        actionRef.current?.reload();
+    }
+
     return (
         <>
             <ProTable
@@ -93,7 +99,7 @@ const EducationHistoryTab: React.FC = () => {
                                 setEducationHistory(record);
                                 setOpen(true);
                             }} />,
-                            <Popconfirm key="delete" title="Xác nhận xóa?">
+                            <Popconfirm key="delete" title="Xác nhận xóa?" onConfirm={() => onDelete(record.id)} okText="Xóa" cancelText="Hủy">
                                 <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
                             </Popconfirm>
                         ],
