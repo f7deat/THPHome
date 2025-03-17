@@ -19,6 +19,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<PostCategory>().HasKey(k => new { k.PostId, k.CategoryId });
+        builder.Entity<BookAuthor>().HasKey(k => new { k.UserId, k.BookId });
         base.OnModelCreating(builder);
     }
 
@@ -76,6 +77,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<EducationHistory> EducationHistories { get; set; }
     public DbSet<TeachingExperience> TeachingExperiences { get; set; }
     public DbSet<ResearchProject> ResearchProjects { get; set; }
+    public DbSet<BookAuthor> BookAuthors { get; set; }
+    public DbSet<Book> Books { get; set; }
     #endregion
 
     public DbSet<ApplicationLog> Logs { get; set; }

@@ -17,6 +17,8 @@ public class Contact : BaseEntity
     public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
     public ContactSource Source { get; set; }
+    public string? HollandChoice { get; set; }
+    public string? HollandResult { get; set; }
 
     public ContactStatus? ContactStatus { get; set; }
 }

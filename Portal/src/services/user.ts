@@ -152,3 +152,27 @@ export async function apiResearchProjectList(params: any) {
 export async function apiMyDepartment() {
     return request(`user/my-department`);
 }
+
+export async function apiMyBooks(params: any) {
+    return request(`user/my-books`, { params });
+}
+
+export async function apiBookAdd(data: any) {
+    return request(`user/my-books/add`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiBookUpdate(data: any) {
+    return request(`user/my-book/update`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiBookDelete(id: string) {
+    return request(`user/my-book/delete/${id}`, {
+        method: 'POST'
+    });
+}

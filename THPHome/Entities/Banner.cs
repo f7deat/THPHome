@@ -5,7 +5,7 @@ using THPCore.Interfaces;
 
 namespace THPHome.Entities;
 
-public class Banner : BaseEntity, ILocale
+public class Banner : BaseEntity<int>, ILocale
 {
     [StringLength(200)]
     public string? Name { get; set; }

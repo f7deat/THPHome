@@ -75,7 +75,9 @@ const Index: React.FC = () => {
                     },
                     {
                         title: 'Email',
-                        dataIndex: 'email'
+                        dataIndex: 'email',
+                        width: 160,
+                        valueType: 'email'
                     },
                     {
                         title: 'Trường học',
@@ -106,6 +108,13 @@ const Index: React.FC = () => {
                             options: statusOptions
                         },
                         width: 100
+                    },
+                    {
+                        title: 'Nguồn',
+                        dataIndex: 'source',
+                        search: false,
+                        render: (_, entity) => entity.source === 1 ? 'Holland' : 'Website',
+                        width: 70
                     },
                     {
                         title: 'Người tiếp nhận',

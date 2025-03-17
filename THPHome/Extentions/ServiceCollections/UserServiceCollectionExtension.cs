@@ -30,6 +30,9 @@ public static class UserServiceCollectionExtension
         services.AddScoped<IResearchProjectRepository, ResearchProjectRepository>();
         services.AddScoped<IResearchProjectService, ResearchProjectService>();
 
+        services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IBookService, BookService>();
+
         return services;
     }
 }

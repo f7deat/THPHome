@@ -25,7 +25,9 @@ public class ContactService(ApplicationDbContext _context) : IContactService
                         a.Email,
                         a.Note,
                         Status = b.Name,
-                        a.Source
+                        a.Source,
+                        a.HollandChoice,
+                        a.HollandResult
                     };
         var contacts = await query.AsNoTracking().ToListAsync();
         using var pgk = new ExcelPackage();
@@ -40,6 +42,8 @@ public class ContactService(ApplicationDbContext _context) : IContactService
         ws.Cells["H1"].Value = "Trạng thái";
         ws.Cells["I1"].Value = "Ngày tạo";
         ws.Cells["J1"].Value = "Nguồn";
+        ws.Cells["K1"].Value = "Lựa chọn Holland";
+        ws.Cells["L1"].Value = "Kết quả Holland";
         var row = 2;
         foreach (var contact in contacts)
         {
@@ -52,12 +56,15 @@ public class ContactService(ApplicationDbContext _context) : IContactService
             ws.Cells[$"G{row}"].Value = contact.Note;
             ws.Cells[$"H{row}"].Value = contact.Status;
             ws.Cells[$"I{row}"].Value = contact.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss");
-            ws.Cells[$"J{row}"].Value = contact.Source == ContactSource.Opportunity ? "Trắc nghiệm" : "Mặc định";
+            ws.Cells[$"J{row}"].Value = contact.Source == ContactSource.Opportunity ? "Trắc nghiệm Holland" : "Mặc định";
+            ws.Cells[$"K{row}"].Value = contact.HollandChoice;
+            ws.Cells[$"L{row}"].Value = contact.HollandResult;
             row++;
         }
         ws.Row(1).Style.Font.Bold = true;
         for (int i = 1; i < 11; i++)
         {
+            if (i == 7) continue;
             ws.Column(i).AutoFit();
         }
         var cellRange = ws.Cells[ws.Dimension.Address];

@@ -39,6 +39,7 @@ public class UserController(
     ITeachingExperienceService _teachingExperienceService,
     IResearchProjectService _researchProjectService,
     IDepartmentService _departmentService,
+    IBookService _bookService,
     UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
@@ -785,5 +786,39 @@ public class UserController(
         if (user is null) return Unauthorized();
         if (user.DepartmentId is null) return Ok();
         return Ok(new { data = await _departmentService.GetByIdAsync(user.DepartmentId) });
-}
+    }
+
+    [HttpGet("my-books"), AllowAnonymous]
+    public async Task<IActionResult> GetMyBooksAsync([FromQuery] BookFilterOptions filterOptions)
+    {
+        var user = await _userManager.FindByIdAsync(User.GetId());
+        if (user is null) return Unauthorized();
+        var query = _context.Books.Where(x => x.UserName == user.UserName).OrderBy(x => x.PublishYear);
+        return Ok(await ListResult<Book>.Success(query, filterOptions));
+    }
+
+    [HttpPost("my-books/add")]
+    public async Task<IActionResult> AddMyBookAsync([FromBody] Book args)
+    {
+        args.UserName = User.GetUserName();
+        var result = await _bookService.AddAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("my-book/update")]
+    public async Task<IActionResult> UpdateMyBookAsync([FromBody] Book args)
+    {
+        var result = await _bookService.UpdateAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("my-book/delete/{id}")]
+    public async Task<IActionResult> DeleteMyBookAsync([FromRoute] Guid id)
+    {
+        var result = await _bookService.DeleteAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
 }

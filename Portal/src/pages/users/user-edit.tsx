@@ -5,7 +5,7 @@ import { LeftOutlined } from "@ant-design/icons";
 import ProFileInfo from "./profile/components/info";
 import ForeignLanguageProficiency from "./profile/components/foreign-language-proficiency";
 import EducationHistoryTab from "./profile/components/education-history";
-import { AwardTab, ResearchProjectTab } from "./profile/components";
+import { AwardTab, BookTab, ResearchProjectTab } from "./profile/components";
 
 const UserEdit = () => {
 
@@ -40,6 +40,11 @@ const UserEdit = () => {
                             key: 'research-project',
                             label: 'Nghiên cứu khoa học',
                             children: <ResearchProjectTab />
+                        },
+                        {
+                            key: 'book',
+                            label: 'Sách',
+                            children: <BookTab />
                         }
                     ]
                 }}
