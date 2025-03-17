@@ -1,9 +1,9 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using THPHome.Data;
+using THPHome.Entities;
 using THPHome.Helpers;
 
 namespace THPHome.TagHelpers;

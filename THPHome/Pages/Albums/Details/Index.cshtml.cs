@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Entities;
-using WebUI.Entities;
 using WebUI.Foundations;
 
 namespace THPHome.Pages.Albums.Details;

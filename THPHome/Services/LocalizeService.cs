@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using WebUI.Interfaces.IService;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using THPHome.Data;
 using THPHome.Helpers;
+using THPHome.Entities;
 
 namespace WebUI.Services;
 

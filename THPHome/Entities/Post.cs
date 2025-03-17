@@ -1,6 +1,6 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
+﻿using ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
+using THPCore.Infrastructures;
 using THPHome.Enums;
 
 namespace THPHome.Entities;
@@ -25,6 +25,12 @@ public class Post : BaseEntity<long>
     [StringLength(10)]
     public string? Locale { get; set; }
     public int? CategoryId { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+    [StringLength(450)]
+    public string? ModifiedBy { get; set; }
+    [StringLength(450)]
+    public string? CreatedBy { get; set; }
 
     public List<Photo>? Photos { get; set; }
 }

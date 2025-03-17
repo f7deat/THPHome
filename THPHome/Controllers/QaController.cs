@@ -10,7 +10,6 @@ using THPHome.Entities.QA;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Results.QAs;
 using THPIdentity.Entities;
-using WebUI.Entities;
 using WebUI.Foundations;
 using WebUI.Models.ViewModel;
 

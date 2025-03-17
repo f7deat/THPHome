@@ -1,7 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using THPHome.Entities;
+using THPHome.Entities.Articles;
 using THPHome.Entities.Contacts;
 using THPHome.Entities.Curriculum;
 using THPHome.Entities.Notifications;
@@ -9,14 +9,12 @@ using THPHome.Entities.QA;
 using THPHome.Entities.Users;
 using THPHome.Entities.Utils;
 using WebUI.Entities;
-using WebUI.Entities.Articles;
 using WebUI.Entities.Communications;
 using WebUI.Entities.Departments;
-using WebUI.Foundations.Interfaces;
 
 namespace THPHome.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUser _currentUser) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -85,23 +83,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public Task<int> SaveChangesAsync(bool audit)
     {
         if (audit) return base.SaveChangesAsync();
-
-        var entries = ChangeTracker.Entries<IBaseEntity>().Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
-
-        foreach (var entry in entries)
-        {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Entity.CreatedDate = DateTime.Now;
-                entry.Entity.ModifiedDate = DateTime.Now;
-                entry.Entity.CreatedBy = _currentUser.GetId();
-            }
-            if (entry.State == EntityState.Modified)
-            {
-                entry.Entity.ModifiedDate = DateTime.Now;
-                entry.Entity.ModifiedBy = _currentUser.GetId();
-            }
-        }
 
         return base.SaveChangesAsync();
     }

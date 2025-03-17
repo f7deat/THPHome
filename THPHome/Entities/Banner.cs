@@ -1,12 +1,11 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using THPCore.Infrastructures;
 using THPCore.Interfaces;
 
 namespace THPHome.Entities;
 
-public class Banner : BaseEntity<int>, ILocale
+public class Banner : BaseEntity, ILocale
 {
     [StringLength(200)]
     public string? Name { get; set; }
@@ -22,6 +21,12 @@ public class Banner : BaseEntity<int>, ILocale
     [ForeignKey(nameof(Post))]
     public long? PostId { get; set; }
     public string Locale { get; set; } = "vi-VN";
+    public DateTime CreatedDate { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+    [StringLength(450)]
+    public string? ModifiedBy { get; set; }
+    [StringLength(450)]
+    public string? CreatedBy { get; set; }
 
     public Post? Post { get; set; }
 }

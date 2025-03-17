@@ -1,9 +1,10 @@
-﻿using ApplicationCore.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using THPCore.Infrastructures;
+using THPCore.Interfaces;
 
 namespace THPHome.Entities;
 
-public class Menu : BaseEntity<int>
+public class Menu : BaseEntity<int>, ILocale
 {
     [StringLength(250)]
     public string? Name { get; set; }
@@ -19,6 +20,12 @@ public class Menu : BaseEntity<int>
     public string? Icon { get; set; }
     public string? Mode { get; set; }
     public string Locale { get; set; } = default!;
+    public DateTime CreatedDate { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+    [StringLength(450)]
+    public string? ModifiedBy { get; set; }
+    [StringLength(450)]
+    public string? CreatedBy { get; set; }
 }
 
 public class MenuMode

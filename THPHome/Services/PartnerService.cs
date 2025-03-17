@@ -2,6 +2,7 @@
 using ApplicationCore.Interfaces.IRepository;
 using ApplicationCore.Interfaces.IService;
 using Microsoft.AspNetCore.Identity;
+using THPHome.Entities;
 using WebUI.Models.Filters.Parners;
 using WebUI.Models.ViewModel;
 

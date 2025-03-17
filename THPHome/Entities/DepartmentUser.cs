@@ -1,13 +1,12 @@
-﻿using System;
+﻿using THPCore.Infrastructures;
 
-namespace ApplicationCore.Entities
+namespace THPHome.Entities;
+
+public class DepartmentUser : BaseEntity
 {
-    public class DepartmentUser : BaseEntity<Guid>
-    {
-        public Guid DepartmentId { get; set; }
-        public string? UserId { get; set; }
-        public int Rank { get; set; }
-        public string? Type { get; set; }
-        public string? JobTitle { get; set; }
-    }
+    public Guid DepartmentId { get; set; }
+    public string? UserId { get; set; }
+    public int Rank { get; set; }
+    public string? Type { get; set; }
+    public string? JobTitle { get; set; }
 }

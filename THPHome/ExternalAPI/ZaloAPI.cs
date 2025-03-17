@@ -2,12 +2,12 @@
 using Newtonsoft.Json;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Entities.Articles;
 using THPIdentity.Data;
-using WebUI.Entities.Articles;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
 using WebUI.Models.Settings;
-namespace WebUI.ExternalAPI;
+namespace THPHome.ExternalAPI;
 
 public class ZaloAPI : IZaloAPI
 {

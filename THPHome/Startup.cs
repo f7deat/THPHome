@@ -14,7 +14,6 @@ using WebUI.Services;
 using WebUI.Interfaces.IRepository;
 using WebUI.Repositories;
 using WebUI.ExternalAPI.Interfaces;
-using WebUI.ExternalAPI;
 using WebUI.Foundations.Interfaces;
 using WebUI.Foundations;
 using THPCore.Interfaces;

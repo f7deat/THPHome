@@ -1,9 +1,8 @@
-﻿using ApplicationCore.Entities;
-using THPHome.Entities;
+﻿using THPCore.Infrastructures;
 
-namespace WebUI.Entities;
+namespace THPHome.Entities;
 
-public class Gallery : BaseEntity<Guid>
+public class Gallery : BaseEntity
 {
     public string Name { get; set; } = default!;
     public string? Description { get; set; }

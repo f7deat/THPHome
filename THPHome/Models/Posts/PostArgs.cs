@@ -1,12 +1,12 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Enums;
+﻿using ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
+using THPCore.Infrastructures;
 using THPHome.Enums;
 using THPHome.Helpers;
 
-namespace WebUI.Models.Posts;
+namespace THPHome.Models.Posts;
 
-public class PostArgs : BaseEntity<long>
+public class PostArgs : BaseEntity
 {
     public string? Locale { get; set; }
     public string? Title { get; set; }

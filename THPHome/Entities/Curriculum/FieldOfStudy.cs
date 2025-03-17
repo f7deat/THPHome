@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Entities;
+﻿using THPCore.Infrastructures;
 
 namespace THPHome.Entities.Curriculum;
 

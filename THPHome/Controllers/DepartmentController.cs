@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Models.Filters;
+﻿using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -191,7 +190,6 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
         {
             return BadRequest("Data not found");
         }
-        user.ModifiedDate = DateTime.Now;
         user.JobTitle = args.JobTitle;
         user.Rank = args.Rank;
         user.Type = args.Type;

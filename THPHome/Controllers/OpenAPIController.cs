@@ -13,6 +13,7 @@ using ApplicationCore.Entities;
 using THPHome.Data;
 using Microsoft.AspNetCore.Authorization;
 using THPHome.Enums;
+using THPHome.Entities;
 
 namespace THPHome.Controllers;
 
