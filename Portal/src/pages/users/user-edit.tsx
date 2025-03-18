@@ -5,7 +5,7 @@ import { LeftOutlined } from "@ant-design/icons";
 import ProFileInfo from "./profile/components/info";
 import ForeignLanguageProficiency from "./profile/components/foreign-language-proficiency";
 import EducationHistoryTab from "./profile/components/education-history";
-import { AwardTab, BookTab, ResearchProjectTab } from "./profile/components";
+import { AchievementTab, AwardTab, BookTab, JournalTab, ResearchProjectTab, TeachingExperienceTab, WorkingExperienceTab } from "./profile/components";
 
 const UserEdit = () => {
 
@@ -27,14 +27,19 @@ const UserEdit = () => {
                             children: <EducationHistoryTab />
                         },
                         {
+                            key: 'working-experience',
+                            label: 'Quá trình công tác',
+                            children: <WorkingExperienceTab />
+                        },
+                        {
+                            key: 'teaching-experience',
+                            label: 'Kinh nghiệm giảng dạy',
+                            children: <TeachingExperienceTab />
+                        },
+                        {
                             key: 'language',
                             label: 'Ngoại ngữ',
                             children: <ForeignLanguageProficiency />
-                        },
-                        {
-                            key: 'adward',
-                            label: 'Giải thưởng',
-                            children: <AwardTab />
                         },
                         {
                             key: 'research-project',
@@ -42,9 +47,24 @@ const UserEdit = () => {
                             children: <ResearchProjectTab />
                         },
                         {
+                            key: 'journal',
+                            label: 'Bài báo - Tạp chí',
+                            children: <JournalTab />
+                        },
+                        {
                             key: 'book',
-                            label: 'Sách',
+                            label: 'Sách - Giáo trình',
                             children: <BookTab />
+                        },
+                        {
+                            key: 'adward',
+                            label: 'Giải thưởng',
+                            children: <AwardTab />
+                        },
+                        {
+                            key: 'achievement',
+                            label: 'Thành tựu',
+                            children: <AchievementTab />
                         }
                     ]
                 }}

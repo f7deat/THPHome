@@ -42,6 +42,7 @@ public class UserController(
     IBookService _bookService,
     IJournalService _journalService,
     IAchievementService _achievementService,
+    IWorkingExperienceService _workingExperienceService,
     UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
@@ -790,7 +791,7 @@ public class UserController(
         return Ok(new { data = await _departmentService.GetByIdAsync(user.DepartmentId) });
     }
 
-    [HttpGet("my-books"), AllowAnonymous]
+    [HttpGet("my-books")]
     public async Task<IActionResult> GetMyBooksAsync([FromQuery] BookFilterOptions filterOptions)
     {
         var query = _context.Books.Where(x => x.UserName == filterOptions.UserName).OrderBy(x => x.PublishYear);
@@ -822,7 +823,7 @@ public class UserController(
         return Ok(result);
     }
 
-    [HttpGet("my-journals"), AllowAnonymous]
+    [HttpGet("my-journals")]
     public async Task<IActionResult> GetMyJournalsAsync([FromQuery] JournalFilterOptions filterOptions)
     {
         var query = _context.Journals.Where(x => x.UserName == filterOptions.UserName).OrderBy(x => x.PublishYear);
@@ -854,7 +855,7 @@ public class UserController(
         return Ok(result);
     }
 
-    [HttpGet("my-achievements"), AllowAnonymous]
+    [HttpGet("my-achievements")]
     public async Task<IActionResult> GetMyAchievementsAsync([FromQuery] AchievementFilterOptions filterOptions)
     {
         var query = _context.Achievements.Where(x => x.UserName == filterOptions.UserName).OrderBy(x => x.AchievementDate);
@@ -882,6 +883,38 @@ public class UserController(
     public async Task<IActionResult> DeleteMyAchievementAsync([FromRoute] Guid id)
     {
         var result = await _achievementService.DeleteAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpGet("my-working-experiences")]
+    public async Task<IActionResult> GetMyWorkingExperiencesAsync([FromQuery] WorkingExperienceFilterOptions filterOptions)
+    {
+        var query = _context.WorkingExperiences.Where(x => x.UserName == filterOptions.UserName).OrderBy(x => x.StartDate);
+        return Ok(await ListResult<WorkingExperience>.Success(query, filterOptions));
+    }
+
+    [HttpPost("my-working-experience/add")]
+    public async Task<IActionResult> AddMyWorkingExperienceAsync([FromBody] WorkingExperience args)
+    {
+        args.UserName = User.GetUserName();
+        var result = await _workingExperienceService.AddAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("my-working-experience/update")]
+    public async Task<IActionResult> UpdateMyWorkingExperienceAsync([FromBody] WorkingExperience args)
+    {
+        var result = await _workingExperienceService.UpdateAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("my-working-experience/delete/{id}")]
+    public async Task<IActionResult> DeleteMyWorkingExperienceAsync([FromRoute] Guid id)
+    {
+        var result = await _workingExperienceService.DeleteAsync(id);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
     }

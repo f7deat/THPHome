@@ -2,3 +2,8 @@ export { default as EducationHistory } from './education-history';
 export { default as AwardTab } from './award';
 export { default as ResearchProjectTab } from './research-project';
 export { default as BookTab } from './book';
+export { default as WorkingExperienceTab } from './working-experience';
+export { default as TeachingExperienceTab } from './teaching-experience';
+export { default as AchievementTab } from './achievement';
+export { default as ForeignLanguageProficiency } from './foreign-language-proficiency';
+export { default as JournalTab } from './journal';

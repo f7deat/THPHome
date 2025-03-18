@@ -39,6 +39,9 @@ public static class UserServiceCollectionExtension
         services.AddScoped<IJournalRepository, JournalRepository>();
         services.AddScoped<IJournalService, JournalService>();
 
+        services.AddScoped<IWorkingExperienceRepository, WorkingExperienceRepository>();
+        services.AddScoped<IWorkingExperienceService, WorkingExperienceService>();
+
         return services;
     }
 }

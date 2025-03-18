@@ -30,8 +30,6 @@ using THPHome.ExternalAPI;
 using THPHome.Interfaces.IRepository;
 using THPCore.Services;
 using THPHome.Services.Contacts;
-using THPHome.Interfaces.IService.IUsers;
-using THPHome.Services.Users;
 using THPHome.Extentions.ServiceCollections;
 
 namespace THPHome;

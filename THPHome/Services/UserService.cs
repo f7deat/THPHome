@@ -122,6 +122,13 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             x.Description
         }).ToListAsync();
 
+        var achievements = await _context.Achievements.Where(x => x.UserName == userName).OrderByDescending(x => x.AchievementDate).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.Name,
+            x.AchievementDate,
+        }).ToListAsync();
+
         return new
         {
             user.Id,
@@ -167,7 +174,8 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             books,
             journals,
             teachingExperiences,
-            workingExperiences
+            workingExperiences,
+            achievements
         };
     }
 

@@ -10,6 +10,7 @@ public class TeachingExperienceService(ITeachingExperienceRepository _teachingEx
 {
     public async Task<THPResult> AddAsync(TeachingExperience args)
     {
+        args.CreatedDate = DateTime.Now;
         await _teachingExperienceRepository.AddAsync(args);
         return THPResult.Success;
     }
@@ -30,6 +31,9 @@ public class TeachingExperienceService(ITeachingExperienceRepository _teachingEx
         if (data is null) return THPResult.Failed("Data not found");
         data.CourseName = args.CourseName;
         data.CourseCode = args.CourseCode;
+        data.ModifiedDate = DateTime.Now;
+        data.Level = args.Level;
+        data.Description = args.Description;
         await _teachingExperienceRepository.UpdateAsync(data);
         return THPResult.Success;
     }

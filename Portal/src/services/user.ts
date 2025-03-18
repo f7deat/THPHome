@@ -158,7 +158,7 @@ export async function apiMyBooks(params: any) {
 }
 
 export async function apiBookAdd(data: any) {
-    return request(`user/my-books/add`, {
+    return request(`user/my-book/add`, {
         method: 'POST',
         data
     });
@@ -173,6 +173,102 @@ export async function apiBookUpdate(data: any) {
 
 export async function apiBookDelete(id: string) {
     return request(`user/my-book/delete/${id}`, {
+        method: 'POST'
+    });
+}
+
+export async function apiJournalAdd(data: any) {
+    return request(`user/my-journal/add`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiJournalUpdate(data: any) {
+    return request(`user/my-journal/update`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiJournalDelete(id: string) {
+    return request(`user/my-journal/delete/${id}`, {
+        method: 'POST'
+    });
+}
+
+export async function apiJournalList(params: any) {
+    return request(`user/my-journals`, { params });
+}
+
+export async function apiWorkingExperienceAdd(data: any) {
+    return request(`user/my-working-experience/add`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiWorkingExperienceUpdate(data: any) {
+    return request(`user/my-working-experience/update`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiWorkingExperienceDelete(id: string) {
+    return request(`user/my-working-experience/delete/${id}`, {
+        method: 'POST'
+    });
+}
+
+export async function apiWorkingExperienceList(params: any) {
+    return request(`user/my-working-experiences`, { params });
+}
+
+export async function apiAchievementAdd(data: any) {
+    return request(`user/my-achievement/add`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiAchievementUpdate(data: any) {
+    return request(`user/my-achievement/update`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiAchievementDelete(id: string) {
+    return request(`user/my-achievement/delete/${id}`, {
+        method: 'POST'
+    });
+}
+
+export async function apiAchievementList(params: any) {
+    return request(`user/my-achievements`, { params });
+}
+
+export async function apiMyTeachingExperiences(params: any) {
+    return request(`user/teaching-experience/list`, { params });
+}
+
+export async function apiTeachingExperienceAdd(data: any) {
+    return request(`user/teaching-experience/add`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiTeachingExperienceUpdate(data: any) {
+    return request(`user/teaching-experience/update`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiTeachingExperienceDelete(id: string) {
+    return request(`user/teaching-experience/delete/${id}`, {
         method: 'POST'
     });
 }

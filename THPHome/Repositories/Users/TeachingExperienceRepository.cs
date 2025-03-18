@@ -17,7 +17,10 @@ public class TeachingExperienceRepository(ApplicationDbContext context) : EfRepo
                         a.Id,
                         a.CourseName,
                         a.CourseCode,
-                        a.UserName
+                        a.UserName,
+                        a.CreatedDate,
+                        a.Description,
+                        a.Level
                     };
         if (!string.IsNullOrEmpty(filterOptions.UserName))
         {
