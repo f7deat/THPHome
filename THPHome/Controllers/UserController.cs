@@ -858,7 +858,7 @@ public class UserController(
     [HttpGet("my-achievements")]
     public async Task<IActionResult> GetMyAchievementsAsync([FromQuery] AchievementFilterOptions filterOptions)
     {
-        var query = _context.Achievements.Where(x => x.UserName == filterOptions.UserName).OrderBy(x => x.AchievementDate);
+        var query = _context.Achievements.Where(x => x.UserName == filterOptions.UserName).OrderByDescending(x => x.Year);
         return Ok(await ListResult<Achievement>.Success(query, filterOptions));
     }
 

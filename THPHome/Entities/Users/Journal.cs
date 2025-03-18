@@ -7,7 +7,7 @@ public class Journal : BaseEntity
 {
     public string Name { get; set; } = default!;
     public string? ISSN { get; set; }
-    public int? AuthorCount { get; set; }
+    public string? Authors { get; set; }
     [Comment("The year of the journal - Tập")]
     public string? Volume { get; set; }
     [Comment("The issue of the journal - Số")]

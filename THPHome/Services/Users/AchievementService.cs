@@ -10,6 +10,7 @@ public class AchievementService(IAchievementRepository _achievementRepository, I
 {
     public async Task<THPResult> AddAsync(Achievement args)
     {
+        args.CreatedDate = DateTime.Now;
         await _achievementRepository.AddAsync(args);
         return THPResult.Success;
     }
@@ -28,7 +29,7 @@ public class AchievementService(IAchievementRepository _achievementRepository, I
         var achievement = await _achievementRepository.FindAsync(args.Id);
         if (achievement is null) return THPResult.Failed("Achievement not found");
         achievement.Name = args.Name;
-        achievement.AchievementDate = args.AchievementDate;
+        achievement.Year = args.Year;
         await _achievementRepository.UpdateAsync(achievement);
         return THPResult.Success;
     }

@@ -29,7 +29,7 @@ public class JournalService(IJournalRepository _journalRepository, ILogService _
         if (journal is null) return THPResult.Failed("Journal not found");
         journal.Name = args.Name;
         journal.ISSN = args.ISSN;
-        journal.AuthorCount = args.AuthorCount;
+        journal.Authors = args.Authors;
         journal.Volume = args.Volume;
         journal.Issue = args.Issue;
         journal.Page = args.Page;

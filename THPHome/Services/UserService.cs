@@ -98,7 +98,7 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             x.PublishYear,
             x.ISSN,
             x.Volume,
-            x.AuthorCount,
+            x.Authors,
             x.Page,
             x.Issue
         }).ToListAsync();
@@ -107,7 +107,6 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         {
             x.Id,
             x.Position,
-            x.Workplace,
             x.CompanyName,
             x.StartDate,
             x.EndDate,
@@ -119,14 +118,15 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             x.Id,
             x.CourseCode,
             x.CourseName,
-            x.Description
+            x.Description,
+            x.Level
         }).ToListAsync();
 
-        var achievements = await _context.Achievements.Where(x => x.UserName == userName).OrderByDescending(x => x.AchievementDate).AsNoTracking().Select(x => new
+        var achievements = await _context.Achievements.Where(x => x.UserName == userName).OrderByDescending(x => x.Year).AsNoTracking().Select(x => new
         {
             x.Id,
             x.Name,
-            x.AchievementDate,
+            x.Year,
         }).ToListAsync();
 
         return new

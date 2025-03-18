@@ -33,7 +33,6 @@ public class WorkingExperienceService(IWorkingExperienceRepository _workingExper
         workingExperience.StartDate = args.StartDate;
         workingExperience.EndDate = args.EndDate;
         workingExperience.Description = args.Description;
-        workingExperience.Workplace = args.Workplace;
         workingExperience.ModifiedDate = DateTime.Now;
         await _workingExperienceRepository.UpdateAsync(workingExperience);
         return THPResult.Success;

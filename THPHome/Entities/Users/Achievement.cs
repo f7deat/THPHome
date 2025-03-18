@@ -8,4 +8,5 @@ public class Achievement : BaseEntity
     public DateTime? AchievementDate { get; set; }
     public string UserName { get; set; } = default!;
     public DateTime CreatedDate { get; set; }
+    public int? Year { get; set; }
 }
