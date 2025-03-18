@@ -3,6 +3,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, ProFormDatePicker, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
 import { useModel } from "@umijs/max";
 import { Button, message, Popconfirm } from "antd";
+import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 
 const AwardTab: React.FC = () => {
@@ -18,6 +19,10 @@ const AwardTab: React.FC = () => {
             {
                 name: 'name',
                 value: award?.name
+            },
+            {
+                name: 'year',
+                value: award?.year ? dayjs(`${award?.year}-01-01`) : null
             }
         ]);
     }, [open, award]);
@@ -57,7 +62,8 @@ const AwardTab: React.FC = () => {
                     },
                     {
                         title: 'Năm',
-                        dataIndex: 'year'
+                        dataIndex: 'year',
+                        width: 100
                     },
                     {
                         title: 'Tác vụ',

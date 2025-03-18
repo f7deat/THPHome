@@ -40,10 +40,6 @@ const WorkingExperienceTab: React.FC = () => {
                 {
                     name: 'description',
                     value: workingExperience?.description
-                },
-                {
-                    name: 'workplace',
-                    value: workingExperience?.workplace
                 }
             ]);
         }
@@ -100,10 +96,6 @@ const WorkingExperienceTab: React.FC = () => {
                         dataIndex: 'description'
                     },
                     {
-                        title: 'Địa chỉ',
-                        dataIndex: 'workplace'
-                    },
-                    {
                         title: 'Tác vụ',
                         valueType: 'option',
                         render: (_, record) => [
@@ -143,7 +135,6 @@ const WorkingExperienceTab: React.FC = () => {
                     <ProFormDatePicker name="endDate" label="Thời gian kết thúc" />
                 </div>
                 <ProFormTextArea name="description" label="Mô tả" />
-                <ProFormText name="workplace" label="Địa chỉ" />
             </ModalForm>
         </>
     )

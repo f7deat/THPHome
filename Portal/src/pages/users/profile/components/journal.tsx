@@ -87,20 +87,28 @@ const JournalTab: React.FC = () => {
                         dataIndex: 'issn'
                     },
                     {
+                        title: 'Tác giả',
+                        dataIndex: 'authors'
+                    },
+                    {
                         title: 'Tập',
-                        dataIndex: 'volume'
+                        dataIndex: 'volume',
+                        width: 80
                     },
                     {
                         title: 'Số',
-                        dataIndex: 'issue'
+                        dataIndex: 'issue',
+                        width: 80
                     },
                     {
                         title: 'Trang',
-                        dataIndex: 'page'
+                        dataIndex: 'page',
+                        width: 80
                     },
                     {
                         title: 'Năm công bố',
-                        dataIndex: 'publishYear'
+                        dataIndex: 'publishYear',
+                        width: 120
                     },
                     {
                         title: 'Tác vụ',
@@ -153,6 +161,7 @@ const JournalTab: React.FC = () => {
                     </div>
                     <ProFormDatePicker.Year name="publishYear" label="Năm công bố" />
                 </div>
+                <ProFormText name="authors" label="Tác giả" />
             </ModalForm>
         </>
     )

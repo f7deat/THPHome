@@ -93,7 +93,8 @@ const BookTab: React.FC = () => {
                     },
                     {
                         title: 'Năm xuất bản',
-                        dataIndex: 'publishYear'
+                        dataIndex: 'publishYear',
+                        width: 120
                     },
                     {
                         title: 'Tác giả',

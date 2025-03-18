@@ -3,6 +3,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ModalForm, ProFormDatePicker, ProFormInstance, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
 import { useModel } from "@umijs/max";
 import { Button, message, Popconfirm } from "antd";
+import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 
 const AchievementTab: React.FC = () => {
@@ -25,14 +26,15 @@ const AchievementTab: React.FC = () => {
                     value: achievement?.name
                 },
                 {
-                    name: 'achievementDate',
-                    value: achievement?.achievementDate
+                    name: 'year',
+                    value: achievement?.year ? dayjs(`${achievement?.year}-01-01`) : null
                 }
             ]);
         }
     }, [open, achievement]);
 
     const onFinish = async (values: any) => {
+        values.year = values.year ? Number(values.year) : null;
         if (values.id) {
             await apiAchievementUpdate(values);
         } else {
@@ -65,9 +67,9 @@ const AchievementTab: React.FC = () => {
                         dataIndex: "name"
                     },
                     {
-                        title: 'Thời gian đạt',
-                        dataIndex: 'achievementDate',
-                        valueType: 'date',
+                        title: 'Năm đạt',
+                        dataIndex: 'year',
+                        width: 100
                     },
                     {
                         title: 'Tác vụ',
@@ -101,7 +103,7 @@ const AchievementTab: React.FC = () => {
                         required: true
                     }
                 ]} />
-                <ProFormDatePicker name="achievementDate" label="Thời gian đạt" width="xl" className="w-full" rootClassName="w-full" />
+                <ProFormDatePicker.Year name="year" label="Thời gian đạt" />
             </ModalForm>
         </>
     )

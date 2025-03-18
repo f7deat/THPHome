@@ -64,7 +64,7 @@ export interface Book {
 interface Achievement {
     id: string;
     name: string;
-    achievementDate: number;
+    year: number;
 }
 
 interface WorkingExperience {
