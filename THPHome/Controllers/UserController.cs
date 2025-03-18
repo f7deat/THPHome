@@ -40,6 +40,8 @@ public class UserController(
     IResearchProjectService _researchProjectService,
     IDepartmentService _departmentService,
     IBookService _bookService,
+    IJournalService _journalService,
+    IAchievementService _achievementService,
     UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
@@ -791,13 +793,11 @@ public class UserController(
     [HttpGet("my-books"), AllowAnonymous]
     public async Task<IActionResult> GetMyBooksAsync([FromQuery] BookFilterOptions filterOptions)
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
-        if (user is null) return Unauthorized();
-        var query = _context.Books.Where(x => x.UserName == user.UserName).OrderBy(x => x.PublishYear);
+        var query = _context.Books.Where(x => x.UserName == filterOptions.UserName).OrderBy(x => x.PublishYear);
         return Ok(await ListResult<Book>.Success(query, filterOptions));
     }
 
-    [HttpPost("my-books/add")]
+    [HttpPost("my-book/add")]
     public async Task<IActionResult> AddMyBookAsync([FromBody] Book args)
     {
         args.UserName = User.GetUserName();
@@ -818,6 +818,70 @@ public class UserController(
     public async Task<IActionResult> DeleteMyBookAsync([FromRoute] Guid id)
     {
         var result = await _bookService.DeleteAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpGet("my-journals"), AllowAnonymous]
+    public async Task<IActionResult> GetMyJournalsAsync([FromQuery] JournalFilterOptions filterOptions)
+    {
+        var query = _context.Journals.Where(x => x.UserName == filterOptions.UserName).OrderBy(x => x.PublishYear);
+        return Ok(await ListResult<Journal>.Success(query, filterOptions));
+    }
+
+    [HttpPost("my-journal/add")]
+    public async Task<IActionResult> AddMyJournalAsync([FromBody] Journal args)
+    {
+        args.UserName = User.GetUserName();
+        var result = await _journalService.AddAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("my-journal/update")]
+    public async Task<IActionResult> UpdateMyJournalAsync([FromBody] Journal args)
+    {
+        var result = await _journalService.UpdateAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("my-journal/delete/{id}")]
+    public async Task<IActionResult> DeleteMyJournalAsync([FromRoute] Guid id)
+    {
+        var result = await _journalService.DeleteAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpGet("my-achievements"), AllowAnonymous]
+    public async Task<IActionResult> GetMyAchievementsAsync([FromQuery] AchievementFilterOptions filterOptions)
+    {
+        var query = _context.Achievements.Where(x => x.UserName == filterOptions.UserName).OrderBy(x => x.AchievementDate);
+        return Ok(await ListResult<Achievement>.Success(query, filterOptions));
+    }
+
+    [HttpPost("my-achievement/add")]
+    public async Task<IActionResult> AddMyAchievementAsync([FromBody] Achievement args)
+    {
+        args.UserName = User.GetUserName();
+        var result = await _achievementService.AddAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("my-achievement/update")]
+    public async Task<IActionResult> UpdateMyAchievementAsync([FromBody] Achievement args)
+    {
+        var result = await _achievementService.UpdateAsync(args);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpPost("my-achievement/delete/{id}")]
+    public async Task<IActionResult> DeleteMyAchievementAsync([FromRoute] Guid id)
+    {
+        var result = await _achievementService.DeleteAsync(id);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
     }

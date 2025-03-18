@@ -6,6 +6,7 @@ import '../style.css';
 import { apiLecturePublicInfo } from '@/services/user';
 import { Metadata } from 'next';
 import { Language, LecturerDetail } from '@/typings/user';
+import dayjs from 'dayjs';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -50,9 +51,9 @@ export default async function Page({
                     <h1 className="text-2xl font-semibold 2xl:text-3xl mb-2">{data.name}</h1>
                     <div className='mb-2'>{data.department?.name}</div>
                     <div className="flex gap-4 mt-6 mb-4 text-2xl">
-                        <Link href="#"><FacebookFilled /></Link>
-                        <Link href="#"><LinkedinFilled /></Link>
-                        <Link href="#"><GlobalOutlined /></Link>
+                        <Link href={data.facebook || '#'}><FacebookFilled /></Link>
+                        <Link href={data.linkedin || '#'}><LinkedinFilled /></Link>
+                        <Link href={data.website || '#'}><GlobalOutlined /></Link>
                     </div>
 
                     <div>
@@ -71,6 +72,16 @@ export default async function Page({
                                         href: '#edu'
                                     },
                                     {
+                                        key: 'working',
+                                        title: 'Quá trình công tác',
+                                        href: '#working'
+                                    },
+                                    {
+                                        key: 'teaching',
+                                        title: 'Kinh nghiệm giảng dạy',
+                                        href: '#teaching'
+                                    },
+                                    {
                                         key: 'language',
                                         title: 'Ngoại ngữ',
                                         href: '#language'
@@ -81,9 +92,24 @@ export default async function Page({
                                         href: '#research'
                                     },
                                     {
+                                        key: 'journal',
+                                        title: 'Bài báo / Tạp chí',
+                                        href: '#journal'
+                                    },
+                                    {
+                                        key: 'book',
+                                        title: 'Sách / Giáo trình',
+                                        href: '#book'
+                                    },
+                                    {
                                         key: 'awards',
                                         title: 'Giải thưởng',
                                         href: '#awards'
+                                    },
+                                    {
+                                        key: 'achivement',
+                                        title: 'Thành tựu',
+                                        href: '#achivement'
                                     }
                                 ]} />
                         </ul>
@@ -128,7 +154,7 @@ export default async function Page({
                             </div>
                         </div>
                         <div id='language' className='mb-4 2xl:mb-8'>
-                            <HeadTitle title='Ngoại ngữ' />
+                            <HeadTitle title='Trình độ ngoại ngữ' />
                             <div className='flex mb-1 bg-[#0077c1] text-white'>
                                 <div className='w-10 flex justify-center py-1'>STT</div>
                                 <div className='flex-1 py-1 font-medium px-2'>Ngôn ngữ</div>
@@ -147,7 +173,7 @@ export default async function Page({
                             }
                         </div>
                         <div id='edu' className='mb-4 2xl:mb-8'>
-                            <HeadTitle title='Học vấn' />
+                            <HeadTitle title='Quá trình đào tạo' />
                             <div className='flex mb-1 bg-[#0077c1] text-white'>
                                 <div className='w-10 flex justify-center py-1'>STT</div>
                                 <div className='flex-1 py-1 font-medium px-2'>Bằng cấp</div>
@@ -167,14 +193,52 @@ export default async function Page({
                                 ))
                             }
                         </div>
+                        <div id='working' className='mb-4 2xl:mb-8'>
+                            <HeadTitle title='Quá trình công tác' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
+                                <div className='flex-1 py-1 font-medium px-2'>Thời gian</div>
+                                <div className='flex-1 py-1 px-2'>Chức danh</div>
+                                <div className='flex-1 py-1 px-2'>Đơn vị công tác</div>
+                                <div className='flex-1 py-1 px-2'>Địa chỉ</div>
+                            </div>
+                            {
+                                data.workingExperiences?.map((work, index) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{work.startDate ? dayjs(work.startDate).format('DD-MM-YYYY') : '-'} - {work.endDate ? dayjs(work.endDate).format('DD-MM-YYYY') : '-'}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{work.position}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{work.companyName}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{work.workplace}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div id='teaching' className='mb-4 2xl:mb-8'>
+                            <HeadTitle title='Quá trình giảng dạy' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
+                                <div className='flex-1 py-1 font-medium px-2'>Học phần đã/đang giảng dạy</div>
+                                <div className='flex-1 py-1 px-2'>Chương trình đào tạo/trình độ</div>
+                            </div>
+                            {
+                                data.teachingExperiences?.map((teach, index) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
+                                        <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{teach.courseCode} - {teach.courseName}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{teach.level}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
                         <div id='research' className='mb-4 2xl:mb-8'>
-                            <HeadTitle title='Nghiên cứu khoa học' />
+                            <HeadTitle title='Các đề tài, dự án đã chủ trì hoặc tham gia' />
                             <div className='flex mb-1 bg-[#0077c1] text-white'>
                                 <div className='w-10 flex justify-center py-1'>STT</div>
                                 <div className='flex-1 py-1 font-medium px-2'>Tên đề tài</div>
                                 <div className='flex-1 py-1 px-2'>Năm bắt đầu</div>
                                 <div className='flex-1 py-1 px-2'>Năm kết thúc</div>
-                                </div>
+                            </div>
                             {
                                 data.researchProjects?.map((research, index) => (
                                     <div key={index} className='flex mb-1'>
@@ -186,7 +250,53 @@ export default async function Page({
                                 ))
                             }
                         </div>
-                        <div id='awards'>
+                        <div id='journal' className='mb-4 2xl:mb-8'>
+                            <HeadTitle title='Kết quả NCKH đã công bố' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
+                                <div className='flex-1 py-1 font-medium px-2'>Tên bài báo</div>
+                                <div className='flex-1 py-1 px-2'>Tên tạp chí / ISSN</div>
+                                <div className='flex-1 py-1 px-2'>Tập</div>
+                                <div className='flex-1 py-1 px-2'>Số</div>
+                                <div className='flex-1 py-1 px-2'>Trang</div>
+                                <div className='flex-1 py-1 px-2'>Năm công bố</div>
+                            </div>
+                            {
+                                data.journals?.map((journal, index) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
+                                        <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{journal.name}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{journal.issn}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{journal.volume}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{journal.issue}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{journal.page}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{journal.publishYear}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div className='mb-4 2xl:mb-8' id='book'>
+                            <HeadTitle title='Biên soạn sách phục vụ đào tạo (trung cấp, cao đẳng, đại học và sau đại học)' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
+                                <div className='flex-1 py-1 font-medium px-2'>Tên sách</div>
+                                <div className='flex-1 py-1 px-2'>Năm</div>
+                                <div className='flex-1 py-1 px-2'>Nhà xuất bản</div>
+                                <div className='flex-1 py-1 px-2'>Tác giả</div>
+                            </div>
+                            {
+                                data.books?.map((book, index) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
+                                        <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{book.name}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{book.publishYear}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 bg-slate-100 px-2 border-t'>{book.publisher}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{book.authors}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div id='awards' className='mb-4 2xl:mb-8'>
                             <HeadTitle title='Giải thưởng' />
                             <div className='flex mb-1 bg-[#0077c1] text-white'>
                                 <div className='w-10 flex justify-center py-1'>STT</div>
@@ -199,6 +309,23 @@ export default async function Page({
                                         <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
                                         <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{award.name}</div>
                                         <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{award.year}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div id='achivement' className='mb-4 2xl:mb-8'>
+                            <HeadTitle title='Thành tựu hoạt động khoa học khác' />
+                            <div className='flex mb-1 bg-[#0077c1] text-white'>
+                                <div className='w-10 flex justify-center py-1'>STT</div>
+                                <div className='flex-1 py-1 px-2'>Nội dung</div>
+                                <div className='flex-1 py-1 px-2'>Năm đạt</div>
+                            </div>
+                            {
+                                data.achievements?.map((ach, index) => (
+                                    <div key={index} className='flex mb-1'>
+                                        <div className='w-10 flex justify-center py-1 border-b border-slate-100'>{index + 1}</div>
+                                        <div className='flex-1 py-1 font-medium bg-slate-100 border-b border-slate-100 px-2'>{ach.name}</div>
+                                        <div className='flex-1 py-1 border-b border-slate-100 px-2 border-t'>{ach.achievementDate ? dayjs(ach.achievementDate).format('DD-MM-YYYY') : '-'}</div>
                                     </div>
                                 ))
                             }

@@ -81,6 +81,47 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             x.EndYear
         }).ToListAsync();
 
+        var books = await _context.Books.Where(x => x.UserName == userName).OrderBy(x => x.PublishYear).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.Name,
+            x.Publisher,
+            x.PublishYear,
+            x.ISBN,
+            x.Authors
+        }).ToListAsync();
+
+        var journals = await _context.Journals.Where(x => x.UserName == userName).OrderBy(x => x.PublishYear).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.Name,
+            x.PublishYear,
+            x.ISSN,
+            x.Volume,
+            x.AuthorCount,
+            x.Page,
+            x.Issue
+        }).ToListAsync();
+
+        var workingExperiences = await _context.WorkingExperiences.Where(x => x.UserName == userName).OrderByDescending(x => x.StartDate).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.Position,
+            x.Workplace,
+            x.CompanyName,
+            x.StartDate,
+            x.EndDate,
+            x.Description
+        }).ToListAsync();
+
+        var teachingExperiences = await _context.TeachingExperiences.Where(x => x.UserName == userName).OrderByDescending(x => x.CourseCode).AsNoTracking().Select(x => new
+        {
+            x.Id,
+            x.CourseCode,
+            x.CourseName,
+            x.Description
+        }).ToListAsync();
+
         return new
         {
             user.Id,
@@ -122,7 +163,11 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             languages,
             awards,
             educationHistories,
-            researchProjects
+            researchProjects,
+            books,
+            journals,
+            teachingExperiences,
+            workingExperiences
         };
     }
 

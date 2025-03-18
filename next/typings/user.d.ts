@@ -52,6 +52,50 @@ export interface ResearchProject {
     endYear: number;
 }
 
+export interface Book {
+    id: string;
+    name: string;
+    authors: string;
+    publisher: string;
+    publishYear: number;
+    ibsn: string;    
+}
+
+interface Achievement {
+    id: string;
+    name: string;
+    achievementDate: number;
+}
+
+interface WorkingExperience {
+    id: string;
+    position: string;
+    workplace: string;
+    companyName: string;
+    startDate: number;
+    endDate: number;
+    description: string;
+}
+
+interface Journal {
+    id: string;
+    name: string;
+    issn: string;
+    authorCount: number;
+    volume: string;
+    issue: string;
+    page: string;
+    publishYear: number;
+}
+
+interface TeachingExperience {
+    id: string;
+    courseCode: string;
+    courseName: string;
+    description: string;
+    level: string;
+}
+
 export interface LecturerDetail {
     id: string;
     name: string;
@@ -67,4 +111,12 @@ export interface LecturerDetail {
     academicTitle?: AcademicTitle;
     researchProjects?: ResearchProject[];
     city?: string;
+    books?: Book[];
+    achievements?: Achievement[];
+    journals?: Journal[];
+    workingExperiences?: WorkingExperience[];
+    teachingExperiences?: TeachingExperience[];
+    facebook: string;
+    linkedin: string;
+    website: string;
 }

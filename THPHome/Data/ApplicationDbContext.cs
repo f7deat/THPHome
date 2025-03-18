@@ -76,9 +76,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ForeignLanguageProficiency> ForeignLanguageProficiencies { get; set; }
     public DbSet<EducationHistory> EducationHistories { get; set; }
     public DbSet<TeachingExperience> TeachingExperiences { get; set; }
+    public DbSet<WorkingExperience> WorkingExperiences { get; set; }
     public DbSet<ResearchProject> ResearchProjects { get; set; }
     public DbSet<BookAuthor> BookAuthors { get; set; }
     public DbSet<Book> Books { get; set; }
+    public DbSet<Journal> Journals { get; set; }
+    public DbSet<Achievement> Achievements { get; set; }
     #endregion
 
     public DbSet<ApplicationLog> Logs { get; set; }
