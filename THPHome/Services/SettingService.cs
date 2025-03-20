@@ -1,24 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using THPHome.Data;
+﻿using THPHome.Data;
 using WebUI.Entities;
-using WebUI.ExternalAPI.Interfaces;
 using WebUI.Interfaces.IRepository;
 using WebUI.Interfaces.IService;
 
-namespace WebUI.Services;
+namespace THPHome.Services;
 
-public class SettingService : ISettingService
+public class SettingService(ISettingRepository _settingRepository) : ISettingService
 {
-    private readonly ISettingRepository _settingRepository;
-    private readonly IZaloAPI _zaloAPI;
-    private readonly ApplicationDbContext _context;
-
-    public SettingService(ISettingRepository settingRepository, IZaloAPI zaloAPI, ApplicationDbContext context)
-    {
-        _settingRepository = settingRepository;
-        _zaloAPI = zaloAPI;
-        _context = context;
-    }
-
     public Task<IReadOnlyList<ApplicationSetting>> ListAsync() => _settingRepository.ListAllAsync();
 }

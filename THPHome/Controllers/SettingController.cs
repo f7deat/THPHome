@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Models.Settings;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
-using WebUI.Models.Settings;
 using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;

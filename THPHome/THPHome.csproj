@@ -9,14 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Models\Views\**" />
-	  <Content Remove="Models\Views\**" />
-	  <EmbeddedResource Remove="Models\Views\**" />
-	  <None Remove="Models\Views\**" />
-	  <TypeScriptCompile Remove="Models\Views\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="EPPlus" Version="7.5.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />
@@ -37,8 +29,9 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
-		<PackageReference Include="THPCore" Version="1.0.2" />
+		<PackageReference Include="THPCore" Version="1.0.3" />
 		<PackageReference Include="THPIdentity" Version="1.0.3" />
+		<PackageReference Include="ZaloSDK" Version="1.0.1" />
 	</ItemGroup>
 
 </Project>

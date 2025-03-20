@@ -1,5 +1,5 @@
 ﻿using THPHome.ExternalAPI.Models;
-using WebUI.Models.Args.Communications;
+using THPHome.Models.Args.Communications;
 
 namespace WebUI.ExternalAPI.Interfaces;
 

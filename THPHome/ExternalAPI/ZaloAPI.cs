@@ -3,10 +3,10 @@ using Newtonsoft.Json;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Entities.Articles;
+using THPHome.ExternalAPI.Interfaces;
+using THPHome.Models.Settings;
 using THPIdentity.Data;
-using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
-using WebUI.Models.Settings;
 namespace THPHome.ExternalAPI;
 
 public class ZaloAPI : IZaloAPI
@@ -24,12 +24,16 @@ public class ZaloAPI : IZaloAPI
         _identityContext = identityContext;
     }
 
-    private async Task<string?> GetAccessTokenAsync()
+    public async Task<string?> GetAccessTokenAsync()
     {
         var setting = await _context.ApplicationSettings.FirstOrDefaultAsync(x => x.Key == "ZALO");
         if (setting == null) return string.Empty;
         var zalo = JsonConvert.DeserializeObject<ZaloSetting>(setting.Value);
         if (zalo == null) return string.Empty;
+        if (zalo.ExpiredDate > DateTime.Now.AddMinutes(1) && !string.IsNullOrEmpty(zalo.AccessToken))
+        {
+            return zalo.AccessToken;
+        }
         var http = new HttpClient();
         var app_id = _configuration.GetSection("Zalo:app_id")?.Value ?? string.Empty;
         var secret_key = _configuration.GetSection("Zalo:secret_key")?.Value ?? string.Empty;

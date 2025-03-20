@@ -2,8 +2,8 @@
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using THPCore.Interfaces;
 using THPHome.Data;
-using THPHome.Interfaces.Base;
 
 namespace THPHome.Repositories.Base;
 
@@ -50,6 +50,8 @@ public class EfRepository<T>(ApplicationDbContext context) : IAsyncRepository<T>
     public IDbContextTransaction BeginTransaction() => _context.Database.BeginTransaction();
 
     public async Task<int> CountAsync() => await _context.Set<T>().CountAsync();
+
+    public async Task<T?> FindAsync(int id) => await _context.Set<T>().FindAsync(id);
 
     public async Task<T?> FindAsync(long id) => await _context.Set<T>().FindAsync(id);
 

@@ -1,6 +1,6 @@
-﻿using THPCore.Enums;
+﻿using THPIdentity.Entities;
 
-namespace WebUI.Models.Args.Communications;
+namespace THPHome.Models.Args.Communications;
 
 public class SendEmailArgs
 {

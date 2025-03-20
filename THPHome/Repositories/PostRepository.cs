@@ -5,7 +5,6 @@ using ApplicationCore.Models.Posts;
 using WebUI.Models.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using THPIdentity.Entities;
-using THPCore.Enums;
 using WebUI.Foundations.Interfaces;
 using WebUI.Models.Results.Posts;
 using THPHome.Data;
@@ -20,15 +19,10 @@ using UserType = THPIdentity.Entities.UserType;
 
 namespace THPHome.Repositories;
 
-public class PostRepository : EfRepository<Post>, IPostRepository
+public class PostRepository(ApplicationDbContext _context, UserManager<ApplicationUser> userManager, ICurrentUser currentUser) : EfRepository<Post>(_context), IPostRepository
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ICurrentUser _currentUser;
-    public PostRepository(ApplicationDbContext _context, UserManager<ApplicationUser> userManager, ICurrentUser currentUser) : base(_context)
-    {
-        _userManager = userManager;
-        _currentUser = currentUser;
-    }
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<PaginatedList<Post>> GetListPostByTagIdAsync(int tagId, int current, int pageSize)
     {

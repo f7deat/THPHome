@@ -24,13 +24,12 @@ using THPHome.Data;
 using THPHome.Interfaces.IService;
 using THPHome.Services;
 using THPHome.Repositories;
-using THPHome.Repositories.Base;
-using THPHome.Interfaces.Base;
 using THPHome.ExternalAPI;
 using THPHome.Interfaces.IRepository;
 using THPCore.Services;
 using THPHome.Services.Contacts;
 using THPHome.Extentions.ServiceCollections;
+using THPHome.ExternalAPI.Interfaces;
 
 namespace THPHome;
 
@@ -49,7 +48,6 @@ public class Startup(IConfiguration configuration)
             .AddEntityFrameworkStores<IdentityDbTHPContext>()
             .AddDefaultTokenProviders();
 
-        services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IPostService, PostService>();
@@ -75,9 +73,9 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ILogService, LogService>();
         services.AddScoped<IContactService, ContactService>();
 
-        #region Users
         services.AddUserService();
-        #endregion
+        services.AddTrainingService();
+
         services.AddScoped<IUserService, UserService>();
 
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using THPHome.ExternalAPI.Models;
+using THPHome.Models.Args.Communications;
 using WebUI.ExternalAPI.Interfaces;
 using WebUI.ExternalAPI.Models;
-using WebUI.Models.Args.Communications;
 
 namespace THPHome.ExternalAPI;
 
