@@ -1,12 +1,14 @@
 import { Inter } from 'next/font/google'
-import { BarsOutlined, CaretDownFilled, EnvironmentFilled, FacebookFilled, GlobalOutlined, HomeOutlined, LinkedinFilled, MailFilled, PhoneFilled, TranslationOutlined } from '@ant-design/icons'
+import { CaretDownFilled, EnvironmentFilled, HomeOutlined, MailFilled, PhoneFilled, TranslationOutlined } from '@ant-design/icons'
 import Link from 'next/link'
-import { Anchor, ConfigProvider, Dropdown} from 'antd';
+import { ConfigProvider, Dropdown } from 'antd';
 import '../style.css';
 import { apiLecturePublicInfo } from '@/services/user';
 import { Metadata } from 'next';
 import { Language, LecturerDetail } from '@/typings/user';
 import dayjs from 'dayjs';
+import MobileBar from '../components/mobile-bar';
+import SideBar from '../components/sidebar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,7 +26,6 @@ export default async function Page({
 
     const response = await apiLecturePublicInfo(slug);
     const data = response.data as LecturerDetail;
-    console.log(data);
 
     const HeadTitle = (props: { title: string }) => (
         <div className='text-lg uppercase font-semibold text-[#0077c1] mb-2'>
@@ -44,82 +45,12 @@ export default async function Page({
             }}
         >
             <main style={inter.style}>
-                <div className="w-80 2xl:w-96 shadow hidden md:flex flex-col items-center justify-center bg-[#0077c1] text-white fixed top-0 left-0 bottom-0">
-                    <div className="w-48 h-48 2xl:w-52 2xl:h-52 rounded-full border-4 border-slate-100 mb-4">
-                        <img src={data.avatar || 'https://dhhp.edu.vn/logo/logo-65.png'} alt="John Doe" className="rounded-full object-cover w-full h-full" />
-                    </div>
-                    <h1 className="text-xl font-semibold 2xl:text-3xl mb-2">{data.name}</h1>
-                    <div className='mb-2'>{data.department?.name}</div>
-                    <div className="flex gap-4 mt-6 mb-4 text-2xl">
-                        <Link href={data.facebook || '#'}><FacebookFilled /></Link>
-                        <Link href={data.linkedin || '#'}><LinkedinFilled /></Link>
-                        <Link href={data.website || '#'}><GlobalOutlined /></Link>
-                    </div>
-
-                    <div>
-                        <ul className="text-center">
-                            <Anchor
-                                className='text-white my-anchor'
-                                items={[
-                                    {
-                                        key: 'introduction',
-                                        title: 'Giới thiệu',
-                                        href: '#introduction'
-                                    },
-                                    {
-                                        key: 'edu',
-                                        title: 'Học vấn',
-                                        href: '#edu'
-                                    },
-                                    {
-                                        key: 'working',
-                                        title: 'Quá trình công tác',
-                                        href: '#working'
-                                    },
-                                    {
-                                        key: 'teaching',
-                                        title: 'Kinh nghiệm giảng dạy',
-                                        href: '#teaching'
-                                    },
-                                    {
-                                        key: 'language',
-                                        title: 'Ngoại ngữ',
-                                        href: '#language'
-                                    },
-                                    {
-                                        key: 'research',
-                                        title: 'Nghiên cứu khoa học',
-                                        href: '#research'
-                                    },
-                                    {
-                                        key: 'journal',
-                                        title: 'Bài báo / Tạp chí',
-                                        href: '#journal'
-                                    },
-                                    {
-                                        key: 'book',
-                                        title: 'Sách / Giáo trình',
-                                        href: '#book'
-                                    },
-                                    {
-                                        key: 'awards',
-                                        title: 'Giải thưởng',
-                                        href: '#awards'
-                                    },
-                                    {
-                                        key: 'achivement',
-                                        title: 'Thành tựu',
-                                        href: '#achivement'
-                                    }
-                                ]} />
-                        </ul>
-                    </div>
+                <div className='hidden md:block'>
+                    <SideBar data={data} />
                 </div>
                 <div className="flex-1 2xl:ml-96 md:ml-80">
                     <div className='flex justify-end border-b border-gray-200'>
-                        <div className='h-14 w-14 flex md:hidden items-center justify-center border-r border-gray-200 text-xl text-gray-600'>
-                            <Link href='/' className='hover:text-blue-500'><BarsOutlined /></Link>
-                        </div>
+                        <MobileBar data={data} />
                         <div className='h-14 w-14 flex items-center justify-center border-r border-gray-200 text-xl text-gray-600'>
                             <Link href='/' className='hover:text-blue-500'><HomeOutlined /></Link>
                         </div>
