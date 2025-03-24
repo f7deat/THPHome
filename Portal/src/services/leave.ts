@@ -25,7 +25,25 @@ export async function apiLeaveRequestUpdate(data: any) {
 }
 
 export async function apiLeaveRequestDelete(id: number) {
-    return request(`leave/request/delete/${id}`, {
+    return request(`leave/request/${id}`, {
         method: 'DELETE'
     });
+}
+
+export async function apiLeaveRequestApprove(data: any) {
+    return request(`leave/request/approve`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiLeaveRequestReject(data: any) {
+    return request(`leave/request/reject`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiLeaveBalanceByType(type: number) {
+    return request(`leave/balance-by-type/${type}`);
 }

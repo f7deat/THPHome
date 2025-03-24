@@ -21,8 +21,10 @@ public class LeaveBalanceService(ILeaveBalanceRepository _leaveBalanceRepository
         var balance = await _leaveBalanceRepository.GetBalanceByTypeAsync(_hcaService.GetUserName(), leaveTypeId);
         if (balance == null) return THPResult.Failed("Không tìm thấy số ngày nghỉ phép!");
         if (balance.AvailableDays < totalDays) return THPResult.Failed("Số ngày nghỉ phép không đủ!");
-        balance.AvailableDays -= totalDays;
-        await _leaveBalanceRepository.UpdateAsync(balance);
+        var data = await _leaveBalanceRepository.FindAsync(balance.Id);
+        if (data is null) return THPResult.Failed("Không tìm thấy số ngày nghỉ phép!");
+        data.AvailableDays -= totalDays;
+        await _leaveBalanceRepository.UpdateAsync(data);
         return THPResult.Success;
     }
 }

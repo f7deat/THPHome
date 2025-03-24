@@ -23,6 +23,6 @@ public class LeaveBalanceRepository(ApplicationDbContext context) : EfRepository
         };
         await _context.LeaveBalances.AddAsync(data);
         await _context.SaveChangesAsync();
-        return data;
+        return new LeaveBalance { Id = data.Id, AvailableDays = data.AvailableDays, LeaveTypeId = data.LeaveTypeId, UserName = data.UserName, Year = data.Year };
     }
 }

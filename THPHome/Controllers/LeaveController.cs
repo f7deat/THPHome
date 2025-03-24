@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
 using THPHome.Interfaces.IService.ILeaves;
 using THPHome.Models.Filters.Leaves;
@@ -16,8 +17,18 @@ public class LeaveController(ApplicationDbContext context, ILeaveBalanceService 
     [HttpGet("type/options")]
     public async Task<IActionResult> GetTypeOptionsAsync() => Ok(await _leaveTypeService.GetOptionsAsync());
 
-    [HttpGet("balance-by-type/{id}")]
-    public async Task<IActionResult> GetBalanceAsync([FromRoute] int id) => Ok(await _leaveBalanceService.GetBalanceByTypeAsync(id));
+    [HttpGet("balance-by-type/{id}"), AllowAnonymous]
+    public async Task<IActionResult> GetBalanceAsync([FromRoute] int id)
+    {
+        try
+        {
+            return Ok(await _leaveBalanceService.GetBalanceByTypeAsync(id));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+    }
 
     [HttpPost("request/create")]
     public async Task<IActionResult> CreateRequestAsync([FromBody] LeaveRequestCreateArgs args)
