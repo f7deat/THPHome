@@ -73,6 +73,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ILogService, LogService>();
         services.AddScoped<IContactService, ContactService>();
 
+        services.AddLeaveService();
         services.AddUserService();
         services.AddTrainingService();
 

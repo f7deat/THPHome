@@ -4,6 +4,7 @@ using THPHome.Entities;
 using THPHome.Entities.Articles;
 using THPHome.Entities.Contacts;
 using THPHome.Entities.Curriculum;
+using THPHome.Entities.Leaves;
 using THPHome.Entities.Notifications;
 using THPHome.Entities.QA;
 using THPHome.Entities.Users;
@@ -82,6 +83,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Book> Books { get; set; }
     public DbSet<Journal> Journals { get; set; }
     public DbSet<Achievement> Achievements { get; set; }
+    #endregion
+
+    #region Leaves
+    public DbSet<LeaveType> LeaveTypes { get; set; }
+    public DbSet<LeaveRequest> LeaveRequests { get; set; }
+    public DbSet<LeaveBalance> LeaveBalances { get; set; }
     #endregion
 
     public DbSet<ApplicationLog> Logs { get; set; }
