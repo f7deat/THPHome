@@ -2,7 +2,7 @@ import { apiLeaveBalanceByType, apiLeaveRequestApprove, apiLeaveRequestCreate, a
 import { DeleteOutlined, ManOutlined, MoreOutlined, PlusOutlined, WomanOutlined } from "@ant-design/icons"
 import { ActionType, ModalForm, ProFormDatePicker, ProFormDigit, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components"
 import { useModel } from "@umijs/max"
-import { Button, Dropdown, message, Popconfirm } from "antd"
+import { Alert, Button, Dropdown, message, Popconfirm } from "antd"
 import { useEffect, useRef, useState } from "react"
 
 const LeaveRequest: React.FC = () => {
@@ -253,9 +253,9 @@ const LeaveRequest: React.FC = () => {
                     ]} fieldProps={{
                         step: 0.5
                     }} />
-                    {JSON.stringify(balance)}
                 </div>
                 <ProFormTextArea name="reason" label="Lý do" />
+                <Alert message={<div>Số ngày còn lại: <b>{balance?.availableDays}</b></div>} type="warning" showIcon />
             </ModalForm>
             <ModalForm open={openApprove} onOpenChange={setOpenApprove} title="Phê duyệt" onFinish={onApprove} formRef={formRef}>
                 <ProFormTextArea name="comments" label="Ghi chú" />

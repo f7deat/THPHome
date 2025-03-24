@@ -11,9 +11,9 @@ public class LeaveBalanceRepository(ApplicationDbContext context) : EfRepository
     public async Task<LeaveBalance?> GetBalanceByTypeAsync(string userName, int id)
     {
         var data = await _context.LeaveBalances.FirstOrDefaultAsync(x => x.UserName == userName && x.LeaveTypeId == id && x.Year == DateTime.Now.Year);
-        if (data != null) return data;
+        if (data != null) return new LeaveBalance { Id = data.Id, AvailableDays = data.AvailableDays, LeaveTypeId = data.LeaveTypeId, UserName = data.UserName, Year = data.Year };
         var leaveType = await _context.LeaveTypes.FindAsync(id);
-        if (leaveType == null) return default;
+        if (leaveType is null) return default;
         data = new LeaveBalance
         {
             UserName = userName,
