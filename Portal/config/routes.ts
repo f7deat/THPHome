@@ -107,7 +107,7 @@ export default [
   },
   {
     icon: 'TeamOutlined',
-    name: 'Tài khoản',
+    name: 'account',
     path: '/account',
     routes: [
       {
@@ -126,6 +126,11 @@ export default [
         path: '/account/profile/edit/:id',
         component: './users/user-edit',
         hideInMenu: true,
+      },
+      {
+        name: 'leave',
+        path: '/account/leave',
+        component: './users/leave',
       }
     ]
   },
@@ -185,17 +190,6 @@ export default [
     path: '/admission',
     access: 'canEditor',
     routes: [
-      {
-        name: 'Tin tức',
-        path: '/admission/article',
-        component: './posts/admission',
-      },
-      {
-        name: 'Chỉnh sửa tuyển sinh',
-        path: '/admission/article/setting/:id',
-        component: './posts/post-setting',
-        hideInMenu: true,
-      },
       {
         name: 'Ngành/Chuyên ngành',
         path: '/admission/training-group',

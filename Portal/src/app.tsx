@@ -2,7 +2,7 @@ import { history } from '@umijs/max';
 import { queryCurrentUser } from './services/user';
 import { RequestConfig } from '@umijs/max';
 import { RequestOptions } from '@umijs/max';
-import { Space, message } from 'antd';
+import { message } from 'antd';
 import { RunTimeLayoutConfig } from '@umijs/max';
 import { DefaultFooter } from '@ant-design/pro-components';
 import { GithubOutlined } from '@ant-design/icons';
@@ -11,6 +11,7 @@ import { SelectLang } from '@umijs/max';
 import { Question } from './components/right-content';
 import './style.css';
 import { getLocale } from '@umijs/max';
+import MyNotification from './components/right-content/notification';
 const loginPath = '/accounts/login';
 
 export async function getInitialState(): Promise<{
@@ -84,11 +85,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       ]} />
     ),
     rightContentRender: () => (
-      <Space>
+      <div className='flex items-center'>
         <Question key="doc" />
+        <MyNotification />
         <SelectLang key="SelectLang" />
         <AvatarDropdown menu />
-      </Space>
+      </div>
     ),
     onPageChange: () => {
       const { location } = history;

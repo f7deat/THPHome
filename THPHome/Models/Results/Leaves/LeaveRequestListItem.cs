@@ -7,7 +7,7 @@ public class LeaveRequestListItem : BaseEntity
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public long TotalDays { get; set; }
+    public double TotalDays { get; set; }
     public string? UserName { get; set; }
     public string? FullName { get; set; }
     public string? Reason { get; set; }

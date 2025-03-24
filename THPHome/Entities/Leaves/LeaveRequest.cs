@@ -11,7 +11,7 @@ public class LeaveRequest : BaseEntity
     [ForeignKey(nameof(LeaveType))]
     public int LeaveTypeId { get; set; }
     public DateTime StartDate { get; set; }
-    public long TotalDays { get; set; }
+    public double TotalDays { get; set; }
     [StringLength(255)]
     public string? Reason { get; set; }
     public DateTime CreatedDate { get; set; }

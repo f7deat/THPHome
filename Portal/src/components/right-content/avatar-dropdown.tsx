@@ -129,7 +129,7 @@ import {
         }}
         arrow
       >
-        <Space className='cursor-pointer min-w-32'>
+        <Space className='cursor-pointer min-w-32 ml-2'>
           <AvatarLogo />
           <AvatarName />
         </Space>

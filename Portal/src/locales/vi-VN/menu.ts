@@ -1,4 +1,6 @@
 export default {
+    'menu.account': 'Tài khoản',
+    'menu.account.leave': 'Nghỉ phép',
     'menu.catalog': 'Catalog',
     'menu.category': 'Danh mục',
     'menu.catalog.article': 'Bài viết',

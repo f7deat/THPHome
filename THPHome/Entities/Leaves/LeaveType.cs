@@ -9,7 +9,7 @@ public class LeaveType : BaseEntity<int>
     public string Name { get; set; } = default!;
     [StringLength(255)]
     public string? Description { get; set; }
-    public int MaxDays { get; set; }
+    public double MaxDays { get; set; }
 
     public ICollection<LeaveBalance>? LeaveBalances { get; set; }
     public ICollection<LeaveRequest>? LeaveRequests { get; set; }

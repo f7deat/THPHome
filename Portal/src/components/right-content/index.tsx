@@ -1,6 +1,5 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { SelectLang as UmiSelectLang } from '@umijs/max';
-import { Button } from 'antd';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -12,13 +11,9 @@ export const SelectLang = () => {
 
 export const Question = () => {
   return (
-    <Button
-      type='text'
-      onClick={() => {
-        window.open('https://help.dhhp.edu.vn');
-      }}
-      icon={<QuestionCircleOutlined />}
-    />
-
+    <a
+      className='h-10 w-10 flex items-center justify-center'
+      href='https://help.dhhp.edu.vn' target='_blank' rel='noreferrer'
+    ><QuestionCircleOutlined className='text-lg' /></a>
   );
 };

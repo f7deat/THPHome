@@ -16,7 +16,7 @@ public class LeaveBalanceService(ILeaveBalanceRepository _leaveBalanceRepository
         return await _leaveBalanceRepository.GetBalanceByTypeAsync(userName, leaveType.Id);
     }
 
-    public async Task<THPResult> UpdateAvailableDaysAsync(int leaveTypeId, long totalDays)
+    public async Task<THPResult> UpdateAvailableDaysAsync(int leaveTypeId, double totalDays)
     {
         var balance = await _leaveBalanceRepository.GetBalanceByTypeAsync(_hcaService.GetUserName(), leaveTypeId);
         if (balance == null) return THPResult.Failed("Không tìm thấy số ngày nghỉ phép!");

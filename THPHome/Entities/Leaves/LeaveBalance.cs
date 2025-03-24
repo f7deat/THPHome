@@ -8,7 +8,7 @@ public class LeaveBalance : BaseEntity
 {
     [StringLength(256)]
     public string UserName { get; set; } = default!;
-    public long AvailableDays { get; set; }
+    public double AvailableDays { get; set; }
     [ForeignKey(nameof(LeaveType))]
     public int LeaveTypeId { get; set; }
     public int Year { get; set; }
