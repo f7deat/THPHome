@@ -6,6 +6,7 @@ using THPHome.Entities.Leaves;
 using THPHome.Interfaces.IRepository.ILeaves;
 using THPHome.Interfaces.IService;
 using THPHome.Interfaces.IService.ILeaves;
+using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Filters.Leaves;
 using THPHome.Services.Leaves.Args;
 using THPHome.Services.Leaves.Filters;
@@ -13,7 +14,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Services.Leaves;
 
-public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEmailSender _emailSender, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
+public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDepartmentService _departmentService, IEmailSender _emailSender, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
 {
     static bool IsValidLeaveDays(double leaveDays)
     {
@@ -112,6 +113,19 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEma
             await _logService.ExeptionAsync(ex);
             return THPResult.Failed(ex.ToString());
         }
+    }
+
+    public async Task<object?> GetChartAsync(LeaveRequestFilterOptions filterOptions)
+    {
+        var departments = await _departmentService.GetCodeOptionsAsync();
+        var series = departments.Select(x => x.Label).ToList();
+        var counts = await _leaveRequestRepository.CountAllByDepartmentAsync(filterOptions.FromDate, filterOptions.ToDate);
+        var xAxis = departments.Select(x =>
+        {
+            var count = counts.FirstOrDefault(y => y.DepartmentId == (int?)x.Value);
+            return count?.Total ?? 0;
+        });
+        return new { series, xAxis };
     }
 
     public Task<object?> GetCountByDepartmentAsync() => _leaveRequestRepository.GetCountByDepartmentAsync();

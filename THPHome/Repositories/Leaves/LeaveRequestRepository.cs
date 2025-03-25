@@ -7,6 +7,7 @@ using THPHome.Models.Filters.Leaves;
 using THPHome.Models.Results.Leaves;
 using THPHome.Repositories.Base;
 using THPHome.Services.Leaves.Filters;
+using THPHome.Services.Leaves.Results;
 using THPIdentity.Entities;
 
 namespace THPHome.Repositories.Leaves;
@@ -27,6 +28,23 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                         Rejected = g.Count(x => x.Status == LeaveStatus.Rejected)
                     };
         return new { data = await query.ToListAsync(), total = await query.CountAsync() };
+    }
+
+    public async Task<List<CountByDepartment>> CountAllByDepartmentAsync(DateTime? fromDate, DateTime? toDate)
+    {
+        var query = from a in _context.LeaveRequests
+                    join b in _context.Departments on a.DepartmentId equals b.Code
+                    where (toDate == null || a.StartDate <= toDate) && (fromDate == null || a.StartDate >= fromDate)
+                    group new { b.Name, a.Status } by b.Code into g
+                    select new CountByDepartment
+                    {
+                        DepartmentId = g.Key,
+                        Total = g.Count(),
+                        TotalPending = g.Count(x => x.Status == LeaveStatus.Pending),
+                        TotalApproved = g.Count(x => x.Status == LeaveStatus.Approved),
+                        TotalRejected = g.Count(x => x.Status == LeaveStatus.Rejected)
+                    };
+        return await query.ToListAsync();
     }
 
     public async Task<object> GetListAsync(LeaveRequestFilterOptions filterOptions, ApplicationUser user)

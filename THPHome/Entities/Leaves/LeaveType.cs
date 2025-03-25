@@ -10,6 +10,7 @@ public class LeaveType : BaseEntity<int>
     [StringLength(255)]
     public string? Description { get; set; }
     public double MaxDays { get; set; }
+    public int SortOrder { get; set; }
 
     public ICollection<LeaveBalance>? LeaveBalances { get; set; }
     public ICollection<LeaveRequest>? LeaveRequests { get; set; }

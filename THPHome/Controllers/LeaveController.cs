@@ -75,4 +75,7 @@ public class LeaveController(ApplicationDbContext context, ILeaveBalanceService 
 
     [HttpGet("request/count-by-department")]
     public async Task<IActionResult> GetCountByDepartmentAsync() => Ok(await _leaveRequestService.GetCountByDepartmentAsync());
+
+    [HttpGet("chart")]
+    public async Task<IActionResult> GetChartAsync([FromQuery] LeaveRequestFilterOptions filterOptions) => Ok(await _leaveRequestService.GetChartAsync(filterOptions));
 }

@@ -9,7 +9,7 @@ namespace THPHome.Repositories.Leaves;
 
 public class LeaveTypeRepository(ApplicationDbContext context) : EfRepository<LeaveType>(context), ILeaveTypeRepository
 {
-    public async Task<IEnumerable<SelectOption>> GetOptionsAsync() => await _context.LeaveTypes.Select(x => new SelectOption
+    public async Task<IEnumerable<SelectOption>> GetOptionsAsync() => await _context.LeaveTypes.OrderBy(x => x.SortOrder).Select(x => new SelectOption
     {
         Value = x.Id,
         Label = x.Name

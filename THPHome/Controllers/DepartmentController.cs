@@ -29,6 +29,9 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
         return Ok(await ListResult<Department>.Success(query, filterOptions));
     }
 
+    [HttpGet("all"), AllowAnonymous]
+    public async Task<IActionResult> AllAsync() => Ok(await _context.Departments.ToListAsync());
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(await _context.Departments.FindAsync(id));
 
