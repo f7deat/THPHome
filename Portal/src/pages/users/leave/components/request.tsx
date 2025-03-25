@@ -56,7 +56,8 @@ const LeaveRequest: React.FC = () => {
         setOpen(false);
         actionRef.current?.reload();
         formRef.current?.resetFields();
-        setLeaveRequest(null)
+        setLeaveRequest(null);
+        setBalance(null);
     }
 
     const onApprove = async (values: any) => {
@@ -182,7 +183,7 @@ const LeaveRequest: React.FC = () => {
                                     {
                                         key: 'edit',
                                         label: 'Chỉnh sửa',
-                                        disabled: record.status !== 0
+                                        disabled: record.status !== 0 || initialState.currentUser?.userName !== record.userName
                                     },
                                     {
                                         key: 'approve',
@@ -231,7 +232,7 @@ const LeaveRequest: React.FC = () => {
             />
             <ModalForm open={open} onOpenChange={setOpen} title="Nghỉ phép" onFinish={onFinish} formRef={formRef}>
                 <ProFormText name="id" hidden />
-                <div className="flex gap-4">
+                <div className="md:flex gap-4">
                     <div className="flex-1">
                         <ProFormSelect name="leaveTypeId" label="Loại nghỉ phép" className="w-full" request={apiLeaveTypeOptions} rules={[
                             {
@@ -255,7 +256,7 @@ const LeaveRequest: React.FC = () => {
                     }} />
                 </div>
                 <ProFormTextArea name="reason" label="Lý do" />
-                <Alert message={<div>Số ngày còn lại: <b>{balance?.availableDays}</b></div>} type="warning" showIcon />
+                {balance && <Alert message={<div>Số ngày còn lại: <b>{balance?.availableDays}</b></div>} type="warning" showIcon />}
             </ModalForm>
             <ModalForm open={openApprove} onOpenChange={setOpenApprove} title="Phê duyệt" onFinish={onApprove} formRef={formRef}>
                 <ProFormTextArea name="comments" label="Ghi chú" />

@@ -1,5 +1,4 @@
 ﻿using THPCore.Interfaces;
-using THPCore.Models;
 using THPHome.Entities.Leaves;
 using THPHome.Interfaces.IRepository.ILeaves;
 using THPHome.Interfaces.IService.ILeaves;
@@ -14,17 +13,5 @@ public class LeaveBalanceService(ILeaveBalanceRepository _leaveBalanceRepository
         if (leaveType is null) return default;
         var userName = _hcaService.GetUserName();
         return await _leaveBalanceRepository.GetBalanceByTypeAsync(userName, leaveType.Id);
-    }
-
-    public async Task<THPResult> UpdateAvailableDaysAsync(int leaveTypeId, double totalDays)
-    {
-        var balance = await _leaveBalanceRepository.GetBalanceByTypeAsync(_hcaService.GetUserName(), leaveTypeId);
-        if (balance == null) return THPResult.Failed("Không tìm thấy số ngày nghỉ phép!");
-        if (balance.AvailableDays < totalDays) return THPResult.Failed("Số ngày nghỉ phép không đủ!");
-        var data = await _leaveBalanceRepository.FindAsync(balance.Id);
-        if (data is null) return THPResult.Failed("Không tìm thấy số ngày nghỉ phép!");
-        data.AvailableDays -= totalDays;
-        await _leaveBalanceRepository.UpdateAsync(data);
-        return THPResult.Success;
     }
 }

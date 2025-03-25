@@ -47,3 +47,11 @@ export async function apiLeaveRequestReject(data: any) {
 export async function apiLeaveBalanceByType(type: number) {
     return request(`leave/balance-by-type/${type}`);
 }
+
+export async function apiLeaveRequestCount() {
+    return request(`leave/request/count`);
+}
+
+export async function apiLeaveRequestCountByDepartment() {
+    return request(`leave/request/count-by-department`);
+}

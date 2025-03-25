@@ -32,6 +32,7 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, ILog
         leaveRequest.ApprovedBy = _hcaService.GetUserName();
         leaveRequest.ApprovedAt = DateTime.Now;
         leaveRequest.Comments = args.Comments;
+        await _leaveBalanceRepository.UpdateAvailableDaysAsync(leaveRequest.LeaveTypeId, leaveRequest.TotalDays, leaveRequest.UserName);
         await _leaveRequestRepository.UpdateAsync(leaveRequest);
         return THPResult.Success;
     }

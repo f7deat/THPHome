@@ -17,13 +17,16 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
     {
         var query = from a in _context.LeaveRequests
                     join b in _context.Departments on a.DepartmentId equals b.Code
-                    group b by b.Name into g
+                    group new { b.Name, a.Status } by b.Name  into g
                     select new
                     {
                         Department = g.Key,
-                        Count = g.Count()
+                        Count = g.Count(),
+                        Pending = g.Count(x => x.Status == LeaveStatus.Pending),
+                        Approved = g.Count(x => x.Status == LeaveStatus.Approved),
+                        Rejected = g.Count(x => x.Status == LeaveStatus.Rejected)
                     };
-        return await query.ToListAsync();
+        return new { data = await query.ToListAsync(), total = await query.CountAsync() };
     }
 
     public async Task<object> GetListAsync(LeaveRequestFilterOptions filterOptions, ApplicationUser user)
@@ -34,6 +37,14 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
         if (user.UserType == UserType.Lecturer)
         {
             query = query.Where(x => x.UserName == user.UserName);
+        }
+        if (filterOptions.LeaveTypeId != null)
+        {
+            query = query.Where(x => x.LeaveTypeId == filterOptions.LeaveTypeId);
+        }
+        if (filterOptions.Status != null)
+        {
+            query = query.Where(x => x.Status == filterOptions.Status);
         }
 
         query = query.OrderByDescending(x => x.CreatedDate);
