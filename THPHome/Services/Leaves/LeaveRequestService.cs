@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities.Leaves;
@@ -12,7 +13,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Services.Leaves;
 
-public class LeaveRequestService(UserManager<ApplicationUser> _userManager, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
+public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEmailSender _emailSender, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
 {
     static bool IsValidLeaveDays(double leaveDays)
     {
@@ -34,6 +35,11 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, ILog
         leaveRequest.Comments = args.Comments;
         await _leaveBalanceRepository.UpdateAvailableDaysAsync(leaveRequest.LeaveTypeId, leaveRequest.TotalDays, leaveRequest.UserName);
         await _leaveRequestRepository.UpdateAsync(leaveRequest);
+        var receiver = await _userManager.FindByNameAsync(leaveRequest.UserName);
+        if (!string.IsNullOrEmpty(receiver?.Email))
+        {
+            await _emailSender.SendAsync(receiver.Email, "Đơn xin nghỉ phép được phê duyệt", $"Đơn xin nghỉ phép của bạn đã được phê duyệt. Ghi chú: {args.Comments}");
+        }
         return THPResult.Success;
     }
 
@@ -67,6 +73,15 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, ILog
             };
 
             await _leaveRequestRepository.AddAsync(leaveRequest);
+
+            var headOfDepartments = await _userManager.Users.Where(x => x.DepartmentId == user.DepartmentId && x.Status != UserStatus.Inactive && x.UserType == UserType.Dean).AsNoTracking().ToListAsync();
+            foreach (var hod in headOfDepartments)
+            {
+                if (string.IsNullOrEmpty(hod.Email)) continue;
+
+                await _emailSender.SendAsync(hod.Email, "Có đơn xin nghỉ phép mới", $"Đơn xin nghỉ phép mới từ {user.Name} cần được duyệt. Vui lòng truy cập hệ thống để xem chi tiết.");
+            }
+
             return THPResult.Success;
         }
         catch (Exception ex)
@@ -132,6 +147,11 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, ILog
             leaveRequest.ApprovedBy = user.UserName;
             leaveRequest.ApprovedAt = DateTime.Now;
             await _leaveRequestRepository.UpdateAsync(leaveRequest);
+            var receiver = await _userManager.FindByNameAsync(leaveRequest.UserName);
+            if (!string.IsNullOrEmpty(receiver?.Email))
+            {
+                await _emailSender.SendAsync(receiver.Email, "Đơn xin nghỉ phép bị từ chối", $"Đơn xin nghỉ phép của bạn đã bị từ chối. Lý do: {args.Comments}");
+            }
             return THPResult.Success;
         }
         catch (Exception ex)
