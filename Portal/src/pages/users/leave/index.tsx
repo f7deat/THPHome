@@ -3,6 +3,7 @@ import LeaveRequest from "./components/request"
 import RequestCount from "./components/request-count"
 import { useAccess } from "@umijs/max"
 import RequestDepartment from "./components/request-department"
+import RequestChart from "./components/request-chart"
 
 const Index: React.FC = () => {
 
@@ -11,7 +12,12 @@ const Index: React.FC = () => {
     return (
         <PageContainer>
             <RequestCount />
-            {access.admin && <RequestDepartment />}
+            {access.admin && (
+                <>
+                <RequestChart />
+                <RequestDepartment />
+                </>
+            )}
             {!access.admin && <LeaveRequest />}
         </PageContainer>
     )

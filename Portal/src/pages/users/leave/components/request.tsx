@@ -125,6 +125,15 @@ const LeaveRequest: React.FC = () => {
                         search: false
                     },
                     {
+                        title: 'Ca',
+                        dataIndex: 'sectionType',
+                        valueEnum: {
+                            0: 'Cả ngày',
+                            1: 'Buổi sáng',
+                            2: 'Buổi chiều'
+                        }
+                    },
+                    {
                         title: 'Lý do',
                         dataIndex: 'reason',
                         search: false
@@ -183,7 +192,7 @@ const LeaveRequest: React.FC = () => {
                                     {
                                         key: 'edit',
                                         label: 'Chỉnh sửa',
-                                        disabled: record.status !== 0 || initialState.currentUser?.userName !== record.userName
+                                        disabled: record.status !== 0 || initialState?.currentUser.userName !== record.userName
                                     },
                                     {
                                         key: 'approve',
@@ -247,13 +256,33 @@ const LeaveRequest: React.FC = () => {
                             required: true
                         }
                     ]} />
-                    <ProFormDigit name="totalDays" label="Số ngày" tooltip="Nhập 0.5 nếu nghỉ nửa ngày" rules={[
-                        {
-                            required: true
-                        }
-                    ]} fieldProps={{
-                        step: 0.5
-                    }} />
+                    <div className="flex gap-4">
+                        <div className="flex-1">
+                            <ProFormSelect name="sectionType" label="Ca" options={[
+                                {
+                                    label: 'Cả ngày',
+                                    value: 0
+                                },
+                                {
+                                    label: 'Buổi sáng',
+                                    value: 1
+                                },
+                                {
+                                    label: 'Buổi chiều',
+                                    value: 2
+                                }
+                            ]} />
+                        </div>
+                        <div className="flex-1">
+                            <ProFormDigit name="totalDays" label="Số ngày" tooltip="Nhập 0.5 nếu nghỉ nửa ngày" rules={[
+                                {
+                                    required: true
+                                }
+                            ]} fieldProps={{
+                                step: 0.5
+                            }} />
+                        </div>
+                    </div>
                 </div>
                 <ProFormTextArea name="reason" label="Lý do" />
                 {balance && <Alert message={<div>Số ngày còn lại: <b>{balance?.availableDays}</b></div>} type="warning" showIcon />}

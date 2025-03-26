@@ -1,11 +1,6 @@
-﻿using THPCore.Infrastructures;
+﻿namespace THPHome.Services.Leaves.Args;
 
-namespace THPHome.Services.Leaves.Args;
-
-public class LeaveRequestUpdateArgs : BaseEntity
+public class LeaveRequestUpdateArgs : LeaveRequestCreateArgs
 {
-    public DateTime StartDate { get; set; }
-    public double TotalDays { get; set; }
-    public int LeaveTypeId { get; set; }
-    public string? Reason { get; set; }
+    public Guid Id { get; set; }
 }

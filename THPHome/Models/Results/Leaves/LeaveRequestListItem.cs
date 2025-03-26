@@ -20,4 +20,5 @@ public class LeaveRequestListItem : BaseEntity
     public DateTime? ModifiedDate { get; set; }
     public string? ApprovedBy { get; set; }
     public string? Comments { get; set; }
+    public LeaveSection SectionType { get; set; }
 }

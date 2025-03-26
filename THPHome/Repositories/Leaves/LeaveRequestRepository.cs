@@ -34,7 +34,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
     {
         var query = from a in _context.LeaveRequests
                     join b in _context.Departments on a.DepartmentId equals b.Code
-                    where (toDate == null || a.StartDate <= toDate) && (fromDate == null || a.StartDate >= fromDate)
+                    where (toDate == null || a.StartDate <= toDate) && (fromDate == null || a.StartDate >= fromDate) && a.Status == LeaveStatus.Approved
                     group new { b.Name, a.Status } by b.Code into g
                     select new CountByDepartment
                     {
@@ -88,7 +88,8 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                 ModifiedDate = item.ModifiedDate,
                 Status = item.Status,
                 Reason = item.Reason,
-                Comments = item.Comments
+                Comments = item.Comments,
+                SectionType = item.SessionType
             };
             if (user.UserType != UserType.Lecturer)
             {

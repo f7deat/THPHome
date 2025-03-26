@@ -23,6 +23,7 @@ public class LeaveRequest : BaseEntity
     [StringLength(255)]
     public string? Comments { get; set; }
     public int DepartmentId { get; set; }
+    public LeaveSection SessionType { get; set; }
 
     public LeaveType? LeaveType { get; set; }
 }
@@ -32,4 +33,11 @@ public enum LeaveStatus
     Pending = 0,
     Approved = 1,
     Rejected = 2
+}
+
+public enum LeaveSection
+{
+    FullDay = 0,
+    Morning = 1,
+    Afternoon = 2
 }

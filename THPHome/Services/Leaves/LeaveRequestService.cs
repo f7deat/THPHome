@@ -16,10 +16,7 @@ namespace THPHome.Services.Leaves;
 
 public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDepartmentService _departmentService, IEmailSender _emailSender, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
 {
-    static bool IsValidLeaveDays(double leaveDays)
-    {
-        return leaveDays % 0.5 == 0;
-    }
+    static bool IsValidLeaveDays(double leaveDays) => leaveDays % 0.5 == 0;
 
     public async Task<THPResult> ApproveAsync(LeaveRequestApproveArgs args)
     {
@@ -70,7 +67,8 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDep
                 Reason = args.Reason,
                 CreatedDate = DateTime.Now,
                 Status = LeaveStatus.Pending,
-                DepartmentId = user.DepartmentId.GetValueOrDefault()
+                DepartmentId = user.DepartmentId.GetValueOrDefault(),
+                SessionType = args.SectionType
             };
 
             await _leaveRequestRepository.AddAsync(leaveRequest);
@@ -118,14 +116,14 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDep
     public async Task<object?> GetChartAsync(LeaveRequestFilterOptions filterOptions)
     {
         var departments = await _departmentService.GetCodeOptionsAsync();
-        var series = departments.Select(x => x.Label).ToList();
+        var xAxis = departments.Select(x => x.Label).ToList();
         var counts = await _leaveRequestRepository.CountAllByDepartmentAsync(filterOptions.FromDate, filterOptions.ToDate);
-        var xAxis = departments.Select(x =>
+        var series = departments.Select(x =>
         {
             var count = counts.FirstOrDefault(y => y.DepartmentId == (int?)x.Value);
             return count?.Total ?? 0;
         });
-        return new { series, xAxis };
+        return new { data = new { series, xAxis } };
     }
 
     public Task<object?> GetCountByDepartmentAsync() => _leaveRequestRepository.GetCountByDepartmentAsync();
@@ -191,6 +189,7 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDep
             leaveRequest.TotalDays = args.TotalDays;
             leaveRequest.Reason = args.Reason;
             leaveRequest.LeaveTypeId = args.LeaveTypeId;
+            leaveRequest.SessionType = args.SectionType;
             await _leaveRequestRepository.UpdateAsync(leaveRequest);
             return THPResult.Success;
         }

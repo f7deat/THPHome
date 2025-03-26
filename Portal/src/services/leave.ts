@@ -55,3 +55,7 @@ export async function apiLeaveRequestCount() {
 export async function apiLeaveRequestCountByDepartment() {
     return request(`leave/request/count-by-department`);
 }
+
+export async function apiLeaveRequestChart(params?: any) {
+    return request(`leave/chart`, { params });
+}
