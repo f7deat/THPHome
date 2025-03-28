@@ -9,3 +9,7 @@ export function apiListNotification(params: any) {
 export function apiGetNotification(id: string) {
     return request(`notification/${id}`);
 }
+
+export async function apiNotificationUnreadCount() {
+    return request(`notification/unread-count`);
+}

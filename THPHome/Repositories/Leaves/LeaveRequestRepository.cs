@@ -38,7 +38,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
     {
         var query = from a in _context.LeaveRequests
                     join b in _context.Departments on a.DepartmentId equals b.Code
-                    where a.StartDate <= toDate && a.StartDate >= fromDate
+                    where a.StartDate <= toDate && a.StartDate >= fromDate && a.Status == LeaveStatus.Approved
                     group b by b.Name into g
                     select new 
                     {

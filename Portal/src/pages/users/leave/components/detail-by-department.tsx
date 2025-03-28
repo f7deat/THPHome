@@ -31,6 +31,9 @@ const DetailByDepartment: React.FC<Props> = (props) => {
                     toDate: dateRange[1]
                 })}
                 ghost
+                scroll={{
+                    x: true
+                }}
                 search={{
                     layout: 'vertical'
                 }}
@@ -48,14 +51,16 @@ const DetailByDepartment: React.FC<Props> = (props) => {
                                 return <><WomanOutlined className="text-red-500" /> {dom}</>
                             }
                             return <><ManOutlined className="text-blue-500" /> {dom}</>
-                        }
+                        },
+                        minWidth: 200
                     },
                     {
                         title: 'Ngày sinh',
                         dataIndex: 'dateOfBirth',
                         valueType: 'date',
                         width: 100,
-                        search: false
+                        search: false,
+                        minWidth: 100
                     },
                     {
                         title: 'Chờ duyệt',

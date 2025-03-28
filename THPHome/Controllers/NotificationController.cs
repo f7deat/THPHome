@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
@@ -160,6 +161,6 @@ public class NotificationController(ApplicationDbContext context, INotificationS
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(new { data = await _notificationService.GetAsync(id) });
 
-    [HttpGet("unread-count")]
+    [HttpGet("unread-count"), AllowAnonymous]
     public async Task<IActionResult> UnreadCountAsync() => Ok(new { data = await _notificationService.GetUnreadCountAsync(User.GetUserName()) });
 }

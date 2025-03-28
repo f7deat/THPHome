@@ -70,6 +70,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ILocalizeService, LocalizeService>();
         services.AddScoped<ISettingRepository, SettingRepository>();
         services.AddScoped<ISettingService, SettingService>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ILogService, LogService>();
         services.AddScoped<IContactService, ContactService>();

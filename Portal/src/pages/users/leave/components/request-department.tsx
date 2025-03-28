@@ -22,6 +22,10 @@ const RequestDepartment: React.FC<Props> = ({ dateRange }) => {
     return (
         <div>
             <ProTable
+                actionRef={actionRef}
+                scroll={{
+                    x: true
+                }}
                 columns={[
                     {
                         title: '#',
@@ -31,6 +35,7 @@ const RequestDepartment: React.FC<Props> = ({ dateRange }) => {
                     {
                         title: 'Đơn vị',
                         dataIndex: 'departmentName',
+                        minWidth: 200,
                     },
                     {
                         title: 'Xin nghỉ',

@@ -28,7 +28,7 @@ const RequestChart: React.FC<Props> = ({ dateRange }) => {
 
     return (
         <div>
-            <ProCard title="Thống kê" headerBordered className="mb-4" loading={loading}>
+            <ProCard title="Thống kê" headerBordered className="mb-4 min-h-[420px]" loading={loading}>
                 <EChartsReact
                     option={{
                         xAxis: {
