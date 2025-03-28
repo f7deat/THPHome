@@ -8,8 +8,10 @@ using THPHome.Interfaces.IService;
 using THPHome.Interfaces.IService.ILeaves;
 using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Filters.Leaves;
+using THPHome.Models.Results.Charts;
 using THPHome.Services.Leaves.Args;
 using THPHome.Services.Leaves.Filters;
+using THPHome.Services.Leaves.Results;
 using THPIdentity.Entities;
 
 namespace THPHome.Services.Leaves;
@@ -113,20 +115,21 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDep
         }
     }
 
-    public async Task<object?> GetChartAsync(LeaveRequestFilterOptions filterOptions)
+    public async Task<ColumnChart> GetChartAsync(LeaveRequestFilterOptions filterOptions)
     {
         var departments = await _departmentService.GetCodeOptionsAsync();
         var xAxis = departments.Select(x => x.Label).ToList();
-        var counts = await _leaveRequestRepository.CountAllByDepartmentAsync(filterOptions.FromDate, filterOptions.ToDate);
-        var series = departments.Select(x =>
-        {
-            var count = counts.FirstOrDefault(y => y.DepartmentId == (int?)x.Value);
-            return count?.Total ?? 0;
-        });
-        return new { data = new { series, xAxis } };
+        var fromDate = filterOptions.FromDate ?? DateTime.Today;
+        var toDate = filterOptions.ToDate ?? DateTime.Today;
+        return await _leaveRequestRepository.CountAllByDepartmentAsync(fromDate, toDate);
     }
 
-    public Task<object?> GetCountByDepartmentAsync() => _leaveRequestRepository.GetCountByDepartmentAsync();
+    public Task<object?> GetCountByDepartmentAsync(LeaveRequestFilterOptions filterOptions)
+    {
+        var fromDate = filterOptions.FromDate ?? DateTime.Today;
+        var toDate = filterOptions.ToDate ?? DateTime.Today;
+        return _leaveRequestRepository.GetCountByDepartmentAsync(fromDate, toDate);
+    }
 
     public async Task<object?> GetListAsync(LeaveRequestFilterOptions filterOptions)
     {
@@ -142,6 +145,8 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDep
         if (user == null || string.IsNullOrEmpty(user.UserName)) return default;
         return await _leaveRequestRepository.GetRequestCountAsync(filterOptions, user);
     }
+
+    public Task<ListResult<LeaveUserListItem>> ListUserAsync(LeaveUserFilterOptions filterOptions) => _leaveRequestRepository.ListUserAsync(filterOptions);
 
     public async Task<THPResult> RejectAsync(LeaveRequestRejectArgs args)
     {

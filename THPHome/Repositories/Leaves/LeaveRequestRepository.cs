@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Leaves;
 using THPHome.Interfaces.IRepository.ILeaves;
 using THPHome.Models.Filters.Leaves;
+using THPHome.Models.Results.Charts;
 using THPHome.Models.Results.Leaves;
 using THPHome.Repositories.Base;
 using THPHome.Services.Leaves.Filters;
@@ -14,14 +16,16 @@ namespace THPHome.Repositories.Leaves;
 
 public class LeaveRequestRepository(ApplicationDbContext context, UserManager<ApplicationUser> _userManager) : EfRepository<LeaveRequest>(context), ILeaveRequestRepository
 {
-    public async Task<object?> GetCountByDepartmentAsync()
+    public async Task<object?> GetCountByDepartmentAsync(DateTime fromDate, DateTime toDate)
     {
         var query = from a in _context.LeaveRequests
                     join b in _context.Departments on a.DepartmentId equals b.Code
-                    group new { b.Name, a.Status } by b.Name  into g
+                    where a.StartDate.Date >= fromDate.Date && a.StartDate.Date <= toDate.Date
+                    group new { b.Name, a.Status } by new { b.Name, b.Id }  into g
                     select new
                     {
-                        Department = g.Key,
+                        DepartmentName = g.Key.Name,
+                        DepartmentId = g.Key.Id,
                         Count = g.Count(),
                         Pending = g.Count(x => x.Status == LeaveStatus.Pending),
                         Approved = g.Count(x => x.Status == LeaveStatus.Approved),
@@ -30,21 +34,23 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
         return new { data = await query.ToListAsync(), total = await query.CountAsync() };
     }
 
-    public async Task<List<CountByDepartment>> CountAllByDepartmentAsync(DateTime? fromDate, DateTime? toDate)
+    public async Task<ColumnChart> CountAllByDepartmentAsync(DateTime fromDate, DateTime toDate)
     {
         var query = from a in _context.LeaveRequests
                     join b in _context.Departments on a.DepartmentId equals b.Code
-                    where (toDate == null || a.StartDate <= toDate) && (fromDate == null || a.StartDate >= fromDate) && a.Status == LeaveStatus.Approved
-                    group new { b.Name, a.Status } by b.Code into g
-                    select new CountByDepartment
+                    where a.StartDate <= toDate && a.StartDate >= fromDate
+                    group b by b.Name into g
+                    select new 
                     {
-                        DepartmentId = g.Key,
-                        Total = g.Count(),
-                        TotalPending = g.Count(x => x.Status == LeaveStatus.Pending),
-                        TotalApproved = g.Count(x => x.Status == LeaveStatus.Approved),
-                        TotalRejected = g.Count(x => x.Status == LeaveStatus.Rejected)
+                        DepartmentName = g.Key,
+                        Total = g.Count()
                     };
-        return await query.ToListAsync();
+        var data = await query.Where(x => x.Total >  0).ToListAsync();
+        return new ColumnChart
+        {
+            XAxis = data.Select(x => x.DepartmentName),
+            Series = data.Select(x => x.Total)
+        };
     }
 
     public async Task<object> GetListAsync(LeaveRequestFilterOptions filterOptions, ApplicationUser user)
@@ -139,5 +145,43 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
             pending = await query.CountAsync(x => x.Status == LeaveStatus.Pending),
             approved = await query.CountAsync(x => x.Status == LeaveStatus.Approved)
         };
+    }
+
+    public async Task<ListResult<LeaveUserListItem>> ListUserAsync(LeaveUserFilterOptions filterOptions)
+    {
+        var data = new List<LeaveUserListItem>();
+        var userQuery = _userManager.Users.Where(x => x.Status != UserStatus.Inactive && x.UserType != UserType.Student);
+        if (filterOptions.DepartmentId != null)
+        {
+            userQuery = userQuery.Where(x => x.DepartmentId == filterOptions.DepartmentId);
+        }
+        if (!string.IsNullOrWhiteSpace(filterOptions.UserName))
+        {
+            userQuery = userQuery.Where(x => !string.IsNullOrEmpty(x.UserName) && x.UserName.ToLower().Contains(filterOptions.UserName.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(filterOptions.FullName))
+        {
+            userQuery = userQuery.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.FullName.ToLower()));
+        }
+        var users = await userQuery.AsNoTracking().Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
+        var leaveRequests = await _context.LeaveRequests
+            .Where(x => x.StartDate.Date >= filterOptions.FromDate.Date && x.StartDate.Date <= filterOptions.ToDate.Date).AsNoTracking().ToListAsync();
+
+        foreach (var item in users)
+        {
+            data.Add(new LeaveUserListItem
+            {
+                Approved = leaveRequests.Count(x => x.UserName == item.UserName && x.Status == LeaveStatus.Approved),
+                Pending = leaveRequests.Count(x => x.UserName == item.UserName && x.Status == LeaveStatus.Pending),
+                Rejected = leaveRequests.Count(x => x.UserName == item.UserName && x.Status == LeaveStatus.Rejected),
+                FullName = item.Name,
+                UserName = item.UserName,
+                DateOfBirth = item.DateOfBirth,
+                Gender = item.Gender != null ? item.Gender == 1 : null,
+                Total = leaveRequests.Count(x => x.UserName == item.UserName)
+            });
+        }
+
+        return new ListResult<LeaveUserListItem>(data, await userQuery.CountAsync(), filterOptions);
     }
 }

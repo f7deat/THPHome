@@ -74,8 +74,11 @@ public class LeaveController(ApplicationDbContext context, ILeaveBalanceService 
     public async Task<IActionResult> GetRequestCountAsync([FromQuery] RequestCountFilterOptions filterOptions) => Ok(new { data = await _leaveRequestService.GetRequestCountAsync(filterOptions) });
 
     [HttpGet("request/count-by-department")]
-    public async Task<IActionResult> GetCountByDepartmentAsync() => Ok(await _leaveRequestService.GetCountByDepartmentAsync());
+    public async Task<IActionResult> GetCountByDepartmentAsync(LeaveRequestFilterOptions filterOptions) => Ok(await _leaveRequestService.GetCountByDepartmentAsync(filterOptions));
 
     [HttpGet("chart")]
-    public async Task<IActionResult> GetChartAsync([FromQuery] LeaveRequestFilterOptions filterOptions) => Ok(await _leaveRequestService.GetChartAsync(filterOptions));
+    public async Task<IActionResult> GetChartAsync([FromQuery] LeaveRequestFilterOptions filterOptions) => Ok(new { data = await _leaveRequestService.GetChartAsync(filterOptions) });
+
+    [HttpGet("list-user")]
+    public async Task<IActionResult> ListUserAsync([FromQuery] LeaveUserFilterOptions filterOptions) => Ok(await _leaveRequestService.ListUserAsync(filterOptions));
 }

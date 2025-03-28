@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,11 +6,12 @@ using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService.IUsers;
+using THPHome.Models.Filters;
 using THPHome.Models.Filters.Users;
+using THPHome.Models.ViewModel;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Models.Args.Departments;
-using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 
@@ -118,39 +118,6 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
         _context.DepartmentUsers.Remove(user);
         await _context.SaveChangesAsync();
         return Ok(IdentityResult.Success);
-    }
-
-    [HttpPost("add-detail")]
-    public async Task<IActionResult> AddDetailAsync([FromBody] DepartmentDetail args)
-    {
-        if (!await _context.Departments.AnyAsync(x => x.Id == args.DepartmentId))
-        {
-            return BadRequest("Không tìm thấy Khoa - Viện!");
-        }
-        await _context.DepartmentDetails.AddAsync(args);
-        await _context.SaveChangesAsync();
-        return Ok(IdentityResult.Success);
-    }
-
-    [HttpGet("detail/{id}")]
-    public async Task<IActionResult> DetailAsync([FromRoute] Guid id)
-    {
-        if (!await _context.Departments.AnyAsync(x => x.Id == id))
-        {
-            return BadRequest("Không tìm thấy Khoa - Viện!");
-        }
-        var data = await _context.DepartmentDetails.Where(x => x.DepartmentId == id)
-            .OrderBy(x => x.SortOrder)
-            .Select(x => new
-            {
-                x.Id,
-                x.DepartmentId,
-                x.Type,
-                x.SortOrder,
-                x.ModifiedDate
-            })
-            .ToListAsync();
-        return Ok(data);
     }
 
     [HttpGet("detail/content/{id}")]

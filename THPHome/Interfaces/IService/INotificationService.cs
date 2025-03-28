@@ -6,4 +6,5 @@ namespace THPHome.Interfaces.IService;
 public interface INotificationService
 {
     Task<Notification?> GetAsync(Guid id);
+    Task<int> GetUnreadCountAsync(string userName);
 }

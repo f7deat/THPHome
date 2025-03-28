@@ -1,6 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
-
-namespace THPHome.Models.Filters.Files;
+﻿namespace THPHome.Models.Filters.Files;
 
 public class PhotoFilterOptions : FilterOptions
 {

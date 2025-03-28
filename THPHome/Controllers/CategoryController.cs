@@ -1,4 +1,3 @@
-using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +5,7 @@ using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
+using THPHome.Models.Filters;
 using WebUI.Foundations;
 using WebUI.Models.Categories;
 using WebUI.Models.Filters;

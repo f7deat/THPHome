@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
@@ -8,6 +7,7 @@ using THPHome.Data;
 using THPHome.Entities.Notifications;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Args.Notifications;
+using THPHome.Services.Notifications.Models;
 using THPIdentity.Constants;
 using THPIdentity.Entities;
 using WebUI.Foundations;
@@ -17,7 +17,7 @@ namespace THPHome.Controllers;
 public class NotificationController(ApplicationDbContext context, INotificationService _notificationService, UserManager<ApplicationUser> _userManager) : BaseController(context)
 {
     [HttpGet("list")]
-    public async Task<IActionResult> ListAsync([FromQuery] FilterOptions filterOptions)
+    public async Task<IActionResult> ListAsync([FromQuery] NotificationFilterOptions filterOptions)
     {
         var query = from a in _context.Notifications
                     select new
@@ -30,8 +30,13 @@ public class NotificationController(ApplicationDbContext context, INotificationS
                         a.Content,
                         a.Title,
                         sentCount = _context.UserNotifications.Count(x => x.NotificationId == a.Id),
-                        readCount = _context.UserNotifications.Count(x => x.NotificationId == a.Id && x.IsRead)
+                        readCount = _context.UserNotifications.Count(x => x.NotificationId == a.Id && x.IsRead),
+                        a.Type
                     };
+        if (filterOptions.Type != null)
+        {
+            query = query.Where(x => x.Type == filterOptions.Type);
+        }
         return Ok(new
         {
             data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
@@ -154,4 +159,7 @@ public class NotificationController(ApplicationDbContext context, INotificationS
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(new { data = await _notificationService.GetAsync(id) });
+
+    [HttpGet("unread-count")]
+    public async Task<IActionResult> UnreadCountAsync() => Ok(new { data = await _notificationService.GetUnreadCountAsync(User.GetUserName()) });
 }

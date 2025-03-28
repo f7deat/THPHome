@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
-using THPIdentity.Entities;
+﻿using THPIdentity.Entities;
 
 namespace THPHome.Models.Filters.Users;
 

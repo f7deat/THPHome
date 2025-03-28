@@ -1,12 +1,12 @@
 ﻿using ApplicationCore.Helpers;
 using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
-using WebUI.Models.ViewModel;
 using THPHome.Entities;
 using THPHome.Interfaces.Base;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
 using THPHome.Enums;
+using THPHome.Models.ViewModel;
 
 namespace THPHome.Interfaces.IRepository
 {

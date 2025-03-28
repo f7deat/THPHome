@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
+﻿using THPHome.Models.Filters;
 
 namespace WebUI.Models.Filters.Communications;
 

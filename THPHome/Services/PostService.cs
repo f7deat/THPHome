@@ -7,7 +7,7 @@ using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
-using WebUI.Models.ViewModel;
+using THPHome.Models.ViewModel;
 
 namespace ApplicationCore.Services;
 

@@ -18,7 +18,7 @@ public class IndexModel : EntryPageModel
     public List<DepartmentDetail> DepartmentDetails { get; set; } = [];
     public Dictionary<int, IEnumerable<UserRank>> UserRanks { get; set; } = [];
 
-    public async Task<IActionResult> OnGetAsync(Guid? id)
+    public async Task<IActionResult> OnGetAsync(int? id)
     {
         Departments = await _context.Departments.ToListAsync();
         if (id == null)

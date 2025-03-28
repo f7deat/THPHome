@@ -5,7 +5,7 @@ using THPHome.Entities;
 using THPHome.Enums;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
-using WebUI.Models.ViewModel;
+using THPHome.Models.ViewModel;
 
 namespace THPHome.Interfaces.IService;
 

@@ -52,10 +52,14 @@ export async function apiLeaveRequestCount() {
     return request(`leave/request/count`);
 }
 
-export async function apiLeaveRequestCountByDepartment() {
-    return request(`leave/request/count-by-department`);
+export async function apiLeaveRequestCountByDepartment(params?: any) {
+    return request(`leave/request/count-by-department`, { params });
 }
 
 export async function apiLeaveRequestChart(params?: any) {
     return request(`leave/chart`, { params });
+}
+
+export async function apiLeaveRequestUserList(params: any) {
+    return request(`leave/list-user`, { params });
 }

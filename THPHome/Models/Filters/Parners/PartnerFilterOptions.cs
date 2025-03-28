@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Models.Filters;
 using THPHome.Entities;
+using THPHome.Models.Filters;
 
 namespace WebUI.Models.Filters.Parners;
 

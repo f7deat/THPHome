@@ -1,6 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
-
-namespace THPHome.Models.Filters.Curriculum;
+﻿namespace THPHome.Models.Filters.Curriculum;
 
 public class MajorFilterOptions : FilterOptions
 {

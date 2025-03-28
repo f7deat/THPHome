@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
@@ -7,11 +6,12 @@ using THPHome.Data;
 using THPHome.Entities.Contacts;
 using THPHome.Helpers.Validators;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters;
 using THPHome.Models.Filters.Contacts;
+using THPHome.Models.ViewModel;
 using THPIdentity.Constants;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
-using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 

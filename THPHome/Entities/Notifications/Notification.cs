@@ -14,6 +14,14 @@ public class Notification : BaseEntity
     public string CreatedBy { get; set; } = default!;
     [StringLength(256)]
     public string? ModifiedBy { get; set; }
+    public NotificationType Type { get; set; }
 
     public List<UserNotification>? UserNofifications { get; set; }
+}
+
+public enum NotificationType
+{
+    General,
+    Private,
+    System
 }

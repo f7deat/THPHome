@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Enums;
-using ApplicationCore.Models.Filters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +6,7 @@ using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters;
 using WebUI.Foundations;
 
 namespace THPHome.Controllers;

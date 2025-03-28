@@ -1,6 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
-
-namespace THPHome.Models.Filters.Users;
+﻿namespace THPHome.Models.Filters.Users;
 
 public class BookFilterOptions : FilterOptions
 {

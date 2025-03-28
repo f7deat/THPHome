@@ -17,10 +17,10 @@ public class DepartmentRepository(ApplicationDbContext context, UserManager<Appl
 
     public async Task<IEnumerable<SelectOption>> GetCodeOptionsAsync()
     {
-        return await _context.Departments.Where(x => x.Code != null).Select(x => new SelectOption
+        return await _context.Departments.Select(x => new SelectOption
         {
             Label = x.Name,
-            Value = x.Code
+            Value = x.Id
         }).ToListAsync();
     }
 

@@ -30,6 +30,7 @@ using THPCore.Services;
 using THPHome.Services.Contacts;
 using THPHome.Extentions.ServiceCollections;
 using THPHome.ExternalAPI.Interfaces;
+using THPHome.Services.Notifications;
 
 namespace THPHome;
 

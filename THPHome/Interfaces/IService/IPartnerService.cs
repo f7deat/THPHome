@@ -1,7 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using THPHome.Entities;
+using THPHome.Models.ViewModel;
 using WebUI.Models.Filters.Parners;
-using WebUI.Models.ViewModel;
 
 namespace ApplicationCore.Interfaces.IService;
 

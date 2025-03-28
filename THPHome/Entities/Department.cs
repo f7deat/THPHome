@@ -4,7 +4,7 @@ using THPCore.Interfaces;
 
 namespace THPHome.Entities;
 
-public class Department : BaseEntity, ILocale
+public class Department : BaseEntity<int>, ILocale
 {
     public string Name { get; set; } = default!;
     public string? Description { get; set; }

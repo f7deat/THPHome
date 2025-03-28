@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Models.Filters;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,11 +6,12 @@ using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities.Curriculum;
 using THPHome.Enums;
+using THPHome.Models.Filters;
 using THPHome.Models.Filters.Curriculum;
 using THPHome.Models.Results.Curriculum;
+using THPHome.Models.ViewModel;
 using THPIdentity.Entities;
 using WebUI.Foundations;
-using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 

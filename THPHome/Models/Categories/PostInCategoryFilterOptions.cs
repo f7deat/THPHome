@@ -1,5 +1,5 @@
-﻿using ApplicationCore.Models.Filters;
-using THPHome.Enums;
+﻿using THPHome.Enums;
+using THPHome.Models.Filters;
 
 namespace THPHome.Models.Categories;
 

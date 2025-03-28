@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
+using THPHome.Models.ViewModel;
 using WebUI.Models.Filters.Settings;
-using WebUI.Models.ViewModel;
 
 namespace ApplicationCore.Services
 {

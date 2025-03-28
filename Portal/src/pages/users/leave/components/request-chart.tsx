@@ -1,13 +1,14 @@
 import { apiLeaveRequestChart } from "@/services/leave"
 import { ProCard } from "@ant-design/pro-components"
 import { useRequest } from "@umijs/max"
-import { Button, DatePicker, Space } from "antd"
 import EChartsReact from "echarts-for-react"
-import { useState } from "react"
+import { useEffect } from "react"
 
-const RequestChart: React.FC = () => {
+type Props = {
+    dateRange: string[]
+}
 
-    const [dateRange, setDateRange] = useState<string[]>([])
+const RequestChart: React.FC<Props> = ({ dateRange }) => {
 
     const { data, loading, refresh } = useRequest(() => {
         if (dateRange.length === 2) {
@@ -17,30 +18,22 @@ const RequestChart: React.FC = () => {
             });
         }
         return apiLeaveRequestChart();
-    })
+    });
+
+    useEffect(() => {
+        refresh();
+    }, [dateRange]);
+
+    console.log(loading);
 
     return (
         <div>
-            <ProCard title="Thống kê" headerBordered className="mb-4" loading={loading}
-                extra={(
-                    <Space>
-                        <DatePicker.RangePicker onChange={(values) => {
-                            if (values && values.length === 2 && values[0] && values[1]) {
-                                setDateRange([values[0].format('YYYY-MM-DD'), values[1].format('YYYY-MM-DD')]);
-                            }
-                        }} />
-                        <Button type="primary" onClick={refresh}>Lọc</Button>
-                    </Space>
-                )}
-            >
+            <ProCard title="Thống kê" headerBordered className="mb-4" loading={loading}>
                 <EChartsReact
                     option={{
                         xAxis: {
                             type: 'category',
-                            data: data?.xAxis,
-                            nameTruncate: {
-                                maxWidth: 200
-                            }
+                            data: data?.xAxis
                         },
                         grid: {
                             left: 30,
@@ -55,7 +48,8 @@ const RequestChart: React.FC = () => {
                             {
                                 data: data?.series,
                                 type: 'bar',
-                                name: 'Số đơn xin nghỉ'
+                                name: 'Số đơn xin nghỉ',
+                                barWidth: 50,
                             }
                         ],
                         tooltip: {}

@@ -1,6 +1,4 @@
-﻿using ApplicationCore.Entities;
-
-namespace WebUI.Entities;
+﻿namespace THPHome.Entities;
 
 public class Block
 {

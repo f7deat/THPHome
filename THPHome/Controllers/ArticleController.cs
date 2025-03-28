@@ -5,9 +5,8 @@ using THPHome.Data;
 using THPHome.Enums;
 using THPHome.Models.Filters.Articles;
 using THPHome.Models.Filters.OpenAPI.Articles;
+using THPHome.Models.ViewModel;
 using WebUI.Foundations;
-using WebUI.Interfaces.IService;
-using WebUI.Models.ViewModel;
 
 namespace THPHome.Controllers;
 

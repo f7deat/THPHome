@@ -2,7 +2,7 @@
 using THPCore.Interfaces;
 using THPHome.Helpers;
 
-namespace ApplicationCore.Models.Filters;
+namespace THPHome.Models.Filters;
 
 public class FilterOptions : IFilterOptions
 {

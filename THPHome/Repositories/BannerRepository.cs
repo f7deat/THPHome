@@ -2,9 +2,9 @@
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
+using THPHome.Models.ViewModel;
 using THPHome.Repositories.Base;
 using WebUI.Models.Filters.Settings;
-using WebUI.Models.ViewModel;
 
 namespace THPHome.Repositories;
 

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using THPHome.Entities;
+using THPHome.Models.ViewModel;
 using WebUI.Models.Filters.Settings;
-using WebUI.Models.ViewModel;
 
 namespace ApplicationCore.Interfaces.IService
 {

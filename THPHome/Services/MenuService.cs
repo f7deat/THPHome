@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Models.Filters;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters;
 using THPHome.Models.Payload;
 using THPHome.ViewModels;
 

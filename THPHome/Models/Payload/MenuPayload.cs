@@ -1,5 +1,5 @@
-﻿using ApplicationCore.Models.Filters;
-using THPHome.Entities;
+﻿using THPHome.Entities;
+using THPHome.Models.Filters;
 
 namespace THPHome.Models.Payload;
 
