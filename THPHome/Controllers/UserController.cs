@@ -211,6 +211,9 @@ public class UserController(
         }
     }
 
+    [HttpGet("staff/list")]
+    public async Task<IActionResult> ListStaffAsync([FromQuery] UserFilterOptions filterOptions) => Ok(await _userService.ListStaffAsync(filterOptions));
+
     [HttpGet("list")]
     public async Task<IActionResult> GetList([FromQuery] UserFilterOptions filterOptions)
     {

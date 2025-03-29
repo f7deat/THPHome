@@ -11,7 +11,7 @@ public class DepartmentService(IDepartmentRepository _departmentRepository) : ID
 {
     public Task<Department?> GetByIdAsync(int? departmentId) => _departmentRepository.GetByIdAsync(departmentId);
 
-    public Task<IEnumerable<SelectOption>> GetCodeOptionsAsync() => _departmentRepository.GetCodeOptionsAsync();
+    public Task<IEnumerable<SelectOption>> GetOptionsAsync() => _departmentRepository.GetCodeOptionsAsync();
 
     public Task<ListResult<object>> UsersAsync(DepartmentUserFilterOptions filterOptions) => _departmentRepository.UsersAsync(filterOptions);
 }

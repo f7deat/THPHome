@@ -14,7 +14,8 @@ import {
 import { Link } from "@umijs/max";
 import { request } from "@umijs/max";
 import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
-import { queryUserList } from "@/services/user";
+import { apiStaffList } from "@/services/user";
+import { apiDepartmentOptions } from "@/services/department";
 
 const UserList = () => {
 
@@ -23,11 +24,16 @@ const UserList = () => {
     const [user, setUser] = useState<any>()
     const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
+    const [departments, setDepartments] = useState<any>([]);
 
     function openRolePanel(record: any) {
         setUser(record)
         setIsModalVisible(true)
     }
+
+    useEffect(() => {
+        apiDepartmentOptions().then(response => setDepartments(response));
+    }, [])
 
     useEffect(() => {
         if (isModalVisible && user?.id) {
@@ -71,7 +77,7 @@ const UserList = () => {
         })
     }
 
-    const columns : ProColumnType<any>[] = [
+    const columns: ProColumnType<any>[] = [
         {
             title: '#',
             valueType: 'indexBorder',
@@ -79,7 +85,7 @@ const UserList = () => {
             align: 'center'
         },
         {
-            title: '',
+            title: <UserOutlined />,
             dataIndex: 'avatar',
             valueType: 'avatar',
             width: 30,
@@ -90,7 +96,7 @@ const UserList = () => {
             title: 'Họ và tên',
             dataIndex: 'name',
             render: (dom, entity) => {
-                
+
                 if (entity.gender === 0) {
                     return <><ManOutlined className="text-blue-500" /> {dom}</>
                 }
@@ -103,6 +109,14 @@ const UserList = () => {
         {
             title: 'Tài khoản',
             dataIndex: 'userName'
+        },
+        {
+            title: 'Đơn vị',
+            dataIndex: 'departmentId',
+            valueType: 'select',
+            fieldProps: {
+                options: departments
+            },
         },
         {
             title: 'Email',
@@ -128,7 +142,8 @@ const UserList = () => {
             title: 'Ngày sinh',
             dataIndex: 'dateOfBirth',
             valueType: 'date',
-            width: 100
+            width: 100,
+            search: false
         },
         {
             title: 'Tác vụ',
@@ -216,13 +231,13 @@ const UserList = () => {
         <PageContainer extra={<Button type="primary" icon={<UserAddOutlined />} onClick={handleAdd}>Tạo tài khoản</Button>}>
             <div className="bg-white p-4">
                 <ProTable
-                ghost
-                search={{
-                    layout: 'vertical'
-                }}
-                actionRef={actionRef}
-                request={queryUserList}
-                columns={columns} rowKey="id" />
+                    ghost
+                    search={{
+                        layout: 'vertical'
+                    }}
+                    actionRef={actionRef}
+                    request={apiStaffList}
+                    columns={columns} rowKey="id" />
             </div>
             <Modal title="Assign Role" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)}>
                 <div className="p-2 flex justify-between">

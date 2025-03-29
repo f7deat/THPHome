@@ -1,12 +1,13 @@
 import { apiLeaveBalanceByType, apiLeaveRequestApprove, apiLeaveRequestCreate, apiLeaveRequestDelete, apiLeaveRequestList, apiLeaveRequestReject, apiLeaveRequestUpdate, apiLeaveTypeOptions } from "@/services/leave"
 import { DeleteOutlined, ManOutlined, MoreOutlined, PlusOutlined, WomanOutlined } from "@ant-design/icons"
 import { ActionType, ModalForm, ProFormDatePicker, ProFormDigit, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components"
-import { useModel } from "@umijs/max"
+import { useAccess, useModel } from "@umijs/max"
 import { Alert, Button, Dropdown, message, Popconfirm } from "antd"
 import { useEffect, useRef, useState } from "react"
 
 const LeaveRequest: React.FC = () => {
 
+    const access = useAccess();
     const [open, setOpen] = useState<boolean>(false);
     const [openApprove, setOpenApprove] = useState<boolean>(false);
     const [openReject, setOpenReject] = useState<boolean>(false);
@@ -79,9 +80,10 @@ const LeaveRequest: React.FC = () => {
     return (
         <div>
             <ProTable
+                scroll={{ x: true }}
                 request={apiLeaveRequestList}
                 actionRef={actionRef}
-                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Đăng ký nghỉ phép</Button>}
+                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)} hidden={access.admin}>Đăng ký nghỉ phép</Button>}
                 rowKey="id"
                 columns={[
                     {
@@ -108,20 +110,21 @@ const LeaveRequest: React.FC = () => {
                         valueType: 'select',
                         fieldProps: {
                             options: leaveTypeOptions
-                        }
+                        },
+                        minWidth: 150
                     },
                     {
                         title: 'Từ ngày',
                         dataIndex: 'startDate',
                         valueType: 'date',
-                        width: 100,
-                        search: false
+                        search: false,
+                        minWidth: 100
                     },
                     {
                         title: 'Số ngày',
                         dataIndex: 'totalDays',
                         valueType: 'digit',
-                        width: 80,
+                        minWidth: 80,
                         search: false
                     },
                     {
@@ -131,18 +134,21 @@ const LeaveRequest: React.FC = () => {
                             0: 'Cả ngày',
                             1: 'Buổi sáng',
                             2: 'Buổi chiều'
-                        }
+                        },
+                        search: false,
+                        minWidth: 80
                     },
                     {
                         title: 'Lý do',
                         dataIndex: 'reason',
-                        search: false
+                        search: false,
+                        minWidth: 200
                     },
                     {
                         title: 'Ngày tạo',
                         dataIndex: 'createdDate',
                         valueType: 'fromNow',
-                        width: 140,
+                        minWidth: 140,
                         search: false
                     },
                     {
@@ -163,7 +169,7 @@ const LeaveRequest: React.FC = () => {
                                 status: 'Error'
                             }
                         },
-                        width: 100
+                        minWidth: 100
                     },
                     {
                         title: 'Người duyệt',
@@ -176,12 +182,13 @@ const LeaveRequest: React.FC = () => {
                         dataIndex: 'approvedAt',
                         valueType: 'date',
                         search: false,
-                        width: 120
+                        minWidth: 120
                     },
                     {
                         title: 'Ghi chú',
                         dataIndex: 'comments',
-                        search: false
+                        search: false,
+                        minWidth: 200
                     },
                     {
                         title: 'Tác vụ',

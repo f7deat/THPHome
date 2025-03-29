@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react"
 import {
     DeleteOutlined, EditOutlined
 } from "@ant-design/icons";
-import MyEditor from '../../../../src/components/my-editor';
 import { TabContentDepartment } from "./tab-content";
 import { useParams } from "@umijs/max";
 import { request } from "@umijs/max";
+import MyCkEditor from "@/components/my-ckeditor";
 
 const DepartmentDetail: React.FC = () => {
 
@@ -233,7 +233,7 @@ const DepartmentDetail: React.FC = () => {
                     ]}>
                         <Input />
                     </Form.Item>
-                    <MyEditor name='content' label="Nội dung" />
+                    <MyCkEditor name='content' label="Nội dung" />
                     <Form.Item label="Thứ tự" name="sortOrder" required>
                         <InputNumber />
                     </Form.Item>

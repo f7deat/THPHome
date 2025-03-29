@@ -20,7 +20,7 @@ const RequestDepartment: React.FC<Props> = ({ dateRange }) => {
     }, [dateRange]);
 
     return (
-        <div>
+        <div className="mb-4">
             <ProTable
                 actionRef={actionRef}
                 scroll={{

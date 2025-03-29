@@ -20,13 +20,25 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] DepartmentFilterOptions filterOptions)
     {
-        var query = _context.Departments.Where(x => x.Locale == filterOptions.Locale);
+        var query = from a in _context.Departments
+                    where a.Locale == filterOptions.Locale
+                    select new
+                    {
+                        a.DepartmentTypeId,
+                        a.ModifiedDate,
+                        a.Id,
+                        a.Name,
+                        a.Description,
+                        a.CreatedDate,
+                        a.CreatedBy,
+                        a.ModifiedBy
+                    };
         if (filterOptions.DepartmentTypeId != null)
         {
             query = query.Where(x => x.DepartmentTypeId == filterOptions.DepartmentTypeId);
         }
         query = query.OrderByDescending(x => x.ModifiedDate);
-        return Ok(await ListResult<Department>.Success(query, filterOptions));
+        return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
     [HttpGet("all"), AllowAnonymous]
@@ -179,7 +191,10 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
     }).ToListAsync());
 
     [HttpGet("code-options"), AllowAnonymous]
-    public async Task<IActionResult> GetCodeOptionsAsync() => Ok(await _departmentService.GetCodeOptionsAsync());
+    public async Task<IActionResult> GetCodeOptionsAsync() => Ok(await _departmentService.GetOptionsAsync());
+
+    [HttpGet("options")]
+    public async Task<IActionResult> GetOptionsAsync() => Ok(await _departmentService.GetOptionsAsync());
 
     [HttpGet("users")]
     public async Task<IActionResult> UsersAsync([FromQuery] DepartmentUserFilterOptions filterOptions) => Ok(await _departmentService.UsersAsync(filterOptions));

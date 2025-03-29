@@ -8,6 +8,6 @@ namespace THPHome.Interfaces.IService.IUsers;
 public interface IDepartmentService
 {
     Task<Department?> GetByIdAsync(int? departmentId);
-    Task<IEnumerable<SelectOption>> GetCodeOptionsAsync();
+    Task<IEnumerable<SelectOption>> GetOptionsAsync();
     Task<ListResult<object>> UsersAsync(DepartmentUserFilterOptions filterOptions);
 }

@@ -1,7 +1,7 @@
 ﻿import { Button, Form, Input, message, Popconfirm } from "antd";
 import React, { useEffect, useState } from "react";
-import MyEditor from "../../../components/my-editor";
 import { request } from "@umijs/max";
+import MyCkEditor from "@/components/my-ckeditor";
 
 interface TabContentProps {
     activeTab?: string;
@@ -70,7 +70,7 @@ export const TabContentDepartment: React.FC<TabContentProps> = (props) => {
             <Form.Item name="type" label="Tiêu đề" required>
                 <Input />
             </Form.Item>
-            <MyEditor name="content" label="Nội dung" required initialValue={dataSource?.content} />
+            <MyCkEditor name="content" label="Nội dung" required initialValue={dataSource?.content} />
             <div className="flex justify-end gap-4">
                 <Button type="primary" htmlType="submit">Lưu lại</Button>
                 <Popconfirm title="Xác nhận xóa?" onConfirm={() => removeContent()}>

@@ -6,6 +6,7 @@ using THPHome.Entities;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Users;
 using THPHome.Models.Results.Users;
+using THPHome.Services.Users.Models;
 using THPIdentity.Entities;
 
 namespace THPHome.Services;
@@ -211,10 +212,10 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         var result = await query.OrderByDescending(x => x.UserType).ThenBy(x => x.UserName).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
         var academicDegrees = await _context.AcademicDegrees.AsNoTracking().ToListAsync();
         var academicTitles = await _context.AcademicTitles.AsNoTracking().ToListAsync();
-        var data = new List<UserListItem>();
+        var data = new List<ProfileListItem>();
         foreach (var item in result)
         {
-            var listItem = new UserListItem
+            var listItem = new ProfileListItem
             {
                 Id = item.Id,
                 Name = item.Name,
@@ -242,5 +243,36 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         }
 
         return new { data, total = query.CountAsync() };
+    }
+
+    public async Task<ListResult<StaffListItem>> ListStaffAsync(UserFilterOptions filterOptions)
+    {
+        var query = _userManager.Users.Where(x => x.UserType != UserType.Student).Select(x => new StaffListItem
+        {
+            Avatar = x.Avatar,
+            DateOfBirth = x.DateOfBirth,
+            DepartmentId = x.DepartmentId,
+            Name = x.Name,
+            PhoneNumber = x.PhoneNumber,
+            UserName = x.UserName,
+            Gender = x.Gender == 1,
+            Id = x.Id,
+            Email = x.Email
+        });
+        if (!string.IsNullOrWhiteSpace(filterOptions.UserName))
+        {
+            query = query.Where(x => !string.IsNullOrEmpty(x.UserName) && x.UserName.ToLower().Contains(filterOptions.UserName.ToLower()));
+        }
+        if (!string.IsNullOrEmpty(filterOptions.Name))
+        {
+            query = query.Where(x => !string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower()));
+        }
+        if (filterOptions.DepartmentId != null)
+        {
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
+        }
+
+        query = query.OrderBy(x => x.UserName);
+        return await ListResult<StaffListItem>.Success(query, filterOptions);
     }
 }

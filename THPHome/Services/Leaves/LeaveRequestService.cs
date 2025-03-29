@@ -117,7 +117,7 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDep
 
     public async Task<ColumnChart> GetChartAsync(LeaveRequestFilterOptions filterOptions)
     {
-        var departments = await _departmentService.GetCodeOptionsAsync();
+        var departments = await _departmentService.GetOptionsAsync();
         var xAxis = departments.Select(x => x.Label).ToList();
         var fromDate = filterOptions.FromDate ?? DateTime.Today;
         var toDate = filterOptions.ToDate ?? DateTime.Today;

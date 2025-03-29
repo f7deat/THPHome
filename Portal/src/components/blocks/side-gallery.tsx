@@ -3,8 +3,8 @@ import { ProForm, ProFormText } from "@ant-design/pro-components";
 import { request } from "@umijs/max";
 import { Badge, Button, Image, Upload, message } from "antd";
 import { useEffect, useState } from "react";
-import MyEditor from "../my-editor";
 import { BlockProps } from "./typings";
+import MyCkEditor from "../my-ckeditor";
 
 const SideGalleryBlock: React.FC<BlockProps> = (props) => {
 
@@ -46,7 +46,7 @@ const SideGalleryBlock: React.FC<BlockProps> = (props) => {
     return (
         <>
             <ProFormText name="images" hidden />
-            <MyEditor name="textContent" label="Nội dung" initialValue={dataSource?.textContent} />
+            <MyCkEditor name="textContent" label="Nội dung" initialValue={dataSource?.textContent} />
             <div className="flex gap-4" style={{
                 gap: 8,
                 flexWrap: 'wrap'

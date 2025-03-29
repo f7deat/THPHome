@@ -1,6 +1,6 @@
 ﻿namespace THPHome.Models.Results.Users;
 
-public class UserListItem
+public class ProfileListItem
 {
     public string? Id { get; set; }
     public string? Name { get; set; }

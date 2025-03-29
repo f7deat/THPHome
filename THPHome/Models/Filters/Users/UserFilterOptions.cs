@@ -10,4 +10,5 @@ public class UserFilterOptions : FilterOptions
     public string? PhoneNumber { get; set; }
     public UserType? UserType { get; set; }
     public int? DepartmentCode { get; set; }
+    public int? DepartmentId { get; set; }
 }

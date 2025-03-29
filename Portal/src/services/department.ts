@@ -12,3 +12,7 @@ export const apiUpdateDepartment = (data: any) => request(`department/update`, {
 });
 
 export const apiDepartmentUsers = (params: any) => request(`department/users`, { params });
+
+export async function apiDepartmentOptions() {
+    return request(`department/options`);
+}

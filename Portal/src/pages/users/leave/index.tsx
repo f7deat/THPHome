@@ -34,7 +34,7 @@ const Index: React.FC = () => {
                     <RequestDepartment dateRange={dateRange} />
                 </>
             )}
-            {!access.admin && <LeaveRequest />}
+            <LeaveRequest />
         </PageContainer>
     )
 }

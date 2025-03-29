@@ -83,6 +83,11 @@ export default [
         component: './posts/qa/item',
         hideInMenu: true,
       },
+      {
+        name: 'Đối tác',
+        path: '/post/partner',
+        component: './partners/partner-setting'
+      }
     ],
   },
   {
@@ -133,13 +138,6 @@ export default [
         component: './users/leave',
       }
     ]
-  },
-  {
-    icon: 'SolutionOutlined',
-    name: 'Đối tác',
-    path: '/partners',
-    component: './partners/partner-setting',
-    access: 'canEditor',
   },
   {
     icon: 'PictureOutlined',
