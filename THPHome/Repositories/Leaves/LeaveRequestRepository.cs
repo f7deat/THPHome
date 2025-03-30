@@ -113,6 +113,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                 leaveItem.Gender = lecturer.Gender != null && (lecturer.Gender == 1);
                 leaveItem.FullName = lecturer.Name;
                 leaveItem.DateOfBirth = lecturer.DateOfBirth;
+                leaveItem.CanApprove = item.Status == LeaveStatus.Pending && lecturer.UserType != UserType.Dean;
             }
             else
             {
@@ -121,8 +122,11 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                 leaveItem.Gender = user.Gender != null && (user.Gender == 1);
             }
 
-            // Can approve if the user is a dean or an administrator and the leave status is pending
-            leaveItem.CanApprove = (user.UserType == UserType.Dean || user.UserType == UserType.Administrator) && item.Status == LeaveStatus.Pending;
+            // Can approve if the user is an administrator and the leave status is pending
+            if (leaveItem.Status == LeaveStatus.Pending && user.UserType == UserType.Administrator)
+            {
+                leaveItem.CanApprove = true;
+            }
             result.Add(leaveItem);
         }
 

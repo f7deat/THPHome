@@ -26,7 +26,7 @@ public class NotificationService(INotificationRepository _notificationRepository
             foreach (var item in args.Recipients)
             {
                 if (item is null) continue;
-                await _notificationRepository.AddUserNotificationAsync("tandc", notification.Id);
+                await _notificationRepository.AddUserNotificationAsync(item, notification.Id);
             }
             await _notificationRepository.SaveChangesAsync();
         }

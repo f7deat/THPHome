@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { PageContainer, ProList, ProCard } from "@ant-design/pro-components";
-import { Avatar, Button, Empty, Typography } from "antd";
+import { Avatar, Badge, Button, Dropdown, Empty, Typography } from "antd";
 import { apiUserListNotification } from "@/services/user";
-import { CalendarOutlined, MailOutlined, MoreOutlined } from "@ant-design/icons";
+import { CalendarOutlined, DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, MailOutlined, MoreOutlined } from "@ant-design/icons";
 import { apiGetNotification } from "@/services/notificaton";
+import { FormattedDate } from "@umijs/max";
 
 const { Title, Paragraph } = Typography;
 
@@ -28,22 +29,46 @@ const NotificationPage: React.FC = () => {
                             }}
                             size="small"
                             rowKey="id"
+                            rowSelection={{}}
                             metas={{
                                 title: {
                                     dataIndex: "title",
+                                    render: (text, record) => (
+                                        <div className="text-normal">
+                                            <Badge dot={!record.isRead} offset={[5, 0]}>{text}</Badge>
+                                        </div>
+                                    )
                                 },
                                 actions: {
-                                    render: () => [
-                                        <Button size="small" type="dashed" key="view" icon={<MoreOutlined />} />
+                                    render: (_, entity) => [
+                                        <Dropdown key="action" menu={{
+                                            items: [
+                                                {
+                                                    key: 'archive',
+                                                    label: 'Lưu trữ',
+                                                    icon: <MailOutlined />
+                                                },
+                                                {
+                                                    key: 'markAsRead',
+                                                    label: entity.isRead ? 'Đánh dấu là chưa đọc' : 'Đánh dấu đã đọc',
+                                                    icon: entity.isRead ? <EyeInvisibleOutlined /> : <EyeOutlined />
+                                                },
+                                                {
+                                                    key: 'delete',
+                                                    label: 'Xóa',
+                                                    icon: <DeleteOutlined />,
+                                                    danger: true
+                                                },
+                                            ]
+                                        }}>
+                                            <Button size="small" type="dashed" icon={<MoreOutlined />} />
+                                        </Dropdown>
                                     ],
                                 },
                                 description: {
                                     valueType: 'fromNow',
                                     dataIndex: 'createdDate',
                                     render: (text) => <div className="flex items-center gap-1"><CalendarOutlined /> {text}</div>
-                                },
-                                avatar: {
-                                    render: (_, record) => record.isRead ? <Avatar icon={<MailOutlined />} /> : <Avatar icon={<MailOutlined />} className="bg-red-500" />,
                                 }
                             }}
                             onRow={(record) => ({
@@ -62,8 +87,14 @@ const NotificationPage: React.FC = () => {
 
                 </div>
                 <div className="md:w-2/3">
-                    <ProCard title={notification?.title || 'Nội dung thông báo'} headerBordered>
-                        {notification ? (<div dangerouslySetInnerHTML={{ __html: notification?.content }} />) : (<Empty />)}
+                    <ProCard title={notification?.title || 'Nội dung thông báo'}
+                        headerBordered>
+                        <div className="mb-2">
+                            {notification ? (<div dangerouslySetInnerHTML={{ __html: notification?.content }} />) : (<Empty />)}
+                        </div>
+                        <div className="mb-4 border-t border-dashed pt-1 text-slate-500 text-right">
+                            <CalendarOutlined /> Ngày: <FormattedDate value={notification?.createdDate} format="DD/MM/YYYY" /> <br />
+                        </div>
                     </ProCard>
                 </div>
             </div>

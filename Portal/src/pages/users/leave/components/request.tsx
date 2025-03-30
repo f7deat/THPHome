@@ -102,7 +102,7 @@ const LeaveRequest: React.FC = () => {
                             }
                             return <><WomanOutlined className="text-red-500" /> {record.fullName}</>
                         },
-                        width: 160
+                        minWidth: 160
                     },
                     {
                         title: 'Loại nghỉ phép',
@@ -158,7 +158,7 @@ const LeaveRequest: React.FC = () => {
                         valueEnum: {
                             0: {
                                 text: 'Chờ duyệt',
-                                status: 'Processing'
+                                status: 'warning'
                             },
                             1: {
                                 text: 'Đã duyệt',
@@ -188,7 +188,7 @@ const LeaveRequest: React.FC = () => {
                         title: 'Ghi chú',
                         dataIndex: 'comments',
                         search: false,
-                        minWidth: 200
+                        minWidth: 100
                     },
                     {
                         title: 'Tác vụ',
@@ -204,13 +204,13 @@ const LeaveRequest: React.FC = () => {
                                     {
                                         key: 'approve',
                                         label: 'Phê duyệt',
-                                        disabled: initialState?.currentUser.userType === 1 || record.status !== 0
+                                        disabled: !record.canApprove
                                     },
                                     {
                                         key: 'reject',
                                         label: 'Từ chối',
                                         danger: true,
-                                        disabled: initialState?.currentUser.userType === 1 || record.status !== 0
+                                        disabled: !record.canApprove
                                     }
                                 ],
                                 onClick: (info) => {
