@@ -136,6 +136,11 @@ export default [
         name: 'leave',
         path: '/account/leave',
         component: './users/leave',
+      },
+      {
+        name: 'Thông báo',
+        path: '/account/notification',
+        component: './notification',
       }
     ]
   },

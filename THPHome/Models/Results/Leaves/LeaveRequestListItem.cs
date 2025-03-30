@@ -21,4 +21,5 @@ public class LeaveRequestListItem : BaseEntity
     public string? ApprovedBy { get; set; }
     public string? Comments { get; set; }
     public LeaveSection SectionType { get; set; }
+    public bool CanApprove { get; set; }
 }

@@ -12,3 +12,14 @@ export const Department = {
     /** Phòng khảo thí và đảm bảo chất lượng */
     QualityAssuranceOffice: 30
 }
+
+export const UserType = {
+    /** Sinh viên */
+    Student: 0,
+    /** Nhân viên */
+    Staff: 1,
+    /** Cán bộ quản lý */
+    Manager: 3,
+    /** Quản trị viên */
+    Admin: 5
+}

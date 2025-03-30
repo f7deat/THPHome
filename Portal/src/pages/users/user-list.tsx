@@ -1,4 +1,4 @@
-﻿import { Button, Checkbox, Drawer, Input, message, Modal, Popconfirm, Space, Table, Form } from "antd"
+﻿import { Button, Checkbox, Input, message, Modal, Popconfirm, Space, Table, Form, Row, Col } from "antd"
 import React, { Fragment, useEffect, useRef, useState } from "react"
 import {
     DeleteOutlined,
@@ -13,9 +13,10 @@ import {
 } from "@ant-design/icons";
 import { Link } from "@umijs/max";
 import { request } from "@umijs/max";
-import { ActionType, PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
-import { apiStaffList } from "@/services/user";
+import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormSelect, ProFormText, ProTable } from "@ant-design/pro-components";
+import { apiStaffAdd, apiStaffList } from "@/services/user";
 import { apiDepartmentOptions } from "@/services/department";
+import { UserType } from "@/utils/constants";
 
 const UserList = () => {
 
@@ -216,29 +217,22 @@ const UserList = () => {
     ];
 
     const onAddUser = async (values: any) => {
-        const response = await request(`user/create`, {
-            method: 'POST',
-            data: values
-        });
-        if (response.succeeded) {
-            setDrawerVisible(false);
-            actionRef.current?.reload();
-            message.success('Thêm thành công!');
-        }
+        values.userType = UserType.Staff;
+        await apiStaffAdd(values);
+        setDrawerVisible(false);
+        actionRef.current?.reload();
+        message.success('Thêm thành công!');
     }
 
     return (
         <PageContainer extra={<Button type="primary" icon={<UserAddOutlined />} onClick={handleAdd}>Tạo tài khoản</Button>}>
-            <div className="bg-white p-4">
-                <ProTable
-                    ghost
-                    search={{
-                        layout: 'vertical'
-                    }}
-                    actionRef={actionRef}
-                    request={apiStaffList}
-                    columns={columns} rowKey="id" />
-            </div>
+            <ProTable
+                search={{
+                    layout: 'vertical'
+                }}
+                actionRef={actionRef}
+                request={apiStaffList}
+                columns={columns} rowKey="id" />
             <Modal title="Assign Role" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)}>
                 <div className="p-2 flex justify-between">
                     <Space>
@@ -249,35 +243,46 @@ const UserList = () => {
                 </div>
                 <Table columns={roleColumns} rowKey="id" dataSource={listRole} />
             </Modal>
-            <Drawer open={drawerVisible} width={700} onClose={() => setDrawerVisible(false)} title="Người dùng">
-                <Form onFinish={onAddUser} layout="vertical">
-                    <Form.Item name="name" label="Họ và tên" rules={[
-                        {
-                            required: true,
-                            message: 'Vui lòng nhập họ và tên'
-                        }
-                    ]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="userName" label="Tên đăng nhập" rules={[
-                        {
-                            required: true,
-                            message: 'Vui lòng nhập tên đăng nhập'
-                        }
-                    ]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="email" label="Email">
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="passwordHash" label="Mật khẩu">
-                        <Input.Password />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">Tạo thành viên</Button>
-                    </Form.Item>
-                </Form>
-            </Drawer>
+            <DrawerForm open={drawerVisible} width={700} onOpenChange={setDrawerVisible} title="Tài khoản" onFinish={onAddUser}>
+                <Form.Item name="name" label="Họ và tên" rules={[
+                    {
+                        required: true,
+                        message: 'Vui lòng nhập họ và tên'
+                    }
+                ]}>
+                    <Input />
+                </Form.Item>
+                <Form.Item name="userName" label="Tên đăng nhập" rules={[
+                    {
+                        required: true,
+                        message: 'Vui lòng nhập tên đăng nhập'
+                    }
+                ]}>
+                    <Input />
+                </Form.Item>
+                <Row gutter={16}>
+                    <Col md={12} xs={24}>
+                        <ProFormText name="email" label="Email" rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập email'
+                            }
+                        ]} />
+                    </Col>
+                    <Col md={12} xs={24}>
+                        <ProFormText name="phoneNumber" label="Số điện thoại" />
+                    </Col>
+                </Row>
+                <ProFormSelect options={departments} name="departmentId" label="Đơn vị" showSearch rules={[
+                    {
+                        required: true,
+                        message: 'Vui lòng chọn đơn vị'
+                    }
+                ]} />
+                <Form.Item name="passwordHash" label="Mật khẩu">
+                    <Input.Password />
+                </Form.Item>
+            </DrawerForm>
         </PageContainer>
     )
 }

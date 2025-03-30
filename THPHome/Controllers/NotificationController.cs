@@ -158,9 +158,9 @@ public class NotificationController(ApplicationDbContext context, INotificationS
         return Ok(THPResult.Success);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}"), AllowAnonymous]
     public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(new { data = await _notificationService.GetAsync(id) });
 
-    [HttpGet("unread-count"), AllowAnonymous]
+    [HttpGet("unread-count")]
     public async Task<IActionResult> UnreadCountAsync() => Ok(new { data = await _notificationService.GetUnreadCountAsync(User.GetUserName()) });
 }

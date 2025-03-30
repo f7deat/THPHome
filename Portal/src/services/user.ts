@@ -276,3 +276,14 @@ export async function apiTeachingExperienceDelete(id: string) {
 export async function apiStaffList(params: any) {
     return request(`user/staff/list`, { params });
 }
+
+export async function apiStaffAdd(data: any) {
+    return request(`user/create`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiUserListNotification(params: any) {
+    return request(`user/list-notification`, { params });
+}

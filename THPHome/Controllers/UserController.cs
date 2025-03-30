@@ -466,11 +466,20 @@ public class UserController(
     public async Task<IActionResult> CreateAsync([FromBody] ApplicationUser args)
     {
         if (string.IsNullOrWhiteSpace(args.PasswordHash)) return BadRequest("Vui lòng nhập mật khẩu");
+        if (!User.IsInRole(RoleName.ADMIN)) return BadRequest("Không có quyền thực hiện!");
         var user = new ApplicationUser
         {
             UserName = args.UserName,
             Email = args.Email,
-            Name = args.Name
+            Name = args.Name,
+            DepartmentId = args.DepartmentId,
+            Gender = args.Gender,
+            DateOfBirth = args.DateOfBirth,
+            UserType = args.UserType,
+            PhoneNumber = args.PhoneNumber,
+            Address = args.Address,
+            CityId = args.CityId,
+            Status = UserStatus.Active
         };
         return Ok(await _userManager.CreateAsync(user, args.PasswordHash));
     }
@@ -921,4 +930,7 @@ public class UserController(
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
     }
+
+    [HttpGet("list-notification")]
+    public async Task<IActionResult> ListNotificationAsync([FromQuery] FilterOptions filterOptions) => Ok(await _userService.ListNotificationAsync(filterOptions));
 }

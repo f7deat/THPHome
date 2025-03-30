@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities.Leaves;
+using THPHome.Entities.Notifications;
 using THPHome.Interfaces.IRepository.ILeaves;
 using THPHome.Interfaces.IService;
 using THPHome.Interfaces.IService.ILeaves;
@@ -12,11 +13,12 @@ using THPHome.Models.Results.Charts;
 using THPHome.Services.Leaves.Args;
 using THPHome.Services.Leaves.Filters;
 using THPHome.Services.Leaves.Results;
+using THPHome.Services.Notifications.Models;
 using THPIdentity.Entities;
 
 namespace THPHome.Services.Leaves;
 
-public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDepartmentService _departmentService, IEmailSender _emailSender, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
+public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INotificationService _notificationService, IDepartmentService _departmentService, IEmailSender _emailSender, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
 {
     static bool IsValidLeaveDays(double leaveDays) => leaveDays % 0.5 == 0;
 
@@ -75,13 +77,30 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IDep
 
             await _leaveRequestRepository.AddAsync(leaveRequest);
 
-            var headOfDepartments = await _userManager.Users.Where(x => x.DepartmentId == user.DepartmentId && x.Status != UserStatus.Inactive && x.UserType == UserType.Dean).AsNoTracking().ToListAsync();
+            // Gửi thông báo cho trưởng khoa hoặc trưởng bộ môn. Nếu là trưởng đơn vị thì gửi cho ban giám hiệu
+            var hodType = user.UserType == UserType.Lecturer ? UserType.Dean : UserType.Administrator;
+
+            var headOfDepartments = await _userManager.Users.Where(x => x.DepartmentId == user.DepartmentId && x.Status != UserStatus.Inactive && x.UserType == hodType).Select(x => new
+            {
+                x.Email,
+                x.Name,
+                x.UserName
+            }).ToListAsync();
             foreach (var hod in headOfDepartments)
             {
+                if (user.UserName is null) continue;
+
                 if (string.IsNullOrEmpty(hod.Email)) continue;
 
-                await _emailSender.SendAsync(hod.Email, "Có đơn xin nghỉ phép mới", $"Đơn xin nghỉ phép mới từ {user.Name} cần được duyệt. Vui lòng truy cập hệ thống để xem chi tiết.");
+                // await _emailSender.SendAsync(hod.Email, "Có đơn xin nghỉ phép mới", $"Đơn xin nghỉ phép mới từ {user.Name} cần được duyệt. Vui lòng truy cập hệ thống để xem chi tiết.");
             }
+
+            await _notificationService.CreatePrivateAsync(new CreatePrivateArgs
+            {
+                Title = "Có đơn xin nghỉ phép mới",
+                Content = $"Đơn xin nghỉ phép mới từ {user.Name} cần được duyệt. Vui lòng truy cập hệ thống để xem chi tiết.",
+                Recipients = headOfDepartments.Select(x => x.UserName)
+            });
 
             return THPResult.Success;
         }

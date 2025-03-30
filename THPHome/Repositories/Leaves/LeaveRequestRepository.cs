@@ -56,8 +56,11 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
     public async Task<object> GetListAsync(LeaveRequestFilterOptions filterOptions, ApplicationUser user)
     {
         var query = from a in _context.LeaveRequests
-                    where a.DepartmentId == user.DepartmentId
                     select a;
+        if (user.UserType == UserType.Dean)
+        {
+            query = query.Where(x => x.DepartmentId == user.DepartmentId);
+        }
         if (user.UserType == UserType.Lecturer)
         {
             query = query.Where(x => x.UserName == user.UserName);
@@ -75,7 +78,13 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
 
         var data = await query.Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
 
-        var users = await _userManager.Users.Where(x => x.Status != UserStatus.Inactive && x.UserType != UserType.Student).AsNoTracking().ToListAsync();
+        var userQuery =  _userManager.Users.Where(x => x.Status != UserStatus.Inactive && x.UserType != UserType.Student);
+        if (user.UserType == UserType.Administrator)
+        {
+            userQuery = userQuery.Where(x => x.UserType == UserType.Dean);
+        }
+
+        var users = await userQuery.AsNoTracking().ToListAsync();
 
         var result = new List<LeaveRequestListItem>();
         foreach (var item in data)
@@ -111,6 +120,9 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                 leaveItem.DateOfBirth = user.DateOfBirth;
                 leaveItem.Gender = user.Gender != null && (user.Gender == 1);
             }
+
+            // Can approve if the user is a dean or an administrator and the leave status is pending
+            leaveItem.CanApprove = (user.UserType == UserType.Dean || user.UserType == UserType.Administrator) && item.Status == LeaveStatus.Pending;
             result.Add(leaveItem);
         }
 

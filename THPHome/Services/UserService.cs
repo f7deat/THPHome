@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters;
 using THPHome.Models.Filters.Users;
 using THPHome.Models.Results.Users;
 using THPHome.Services.Users.Models;
@@ -11,7 +13,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Services;
 
-public class UserService(UserManager<ApplicationUser> _userManager, ApplicationDbContext _context) : IUserService
+public class UserService(UserManager<ApplicationUser> _userManager, ApplicationDbContext _context, IHCAService _hcaService) : IUserService
 {
     public async Task<object?> GetLecturerPublicInfoAsync(string userName)
     {
@@ -243,6 +245,24 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         }
 
         return new { data, total = query.CountAsync() };
+    }
+
+    public async Task<object?> ListNotificationAsync(FilterOptions filterOptions)
+    {
+        var query = from a in _context.Notifications
+                    join b in _context.UserNotifications on a.Id equals b.NotificationId
+                    where b.Recipient == _hcaService.GetUserName()
+                    select new
+                    {
+                        b.Id,
+                        a.CreatedDate,
+                        a.Title,
+                        a.Type,
+                        b.IsRead,
+                        b.NotificationId
+                    };
+        query = query.OrderByDescending(x => x.CreatedDate);
+        return await ListResult<object>.Success(query, filterOptions);
     }
 
     public async Task<ListResult<StaffListItem>> ListStaffAsync(UserFilterOptions filterOptions)

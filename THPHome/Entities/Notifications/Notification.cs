@@ -16,7 +16,7 @@ public class Notification : BaseEntity
     public string? ModifiedBy { get; set; }
     public NotificationType Type { get; set; }
 
-    public List<UserNotification>? UserNofifications { get; set; }
+    public ICollection<UserNotification>? UserNofifications { get; set; }
 }
 
 public enum NotificationType
