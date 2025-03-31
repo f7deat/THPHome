@@ -1,31 +1,24 @@
 ﻿import { Button, Drawer, message, Popconfirm } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
     FolderOutlined,
     DeleteOutlined
 } from '@ant-design/icons';
 import { Link, request } from "@umijs/max";
-import { ProColumns, ProTable } from "@ant-design/pro-components";
+import { ActionType, PageContainer, ProColumns, ProTable } from "@ant-design/pro-components";
+import { apiRoleList } from "@/services/identity/role";
 
-const RoleList = () => {
+const RolePage = () => {
 
-    const [listRole, setListRole] = useState<any>([])
-    const [drawVisible, setDrawVisible] = useState<boolean>(false)
-
-    useEffect(() => {
-        request('role/get-list').then(response => {
-            setListRole(response);
-        })
-    }, [])
+    const [drawVisible, setDrawVisible] = useState<boolean>(false);
+    const actionRef = useRef<ActionType>();
 
     const deleteRole = (roleId: string) => {
         request(`role/delete/${roleId}`, {
             method: 'POST'
-        }).then(response => {
-            if (response.succeeded) {
-                setListRole(listRole.filter((x: any) => x.id !== roleId))
-                message.success('Succeeded!')
-            }
+        }).then(() => {
+            message.success('Succeeded!');
+            actionRef.current?.reload();
         })
     }
 
@@ -67,10 +60,12 @@ const RoleList = () => {
     ];
 
     return (
-        <div>
-            <ProTable dataSource={listRole} columns={columns} rowKey="id" search={{
-                layout: 'vertical'
-            }} />
+        <PageContainer>
+            <ProTable
+                actionRef={actionRef}
+                request={apiRoleList} columns={columns} rowKey="id" search={{
+                    layout: 'vertical'
+                }} />
             <Drawer
                 title="User In Role"
                 placement="right"
@@ -80,8 +75,8 @@ const RoleList = () => {
                 width={800}
             >
             </Drawer>
-        </div>
+        </PageContainer>
     )
 }
 
-export default RoleList
+export default RolePage
