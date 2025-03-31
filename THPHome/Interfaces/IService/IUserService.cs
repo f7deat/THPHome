@@ -13,4 +13,5 @@ public interface IUserService
     Task<object?> ListLecturerAsync(UserFilterOptions filterOptions);
     Task<object?> ListNotificationAsync(FilterOptions filterOptions);
     Task<ListResult<StaffListItem>> ListStaffAsync(UserFilterOptions filterOptions);
+    Task<ListResult<object>> ListUserInRoleAsync(UserInRoleFilterOptions filterOptions);
 }

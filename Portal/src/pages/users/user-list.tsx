@@ -258,7 +258,7 @@ const UserList = () => {
     }
 
     return (
-        <PageContainer extra={<Button type="primary" icon={<UserAddOutlined />} onClick={handleAdd}>Tạo tài khoản</Button>}>
+        <PageContainer extra={<Button type="primary" icon={<UserAddOutlined />} onClick={handleAdd} hidden={!access.admin}>Tạo tài khoản</Button>}>
             <ProTable
                 search={{
                     layout: 'vertical'

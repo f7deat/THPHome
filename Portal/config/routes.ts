@@ -87,6 +87,11 @@ export default [
         name: 'Đối tác',
         path: '/post/partner',
         component: './partners/partner-setting'
+      },
+      {
+        name: 'Slide',
+        path: '/post/banners',
+        component: './banners/banner-list',
       }
     ],
   },
@@ -295,11 +300,6 @@ export default [
         name: 'language',
         path: '/settings/localizations',
         component: './settings/localizations',
-      },
-      {
-        name: 'Slide',
-        path: '/settings/banners',
-        component: './banners/banner-list',
       },
       {
         name: 'roles',

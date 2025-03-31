@@ -1,42 +1,40 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using THPCore.Models;
 using THPHome.Data;
-using THPIdentity.Constants;
+using THPHome.Interfaces.IService;
+using THPHome.Models.Filters;
+using THPHome.Models.Filters.Users;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 
-namespace WebUI.Controllers;
+namespace THPHome.Controllers;
 
-public class RoleController : BaseController
+public class RoleController(RoleManager<ApplicationRole> _roleManager, ApplicationDbContext context, IUserService _userService) : BaseController(context)
 {
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly UserManager<ApplicationUser> _userManager;
-    public RoleController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(context)
+    [HttpGet("all")]
+    public async Task<IActionResult> ListAsync([FromQuery] FilterOptions filterOptions)
     {
-        _roleManager = roleManager;
-        _userManager = userManager;
+        var query = from a in _roleManager.Roles
+                    select new
+                    {
+                        a.Id,
+                        a.Name,
+                        a.DisplayName,
+                        a.NormalizedName
+                    };
+        query = query.OrderBy(x => x.NormalizedName);
+        return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
-    [Route("get-list")]
-    public IActionResult GetList() => Ok(_roleManager.Roles);
-
-    [Route("run-seed"), HttpPost]
-    public async Task<IActionResult> RunSeedAsync()
-    {
-        var role = new IdentityRole
-        {
-            Name = RoleName.ADMIN
-        };
-        await _roleManager.CreateAsync(role);
-        role.Name = RoleName.EDITOR;
-        return Ok(await _roleManager.CreateAsync(role));
-    }
-
-    [Route("delete/{roleId}"), HttpPost]
+    [HttpDelete("{roleId}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] string roleId)
     {
         var role = await _roleManager.FindByIdAsync(roleId);
         if (role is null) return BadRequest("Không tìm thấy quyền!");
         return Ok(await _roleManager.DeleteAsync(role));
     }
+
+    [HttpGet("users")]
+    public async Task<IActionResult> ListUserInRoleAsync([FromQuery] UserInRoleFilterOptions filterOptions) => Ok(await _userService.ListUserInRoleAsync(filterOptions));
 }

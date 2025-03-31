@@ -149,9 +149,7 @@ const BannerList = () => {
                                     setVisible(true);
                                 }} />,
                                 <Popconfirm key="delete"
-                                    title="Are you sure to delete?"
-                                    okText="Yes"
-                                    cancelText="No"
+                                    title="Xác nhận xóa?"
                                     onConfirm={() => handleDelete(item.id)}
                                 >
                                     <DeleteOutlined />

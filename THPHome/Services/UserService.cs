@@ -315,4 +315,10 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         query = query.OrderBy(x => x.UserName);
         return await ListResult<StaffListItem>.Success(query, filterOptions);
     }
+
+    public async Task<ListResult<object>> ListUserInRoleAsync(UserInRoleFilterOptions filterOptions)
+    {
+        var users = await _userManager.GetUsersInRoleAsync(filterOptions.RoleName);
+        return new ListResult<object>(users, users.Count, filterOptions);
+    }
 }

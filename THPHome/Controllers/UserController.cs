@@ -256,18 +256,11 @@ public class UserController(
     public async Task<IActionResult> AddToRoleAsync([FromBody] AddToRole addToRole)
     {
         var user = await _userManager.FindByIdAsync(addToRole.UserId);
-        if (user == null)
-        {
-            return Ok(new
-            {
-                succeeded = false,
-                errors = new List<dynamic> {
-                    new { description = "User not found!" }
-                }
-            });
-        }
+        if (user is null) return BadRequest("User not found!");
         if (string.IsNullOrWhiteSpace(addToRole.RoleName)) return BadRequest("Role name is required!");
-        return Ok(await _userManager.AddToRoleAsync(user, addToRole.RoleName));
+        var result = await _userManager.AddToRoleAsync(user, addToRole.RoleName);
+        if (!result.Succeeded) return BadRequest(result.Errors.First().Description);
+        return Ok();
     }
 
     [HttpGet("users-in-role/{roleName}")]
