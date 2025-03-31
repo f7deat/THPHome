@@ -1,18 +1,26 @@
-import { apiListNotification } from "@/services/notificaton";
+import { apiListNotification, apiNotificationDelete } from "@/services/notificaton";
 import { DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
-import { PageContainer, ProTable } from "@ant-design/pro-components"
-import { Button, Dropdown, Popconfirm } from "antd";
-import { useState } from "react";
+import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
+import { Button, Dropdown, message, Popconfirm } from "antd";
+import { useRef, useState } from "react";
 import NotificationForm from "./components/form";
 
 const NotificationPage: React.FC = () => {
 
     const [open, setOpen] = useState<boolean>(false);
     const [notification, setNotification] = useState<any>();
+    const actionRef = useRef<ActionType>();
+
+    const onDelete = async (id: string) => {
+        await apiNotificationDelete(id);
+        message.success('Xóa thông báo thành công!');
+        actionRef.current?.reload();
+    }
 
     return (
         <PageContainer extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}>
             <ProTable
+                actionRef={actionRef}
                 search={{
                     layout: 'vertical'
                 }}
@@ -28,6 +36,24 @@ const NotificationPage: React.FC = () => {
                         dataIndex: 'title'
                     },
                     {
+                        title: 'Loại',
+                        dataIndex: 'type',
+                        valueEnum: {
+                            0: {
+                                text: 'Thông báo chung',
+                                status: 'Default'
+                            },
+                            1: {
+                                text: 'Thông báo cá nhân',
+                                status: 'Processing'
+                            },
+                            2: {
+                                text: 'Thông báo hệ thống',
+                                status: 'Warning'
+                            },
+                        }
+                    },
+                    {
                         title: 'Lượt gửi',
                         dataIndex: 'sentCount',
                         valueType: 'digit',
@@ -41,12 +67,14 @@ const NotificationPage: React.FC = () => {
                     },
                     {
                         title: 'Người gửi',
-                        dataIndex: 'createdBy'
+                        dataIndex: 'createdBy',
+                        search: false
                     },
                     {
                         title: 'Ngày gửi',
                         dataIndex: 'createdDate',
-                        valueType: 'fromNow'
+                        valueType: 'fromNow',
+                        search: false
                     },
                     {
                         title: 'Tác vụ',
@@ -75,7 +103,7 @@ const NotificationPage: React.FC = () => {
                             }}>
                                <Button icon={<MoreOutlined />} size="small" /> 
                             </Dropdown>,
-                            <Popconfirm key="delete" title="Xác nhận xóa?">
+                            <Popconfirm key="delete" title="Xác nhận xóa?" onConfirm={() => onDelete(entity.id)}>
                                 <Button type="primary" danger size="small" icon={<DeleteOutlined />}></Button>
                             </Popconfirm>
                         ],

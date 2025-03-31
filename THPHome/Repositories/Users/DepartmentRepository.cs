@@ -27,7 +27,7 @@ public class DepartmentRepository(ApplicationDbContext context, UserManager<Appl
     public async Task<ListResult<object>> UsersAsync(DepartmentUserFilterOptions filterOptions)
     {
         var query = from a in _userManager.Users
-                    where a.UserType != UserType.Student
+                    where a.UserType != UserType.Student && a.Status != UserStatus.Inactive
                     select new
                     {
                         a.Id,

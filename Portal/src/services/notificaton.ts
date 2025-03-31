@@ -13,3 +13,10 @@ export function apiGetNotification(id: string) {
 export async function apiNotificationUnreadCount() {
     return request(`notification/unread-count`);
 }
+
+export async function apiNotificationDelete(id: string) {
+    return request(`notification/delete/${id}`, {
+        method: 'POST'
+    })
+    
+}

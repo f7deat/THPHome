@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PageContainer, ProList, ProCard } from "@ant-design/pro-components";
-import { Avatar, Badge, Button, Dropdown, Empty, Typography } from "antd";
+import { Badge, Button, Dropdown, Empty } from "antd";
 import { apiUserListNotification } from "@/services/user";
 import { CalendarOutlined, DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, MailOutlined, MoreOutlined } from "@ant-design/icons";
 import { apiGetNotification } from "@/services/notificaton";
 import { FormattedDate } from "@umijs/max";
-
-const { Title, Paragraph } = Typography;
 
 const NotificationPage: React.FC = () => {
     const [selectedNotification, setSelectedNotification] = useState<string | null>(null);
@@ -29,7 +27,6 @@ const NotificationPage: React.FC = () => {
                             }}
                             size="small"
                             rowKey="id"
-                            rowSelection={{}}
                             metas={{
                                 title: {
                                     dataIndex: "title",

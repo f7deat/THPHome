@@ -13,8 +13,27 @@ using THPIdentity.Entities;
 
 namespace THPHome.Services;
 
-public class UserService(UserManager<ApplicationUser> _userManager, ApplicationDbContext _context, IHCAService _hcaService) : IUserService
+public class UserService(UserManager<ApplicationUser> _userManager, ApplicationDbContext _context, IHCAService _hcaService, ILogService _logService) : IUserService
 {
+    public async Task<THPResult> DeactiveAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user is null) return THPResult.Failed("User not found");
+        user.Status = UserStatus.Inactive;
+        await _userManager.UpdateAsync(user);
+        await _logService.AddAsync($"Vô hiệu hóa tài khoản: {user.UserName}");
+        return THPResult.Success;
+    }
+
+    public async Task<THPResult> DeleteNotificationAsync(Guid id)
+    {
+        var notification = await _context.UserNotifications.FindAsync(id);
+        if (notification is null) return THPResult.Failed("Notification not found");
+        _context.UserNotifications.Remove(notification);
+        await _context.SaveChangesAsync();
+        return THPResult.Success;
+    }
+
     public async Task<object?> GetLecturerPublicInfoAsync(string userName)
     {
         var user = await _userManager.FindByNameAsync(userName);
@@ -277,7 +296,8 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             UserName = x.UserName,
             Gender = x.Gender == 1,
             Id = x.Id,
-            Email = x.Email
+            Email = x.Email,
+            Status = x.Status
         });
         if (!string.IsNullOrWhiteSpace(filterOptions.UserName))
         {

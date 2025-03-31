@@ -1,4 +1,6 @@
-﻿namespace THPHome.Services.Users.Models;
+﻿using THPIdentity.Entities;
+
+namespace THPHome.Services.Users.Models;
 
 public class StaffListItem
 {
@@ -11,4 +13,5 @@ public class StaffListItem
     public bool? Gender { get; set; }
     public DateTime? DateOfBirth { get; set; }
     public string? Avatar { get; set; }
+    public UserStatus Status { get; set; }
 }

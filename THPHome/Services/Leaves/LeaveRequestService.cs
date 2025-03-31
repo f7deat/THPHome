@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities.Leaves;
-using THPHome.Entities.Notifications;
 using THPHome.Interfaces.IRepository.ILeaves;
 using THPHome.Interfaces.IService;
 using THPHome.Interfaces.IService.ILeaves;
@@ -18,7 +17,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Services.Leaves;
 
-public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INotificationService _notificationService, IDepartmentService _departmentService, IEmailSender _emailSender, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
+public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INotificationService _notificationService, IDepartmentService _departmentService, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
 {
     static bool IsValidLeaveDays(double leaveDays) => leaveDays % 0.5 == 0;
 
@@ -38,10 +37,14 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INot
         await _leaveBalanceRepository.UpdateAvailableDaysAsync(leaveRequest.LeaveTypeId, leaveRequest.TotalDays, leaveRequest.UserName);
         await _leaveRequestRepository.UpdateAsync(leaveRequest);
         var receiver = await _userManager.FindByNameAsync(leaveRequest.UserName);
-        if (!string.IsNullOrEmpty(receiver?.Email))
+
+        await _notificationService.CreatePrivateAsync(new CreatePrivateArgs
         {
-            await _emailSender.SendAsync(receiver.Email, "Đơn xin nghỉ phép được phê duyệt", $"Đơn xin nghỉ phép của bạn đã được phê duyệt. Ghi chú: {args.Comments}");
-        }
+            Title = "Đơn xin nghỉ phép được phê duyệt",
+            Content = $"Đơn xin nghỉ phép của bạn đã được phê duyệt. Ghi chú: {args.Comments}",
+            Recipients = [leaveRequest.UserName]
+        });
+
         return THPResult.Success;
     }
 
@@ -86,14 +89,6 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INot
                 x.Name,
                 x.UserName
             }).ToListAsync();
-            foreach (var hod in headOfDepartments)
-            {
-                if (user.UserName is null) continue;
-
-                if (string.IsNullOrEmpty(hod.Email)) continue;
-
-                // await _emailSender.SendAsync(hod.Email, "Có đơn xin nghỉ phép mới", $"Đơn xin nghỉ phép mới từ {user.Name} cần được duyệt. Vui lòng truy cập hệ thống để xem chi tiết.");
-            }
 
             await _notificationService.CreatePrivateAsync(new CreatePrivateArgs
             {
@@ -184,10 +179,14 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INot
             leaveRequest.ApprovedAt = DateTime.Now;
             await _leaveRequestRepository.UpdateAsync(leaveRequest);
             var receiver = await _userManager.FindByNameAsync(leaveRequest.UserName);
-            if (!string.IsNullOrEmpty(receiver?.Email))
+
+            await _notificationService.CreatePrivateAsync(new CreatePrivateArgs
             {
-                await _emailSender.SendAsync(receiver.Email, "Đơn xin nghỉ phép bị từ chối", $"Đơn xin nghỉ phép của bạn đã bị từ chối. Lý do: {args.Comments}");
-            }
+                Title = "Đơn xin nghỉ phép bị từ chối",
+                Content = $"Đơn xin nghỉ phép của bạn đã bị từ chối. Lý do: {args.Comments}",
+                Recipients = [leaveRequest.UserName]
+            });
+
             return THPResult.Success;
         }
         catch (Exception ex)
@@ -214,6 +213,7 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INot
             leaveRequest.Reason = args.Reason;
             leaveRequest.LeaveTypeId = args.LeaveTypeId;
             leaveRequest.SessionType = args.SectionType;
+            await _logService.AddAsync($"Cập nhật đơn xin nghỉ phép {leaveRequest.Id}");
             await _leaveRequestRepository.UpdateAsync(leaveRequest);
             return THPResult.Success;
         }

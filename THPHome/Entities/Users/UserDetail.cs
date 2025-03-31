@@ -32,6 +32,7 @@ public class UserDetail : BaseEntity
     public int? AcademicTitleId { get; set; }
     [ForeignKey(nameof(AcademicDegree))]
     public int? AcademicDegreeId { get; set; }
+    public DateTime? ContractDate { get; set; }
 
     public AcademicTitle? AcademicTitle { get; set; }
     public AcademicDegree? AcademicDegree { get; set; }

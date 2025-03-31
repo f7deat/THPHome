@@ -23,3 +23,12 @@ export const UserType = {
     /** Quản trị viên */
     Admin: 5
 }
+
+export const NotificationType = {
+    /** Thông báo chung */
+    General: 0,
+    /** Thông báo cá nhân */
+    Private: 1,
+    /** Thông báo hệ thống */
+    System: 2
+}

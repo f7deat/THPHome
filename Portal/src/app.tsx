@@ -51,9 +51,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       locale: true,
     },
     layout: 'mix',
-    waterMarkProps: {
-      content: initialState?.name
-    },
     locale: 'vi-VN' as any,
     token: {
         sider: {

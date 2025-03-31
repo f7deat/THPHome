@@ -287,3 +287,9 @@ export async function apiStaffAdd(data: any) {
 export async function apiUserListNotification(params: any) {
     return request(`user/list-notification`, { params });
 }
+
+export async function apiDeactiveUser(id: string) {
+    return request(`user/deactivate/${id}`, {
+        method: 'POST'
+    });
+}

@@ -288,10 +288,7 @@ public class UserController(
     public async Task<IActionResult> DeleteAsync([FromRoute] string id)
     {
         var user = await _userManager.FindByIdAsync(id);
-        if (user is null)
-        {
-            return BadRequest("Người dùng không tồn tại!");
-        }
+        if (user is null) return BadRequest("Người dùng không tồn tại!");
         await _userManager.DeleteAsync(user);
         return Ok(IdentityResult.Success);
     }
@@ -933,4 +930,20 @@ public class UserController(
 
     [HttpGet("list-notification")]
     public async Task<IActionResult> ListNotificationAsync([FromQuery] FilterOptions filterOptions) => Ok(await _userService.ListNotificationAsync(filterOptions));
+
+    [HttpPost("deactivate/{id}"), Authorize(Roles = RoleName.ADMIN)]
+    public async Task<IActionResult> DeactiveAsync([FromRoute] string id)
+    {
+        var result = await _userService.DeactiveAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
+
+    [HttpDelete("notification/{id}")]
+    public async Task<IActionResult> DeleteNotificationAsync([FromRoute] Guid id)
+    {
+        var result = await _userService.DeleteNotificationAsync(id);
+        if (!result.Succeeded) return BadRequest(result.Message);
+        return Ok(result);
+    }
 }

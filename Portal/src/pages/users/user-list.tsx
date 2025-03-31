@@ -1,4 +1,4 @@
-﻿import { Button, Checkbox, Input, message, Modal, Popconfirm, Space, Table, Form, Row, Col } from "antd"
+﻿import { Button, Checkbox, Input, message, Modal, Popconfirm, Space, Table, Form, Row, Col, Dropdown } from "antd"
 import React, { Fragment, useEffect, useRef, useState } from "react"
 import {
     DeleteOutlined,
@@ -9,12 +9,12 @@ import {
     UserOutlined,
     UserAddOutlined,
     WomanOutlined,
-    ManOutlined
+    ManOutlined,
+    MoreOutlined
 } from "@ant-design/icons";
-import { Link } from "@umijs/max";
-import { request } from "@umijs/max";
+import { request, useAccess } from "@umijs/max";
 import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormSelect, ProFormText, ProTable } from "@ant-design/pro-components";
-import { apiStaffAdd, apiStaffList } from "@/services/user";
+import { apiDeactiveUser, apiStaffAdd, apiStaffList } from "@/services/user";
 import { apiDepartmentOptions } from "@/services/department";
 import { UserType } from "@/utils/constants";
 
@@ -26,6 +26,7 @@ const UserList = () => {
     const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const [departments, setDepartments] = useState<any>([]);
+    const access = useAccess();
 
     function openRolePanel(record: any) {
         setUser(record)
@@ -34,7 +35,13 @@ const UserList = () => {
 
     useEffect(() => {
         apiDepartmentOptions().then(response => setDepartments(response));
-    }, [])
+    }, []);
+
+    const onDeactive = async (id: string) => {
+        await apiDeactiveUser(id);
+        message.success('Vô hiệu hóa tài khoản thành công!');
+        actionRef.current?.reload();
+    }
 
     useEffect(() => {
         if (isModalVisible && user?.id) {
@@ -147,30 +154,56 @@ const UserList = () => {
             search: false
         },
         {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            valueEnum: {
+                0: {
+                    text: 'Đang hoạt động',
+                    status: 'Success'
+                },
+                1: {
+                    text: 'Đang hoạt động',
+                    status: 'Success'
+                },
+                3: {
+                    text: 'Ngừng hoạt động',
+                    status: 'Error'
+                }
+            }
+        },
+        {
             title: 'Tác vụ',
             valueType: 'option',
-            render: (dom, record: any) => (
-                <Space>
-                    <Link to={`/user/profile/${record.id}`}><Button icon={<UserOutlined />} size="small" type="primary"></Button></Link>
-                    <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)} size="small"></Button>
-                    <Popconfirm
-                        title="Are you sure to delete?"
-                        okText="Yes"
-                        cancelText="No"
-                        onConfirm={async () => {
-                            const response = await request(`user/delete/${record.id}`, {
-                                method: 'POST'
-                            });
-                            if (response.data) {
-                                message.success('Xóa thành công!');
-                                actionRef.current?.reload();
-                            }
-                        }}
-                    >
-                        <Button type="primary" danger icon={<DeleteOutlined />} size="small"></Button>
-                    </Popconfirm>
-                </Space>
-            ),
+            render: (dom, record: any) => [
+                <Dropdown key="action" menu={{
+                    items: [
+                        {
+                            key: 'deactive',
+                            label: 'Vô hiệu hóa tài khoản',
+                            onClick: () => onDeactive(record.id)
+                        }
+                    ]
+                }}>
+                    <Button icon={<MoreOutlined />} size="small" type="dashed"></Button>
+                </Dropdown>,
+                <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)} size="small" key="role"></Button>,
+                <Popconfirm key="delete"
+                    title="Are you sure to delete?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={async () => {
+                        const response = await request(`user/delete/${record.id}`, {
+                            method: 'POST'
+                        });
+                        if (response.data) {
+                            message.success('Xóa thành công!');
+                            actionRef.current?.reload();
+                        }
+                    }}
+                >
+                    <Button type="primary" danger icon={<DeleteOutlined />} size="small" hidden={!access.admin} />
+                </Popconfirm>
+            ],
             width: 100
         }
     ];
