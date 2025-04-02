@@ -10,7 +10,9 @@ export const Department = {
     /** Phòng công tác sinh viên */
     StudentAffairsOffice: 29,
     /** Phòng khảo thí và đảm bảo chất lượng */
-    QualityAssuranceOffice: 30
+    QualityAssuranceOffice: 30,
+    /** Khoa Công nghệ thông tin */
+    FacultyOfInformationTechnology: 4
 }
 
 export const UserType = {

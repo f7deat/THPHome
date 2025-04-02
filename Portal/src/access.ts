@@ -9,7 +9,8 @@ export default function access(initialState: { currentUser?: API.User } | undefi
   const admin = initialState && (initialState.currentUser?.roles?.includes('Admin') || initialState.currentUser?.userType === 5);
   const canOnboard = canAdmin || currentUser?.userType === 3;
   const qualityAssurance = canAdmin || (initialState && initialState?.currentUser?.departmentId === Department.QualityAssuranceOffice)
-  const training = canAdmin || (initialState && initialState?.currentUser?.departmentId === Department.TrainingDepartment)
+  const training = canAdmin || (initialState && initialState?.currentUser?.departmentId === Department.TrainingDepartment);
+  const facultyOfInformationTechnology = canAdmin || (initialState && initialState?.currentUser?.departmentId === Department.FacultyOfInformationTechnology);
 
   return {
     canAdmin,
@@ -17,6 +18,7 @@ export default function access(initialState: { currentUser?: API.User } | undefi
     admin,
     canOnboard,
     qualityAssurance,
-    training
+    training,
+    facultyOfInformationTechnology
   };
 };

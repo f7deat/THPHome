@@ -96,6 +96,12 @@ export default [
     ],
   },
   {
+    icon: 'CarryOutOutlined',
+    name: 'task',
+    path: '/task',
+    component: './task',
+  },
+  {
     icon: 'AppstoreAddOutlined',
     name: 'category',
     path: '/category/list',
@@ -105,9 +111,15 @@ export default [
   {
     icon: 'ApartmentOutlined',
     name: 'Phòng ban',
-    path: '/departments',
-    component: './departments',
-    access: 'canEditor'
+    path: '/department',
+    routes: [
+      {
+        name: 'Công nghệ thông tin',
+        path: '/department/iformation-technology',
+        component: './departments/information-technology',
+        access: 'facultyOfInformationTechnology'
+      }
+    ]
   },
   {
     name: 'Phòng ban',
@@ -318,13 +330,19 @@ export default [
         component: './settings/app/zalo/article',
         hideInMenu: true,
       },
+      {
+        name: 'Phòng ban',
+        path: '/settings/department',
+        component: './departments',
+        hideInMenu: true
+      }
     ],
   },
   {
     path: '/onboard',
     name: 'Onboard',
     icon: 'LoginOutlined',
-    access: 'canOnboard',
+    access: 'admin',
     routes: [
       {
         path: '/onboard',
