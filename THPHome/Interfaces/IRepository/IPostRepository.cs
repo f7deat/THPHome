@@ -38,6 +38,6 @@ namespace THPHome.Interfaces.IRepository
         Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize);
         Task<List<CategoryWithPost>> GetListByAllCategoryAsync();
         Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, string locale);
-        Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale);
+        Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale);
     }
 }

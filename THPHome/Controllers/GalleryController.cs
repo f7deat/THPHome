@@ -27,7 +27,7 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
     public async Task<IActionResult> GalleryListAsync([FromQuery] GalleryFilterOptions filterOptions) => Ok(await _galleryService.GalleryListAsync(filterOptions));
 
     [HttpPost]
-    public async Task<IActionResult> GalleryAddAsync([FromBody] PostArgs args)
+    public async Task<IActionResult> GalleryAddAsync([FromBody] PostArgs args, [FromQuery] string locale)
     {
         try
         {
@@ -36,7 +36,7 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
             {
                 Title = args.Title,
                 Description = args.Description,
-                Language = args.Language,
+                Locale = locale,
                 Status = PostStatus.PUBLISH,
                 Url = SeoHelper.ToSeoFriendly(args.Title),
                 Type = PostType.GALLERY

@@ -56,7 +56,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
 
         BoxMenu = await _menuService.GetListAsync(new ListMenuPayload
         {
-            Language = PageData.Language,
+            Locale = PageData.Locale,
             Type = MenuType.BOX
         });
         Videos = await _videoService.GetListAsync(5);

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Enums;
 using THPHome.Models.Filters.Articles;
-using THPHome.Models.Filters.OpenAPI.Articles;
 using THPHome.Models.ViewModel;
 using WebUI.Foundations;
 
@@ -12,32 +11,6 @@ namespace THPHome.Controllers;
 
 public class ArticleController(ApplicationDbContext context) : BaseController(context)
 {
-    [HttpGet("open-list")]
-    public async Task<IActionResult> GetListArticleAsync([FromQuery] OpenArticleFilterOptions filterOptions)
-    {
-        var query = from a in _context.Posts
-                    where a.Status == PostStatus.PUBLISH && a.Language == filterOptions.Language
-                    select new
-                    {
-                        a.Id,
-                        a.Url,
-                        a.CreatedDate,
-                        a.ModifiedDate,
-                        a.Title,
-                        a.Description,
-                        a.Thumbnail,
-                        a.View,
-                        a.CreatedBy,
-                        a.ModifiedBy
-                    };
-        if (!string.IsNullOrEmpty(filterOptions.Title))
-        {
-            query = query.Where(x => x.Title.Contains(filterOptions.Title, StringComparison.CurrentCultureIgnoreCase));
-        }
-        query = query.OrderByDescending(x => x.CreatedDate);
-        return Ok(await ListResult<object>.Success(query, filterOptions));
-    }
-
     [HttpGet("list"), AllowAnonymous]
     public async Task<IActionResult> GetListAsync([FromQuery] ArticleFilterOptions filterOptions)
     {
@@ -54,7 +27,8 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
                         a.Thumbnail,
                         a.View,
                         a.CategoryId,
-                        a.Type
+                        a.Type,
+                        a.DepartmentId
                     };
         if (filterOptions.CategoryId != null)
         {
@@ -67,6 +41,10 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
         if (!string.IsNullOrWhiteSpace(filterOptions.Title))
         {
             query = query.Where(x => x.Title.ToLower().Contains(filterOptions.Title.ToLower()));
+        }
+        if (filterOptions.DepartmentId != null)
+        {
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
         }
         query = query.OrderByDescending(x => x.CreatedDate);
         return Ok(await ListResult<object>.Success(query, filterOptions));

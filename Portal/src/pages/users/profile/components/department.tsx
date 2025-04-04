@@ -1,19 +1,17 @@
 import { apiDepartmentUsers } from "@/services/department"
 import { apiMyDepartment } from "@/services/user";
 import { ManOutlined, WomanOutlined } from "@ant-design/icons";
-import { ProCard, ProTable } from "@ant-design/pro-components"
+import { ProTable } from "@ant-design/pro-components"
 import { useModel, useRequest } from "@umijs/max";
 
-const Department: React.FC = () => {
+const DepartmentUsers: React.FC = () => {
 
     const { initialState } = useModel('@@initialState');
     const { data } = useRequest(apiMyDepartment);
 
     return (
-        <ProCard headerBordered title="Cùng đơn vị">
             <ProTable
                 headerTitle={data?.name}
-                ghost
                 search={false}
                 columns={[
                     {
@@ -59,8 +57,7 @@ const Department: React.FC = () => {
                     pageSize: 5
                 }}
             />
-        </ProCard>
     )
 }
 
-export default Department
+export default DepartmentUsers

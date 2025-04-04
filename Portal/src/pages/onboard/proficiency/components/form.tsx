@@ -1,7 +1,7 @@
 import { apiAddProficiency, apiGetProficiencyTypeOptions } from "@/services/onboard/proficiency";
 import { PlusOutlined } from "@ant-design/icons";
 import { ModalForm, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText } from "@ant-design/pro-components";
-import { useAccess, useParams } from "@umijs/max";
+import { useParams } from "@umijs/max";
 import { Button, Col, message, Row } from "antd";
 import { useRef, useState } from "react";
 
@@ -15,8 +15,6 @@ const ProFiciencyForm: React.FC<Props> = ({ reload }) => {
     const { id } = useParams();
     const formRef = useRef<ProFormInstance>();
 
-    const access = useAccess();
-
     const onFinish = async (values: any) => {
         values.batchId = id;
         await apiAddProficiency(values);
@@ -28,7 +26,7 @@ const ProFiciencyForm: React.FC<Props> = ({ reload }) => {
 
     return (
         <>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)} hidden={!access.canAdmin}>Tạo đơn đăng ký</Button>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Tạo đơn đăng ký</Button>
             <ModalForm open={open} onOpenChange={setOpen} title="Đăng ký chuẩn đầu ra" onFinish={onFinish} formRef={formRef}>
                 <ProFormText name="userName" label="Mã sinh viên" rules={[
                     {

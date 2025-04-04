@@ -54,6 +54,9 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
         return Ok(await _postService.GetListAsync(filterOptions));
     }
 
+    [HttpGet("list")]
+    public async Task<IActionResult> ListAsync([FromQuery] PostFilterOptions filterOptions) => Ok(await _postService.GetListAsync(filterOptions));
+
     [HttpPost("export")]
     public async Task<IActionResult> ExportAsync() => File(await _postService.ExportAsync(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 

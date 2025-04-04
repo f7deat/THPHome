@@ -5,22 +5,16 @@ using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.Files;
 using WebUI.Models.Galleries;
 
-namespace WebUI.Services;
+namespace THPHome.Services;
 
-public class GalleryService : IGalleryService
+public class GalleryService(ApplicationDbContext _context) : IGalleryService
 {
-    private readonly ApplicationDbContext _context;
-    public GalleryService(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<List<GalleryListResponse>> GalleryListAsync(GalleryFilterOptions filterOptions)
     {
         try
         {
             var query = from a in _context.Posts
-                        where a.Type == PostType.GALLERY && a.Language == filterOptions.Language
+                        where a.Type == PostType.GALLERY && a.Locale == filterOptions.Locale
                         select new GalleryListResponse
                         {
                             Id = a.Id,

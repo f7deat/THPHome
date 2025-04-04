@@ -42,5 +42,5 @@ public interface IPostService
     Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize);
     Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize);
     Task<dynamic> SetActiveAsync(long id);
-    Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale);
+    Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale);
 }

@@ -79,7 +79,8 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
                         a.Description,
                         a.Thumbnail,
                         a.IssuedDate,
-                        a.CategoryId
+                        a.CategoryId,
+                        a.DepartmentId
                     };
         if (!string.IsNullOrWhiteSpace(filterOptions.Title))
         {
@@ -93,9 +94,9 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         {
             query = query.Where(x => x.Status == filterOptions.Status);
         }
-        if (!filterOptions.CanSeeAll)
+        if (filterOptions.DepartmentId != null)
         {
-            query = query.Where(x => x.CreatedBy == userId);
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
         }
         query = query.Where(x => x.Locale == filterOptions.Locale).OrderByDescending(x => x.IssuedDate);
         var total = await query.CountAsync();
@@ -110,7 +111,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
                 Status = x.Status,
                 CreatedBy = x.CreatedBy,
                 CreatedDate = x.CreatedDate,
-                CanUpdate = x.CreatedBy == userId || isEditor,
+                CanUpdate = x.CreatedBy == userId || isEditor || user.DepartmentId == filterOptions.DepartmentId,
                 Thumbnail = x.Thumbnail,
                 IssuedDate = x.IssuedDate,
                 CategoryId = x.CategoryId
@@ -364,16 +365,15 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
             }).ToListAsync();
     }
 
-    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale)
+    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale)
     {
-        var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Type == pAGE && x.Language == language);
+        var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Type == pAGE && x.Locale == locale);
         if (post is null)
         {
             post = new Post
             {
                 Title = url,
                 Url = url,
-                Language = language,
                 Status = PostStatus.PUBLISH,
                 CreatedDate = DateTime.Now,
                 Type = pAGE,

@@ -1,11 +1,12 @@
 ﻿using ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
 using THPCore.Infrastructures;
+using THPCore.Interfaces;
 using THPHome.Enums;
 
 namespace THPHome.Entities;
 
-public class Post : BaseEntity<long>
+public class Post : BaseEntity<long>, ILocale
 {
     [StringLength(500)]
     public string Title { get; set; } = default!;
@@ -20,10 +21,9 @@ public class Post : BaseEntity<long>
     public PostStatus Status { get; set; }
     public PostType Type { get; set; }
     public string? Tags { get; set; }
-    public Language Language { get; set; }
     public DateTime IssuedDate { get; set; }
     [StringLength(10)]
-    public string? Locale { get; set; }
+    public string Locale { get; set; } = default!;
     public int? CategoryId { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
@@ -31,6 +31,7 @@ public class Post : BaseEntity<long>
     public string? ModifiedBy { get; set; }
     [StringLength(450)]
     public string? CreatedBy { get; set; }
+    public int? DepartmentId { get; set; }
 
-    public List<Photo>? Photos { get; set; }
+    public ICollection<Photo>? Photos { get; set; }
 }

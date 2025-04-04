@@ -11,4 +11,5 @@ public class PostFilterOptions : FilterOptions
     [JsonIgnore]
     public bool CanSeeAll { get; set; }
     public int? CategoryId { get; set; }
+    public int? DepartmentId { get; set; }
 }

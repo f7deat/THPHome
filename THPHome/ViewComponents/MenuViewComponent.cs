@@ -31,7 +31,6 @@ public class MenuViewComponent(IMenuService _menuService) : ViewComponent
             case MenuType.MAIN:
                 return View("Main", await _menuService.GetListAsync(new ListMenuPayload
                 {
-                    Language = PageData.Language,
                     Type = type,
                     Locale = PageData.Locale
                 }));
@@ -40,7 +39,6 @@ public class MenuViewComponent(IMenuService _menuService) : ViewComponent
         }
         return View(view, await _menuService.GetListAsync(new ListMenuPayload
         {
-            Language = PageData.Language,
             Type = type
         }));
     }

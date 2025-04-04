@@ -221,8 +221,7 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
                 CreatedBy = user?.Id,
                 Locale = source.Locale,
                 CategoryId = source.CategoryId,
-                IssuedDate = DateTime.Now,
-                Language = source.Language
+                IssuedDate = DateTime.Now
             };
             await _context.Posts.AddAsync(target);
             await _context.SaveChangesAsync();

@@ -12,7 +12,7 @@ import { PageContainer, ProCard } from "@ant-design/pro-components";
 import ChangePassword from "./components/change-password";
 import { apiChangeAvatar } from "@/services/user";
 import PrivacySetting from "./components/privacy-setting";
-import Department from "./profile/components/department";
+import DepartmentUsers from "./profile/components/department";
 
 const Profile: React.FC = () => {
 
@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
                             </div>
                         </div>
                     </ProCard>
-                    <Department />
+                    <DepartmentUsers />
                 </Col>
             </Row>
         </PageContainer>

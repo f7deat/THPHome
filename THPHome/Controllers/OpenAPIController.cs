@@ -14,6 +14,7 @@ using THPHome.Data;
 using Microsoft.AspNetCore.Authorization;
 using THPHome.Enums;
 using THPHome.Entities;
+using THPHome.Models.Filters.OpenAPI;
 
 namespace THPHome.Controllers;
 
@@ -51,7 +52,7 @@ public class OpenAPIController : Controller
                 x.Description,
                 x.Thumbnail,
                 x.Status,
-                x.Language,
+                x.Locale,
                 x.Type,
                 x.Url,
                 x.CreatedDate,
@@ -62,7 +63,7 @@ public class OpenAPIController : Controller
         {
             query = query.Where(x => !string.IsNullOrEmpty(x.Title) && x.Title.ToLower().Contains(filterOptions.SearchTerm.ToLower()));
         }
-        query = query.Where(x => x.Language == filterOptions.Language);
+        query = query.Where(x => x.Locale == filterOptions.Locale);
         query = query.Where(x => x.Type == filterOptions.Type);
         if (filterOptions.CategoryId != null)
         {

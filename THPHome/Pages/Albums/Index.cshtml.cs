@@ -16,7 +16,7 @@ public class IndexModel(IPostService postService, ApplicationDbContext context, 
 
     public async Task OnGetAsync()
     {
-        FilterOptions.Language = PageData.Language;
+        FilterOptions.Locale = PageData.Locale;
         Galleries = await _galleryService.GalleryListAsync(FilterOptions);
     }
 }

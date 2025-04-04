@@ -1,20 +1,17 @@
 import { apiDeleteProficiency, apiGetProficiencyBatch, apiGetProficiencyStatusOptions, apiGetProficiencyTypeOptions, apiProficiencyList } from "@/services/onboard/proficiency";
 import { DeleteOutlined, EditOutlined, EyeOutlined, LeftOutlined, ManOutlined, MoreOutlined, WomanOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
-import { Button, Dropdown, Image, message, Popconfirm, Popover } from "antd";
+import { Button, Dropdown, Image, message, Popconfirm, Popover, Space } from "antd";
 import { useEffect, useRef, useState } from "react";
 import ProFiciencyForm from "../components/form";
 import { useParams, useRequest } from "@umijs/max";
 import ProficiencyPracticeStatusForm from "./components/status-form";
-import { useAccess } from "@umijs/max";
 import ExportPracticeModal from "./components/export-practice";
 import MoveBatch from "./components/move";
 
 const ProficiencyPracticePage: React.FC = () => {
 
     const { id } = useParams();
-
-    const access = useAccess();
 
     const actionRef = useRef<ActionType>();
 
@@ -37,12 +34,12 @@ const ProficiencyPracticePage: React.FC = () => {
             extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <ProTable
                 headerTitle={(
-                    <>
+                    <Space>
                         <ExportPracticeModal />
                         <ProFiciencyForm reload={() => {
                             actionRef.current?.reload();
                         }} />
-                    </>
+                    </Space>
                 )}
                 actionRef={actionRef}
                 search={{
@@ -185,8 +182,7 @@ const ProficiencyPracticePage: React.FC = () => {
                                 <Button type="primary" size="small" danger icon={<DeleteOutlined />} disabled={entity.source === 0} />
                             </Popconfirm>
                         ],
-                        width: 50,
-                        hideInTable: !access.canAdmin
+                        width: 50
                     }
                 ]}
                 request={(params) => {

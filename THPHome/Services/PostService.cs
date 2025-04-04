@@ -152,8 +152,8 @@ public class PostService : IPostService
         return new { succeeded = true, message = "Thành công!" };
     }
 
-    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, Language language, string locale)
+    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale)
     {
-        return await _postRepository.EnsureDataAsync(url, pAGE, language, locale);
+        return await _postRepository.EnsureDataAsync(url, pAGE, locale);
     }
 }
