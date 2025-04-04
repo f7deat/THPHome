@@ -118,6 +118,12 @@ export default [
         path: '/department/iformation-technology',
         component: './departments/information-technology',
         access: 'facultyOfInformationTechnology'
+      },
+      {
+        name: 'Chỉnh sửa',
+        path: '/department/article/:id',
+        component: './posts/post-setting',
+        hideInMenu: true,
       }
     ]
   },

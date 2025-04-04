@@ -3,6 +3,7 @@ import { apiCategoryTreeData } from "@/services/categoy";
 import { apiNewPost } from "@/services/post";
 import { PlusOutlined } from "@ant-design/icons";
 import { ModalForm, ProFormInstance, ProFormText, ProFormTextArea, ProFormTreeSelect } from "@ant-design/pro-components"
+import { useModel } from "@umijs/max";
 import { Button, message } from "antd";
 import { useRef, useState } from "react";
 
@@ -13,11 +14,13 @@ type Props = {
 
 const NewPost: React.FC<Props> = ({ type, reload }) => {
 
+    const { initialState } = useModel('@@initialState');
     const [open, setOpen] = useState<boolean>(false);
     const formRef = useRef<ProFormInstance>();
 
     const onFinish = async (values: any) => {
         values.type = type;
+        values.departmentId = initialState?.currentUser?.departmentId;
         await apiNewPost(values);
         message.success('Thêm mới thành công!');
         setOpen(false);

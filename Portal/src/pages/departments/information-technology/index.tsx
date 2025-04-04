@@ -1,19 +1,29 @@
+import { PostType } from "@/enum/post-enum";
+import NewPost from "@/pages/posts/components/new-post";
 import DepartmentUsers from "@/pages/users/profile/components/department";
-import { PlusOutlined } from "@ant-design/icons";
-import { PageContainer, ProTable } from "@ant-design/pro-components"
-import { useModel } from "@umijs/max"
-import { Button } from "antd";
+import { apiPostList } from "@/services/post";
+import { MoreOutlined } from "@ant-design/icons";
+import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
+import { history, useModel } from "@umijs/max"
+import { Button, Dropdown } from "antd";
+import { useRef } from "react";
 
 const Index: React.FC = () => {
 
     const { initialState } = useModel('@@initialState');
+    const actionRef = useRef<ActionType>();
 
     return (
         <PageContainer>
             <div className="flex gap-4">
                 <div className="md:w-2/3">
                     <ProTable
-                        headerTitle={<Button type="primary" icon={<PlusOutlined />}>Bài viết mới</Button>}
+                        actionRef={actionRef}
+                        headerTitle={<NewPost type={PostType.NEWS} reload={() => actionRef.current?.reload()} />}
+                        request={(params) => apiPostList({
+                            ...params,
+                            departmentId: initialState?.currentUser?.departmentId
+                        })}
                         search={{
                             layout: 'vertical'
                         }}
@@ -31,12 +41,47 @@ const Index: React.FC = () => {
                             },
                             {
                                 title: 'Người đăng',
-                                dataIndex: 'userName',
+                                dataIndex: 'createdBy',
                             },
                             {
-                                title: 'Thời gian',
-                                dataIndex: 'createdD ate',
+                                title: 'Ngày đăng',
+                                dataIndex: 'createdDate',
                                 valueType: 'fromNow'
+                            },
+                            {
+                                title: 'Trạng thái',
+                                dataIndex: 'status',
+                                valueEnum: {
+                                    0: { text: 'Chưa duyệt', status: 'Default' },
+                                    1: { text: 'Đã duyệt', status: 'Success' },
+                                    2: { text: 'Đã xóa', status: 'Error' },
+                                }
+                            },
+                            {
+                                title: 'Tác vụ',
+                                key: 'option',
+                                valueType: 'option',
+                                render: (text, record) => [
+                                    <Dropdown key="more" menu={{
+                                        items: [
+                                            {
+                                                key: 'edit',
+                                                label: 'Chỉnh sửa',
+                                                onClick: () => {
+                                                    history.push(`/department/article/${record.id}`);
+                                                }
+                                            },
+                                            {
+                                                key: 'delete',
+                                                label: 'Xóa',
+                                                onClick: () => { console.log('delete', record) }
+                                            }
+                                        ]
+                                    }}>
+                                        <Button type="dashed" size="small" icon={<MoreOutlined />} />
+                                    </Dropdown>
+                                ],
+                                width: 60
                             }
                         ]}
                     />
@@ -45,6 +90,7 @@ const Index: React.FC = () => {
                     <DepartmentUsers />
                 </div>
             </div>
+
         </PageContainer>
     )
 }

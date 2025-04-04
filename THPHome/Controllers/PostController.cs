@@ -71,7 +71,7 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
             if (args is null) return BadRequest("Dữ liệu không hợp lệ!");
             var user = await _userManager.FindByIdAsync(User.GetId());
             if (user is null) return Unauthorized();
-            if (user.UserType == THPIdentity.Entities.UserType.Student) return BadRequest("Tài khoản không có quyền truy cập!");
+            if (user.UserType == UserType.Student) return BadRequest("Tài khoản không có quyền truy cập!");
             var url = SeoHelper.ToSeoFriendly(args.Title);
             if (await _context.Posts.AnyAsync(x => x.Url == url)) return BadRequest("Bài viết đã tồn tại!");
             await _context.Posts.AddAsync(new Post
@@ -84,7 +84,8 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
                 Type = args.Type,
                 Url = url,
                 Locale = locale,
-                IssuedDate = DateTime.Now
+                IssuedDate = DateTime.Now,
+                DepartmentId = args.DepartmentId
             });
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(NewAsync), IdentityResult.Success);

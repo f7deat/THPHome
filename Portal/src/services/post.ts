@@ -21,3 +21,9 @@ export const apiNewPost = (data: any) => request(`post/new`, {
     method: 'POST',
     data
 });
+
+export async function apiPostList(params: any) {
+    return request('/post/list', {
+        params,
+    });
+}

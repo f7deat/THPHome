@@ -3,14 +3,10 @@ import './my-ckeditor.css';
 
 import {
     ClassicEditor,
-    AccessibilityHelp,
     Autoformat,
     AutoImage,
-    Autosave,
     BlockQuote,
     Bold,
-    Essentials,
-    GeneralHtmlSupport,
     Heading,
     ImageBlock,
     ImageCaption,
@@ -37,7 +33,6 @@ import {
     TableProperties,
     TableToolbar,
     TextTransformation,
-    TodoList,
     Underline,
     Undo,
     EditorConfig,
@@ -50,7 +45,6 @@ import {
     FontFamily
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
-import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 import { ProForm, ProFormItemProps } from '@ant-design/pro-components';
 import { useEffect, useRef, useState } from 'react';
 import { MyCustomUploadAdapterPlugin } from './MyUploadAdapter';
@@ -68,11 +62,7 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
 
     useEffect(() => {
         const value = formRef.getFieldValue(props.name);
-        if (value) {
-            editorRef?.setData(value)
-        } else {
-            editorRef?.setData('');
-        }
+        editorRef?.setData(value || '');
     }, [formRef.getFieldValue(props.name)]);
 
     const editorConfig: EditorConfig = {
@@ -93,7 +83,6 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
                 '|',
                 'bulletedList',
                 'numberedList',
-                'todoList',
                 'outdent',
                 'indent',
                 'imageUpload',
@@ -109,14 +98,10 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
         },
         extraPlugins: [MyCustomUploadAdapterPlugin],
         plugins: [
-            AccessibilityHelp,
             Autoformat,
             AutoImage,
-            Autosave,
             BlockQuote,
             Bold,
-            Essentials,
-            GeneralHtmlSupport,
             Heading,
             ImageBlock,
             ImageCaption,
@@ -143,7 +128,6 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
             TableProperties,
             TableToolbar,
             TextTransformation,
-            TodoList,
             Underline,
             Undo,
             Alignment,
@@ -198,16 +182,6 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
                 }
             ]
         },
-        htmlSupport: {
-            allow: [
-                {
-                    name: /^.*$/,
-                    styles: true,
-                    attributes: true,
-                    classes: true
-                }
-            ]
-        },
         image: {
             toolbar: [
                 'toggleImageCaption',
@@ -244,8 +218,8 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
         placeholder: 'Type or paste your content here!',
         table: {
             contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
-        }
-
+        },
+        licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NzUzNDcxOTksImp0aSI6IjUyNDg4ZThmLTIzZmMtNGMzNy1hY2RjLTY3YmY5ZDk5ZDM2NSIsImxpY2Vuc2VkSG9zdHMiOlsiKi5kaGhwLmVkdS52biJdLCJ1c2FnZUVuZHBvaW50IjoiaHR0cHM6Ly9wcm94eS1ldmVudC5ja2VkaXRvci5jb20iLCJkaXN0cmlidXRpb25DaGFubmVsIjpbImNsb3VkIiwiZHJ1cGFsIl0sImZlYXR1cmVzIjpbIkRSVVAiXSwidmMiOiJiNjg0MzRjMiJ9.Y3j8j7NcxCE6FmOYdVdgY9V7XVn6Sdurc4v40DyO2v1ejG69MgE1jEF-YTcANt3cvMNRv5lr5DIt67bbcuP6oA'
     };
 
     return (
