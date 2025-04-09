@@ -1,17 +1,31 @@
 import { PostType } from "@/enum/post-enum";
 import NewPost from "@/pages/posts/components/new-post";
 import DepartmentUsers from "@/pages/users/profile/components/department";
-import { apiPostList } from "@/services/post";
-import { MoreOutlined } from "@ant-design/icons";
+import { apiPostActive, apiPostDelete, apiPostList } from "@/services/post";
+import { PostStatus } from "@/utils/enum";
+import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, MoreOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
-import { history, useModel } from "@umijs/max"
-import { Button, Dropdown } from "antd";
+import { history, useAccess, useModel } from "@umijs/max"
+import { Button, Dropdown, message, Popconfirm } from "antd";
 import { useRef } from "react";
 
 const Index: React.FC = () => {
 
     const { initialState } = useModel('@@initialState');
+    const access = useAccess();
     const actionRef = useRef<ActionType>();
+
+    const onRemove = async (id: number) => {
+        await apiPostDelete(id);
+        message.success('Xóa bài viết thành công!');
+        actionRef.current?.reload();
+    }
+
+    const onApprove = async (id: number) => {
+        await apiPostActive(id);
+        message.success('Duyệt bài viết thành công!');
+        actionRef.current?.reload();
+    }
 
     return (
         <PageContainer>
@@ -42,11 +56,13 @@ const Index: React.FC = () => {
                             {
                                 title: 'Người đăng',
                                 dataIndex: 'createdBy',
+                                search: false
                             },
                             {
                                 title: 'Ngày đăng',
                                 dataIndex: 'createdDate',
-                                valueType: 'fromNow'
+                                valueType: 'fromNow',
+                                search: false
                             },
                             {
                                 title: 'Trạng thái',
@@ -61,7 +77,7 @@ const Index: React.FC = () => {
                                 title: 'Tác vụ',
                                 key: 'option',
                                 valueType: 'option',
-                                render: (text, record) => [
+                                render: (_, record) => [
                                     <Dropdown key="more" menu={{
                                         items: [
                                             {
@@ -69,17 +85,23 @@ const Index: React.FC = () => {
                                                 label: 'Chỉnh sửa',
                                                 onClick: () => {
                                                     history.push(`/department/article/${record.id}`);
-                                                }
+                                                },
+                                                icon: <EditOutlined />
                                             },
                                             {
-                                                key: 'delete',
-                                                label: 'Xóa',
-                                                onClick: () => { console.log('delete', record) }
+                                                key: 'approve',
+                                                label: record.status === PostStatus.DRAFT ? 'Duyệt' : 'Hủy duyệt',
+                                                onClick: () => onApprove(record.id),
+                                                icon: record.status === PostStatus.DRAFT ? <CheckOutlined /> : <CloseOutlined />,
+                                                disabled: !access.hod
                                             }
                                         ]
                                     }}>
                                         <Button type="dashed" size="small" icon={<MoreOutlined />} />
-                                    </Dropdown>
+                                    </Dropdown>,
+                                    <Popconfirm key="remove" title="Bạn có chắc chắn muốn xóa bài viết này không?" onConfirm={() => onRemove(record.id)}>
+                                        <Button type="primary" size="small" danger icon={<DeleteOutlined />} />
+                                    </Popconfirm>
                                 ],
                                 width: 60
                             }

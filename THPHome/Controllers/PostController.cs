@@ -307,9 +307,10 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
     [HttpPost("active/{id}")]
     public async Task<IActionResult> SetActiveAsync([FromRoute] long id)
     {
-        if (User.IsInRole(RoleName.ADMIN) || User.IsInRole(RoleName.EDITOR))
+        var user = await _userManager.FindByIdAsync(User.GetId());
+        if (user is null) return Unauthorized();
+        if (User.IsInRole(RoleName.ADMIN) || User.IsInRole(RoleName.EDITOR) || user.UserType == UserType.Dean)
         {
-            var user = await _userManager.FindByIdAsync(User.GetId());
             var data = await _context.Posts.FindAsync(id);
             if (data is null) return BadRequest("Bài viết không tồn tại!");
             if (_webHostEnvironment.IsProduction())
@@ -321,7 +322,7 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
         }
         else
         {
-            return Ok(new { succeeded = false, message = "Truy cập bị từ chối!" });
+            return BadRequest("Tài khoản không có quyền truy cập!");
         }
     }
 

@@ -1,8 +1,8 @@
 import { PostType } from "@/enum/post-enum";
 import { ActionType, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { useEffect, useRef, useState } from "react";
-import { FormattedMessage, Link, request, useAccess, history } from "@umijs/max";
-import { apiShareZaloOA, queryPosts } from "@/services/post";
+import { FormattedMessage, request, useAccess, history } from "@umijs/max";
+import { apiPostDelete, apiShareZaloOA, queryPosts } from "@/services/post";
 import { Button, Dropdown, message, Popconfirm, Spin, Tag, Tooltip } from "antd";
 import { PostStatus } from "@/utils/enum";
 import { EditOutlined, ArrowDownOutlined, ArrowUpOutlined, SendOutlined, CopyOutlined, TranslationOutlined, ToolOutlined, MoreOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -28,17 +28,10 @@ const PostList: React.FC<Props> = ({ type }) => {
         apiGetAllCategoryOptions().then(response => setCategories(response));
     }, []);
 
-    function remove(id: number) {
-        request(`post/remove/${id}`, {
-            method: 'POST'
-        }).then((response: any) => {
-            if (response.succeeded) {
-                message.success('succeeded!');
-                actionRef.current?.reload();
-            } else {
-                message.error('error!');
-            }
-        })
+    async function remove(id: number) {
+        await apiPostDelete(id);
+        message.success('Xóa bài viết thành công!');
+        actionRef.current?.reload();
     }
 
     function setActive(id: number) {

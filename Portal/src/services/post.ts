@@ -23,7 +23,19 @@ export const apiNewPost = (data: any) => request(`post/new`, {
 });
 
 export async function apiPostList(params: any) {
-    return request('/post/list', {
+    return request('post/list', {
         params,
+    });
+}
+
+export async function apiPostDelete(id: number) {
+    return request(`post/remove/${id}`, {
+        method: 'POST',
+    });
+}
+
+export async function apiPostActive(id: number) {
+    return request(`post/active/${id}`, {
+        method: 'POST',
     });
 }

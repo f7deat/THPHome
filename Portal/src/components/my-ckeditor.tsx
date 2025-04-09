@@ -219,7 +219,6 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
         table: {
             contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
         },
-        licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NzUzNDcxOTksImp0aSI6IjUyNDg4ZThmLTIzZmMtNGMzNy1hY2RjLTY3YmY5ZDk5ZDM2NSIsImxpY2Vuc2VkSG9zdHMiOlsiKi5kaGhwLmVkdS52biJdLCJ1c2FnZUVuZHBvaW50IjoiaHR0cHM6Ly9wcm94eS1ldmVudC5ja2VkaXRvci5jb20iLCJkaXN0cmlidXRpb25DaGFubmVsIjpbImNsb3VkIiwiZHJ1cGFsIl0sImZlYXR1cmVzIjpbIkRSVVAiXSwidmMiOiJiNjg0MzRjMiJ9.Y3j8j7NcxCE6FmOYdVdgY9V7XVn6Sdurc4v40DyO2v1ejG69MgE1jEF-YTcANt3cvMNRv5lr5DIt67bbcuP6oA'
     };
 
     return (

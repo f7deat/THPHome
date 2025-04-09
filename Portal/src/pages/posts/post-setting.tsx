@@ -1,4 +1,4 @@
-﻿import { Button, Col, Form, Input, message, Row, Upload, UploadProps, Image, Empty, Switch, Space } from 'antd'
+﻿import { Button, Col, Form, Input, message, Row, Upload, UploadProps, Image, Empty, Space } from 'antd'
 import {
     UploadOutlined,
     InboxOutlined,
