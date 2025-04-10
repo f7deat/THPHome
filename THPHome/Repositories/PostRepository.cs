@@ -176,7 +176,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
 
     public IQueryable<PostView> GetListInCategory(int categoryId, string searchTerm) => from a in _context.PostCategories.Where(x => x.CategoryId == categoryId)
                                                                                         join b in _context.Posts on a.PostId equals b.Id
-                                                                                        where (string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)) && b.Status == PostStatus.PUBLISH
+                                                                                        where (string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)) && b.Status == PostStatus.PUBLISH && b.DepartmentId == null
                                                                                         orderby b.CreatedDate descending
                                                                                         select new PostView
                                                                                         {
@@ -352,6 +352,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
     public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, string locale)
     {
         return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Locale == locale)
+            .Where(x => x.DepartmentId == null)
             .OrderByDescending(x => x.IssuedDate).Skip((current - 1) * pageSize).Take(pageSize).Select(x => new PostView
             {
                 Id = x.Id,

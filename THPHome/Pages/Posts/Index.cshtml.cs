@@ -36,7 +36,7 @@ public class IndexModel(ApplicationDbContext context, ICategoryService categoryS
             var categoryId = Categories.Select(c => c.Id).First();
             var relateds = from c in _context.PostCategories
                            join p in _context.Posts on c.PostId equals p.Id
-                           where c.CategoryId == categoryId && p.Status == PostStatus.PUBLISH && p.Id != PageData.Id
+                           where c.CategoryId == categoryId && p.Status == PostStatus.PUBLISH && p.Id != PageData.Id && p.DepartmentId == null
                            orderby p.IssuedDate descending
                            select new Post
                            {

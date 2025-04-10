@@ -32,7 +32,7 @@ public class DetailsModel(IPostService postService, ApplicationDbContext context
         Request.Cookies.TryGetValue("locale", out string? locale);
         var catalog = new Post
         {
-            Locale = locale,
+            Locale = locale ?? "vi-VN",
         };
         PageData = catalog;
         RouteData.Values.TryAdd(nameof(Post), catalog);
