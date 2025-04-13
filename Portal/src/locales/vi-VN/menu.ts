@@ -22,6 +22,7 @@ export default {
     'menu.fileManager': 'File manager',
     'menu.fileManager.fileCenter': 'File center',
     'menu.login': 'Đăng nhập',
+    'menu.multimedia': 'Đa phương tiện',
     'menu.setting': 'Cài đặt',
     'menu.setting.general': 'Cài đặt chung',
     'menu.setting.roleCenter': 'Chi tiết quyền',

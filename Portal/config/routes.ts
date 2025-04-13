@@ -169,7 +169,7 @@ export default [
   },
   {
     icon: 'PictureOutlined',
-    name: 'Multimedia',
+    name: 'multimedia',
     path: '/media',
     routes: [
       {

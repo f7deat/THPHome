@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Enums;
+using THPIdentity.Constants;
 using THPIdentity.Entities;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Filters.Files;
@@ -26,7 +27,8 @@ public class GalleryService(ApplicationDbContext _context, IHCAService _hcaServi
                             ModifiedDate = a.ModifiedDate,
                             Count = _context.Photos.Count(x => x.PostId == a.Id),
                             Thumbnail = _context.Photos.First(x => x.PostId == a.Id).Url,
-                            Url = a.Url
+                            Url = a.Url,
+                            DepartmentId = a.DepartmentId
                         };
             if (!string.IsNullOrWhiteSpace(filterOptions.Name))
             {
@@ -37,7 +39,10 @@ public class GalleryService(ApplicationDbContext _context, IHCAService _hcaServi
             {
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user is null) return [];
-                query = query.Where(x => x.DepartmentId == user.DepartmentId);
+                if (await _userManager.IsInRoleAsync(user, RoleName.EDITOR) && await _userManager.IsInRoleAsync(user, RoleName.ADMIN))
+                {
+                    query = query.Where(x => x.DepartmentId == user.DepartmentId);
+                }
             }
             query = query.OrderByDescending(x => x.ModifiedDate);
             return await query.ToListAsync();

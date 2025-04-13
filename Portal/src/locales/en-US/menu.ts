@@ -63,5 +63,5 @@ export default {
   'menu.users.role': 'Roles',
   'menu.users.roleCenter': 'Role Center',
   'menu.users.center': 'User center',
-  'menu.exam.history': 'History'
+  'menu.multimedia': 'Multimedia',
 };

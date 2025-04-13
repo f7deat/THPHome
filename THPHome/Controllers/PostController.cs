@@ -389,8 +389,17 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
     {
         var xAsis = new List<string> { "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12" };
         var series = new List<int>();
-        var query = await _context.Posts
-            .Where(x => x.CreatedDate.Year == DateTime.Now.Year)
+        var query = _context.Posts
+            .Where(x => x.CreatedDate.Year == DateTime.Now.Year);
+
+        if (!User.IsInRole(RoleName.ADMIN) && !User.IsInRole(RoleName.EDITOR))
+        {
+            var user = await _userManager.FindByIdAsync(User.GetId());
+            if (user is null) return BadRequest("User not found!");
+            query = query.Where(x => x.DepartmentId == user.DepartmentId);
+        }
+
+        var data = await query
             .Select(x => new
             {
                 x.Id,
@@ -401,9 +410,10 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
             Month = x.Key,
             Data = x.Count()
         }).ToListAsync();
+
         for (int i = 1; i < 13; i++)
         {
-            series.Add(query.FirstOrDefault(x => x.Month == i)?.Data ?? 0);
+            series.Add(data.FirstOrDefault(x => x.Month == i)?.Data ?? 0);
         }
         return Ok(new
         {

@@ -56,22 +56,24 @@ const Index: React.FC = () => {
                             {
                                 title: 'Người đăng',
                                 dataIndex: 'createdBy',
-                                search: false
+                                search: false,
+                                minWidth: 120
                             },
                             {
                                 title: 'Ngày đăng',
                                 dataIndex: 'createdDate',
                                 valueType: 'fromNow',
-                                search: false
+                                search: false,
+                                minWidth: 110
                             },
                             {
                                 title: 'Trạng thái',
                                 dataIndex: 'status',
                                 valueEnum: {
                                     0: { text: 'Chưa duyệt', status: 'Default' },
-                                    1: { text: 'Đã duyệt', status: 'Success' },
-                                    2: { text: 'Đã xóa', status: 'Error' },
-                                }
+                                    1: { text: 'Đã duyệt', status: 'Success' }
+                                },
+                                minWidth: 110
                             },
                             {
                                 title: 'Tác vụ',

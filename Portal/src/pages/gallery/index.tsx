@@ -36,9 +36,7 @@ const GalleryPage: React.FC = () => {
 
 
   const fetchData = () => {
-    apiGalleryList({
-      locale: intl.locale
-    }).then((response: any) => {
+    apiGalleryList().then((response: any) => {
       setDataSource(response);
     })
   }

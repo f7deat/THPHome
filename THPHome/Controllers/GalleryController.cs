@@ -42,7 +42,9 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
                 Status = PostStatus.PUBLISH,
                 Url = SeoHelper.ToSeoFriendly(args.Title),
                 Type = PostType.GALLERY,
-                DepartmentId = user.DepartmentId
+                DepartmentId = user.DepartmentId,
+                CreatedDate = DateTime.Now,
+                CreatedBy = user.Id
             });
             await _context.SaveChangesAsync(true);
             return CreatedAtAction(nameof(GalleryAddAsync), THPResult.Success);
@@ -62,6 +64,8 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
             if (gallery is null) return BadRequest("Gallery not found!");
             gallery.Title = args.Title;
             gallery.Description = args.Description;
+            gallery.ModifiedDate = DateTime.Now;
+            gallery.ModifiedBy = User.GetId();
             gallery.Url = SeoHelper.ToSeoFriendly(args.Title);
             _context.Posts.Update(gallery);
             await _context.SaveChangesAsync(true);
