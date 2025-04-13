@@ -1,11 +1,10 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Helpers;
+﻿using ApplicationCore.Helpers;
 using ApplicationCore.Models.Posts;
+using THPCore.Models;
 using THPHome.Entities;
 using THPHome.Enums;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
-using THPHome.Models.ViewModel;
 
 namespace THPHome.Interfaces.IService;
 

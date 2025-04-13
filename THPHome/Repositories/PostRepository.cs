@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Helpers;
-using ApplicationCore.Enums;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Identity;
 using THPIdentity.Entities;
@@ -15,7 +14,7 @@ using THPHome.Models.Filters;
 using THPIdentity.Constants;
 using THPHome.Enums;
 using UserType = THPIdentity.Entities.UserType;
-using THPHome.Models.ViewModel;
+using THPCore.Models;
 
 namespace THPHome.Repositories;
 

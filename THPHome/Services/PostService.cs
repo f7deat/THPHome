@@ -1,15 +1,14 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Helpers;
+﻿using ApplicationCore.Helpers;
 using ApplicationCore.Models.Posts;
+using THPCore.Models;
 using THPHome.Entities;
 using THPHome.Enums;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
-using THPHome.Models.ViewModel;
 
-namespace ApplicationCore.Services;
+namespace THPHome.Services;
 
 public class PostService : IPostService
 {

@@ -171,7 +171,6 @@ export default [
     icon: 'PictureOutlined',
     name: 'Multimedia',
     path: '/media',
-    access: 'canEditor',
     routes: [
       {
         name: 'Thư viện ảnh',

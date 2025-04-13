@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Enums;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Files;
 using THPHome.Models.Posts;
-using THPHome.Models.ViewModel;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
@@ -32,6 +32,8 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
         try
         {
             if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Vui lòng nhập tên album");
+            var user = await _userManager.FindByIdAsync(User.GetId());
+            if (user is null) return BadRequest("User not found!");
             await _context.Posts.AddAsync(new Post
             {
                 Title = args.Title,
@@ -39,10 +41,11 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
                 Locale = locale,
                 Status = PostStatus.PUBLISH,
                 Url = SeoHelper.ToSeoFriendly(args.Title),
-                Type = PostType.GALLERY
+                Type = PostType.GALLERY,
+                DepartmentId = user.DepartmentId
             });
             await _context.SaveChangesAsync(true);
-            return CreatedAtAction(nameof(GalleryAddAsync), IdentityResult.Success);
+            return CreatedAtAction(nameof(GalleryAddAsync), THPResult.Success);
         }
         catch (Exception ex)
         {

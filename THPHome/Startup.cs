@@ -31,6 +31,8 @@ using THPHome.Services.Contacts;
 using THPHome.Extentions.ServiceCollections;
 using THPHome.ExternalAPI.Interfaces;
 using THPHome.Services.Notifications;
+using THPHome.Repositories.Multimedia;
+using THPHome.Interfaces.IRepository.IMultimedia;
 
 namespace THPHome;
 
@@ -67,6 +69,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         services.AddScoped<IBlockService, BlockService>();
         services.AddScoped<IGalleryService, GalleryService>();
+        services.AddScoped<IGalleryRepository, GalleryRepository>();
         services.AddScoped<ILocalizeService, LocalizeService>();
         services.AddScoped<ISettingRepository, SettingRepository>();
         services.AddScoped<ISettingService, SettingService>();

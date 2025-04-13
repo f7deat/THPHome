@@ -8,5 +8,5 @@ public class Gallery : BaseEntity
     public string? Description { get; set; }
     public string NormalizedName { get; set; } = default!;
 
-    public List<Photo>? Photos { get; set; }
+    public ICollection<Photo>? Photos { get; set; }
 }
