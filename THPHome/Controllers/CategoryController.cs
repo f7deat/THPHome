@@ -1,19 +1,22 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
+using THPIdentity.Constants;
+using THPIdentity.Entities;
 using WebUI.Foundations;
-using WebUI.Models.Categories;
 using WebUI.Models.Filters;
 using WebUI.Models.Results;
 
 namespace THPHome.Controllers;
 
-public class CategoryController(ICategoryService _categoryService, ApplicationDbContext context, IPostService _postService) : BaseController(context)
+public class CategoryController(ICategoryService _categoryService, ApplicationDbContext context, IPostService _postService, IHCAService _hcaService, UserManager<ApplicationUser> _userManager) : BaseController(context)
 {
     [HttpGet("parent/options")]
     public async Task<IActionResult> GetParentOptionsAsync([FromQuery] string locale) => Ok(await _context.Categories.Where(x => x.ParentId == null && x.Locale == locale).Select(x => new
@@ -29,7 +32,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
     public async Task<IActionResult> GetListAsync([FromQuery] CategoryFilterOptions filterOptions)
     {
         var result = new List<TreeCategoryItem>();
-        var raw = await _context.Categories
+        var query = _context.Categories
             .Where(x => x.Locale == filterOptions.Locale)
             .Where(x => string.IsNullOrEmpty(filterOptions.Name) || !string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(filterOptions.Name.ToLower()))
             .Select(x => new TreeCategoryItem
@@ -40,8 +43,23 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
                 Description = x.Description,
                 Status = x.Status,
                 Count = _context.PostCategories.Count(c => c.CategoryId == x.Id),
-                IsDisplayOnHome = x.IsDisplayOnHome
-            }).ToListAsync();
+                IsDisplayOnHome = x.IsDisplayOnHome,
+                DepartmentId = x.DepartmentId
+            });
+
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+        if (user is null) return BadRequest("User not found!");
+        if (!_hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR))
+        {
+            query = query.Where(x => x.DepartmentId == user.DepartmentId);
+        }
+        else
+        {
+            query = query.Where(x => x.DepartmentId == null);
+        }
+
+        var raw = await query.AsNoTracking().ToListAsync();
+
         var categories = raw.Where(x => x.ParentId == null || x.ParentId == 0)
             .Select(x => new TreeCategoryItem
             {
@@ -155,7 +173,18 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
     public async Task<IActionResult> GetOptionsAsync([FromQuery] FilterOptions args)
     {
         var result = new List<TreeCategoryData>();
-        var raw = await _context.Categories.Where(x => x.Status == CategoryStatus.Active).Where(x => x.Locale == args.Locale).AsNoTracking().ToListAsync();
+        var query = _context.Categories.Where(x => x.Status == CategoryStatus.Active).Where(x => x.Locale == args.Locale);
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+        if (user is null) return BadRequest("User not found!");
+        if (_hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR))
+        {
+            query = query.Where(x => x.DepartmentId == null);
+        }
+        else
+        {
+            query = query.Where(x => x.DepartmentId == user.DepartmentId);
+        }
+        var raw = await query.AsNoTracking().ToListAsync();
         var categories = raw.Where(x => x.ParentId == null || x.ParentId == 0)
             .Select(x => new
             {

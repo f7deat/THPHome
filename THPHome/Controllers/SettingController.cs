@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Models.Filters;
 using THPHome.Models.Settings;
-using THPHome.Models.ViewModel;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
 

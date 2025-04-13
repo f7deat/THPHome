@@ -11,6 +11,7 @@ using THPHome.Enums;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Files;
 using THPHome.Models.Posts;
+using THPIdentity.Constants;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;
@@ -34,6 +35,10 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
             if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Vui lòng nhập tên album");
             var user = await _userManager.FindByIdAsync(User.GetId());
             if (user is null) return BadRequest("User not found!");
+            if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
+            {
+                if (user.UserType != UserType.Dean) return BadRequest("Bạn không có quyền tạo album ảnh!");
+            }
             await _context.Posts.AddAsync(new Post
             {
                 Title = args.Title,
@@ -62,6 +67,12 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
         {
             var gallery = await _context.Posts.FindAsync(args.Id);
             if (gallery is null) return BadRequest("Gallery not found!");
+            var user = await _userManager.FindByIdAsync(User.GetId());
+            if (user is null) return BadRequest("User not found!");
+            if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
+            {
+                if (user.UserType != UserType.Dean) return BadRequest("Bạn không có quyền cập nhật album ảnh.");
+            }
             gallery.Title = args.Title;
             gallery.Description = args.Description;
             gallery.ModifiedDate = DateTime.Now;
@@ -95,6 +106,12 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
         if (await _context.Photos.AnyAsync(x => x.PostId == id))
         {
             return BadRequest("Không thể xóa Gallery chứa hình ảnh!");
+        }
+        var user = await _userManager.FindByIdAsync(User.GetId());
+        if (user is null) return BadRequest("User not found!");
+        if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
+        {
+            if (user.UserType != UserType.Dean) return BadRequest("Bạn không có quyền xóa album ảnh.");
         }
         _context.Posts.Remove(gallery);
         await _context.SaveChangesAsync();

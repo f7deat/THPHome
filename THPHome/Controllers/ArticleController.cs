@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Enums;
 using THPHome.Models.Filters.Articles;
-using THPHome.Models.ViewModel;
 using WebUI.Foundations;
 
 namespace THPHome.Controllers;

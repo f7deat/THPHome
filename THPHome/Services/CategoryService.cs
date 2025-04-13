@@ -1,15 +1,18 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Helpers;
+﻿using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
+using THPIdentity.Constants;
+using THPIdentity.Entities;
 
 namespace THPHome.Services;
 
-public class CategoryService(ICategoryRepository _categoryRepository, IPostRepository _postRepository) : ICategoryService
+public class CategoryService(ICategoryRepository _categoryRepository, IPostRepository _postRepository, IHCAService _hcaService, UserManager<ApplicationUser> _userManager) : ICategoryService
 {
     public async Task<THPResult> AddAsync(Category category, string locale)
     {
@@ -18,6 +21,9 @@ public class CategoryService(ICategoryRepository _categoryRepository, IPostRepos
             category.NormalizeName = SeoHelper.ToSeoFriendly(category.Name);
         }
         if (await _categoryRepository.IsExistAsync(category.NormalizeName.ToLower())) return THPResult.Failed("Danh mục đã tồn tại");
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+        if (user is null) return THPResult.Failed("Người dùng không tồn tại");
+        category.DepartmentId = user.DepartmentId;
         category.Locale = locale;
         await _categoryRepository.AddAsync(category);
         return THPResult.Success;
@@ -30,6 +36,12 @@ public class CategoryService(ICategoryRepository _categoryRepository, IPostRepos
         if (await _postRepository.IsExistInCategory(id))
         {
             return new { succeeded = false, message = $"Không thể xóa danh mục đã có bài viết" };
+        }
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+        if (user is null) return new { succeeded = false, message = "Người dùng không tồn tại" };
+        if (!_hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR))
+        {
+            if (user.UserType != UserType.Dean) return new { succeeded = false, message = "Bạn không có quyền xóa danh mục" };
         }
         var category = await _categoryRepository.GetByIdAsync(id);
         if (category is null) return new { succeeded = false };

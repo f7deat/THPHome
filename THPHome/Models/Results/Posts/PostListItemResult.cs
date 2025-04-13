@@ -1,6 +1,6 @@
 ﻿using THPHome.Enums;
 
-namespace WebUI.Models.Results.Posts;
+namespace THPHome.Models.Results.Posts;
 
 public class PostListItemResult
 {
@@ -16,4 +16,5 @@ public class PostListItemResult
     public string? Thumbnail { get; set; }
     public DateTime IssuedDate { get; set; }
     public int? CategoryId { get; set; }
+    public int? DepartmentId { get; set; }
 }

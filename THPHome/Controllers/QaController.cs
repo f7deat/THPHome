@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.QA;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters;
 using THPHome.Models.Results.QAs;
-using THPHome.Models.ViewModel;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 

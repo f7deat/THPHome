@@ -1,9 +1,8 @@
-﻿using ApplicationCore.Entities;
+﻿using THPCore.Models;
 using THPHome.Entities;
-using THPHome.Models.ViewModel;
 using WebUI.Models.Filters.Parners;
 
-namespace ApplicationCore.Interfaces.IService;
+namespace THPHome.Interfaces.IService;
 
 public interface IPartnerService
 {

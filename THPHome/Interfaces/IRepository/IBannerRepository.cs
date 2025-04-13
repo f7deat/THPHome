@@ -1,6 +1,6 @@
-﻿using THPHome.Entities;
+﻿using THPCore.Models;
+using THPHome.Entities;
 using THPHome.Interfaces.Base;
-using THPHome.Models.ViewModel;
 using WebUI.Models.Filters.Settings;
 
 namespace THPHome.Interfaces.IRepository;

@@ -39,7 +39,7 @@ public class GalleryService(ApplicationDbContext _context, IHCAService _hcaServi
             {
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user is null) return [];
-                if (await _userManager.IsInRoleAsync(user, RoleName.EDITOR) && await _userManager.IsInRoleAsync(user, RoleName.ADMIN))
+                if (!_hcaService.IsUserInRole(RoleName.EDITOR) && !_hcaService.IsUserInRole(RoleName.ADMIN))
                 {
                     query = query.Where(x => x.DepartmentId == user.DepartmentId);
                 }

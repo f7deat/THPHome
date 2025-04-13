@@ -1,45 +1,37 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IRepository;
-using ApplicationCore.Interfaces.IService;
+﻿using ApplicationCore.Interfaces.IRepository;
 using Microsoft.AspNetCore.Identity;
+using THPCore.Models;
 using THPHome.Entities;
-using THPHome.Models.ViewModel;
+using THPHome.Interfaces.IService;
 using WebUI.Models.Filters.Parners;
 
-namespace ApplicationCore.Services
+namespace THPHome.Services;
+
+public class PartnerService(IPartnerRepository _partnerRepository) : IPartnerService
 {
-    public class PartnerService : IPartnerService
+    public async Task<dynamic> AddAsync(Partner partner)
     {
-        private readonly IPartnerRepository _partnerRepository;
-        public PartnerService(IPartnerRepository partnerRepository)
+        partner.CreatedDate = DateTime.Now;
+        partner.ModifiedDate = DateTime.Now;
+        return new
         {
-            _partnerRepository = partnerRepository;
-        }
-
-        public async Task<dynamic> AddAsync(Partner partner)
-        {
-            partner.CreatedDate = DateTime.Now;
-            partner.ModifiedDate = DateTime.Now;
-            return new
-            {
-                succeeded = true,
-                data = await _partnerRepository.AddAsync(partner),
-                message = "Succeeded!"
-            };
-        }
-
-        public async Task<dynamic> DeleteAsync(int id)
-        {
-            var partner = await _partnerRepository.GetByIdAsync(id);
-            if (partner == null) return IdentityResult.Failed(new IdentityError
-            {
-                Code = "B",
-                Description = "Partner not found!"
-            });
-            await _partnerRepository.DeleteAsync(partner);
-            return IdentityResult.Success;
-        }
-
-        public Task<ListResult<Partner>> GetListAsync(PartnerFilterOptions filterOptions) => _partnerRepository.GetListAsync(filterOptions);
+            succeeded = true,
+            data = await _partnerRepository.AddAsync(partner),
+            message = "Succeeded!"
+        };
     }
+
+    public async Task<dynamic> DeleteAsync(int id)
+    {
+        var partner = await _partnerRepository.GetByIdAsync(id);
+        if (partner == null) return IdentityResult.Failed(new IdentityError
+        {
+            Code = "B",
+            Description = "Partner not found!"
+        });
+        await _partnerRepository.DeleteAsync(partner);
+        return IdentityResult.Success;
+    }
+
+    public Task<ListResult<Partner>> GetListAsync(PartnerFilterOptions filterOptions) => _partnerRepository.GetListAsync(filterOptions);
 }

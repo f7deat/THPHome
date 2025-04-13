@@ -26,7 +26,7 @@ using WebUI.Interfaces.IService;
 using THPHome.Entities.Users;
 using ForeignLanguageProficiency = THPHome.Entities.Users.ForeignLanguageProficiency;
 using THPHome.Models.Filters;
-using THPHome.Models.ViewModel;
+using THPCore.Models;
 
 namespace THPHome.Controllers;
 

@@ -295,10 +295,7 @@ const CategoryList = () => {
                         ]} />
                         <ProFormText label="Icon" name="icon" />
                         <ProFormSelect label="Danh mục cha" name="parentId"
-                            request={(params) => apiGetParentCategoryOptions({
-                                ...params,
-                                language: language(intl.locale)
-                            })}
+                            request={apiGetParentCategoryOptions}
                         />
                         <ProFormTextArea label="Mô tả" name='description' />
                     </Col>

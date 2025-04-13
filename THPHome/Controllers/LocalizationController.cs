@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using THPCore.Extensions;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Helpers;
-using THPHome.Models.ViewModel;
 using WebUI.Foundations;
 using WebUI.Models.Filters.Settings;
 

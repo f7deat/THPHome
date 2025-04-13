@@ -17,10 +17,11 @@ using THPHome.Interfaces.IService;
 using THPHome.Models.Filters;
 using THPHome.Enums;
 using THPHome.ExternalAPI.Interfaces;
+using THPCore.Interfaces;
 
 namespace THPHome.Controllers;
 
-public class PostController(IAttachmentService _attachmentService, IPostService _postService, IPostCategoryService _postCategoryService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, IZaloAPI _zaloAPI, ILogService _logService) : BaseController(context)
+public class PostController(IHCAService _hcaService, IAttachmentService _attachmentService, IPostService _postService, IPostCategoryService _postCategoryService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, IZaloAPI _zaloAPI, ILogService _logService) : BaseController(context)
 {
     [Route("post/tag")]
     public async Task<IActionResult> Tag(string name, string searchTerm)
@@ -74,6 +75,7 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
             if (user.UserType == UserType.Student) return BadRequest("Tài khoản không có quyền truy cập!");
             var url = SeoHelper.ToSeoFriendly(args.Title);
             if (await _context.Posts.AnyAsync(x => x.Url == url)) return BadRequest("Bài viết đã tồn tại!");
+            
             await _context.Posts.AddAsync(new Post
             {
                 CategoryId = args.CategoryId,
@@ -85,7 +87,7 @@ public class PostController(IAttachmentService _attachmentService, IPostService 
                 Url = url,
                 Locale = locale,
                 IssuedDate = DateTime.Now,
-                DepartmentId = args.DepartmentId
+                DepartmentId = _hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR) ? null : user.DepartmentId,
             });
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(NewAsync), IdentityResult.Success);

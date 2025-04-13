@@ -20,7 +20,7 @@ public class Category : BaseEntity<int>
     public string? Icon { get; set; }
     [StringLength(10)]
     public string Locale { get; set; } = "vi-VN";
-
+    public int? DepartmentId { get; set; }
 }
 
 public enum CategoryStatus

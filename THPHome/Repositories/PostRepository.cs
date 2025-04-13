@@ -4,7 +4,6 @@ using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Identity;
 using THPIdentity.Entities;
 using WebUI.Foundations.Interfaces;
-using WebUI.Models.Results.Posts;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
@@ -13,15 +12,15 @@ using THPHome.Models.Categories;
 using THPHome.Models.Filters;
 using THPIdentity.Constants;
 using THPHome.Enums;
-using UserType = THPIdentity.Entities.UserType;
 using THPCore.Models;
+using THPHome.Models.Results.Posts;
+using THPCore.Interfaces;
 
 namespace THPHome.Repositories;
 
-public class PostRepository(ApplicationDbContext _context, UserManager<ApplicationUser> userManager, ICurrentUser currentUser) : EfRepository<Post>(_context), IPostRepository
+public class PostRepository(ApplicationDbContext _context, UserManager<ApplicationUser> userManager, IHCAService _hcaService) : EfRepository<Post>(_context), IPostRepository
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<PaginatedList<Post>> GetListPostByTagIdAsync(int tagId, int current, int pageSize)
     {
@@ -58,12 +57,13 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
 
     public async Task<dynamic?> GetListAsync(PostFilterOptions filterOptions)
     {
-        var userId = _currentUser.GetId();
+        var userId = _hcaService.GetUserId();
         if (userId is null) return default;
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null) return default;
-        var isEditor = await _userManager.IsInRoleAsync(user, RoleName.EDITOR);
+        var isEditor = _hcaService.IsUserInRole(RoleName.EDITOR);
         var query = from a in _context.Posts.Where(x => filterOptions.Type == null || x.Type == filterOptions.Type)
+                    where a.Locale == filterOptions.Locale
                     select new
                     {
                         a.Id,
@@ -97,7 +97,11 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         {
             query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
         }
-        query = query.Where(x => x.Locale == filterOptions.Locale).OrderByDescending(x => x.IssuedDate);
+        if (!_hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR))
+        {
+            query = query.Where(x => x.DepartmentId == user.DepartmentId);
+        }
+        query = query.OrderByDescending(x => x.IssuedDate);
         var total = await query.CountAsync();
         var data = await query.Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).AsNoTracking()
             .Select(x => new PostListItemResult
@@ -113,7 +117,8 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
                 CanUpdate = x.CreatedBy == userId || isEditor || user.DepartmentId == filterOptions.DepartmentId,
                 Thumbnail = x.Thumbnail,
                 IssuedDate = x.IssuedDate,
-                CategoryId = x.CategoryId
+                CategoryId = x.CategoryId,
+                DepartmentId = x.DepartmentId
             }).ToListAsync();
         var users = await _userManager.Users.Where(x => x.UserType != UserType.Student).ToListAsync();
 

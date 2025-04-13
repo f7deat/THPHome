@@ -1,15 +1,17 @@
 import { PostType } from "@/enum/post-enum";
 import { ActionType, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { useEffect, useRef, useState } from "react";
-import { FormattedMessage, request, useAccess, history } from "@umijs/max";
+import { FormattedMessage, request, useAccess, history, FormattedNumber } from "@umijs/max";
 import { apiPostDelete, apiShareZaloOA, queryPosts } from "@/services/post";
 import { Button, Dropdown, message, Popconfirm, Spin, Tag, Tooltip } from "antd";
 import { PostStatus } from "@/utils/enum";
-import { EditOutlined, ArrowDownOutlined, ArrowUpOutlined, SendOutlined, CopyOutlined, TranslationOutlined, ToolOutlined, MoreOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, ArrowDownOutlined, ArrowUpOutlined, SendOutlined, CopyOutlined, TranslationOutlined, ToolOutlined, MoreOutlined, DeleteOutlined, CalendarOutlined, EyeOutlined } from "@ant-design/icons";
 import { apiGetAllCategoryOptions } from "@/services/categoy";
 import IPost from "@/pages/posts/interfaces/post-model";
 import NewPost from "@/pages/posts/components/new-post";
 import CopyPost from "@/pages/posts/components/copy";
+import { apiDepartmentOptions } from "@/services/department";
+import dayjs from "dayjs";
 
 type Props = {
     type: PostType;
@@ -23,9 +25,11 @@ const PostList: React.FC<Props> = ({ type }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const access = useAccess();
     const [categories, setCategories] = useState<any[]>([]);
+    const [departments, setDepartments] = useState<any[]>([]);
 
     useEffect(() => {
         apiGetAllCategoryOptions().then(response => setCategories(response));
+        apiDepartmentOptions().then(response => setDepartments(response));
     }, []);
 
     async function remove(id: number) {
@@ -85,7 +89,15 @@ const PostList: React.FC<Props> = ({ type }) => {
         {
             title: 'Tiêu đề',
             dataIndex: 'title',
-            render: (dom, record: IPost) => <a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank" rel="noreferrer">{record.title}</a>
+            render: (dom, record: IPost) => (
+                <div>
+                    <div className="font-medium"><a href={`https://dhhp.edu.vn/post/${record.url}-${record.id}.html`} target="_blank" rel="noreferrer">{record.title}</a></div>
+                    <div className="text-gray-500 text-sm">
+                        <span className="mr-2"><CalendarOutlined /> {dayjs(record.createdDate).format('DD/MM/YYYY HH:mm')}</span>
+                        <span><EyeOutlined /> <FormattedNumber value={record.view || 0} /></span>
+                    </div>
+                </div>
+            )
         },
         {
             title: 'Danh mục',
@@ -97,11 +109,12 @@ const PostList: React.FC<Props> = ({ type }) => {
             minWidth: 150
         },
         {
-            title: <FormattedMessage id='general.view' />,
-            dataIndex: 'view',
-            valueType: 'digit',
-            search: false,
-            width: 80
+            title: 'Đơn vị',
+            dataIndex: 'departmentId',
+            valueType: 'select',
+            fieldProps: {
+                options: departments
+            }
         },
         {
             title: 'Trạng thái',
@@ -125,13 +138,6 @@ const PostList: React.FC<Props> = ({ type }) => {
             title: 'Người đăng',
             dataIndex: 'createdBy',
             width: 140,
-            search: false
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdDate',
-            valueType: 'fromNow',
-            width: 120,
             search: false
         },
         {

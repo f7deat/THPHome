@@ -88,7 +88,7 @@ const GalleryPage: React.FC = () => {
                 extra={<Tag color="blue">{item.count} ảnh</Tag>}
                 actions={[
                   <Tooltip title="Xem chi tiết" key="view">
-                    <Link to={`/gallery/photo/${item.id}`}><FolderOutlined /></Link>
+                    <Link to={`/media/gallery/${item.id}`}><FolderOutlined /></Link>
                   </Tooltip>,
                   <Tooltip title="Chỉnh sửa" key="edit">
                     <EditOutlined onClick={() => {

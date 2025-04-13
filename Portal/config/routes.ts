@@ -13,7 +13,6 @@ export default [
     icon: 'FormOutlined',
     name: 'Nội dung',
     path: '/post',
-    access: 'canEditor',
     routes: [
       {
         name: 'Entry',
@@ -76,6 +75,7 @@ export default [
         name: 'Câu hỏi thường gặp',
         path: '/post/qa',
         component: './posts/qa',
+        access: 'canEditor'
       },
       {
         name: 'Danh sách câu hỏi',
@@ -86,12 +86,14 @@ export default [
       {
         name: 'Đối tác',
         path: '/post/partner',
-        component: './partners/partner-setting'
+        component: './partners/partner-setting',
+        access: 'canEditor'
       },
       {
         name: 'Slide',
         path: '/post/banners',
         component: './banners/banner-list',
+        access: 'canEditor'
       }
     ],
   },
@@ -105,8 +107,7 @@ export default [
     icon: 'AppstoreAddOutlined',
     name: 'category',
     path: '/category/list',
-    component: './categories/category-list',
-    access: 'canEditor'
+    component: './categories/category-list'
   },
   {
     icon: 'ApartmentOutlined',
@@ -179,7 +180,7 @@ export default [
       },
       {
         name: 'Hình ảnh',
-        path: '/media/gallery/photo/:id',
+        path: '/media/gallery/:id',
         component: './gallery/photo',
         hideInMenu: true,
       },

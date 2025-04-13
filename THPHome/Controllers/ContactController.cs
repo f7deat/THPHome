@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Contacts;
 using THPHome.Helpers.Validators;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters;
 using THPHome.Models.Filters.Contacts;
-using THPHome.Models.ViewModel;
 using THPIdentity.Constants;
 using WebUI.Foundations;
 using WebUI.Interfaces.IService;

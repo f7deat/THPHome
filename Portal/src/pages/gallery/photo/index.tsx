@@ -52,7 +52,7 @@ const PhotoPage: React.FC = () => {
             })}
             grid={{ gutter: 16, column: 6 }}
             renderItem={(item) => (
-              <div className="bg-white shadow">
+              <div className="bg-white shadow p-2">
                 <Image src={item.url} className="w-full object-cover" height={180} wrapperClassName="w-full" />
                 <div className="p-1 flex justify-center">
                   <Popconfirm title="Xác nhận xóa" onConfirm={() => onConfirm(item.id)}>

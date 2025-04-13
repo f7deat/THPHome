@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Curriculum;
 using THPHome.Enums;
 using THPHome.Models.Filters;
 using THPHome.Models.Filters.Curriculum;
 using THPHome.Models.Results.Curriculum;
-using THPHome.Models.ViewModel;
 using THPIdentity.Entities;
 using WebUI.Foundations;
 
