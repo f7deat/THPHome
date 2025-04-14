@@ -7,11 +7,11 @@ using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService.IUsers;
+using THPHome.Models.Args.Departments;
 using THPHome.Models.Filters;
 using THPHome.Models.Filters.Users;
 using THPIdentity.Entities;
 using WebUI.Foundations;
-using WebUI.Models.Args.Departments;
 
 namespace THPHome.Controllers;
 
@@ -204,4 +204,7 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
 
     [HttpGet("count-student"), AllowAnonymous]
     public async Task<IActionResult> CountStudentAsync([FromQuery] int departmentId) => Ok(new { data = await _departmentService.CountStudentAsync(departmentId) });
+
+    [HttpGet("count-staff"), AllowAnonymous]
+    public async Task<IActionResult> CountStaffAsync([FromQuery] int departmentId) => Ok(new { data = await _departmentService.CountStaffAsync(departmentId) });
 }

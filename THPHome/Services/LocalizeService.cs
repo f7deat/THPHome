@@ -6,20 +6,10 @@ using THPHome.Data;
 using THPHome.Helpers;
 using THPHome.Entities;
 
-namespace WebUI.Services;
+namespace THPHome.Services;
 
-public class LocalizeService : ILocalizeService
+public class LocalizeService(ApplicationDbContext _context, IActionContextAccessor _actionContextAccessor, IMemoryCache _memoryCache) : ILocalizeService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IActionContextAccessor _actionContextAccessor;
-    private readonly IMemoryCache _memoryCache;
-    public LocalizeService(ApplicationDbContext context, IActionContextAccessor actionContextAccessor, IMemoryCache memoryCache)
-    {
-        _context = context;
-        _actionContextAccessor = actionContextAccessor;
-        _memoryCache = memoryCache;
-    }
-
     public async Task<string> GetAsync(string key)
     {
         if (string.IsNullOrWhiteSpace(key)) return key;

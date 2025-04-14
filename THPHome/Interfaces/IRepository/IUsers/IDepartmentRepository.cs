@@ -9,6 +9,7 @@ namespace THPHome.Interfaces.IRepository.IUsers;
 
 public interface IDepartmentRepository : IAsyncRepository<Department>
 {
+    Task<int> CountStaffAsync(int departmentId);
     Task<int> CountStudentAsync(int departmentId);
     Task<Department?> GetByIdAsync(int? departmentId);
     Task<IEnumerable<SelectOption>> GetCodeOptionsAsync();

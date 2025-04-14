@@ -1,22 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Enums;
 using THPHome.Interfaces.IService;
 
 namespace THPHome.Foundations;
 
-public class EntryPageModel : PageModel
+public class EntryPageModel(IPostService postService) : PageModel
 {
-    protected readonly IPostService _postService;
-    protected readonly ApplicationDbContext _context;
-
-    public EntryPageModel(IPostService postService, ApplicationDbContext context)
-    {
-        _postService = postService;
-        _context = context;
-    }
+    protected readonly IPostService _postService = postService;
 
     public Post PageData { private set; get; } = new Post();
 

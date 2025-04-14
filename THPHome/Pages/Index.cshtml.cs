@@ -14,7 +14,7 @@ using WebUI.Models.Posts;
 
 namespace THPHome.Pages;
 
-public class IndexModel(IPostService postService, IMenuService _menuService, IVideoService _videoService, ICategoryService _categoryService, ApplicationDbContext context) : EntryPageModel(postService, context)
+public class IndexModel(IPostService postService, IMenuService _menuService, IVideoService _videoService, ICategoryService _categoryService, ApplicationDbContext _context) : EntryPageModel(postService)
 {
     public List<GroupCategory> GroupCategories = [];
     public IEnumerable<Menu> BoxMenu = [];

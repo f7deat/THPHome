@@ -1,7 +1,6 @@
 ﻿using ApplicationCore.Helpers;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Mvc;
-using THPHome.Data;
 using THPHome.Foundations;
 using THPHome.Helpers;
 using THPHome.Interfaces.IService;
@@ -15,7 +14,7 @@ public class IndexModel : EntryPageModel
     private readonly ICategoryService _categoryService;
     public PaginatedList<PostView>? Posts;
 
-    public IndexModel(IPostService postService, ApplicationDbContext context, ICategoryService categoryService) : base(postService, context)
+    public IndexModel(IPostService postService, ICategoryService categoryService) : base(postService)
     {
         _categoryService = categoryService;
     }

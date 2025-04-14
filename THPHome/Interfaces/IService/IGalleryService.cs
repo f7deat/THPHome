@@ -1,9 +1,10 @@
-﻿using THPHome.Models.Galleries;
-using WebUI.Models.Filters.Files;
+﻿using THPCore.Models;
+using THPHome.Models.Filters.Files;
+using THPHome.Models.Galleries;
 
-namespace WebUI.Interfaces.IService;
+namespace THPHome.Interfaces.IService;
 
 public interface IGalleryService
 {
-    Task<List<GalleryListResponse>> GalleryListAsync(GalleryFilterOptions filterOptions);
+    Task<ListResult<GalleryListResponse>> GalleryListAsync(GalleryFilterOptions filterOptions);
 }

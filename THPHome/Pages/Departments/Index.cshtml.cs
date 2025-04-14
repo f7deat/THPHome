@@ -7,12 +7,8 @@ using THPHome.Interfaces.IService;
 
 namespace WebUI.Pages.Departments;
 
-public class IndexModel : EntryPageModel
+public class IndexModel(ApplicationDbContext _context, IPostService postService) : EntryPageModel(postService)
 {
-    public IndexModel(ApplicationDbContext context, IPostService postService) : base(postService, context)
-    {
-    }
-
     public List<Department> Departments { get; set; } = [];
     public Department Department { get; set; } = new();
     public List<DepartmentDetail> DepartmentDetails { get; set; } = [];

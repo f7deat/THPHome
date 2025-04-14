@@ -1,22 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
-using THPHome.Data;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters.Files;
 using THPHome.Models.Galleries;
-using WebUI.Interfaces.IService;
-using WebUI.Models.Filters.Files;
 
 namespace THPHome.Pages.Albums;
 
-public class IndexModel(IPostService postService, ApplicationDbContext context, IGalleryService _galleryService) : EntryPageModel(postService, context)
+public class IndexModel(IPostService postService, IGalleryService _galleryService) : EntryPageModel(postService)
 {
-    public List<GalleryListResponse> Galleries { get; set; } = [];
+    public IEnumerable<GalleryListResponse> Galleries { get; set; } = [];
     [BindProperty(SupportsGet = true)]
     public GalleryFilterOptions FilterOptions { get; set; } = new();
 
     public async Task OnGetAsync()
     {
         FilterOptions.Locale = PageData.Locale;
-        Galleries = await _galleryService.GalleryListAsync(FilterOptions);
+        var galleries = await _galleryService.GalleryListAsync(FilterOptions);
+        Galleries = galleries.Data;
     }
 }

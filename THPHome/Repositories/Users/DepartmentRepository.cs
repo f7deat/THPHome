@@ -14,6 +14,10 @@ namespace THPHome.Repositories.Users;
 
 public class DepartmentRepository(ApplicationDbContext context, UserManager<ApplicationUser> _userManager) : EfRepository<Department>(context), IDepartmentRepository
 {
+    public async Task<int> CountStaffAsync(int departmentId) => await _userManager.Users.CountAsync(x => x.DepartmentId == departmentId && x.UserType != UserType.Student && x.Status != UserStatus.Inactive);
+
+    public async Task<int> CountStudentAsync(int departmentId) => await _userManager.Users.CountAsync(x => x.DepartmentId == departmentId && x.UserType == UserType.Student && x.Status != UserStatus.Inactive);
+
     public async Task<Department?> GetByIdAsync(int? departmentId) => await _context.Departments.FirstOrDefaultAsync(x => x.Code == departmentId);
 
     public async Task<IEnumerable<SelectOption>> GetCodeOptionsAsync()

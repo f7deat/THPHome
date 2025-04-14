@@ -8,6 +8,7 @@ namespace THPHome.Interfaces.IService.IUsers;
 
 public interface IDepartmentService
 {
+    Task<int> CountStaffAsync(int departmentId);
     Task<int> CountStudentAsync(int departmentId);
     Task<Department?> GetByIdAsync(int? departmentId);
     Task<IEnumerable<SelectOption>> GetOptionsAsync();

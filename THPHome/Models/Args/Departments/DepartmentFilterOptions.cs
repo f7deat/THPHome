@@ -1,6 +1,6 @@
 ﻿using THPHome.Models.Filters;
 
-namespace WebUI.Models.Args.Departments;
+namespace THPHome.Models.Args.Departments;
 
 public class DepartmentFilterOptions : FilterOptions
 {

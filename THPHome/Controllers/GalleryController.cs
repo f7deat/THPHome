@@ -14,17 +14,12 @@ using THPHome.Models.Posts;
 using THPIdentity.Constants;
 using THPIdentity.Entities;
 using WebUI.Foundations;
-using WebUI.Interfaces.IService;
-using WebUI.Models.Filters.Files;
 
 namespace THPHome.Controllers;
 
-public class GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IGalleryService galleryService, ILogService _logService) : BaseController(context)
+public class GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, IGalleryService _galleryService, ILogService _logService) : BaseController(context)
 {
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly IGalleryService _galleryService = galleryService;
-
-    [HttpGet("list")]
+    [HttpGet("list"), AllowAnonymous]
     public async Task<IActionResult> GalleryListAsync([FromQuery] GalleryFilterOptions filterOptions) => Ok(await _galleryService.GalleryListAsync(filterOptions));
 
     [HttpPost]

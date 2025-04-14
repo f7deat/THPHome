@@ -1,16 +1,11 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Models;
-using ApplicationCore.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using THPHome.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using THPHome.Entities;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 
 namespace THPHome.Pages.Categories;
 
-public class IndexModel(IPostService postService, ApplicationDbContext context, ICategoryService _categoryService) : EntryPageModel(postService, context)
+public class IndexModel(IPostService postService, ICategoryService _categoryService) : EntryPageModel(postService)
 {
     public IReadOnlyList<Category> Categories { get; set; } = [];
 

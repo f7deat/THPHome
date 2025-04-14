@@ -1,8 +1,9 @@
 ﻿using THPHome.Models.Filters;
 
-namespace WebUI.Models.Filters.Files;
+namespace THPHome.Models.Filters.Files;
 
 public class GalleryFilterOptions : FilterOptions
 {
     public string? Name { get; set; }
+    public int? DepartmentId { get; set; }
 }

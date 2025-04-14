@@ -1,6 +1,4 @@
-﻿using ApplicationCore.Enums;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;

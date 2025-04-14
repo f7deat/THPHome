@@ -13,6 +13,8 @@ namespace THPHome.Services.Users;
 
 public class DepartmentService(IDepartmentRepository _departmentRepository, IHCAService _hcaService, UserManager<ApplicationUser> _userManager) : IDepartmentService
 {
+    public Task<int> CountStaffAsync(int departmentId) => _departmentRepository.CountStaffAsync(departmentId);
+
     public Task<int> CountStudentAsync(int departmentId) => _departmentRepository.CountStudentAsync(departmentId);
 
     public Task<Department?> GetByIdAsync(int? departmentId) => _departmentRepository.GetByIdAsync(departmentId);

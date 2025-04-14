@@ -213,7 +213,7 @@ const CategoryList = () => {
         {
             title: "#",
             valueType: 'indexBorder',
-            width: 50
+            width: 30
         },
         {
             title: "Bài đăng",
@@ -265,13 +265,11 @@ const CategoryList = () => {
                 width={960}
             >
                 <ProTable
-                    ghost
                     search={{
                         layout: 'vertical'
                     }}
                     request={(params) => apiGetPostsCategory({
                         ...params,
-                        language: language(intl.locale),
                         categoryId: category?.id
                     })}
                     columns={postColumns}
@@ -311,7 +309,6 @@ const CategoryList = () => {
                             <Empty />
                         )}
                         <ProFormCheckbox name="isDisplayOnHome" label="Hiển thị trên trang chủ" />
-
                     </Col>
                 </Row>
             </ModalForm>

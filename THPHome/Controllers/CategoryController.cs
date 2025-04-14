@@ -42,7 +42,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
                 Id = x.Id,
                 Description = x.Description,
                 Status = x.Status,
-                Count = _context.PostCategories.Count(c => c.CategoryId == x.Id),
+                Count = _context.Posts.Count(c => c.CategoryId == x.Id),
                 IsDisplayOnHome = x.IsDisplayOnHome,
                 DepartmentId = x.DepartmentId
             });
