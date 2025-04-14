@@ -15,7 +15,7 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
     public async Task<IActionResult> GetListAsync([FromQuery] ArticleFilterOptions filterOptions)
     {
         var query = from a in _context.Posts
-                    where a.Locale == filterOptions.Locale && a.Status == PostStatus.PUBLISH
+                    where a.Locale == filterOptions.Locale && a.Status == PostStatus.PUBLISH && a.Type == PostType.NEWS
                     select new
                     {
                         a.Id,
