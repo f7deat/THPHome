@@ -8,12 +8,12 @@ using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Enums;
+using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Files;
 using THPHome.Models.Posts;
 using THPIdentity.Constants;
 using THPIdentity.Entities;
-using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 
@@ -130,7 +130,9 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
                 Description = args.Description,
                 Url = args.Url,
                 PostId = args.PostId,
-                FileId = args.FileId
+                FileId = args.FileId,
+                CreatedDate = DateTime.Now,
+                CreatedBy = User.GetUserName()
             });
             await _context.SaveChangesAsync();
             return Ok();

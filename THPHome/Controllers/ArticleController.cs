@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Enums;
+using THPHome.Foundations;
 using THPHome.Models.Filters.Articles;
-using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using THPCore.Extensions;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
-using THPHome.Helpers;
-using WebUI.Foundations;
+using THPHome.Foundations;
+using THPIdentity.Constants;
 using WebUI.Models.Filters.Settings;
 
 namespace THPHome.Controllers;
@@ -14,8 +15,7 @@ public class LocalizationController(ApplicationDbContext context) : BaseControll
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] LocalizationFilterOptions filterOptions)
     {
-        var lang = LanguageHelper.GetLanguage(filterOptions.Locale);
-        var query = _context.Localizations.Where(x => x.Language == lang);
+        var query = _context.Localizations.Where(x => x.Locale == filterOptions.Locale);
         if (!string.IsNullOrWhiteSpace(filterOptions.Key))
         {
             query = query.Where(x => x.Key.ToLower().Contains(filterOptions.Key.ToLower()));
@@ -27,23 +27,20 @@ public class LocalizationController(ApplicationDbContext context) : BaseControll
         return Ok(await ListResult<Localization>.Success(query.OrderBy(x => x.Key), filterOptions));
     }
 
-    [HttpPost("update")]
+    [HttpPost("update"), Authorize(Roles = RoleName.ADMIN)]
     public async Task<IActionResult> UpdateAsync([FromBody] Localization localization)
     {
         var locale = await _context.Localizations.FindAsync(localization.Id);
-        if (locale is null)
-        {
-            return BadRequest("Data not found!");
-        }
+        if (locale is null) return BadRequest("Data not found!");
         locale.Value = localization.Value;
         locale.ModifiedDate = DateTime.Now;
-        locale.ModifiedBy = User.GetId();
+        locale.ModifiedBy = User.GetUserName();
         _context.Update(locale);
         await _context.SaveChangesAsync();
         return Ok();
     }
 
-    [HttpPost("delete/{id}")]
+    [HttpPost("delete/{id}"), Authorize(Roles = RoleName.ADMIN)]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
         var locale = await _context.Localizations.FindAsync(id);

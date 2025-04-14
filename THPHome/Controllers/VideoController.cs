@@ -1,8 +1,8 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IService;
+﻿using ApplicationCore.Interfaces.IService;
 using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
-using WebUI.Foundations;
+using THPHome.Entities;
+using THPHome.Foundations;
 
 namespace THPHome.Controllers;
 

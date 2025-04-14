@@ -1,19 +1,18 @@
-﻿using ApplicationCore.Enums;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using THPCore.Infrastructures;
+using THPCore.Interfaces;
 
-namespace ApplicationCore.Entities
+namespace THPHome.Entities;
+
+public class Video : BaseEntity<long>, ILocale
 {
-    public class Video
-    {
-        public long Id { get; set; }
-        [StringLength(250)]
-        public string? Name { get; set; }
-        [StringLength(500)]
-        public string? Url { get; set; }
-        [StringLength(500)]
-        public string? Thumbnail { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public Language Language { get; set; }
-    }
+    [StringLength(250)]
+    public string? Name { get; set; }
+    [StringLength(500)]
+    public string? Url { get; set; }
+    [StringLength(500)]
+    public string? Thumbnail { get; set; }
+    public DateTime CreatedDate { get; set; }
+    [StringLength(10)]
+    public string Locale { get; set; } = "vi-VN";
 }

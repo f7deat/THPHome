@@ -7,11 +7,11 @@ using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Curriculum;
 using THPHome.Enums;
+using THPHome.Foundations;
 using THPHome.Models.Filters;
 using THPHome.Models.Filters.Curriculum;
 using THPHome.Models.Results.Curriculum;
 using THPIdentity.Entities;
-using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 

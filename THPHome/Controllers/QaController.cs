@@ -6,11 +6,11 @@ using THPCore.Extensions;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.QA;
+using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters;
 using THPHome.Models.Results.QAs;
 using THPIdentity.Entities;
-using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 
@@ -53,13 +53,13 @@ public class QaController(ApplicationDbContext context, UserManager<ApplicationU
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> AddAsync([FromBody] QaGroup args)
+    public async Task<IActionResult> AddAsync([FromBody] QaGroup args, [FromQuery] string locale)
     {
         args.CreatedDate = DateTime.Now;
         args.CreatedBy = User.GetId();
         args.ModifiedDate = DateTime.Now;
         args.Active = true;
-        args.Language = ApplicationCore.Enums.Language.VI;
+        args.Locale = locale;
         await _context.QaGroups.AddAsync(args);
         await _context.SaveChangesAsync();
         return Created();
@@ -97,7 +97,7 @@ public class QaController(ApplicationDbContext context, UserManager<ApplicationU
             ModifiedBy = x.ModifiedBy
         }).AsNoTracking().ToListAsync();
 
-        var users = await _userManager.Users.Where(x => x.UserType != THPIdentity.Entities.UserType.Student).AsNoTracking().ToListAsync();
+        var users = await _userManager.Users.Where(x => x.UserType != UserType.Student).AsNoTracking().ToListAsync();
 
         return Ok(new
         {
@@ -176,12 +176,12 @@ public class QaController(ApplicationDbContext context, UserManager<ApplicationU
             {
                 Id = group.Id,
                 Title = group.Title,
-                Collapses = items.Where(x => x.QaGroupId == group.Id).Select(x => new QaCollapse
+                Collapses = [.. items.Where(x => x.QaGroupId == group.Id).Select(x => new QaCollapse
                 {
                     Key = x.Id,
                     Label = x.Question,
                     Children = x.Answer
-                }).ToList()
+                })]
             };
             data.Add(collapse);
         }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
-using WebUI.Foundations;
+using THPHome.Foundations;
 
 namespace THPHome.Controllers.Users;
 

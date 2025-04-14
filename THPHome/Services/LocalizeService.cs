@@ -16,18 +16,16 @@ public class LocalizeService(ApplicationDbContext _context, IActionContextAccess
         var locale = "vi-VN";
         _actionContextAccessor.ActionContext?.HttpContext.Request.Cookies.TryGetValue("locale", out locale);
 
-        var lang = LanguageHelper.GetLanguage(locale);
-
         var cacheKey = $"{key}-{nameof(Localization)}_{locale}";
         if (!_memoryCache.TryGetValue($"{cacheKey}", out string? cacheValue))
         {
-            var i18n = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == key && x.Language == lang);
+            var i18n = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == key && x.Locale == locale);
             if (i18n is null)
             {
                 i18n = new Localization
                 {
                     Key = key,
-                    Language = lang,
+                    Locale = locale ?? "vi-VN",
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
                 };

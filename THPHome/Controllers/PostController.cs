@@ -5,7 +5,6 @@ using ApplicationCore.Helpers;
 using ApplicationCore.Entities;
 using Microsoft.AspNetCore.Identity;
 using WebUI.Interfaces.IService;
-using WebUI.Foundations;
 using Microsoft.AspNetCore.Authorization;
 using THPIdentity.Entities;
 using THPIdentity.Constants;
@@ -18,6 +17,7 @@ using THPHome.Models.Filters;
 using THPHome.Enums;
 using THPHome.ExternalAPI.Interfaces;
 using THPCore.Interfaces;
+using THPHome.Foundations;
 
 namespace THPHome.Controllers;
 

@@ -2,7 +2,6 @@
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Mvc;
 using THPHome.Foundations;
-using THPHome.Helpers;
 using THPHome.Interfaces.IService;
 
 namespace WebUI.Pages.Search;
@@ -29,8 +28,6 @@ public class IndexModel : EntryPageModel
         RandomPosts = await _postService.GetRandomPostsAsync();
 
         Request.Cookies.TryGetValue("locale", out string? locale);
-        var lang = LanguageHelper.GetLanguage(locale);
-
         if (string.IsNullOrEmpty(SearchTerm))
         {
             return Page();

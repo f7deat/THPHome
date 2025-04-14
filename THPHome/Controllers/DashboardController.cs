@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 using THPIdentity.Entities;
-using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 
@@ -15,7 +15,4 @@ public class DashboardController(IPostService _postService, UserManager<Applicat
 
     [HttpGet("total-user")]
     public async Task<IActionResult> TotalUser() => Ok(await _userManager.Users.CountAsync());
-
-    [HttpGet("total-department")]
-    public async Task<IActionResult> TotalDepartment() => Ok(await _context.Departments.CountAsync());
 }

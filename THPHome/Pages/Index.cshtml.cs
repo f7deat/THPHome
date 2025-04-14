@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces.IService;
+﻿using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -56,7 +55,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
 
         BoxMenu = await _menuService.GetListAsync(new ListMenuPayload
         {
-            Locale = PageData.Locale,
+            Locale = PageData.Locale ?? "vi-VN",
             Type = MenuType.BOX
         });
         Videos = await _videoService.GetListAsync(5);

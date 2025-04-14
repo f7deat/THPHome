@@ -6,12 +6,12 @@ using THPCore.Extensions;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Foundations;
 using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Args.Departments;
 using THPHome.Models.Filters;
 using THPHome.Models.Filters.Users;
 using THPIdentity.Entities;
-using WebUI.Foundations;
 
 namespace THPHome.Controllers;
 

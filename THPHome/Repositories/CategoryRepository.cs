@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Enums;
-using ApplicationCore.Models.Posts;
+﻿using ApplicationCore.Models.Posts;
 using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
 using THPHome.Entities;
@@ -11,10 +10,7 @@ namespace THPHome.Repositories;
 
 public class CategoryRepository(ApplicationDbContext context) : EfRepository<Category>(context), ICategoryRepository
 {
-    public async Task<IReadOnlyList<Category>> CategoriesByType(int pageSize)
-    {
-        return await _context.Categories.Take(pageSize).ToListAsync();
-    }
+    public async Task<IReadOnlyList<Category>> CategoriesByType(int pageSize) => await _context.Categories.Take(pageSize).ToListAsync();
 
     public async Task<IEnumerable<Category>> GetChildAsync(int parentId) => await _context.Categories.Where(x => x.ParentId == parentId).ToListAsync();
 
@@ -59,17 +55,7 @@ public class CategoryRepository(ApplicationDbContext context) : EfRepository<Cat
                       select b).ToListAsync();
     }
 
-    public async Task<Category?> GetParrentAsync(int categoryId)
-    {
-        try
-        {
-            return await _context.Categories.FindAsync(categoryId);
-        }
-        catch (Exception)
-        {
-            return default;
-        }
-    }
+    public async Task<Category?> GetParrentAsync(int categoryId) => await _context.Categories.FindAsync(categoryId);
 
     public async Task<IEnumerable<PostView>> GetRandomPostsAsync(int categoryId, int pageSize)
     {

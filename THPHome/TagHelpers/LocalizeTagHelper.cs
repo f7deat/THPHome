@@ -24,18 +24,16 @@ public class LocalizeTagHelper(ApplicationDbContext _context, IMemoryCache _memo
         if (_actionContextAccessor.ActionContext is null) return;
         _actionContextAccessor.ActionContext.HttpContext.Request.Cookies.TryGetValue("locale", out string? locale);
 
-        var lang = LanguageHelper.GetLanguage(locale);
-
         var cacheKey = $"{Key}-{nameof(Localization)}_{locale}";
         if (!_memoryCache.TryGetValue($"{cacheKey}", out string? cacheValue))
         {
-            var i18n = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == Key && x.Language == lang);
+            var i18n = await _context.Localizations.FirstOrDefaultAsync(x => x.Key == Key && x.Locale == locale);
             if (i18n is null)
             {
                 i18n = new Localization
                 {
                     Key = Key,
-                    Language = lang,
+                    Locale = locale ?? "vi-VN",
                     CreatedBy = Guid.Empty.ToString(),
                     ModifiedBy = Guid.Empty.ToString(),
                     CreatedDate = DateTime.Now,

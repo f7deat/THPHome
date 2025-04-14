@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
 using THPHome.Entities.Users;
+using THPHome.Foundations;
 using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Filters.Users;
-using WebUI.Foundations;
 
 namespace THPHome.Controllers.Users;
 

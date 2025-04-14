@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
+using THPHome.Foundations;
 using THPHome.Interfaces.IService.ITrainings;
-using WebUI.Foundations;
 
 namespace THPHome.Controllers.Trainings;
 

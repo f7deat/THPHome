@@ -7,7 +7,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using WebUI.Foundations;
 using WebUI.ExternalAPI.Interfaces;
 using THPCore.Helpers;
 using System.IdentityModel.Tokens.Jwt;
@@ -27,6 +26,7 @@ using THPHome.Entities.Users;
 using ForeignLanguageProficiency = THPHome.Entities.Users.ForeignLanguageProficiency;
 using THPHome.Models.Filters;
 using THPCore.Models;
+using THPHome.Foundations;
 
 namespace THPHome.Controllers;
 

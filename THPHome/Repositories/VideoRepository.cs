@@ -1,6 +1,6 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using THPHome.Data;
+using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
 

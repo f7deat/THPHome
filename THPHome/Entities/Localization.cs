@@ -1,12 +1,11 @@
-﻿using ApplicationCore.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using THPCore.Infrastructures;
+using THPCore.Interfaces;
 
 namespace THPHome.Entities;
 
-public class Localization : BaseEntity
+public class Localization : BaseEntity, ILocale
 {
-    public Language Language { get; set; }
     public string Key { get; set; } = default!;
     public string? Value { get; set; }
     public DateTime CreatedDate { get; set; }
@@ -15,4 +14,6 @@ public class Localization : BaseEntity
     public string? ModifiedBy { get; set; }
     [StringLength(450)]
     public string? CreatedBy { get; set; }
+    [StringLength(10)]
+    public string Locale { get; set; } = "vi-VN";
 }

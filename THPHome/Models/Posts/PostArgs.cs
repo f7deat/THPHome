@@ -1,14 +1,11 @@
-﻿using ApplicationCore.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using THPCore.Infrastructures;
 using THPHome.Enums;
-using THPHome.Helpers;
 
 namespace THPHome.Models.Posts;
 
 public class PostArgs : BaseEntity
 {
-    public string? Locale { get; set; }
     public string? Title { get; set; }
     [StringLength(500), Required]
     public string Url { get; set; } = default!;
@@ -19,5 +16,4 @@ public class PostArgs : BaseEntity
     public PostStatus Status { get; set; }
     public PostType Type { get; set; }
     public string? Tags { get; set; }
-    public Language Language => LanguageHelper.GetLanguage(Locale);
 }

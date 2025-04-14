@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using THPHome.Data;
 using THPHome.ExternalAPI.Interfaces;
+using THPHome.Foundations;
 using THPHome.Models.Filters;
-using WebUI.Foundations;
 using ZaloSDK;
 using ZaloSDK.Articles;
 
