@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using THPCore.Infrastructures;
 using THPCore.Interfaces;
 using THPHome.Enums;

@@ -1,5 +1,5 @@
-﻿using WebUI.Models.Filters.Files;
-using WebUI.Models.Galleries;
+﻿using THPHome.Models.Galleries;
+using WebUI.Models.Filters.Files;
 
 namespace WebUI.Interfaces.IService;
 

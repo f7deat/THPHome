@@ -1,17 +1,15 @@
-import { PostType } from "@/enum/post-enum";
-import NewPost from "@/pages/posts/components/new-post";
 import DepartmentUsers from "@/pages/users/profile/components/department";
-import { apiPostActive, apiPostDelete, apiPostList } from "@/services/post";
+import { apiDepartmentAcademicProgramList } from "@/services/department";
+import { apiPostActive, apiPostDelete } from "@/services/post";
 import { PostStatus } from "@/utils/enum";
 import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, MoreOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
-import { history, useAccess, useModel } from "@umijs/max"
+import { history, useAccess } from "@umijs/max"
 import { Button, Dropdown, message, Popconfirm } from "antd";
 import { useRef } from "react";
 
 const Index: React.FC = () => {
 
-    const { initialState } = useModel('@@initialState');
     const access = useAccess();
     const actionRef = useRef<ActionType>();
 
@@ -33,11 +31,8 @@ const Index: React.FC = () => {
                 <div className="md:w-2/3">
                     <ProTable
                         actionRef={actionRef}
-                        headerTitle={<NewPost type={PostType.NEWS} reload={() => actionRef.current?.reload()} />}
-                        request={(params) => apiPostList({
-                            ...params,
-                            departmentId: initialState?.currentUser?.departmentId
-                        })}
+                        headerTitle="Chương trình đào tạo"
+                        request={apiDepartmentAcademicProgramList}
                         search={{
                             layout: 'vertical'
                         }}
@@ -50,14 +45,13 @@ const Index: React.FC = () => {
                                 align: 'center'
                             },
                             {
-                                title: 'Tiêu đề',
-                                dataIndex: 'title',
+                                title: 'Mã',
+                                dataIndex: 'code',
+                                search: false
                             },
                             {
-                                title: 'Người đăng',
-                                dataIndex: 'createdBy',
-                                search: false,
-                                minWidth: 120
+                                title: 'Tiêu đề',
+                                dataIndex: 'title',
                             },
                             {
                                 title: 'Ngày đăng',
@@ -65,6 +59,12 @@ const Index: React.FC = () => {
                                 valueType: 'fromNow',
                                 search: false,
                                 minWidth: 110
+                            },
+                            {
+                                title: 'Lượt xem',
+                                dataIndex: 'view',
+                                search: false,
+                                valueType: 'digit'
                             },
                             {
                                 title: 'Trạng thái',
@@ -86,14 +86,14 @@ const Index: React.FC = () => {
                                                 key: 'edit',
                                                 label: 'Chỉnh sửa',
                                                 onClick: () => {
-                                                    history.push(`/department/article/${record.id}`);
+                                                    history.push(`/post/page/${record.postId}`);
                                                 },
                                                 icon: <EditOutlined />
                                             },
                                             {
                                                 key: 'approve',
                                                 label: record.status === PostStatus.DRAFT ? 'Duyệt' : 'Hủy duyệt',
-                                                onClick: () => onApprove(record.id),
+                                                onClick: () => onApprove(record.postId),
                                                 icon: record.status === PostStatus.DRAFT ? <CheckOutlined /> : <CloseOutlined />,
                                                 disabled: !access.hod
                                             }

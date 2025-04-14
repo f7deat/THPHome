@@ -5,6 +5,7 @@ using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository.IUsers;
 using THPHome.Models.ComponentModel;
+using THPHome.Models.Filters;
 using THPHome.Models.Filters.Users;
 using THPHome.Repositories.Base;
 using THPIdentity.Entities;
@@ -22,6 +23,29 @@ public class DepartmentRepository(ApplicationDbContext context, UserManager<Appl
             Label = x.Name,
             Value = x.Id
         }).ToListAsync();
+    }
+
+    public async Task<ListResult<object>> ListAcademicProgramAsync(int? departmentId, FilterOptions filterOptions)
+    {
+        var query = from a in _context.AcademicPrograms
+                    join b in _context.Posts on a.PostId equals b.Id
+                    where b.DepartmentId == departmentId && b.Locale == filterOptions.Locale
+                    select new
+                    {
+                        a.Id,
+                        b.Description,
+                        b.CreatedDate,
+                        b.CreatedBy,
+                        b.ModifiedDate,
+                        b.ModifiedBy,
+                        b.Status,
+                        b.View,
+                        a.PostId,
+                        a.Code,
+                        b.Title,
+                        b.Url
+                    };
+        return await ListResult<object>.Success(query, filterOptions);
     }
 
     public async Task<ListResult<object>> UsersAsync(DepartmentUserFilterOptions filterOptions)

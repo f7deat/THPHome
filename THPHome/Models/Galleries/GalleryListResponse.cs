@@ -1,6 +1,6 @@
 ﻿using THPHome.Entities;
 
-namespace WebUI.Models.Galleries;
+namespace THPHome.Models.Galleries;
 
 public class GalleryListResponse : Post
 {

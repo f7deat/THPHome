@@ -16,3 +16,7 @@ export const apiDepartmentUsers = (params: any) => request(`department/users`, {
 export async function apiDepartmentOptions() {
     return request(`department/options`);
 }
+
+export async function apiDepartmentAcademicProgramList(params: any) {
+    return request(`department/list-academic-program`, { params });
+}

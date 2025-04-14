@@ -198,4 +198,10 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
 
     [HttpGet("users")]
     public async Task<IActionResult> UsersAsync([FromQuery] DepartmentUserFilterOptions filterOptions) => Ok(await _departmentService.UsersAsync(filterOptions));
+
+    [HttpGet("list-academic-program")]
+    public async Task<IActionResult> ListAcademicProgramAsync([FromQuery] FilterOptions filterOptions) => Ok(await _departmentService.ListAcademicProgramAsync(filterOptions));
+
+    [HttpGet("count-student"), AllowAnonymous]
+    public async Task<IActionResult> CountStudentAsync([FromQuery] int departmentId) => Ok(new { data = await _departmentService.CountStudentAsync(departmentId) });
 }
