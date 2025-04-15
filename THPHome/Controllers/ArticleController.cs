@@ -15,12 +15,14 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
     public async Task<IActionResult> GetListAsync([FromQuery] ArticleFilterOptions filterOptions)
     {
         var query = from a in _context.Posts
+                    join b in _context.Categories on a.CategoryId equals b.Id into ab
+                    from b in ab.DefaultIfEmpty()
                     where a.Locale == filterOptions.Locale && a.Status == PostStatus.PUBLISH && a.Type == PostType.NEWS
                     select new
                     {
                         a.Id,
                         a.Url,
-                        a.CreatedDate,
+                        CreatedDate = a.IssuedDate,
                         a.ModifiedDate,
                         a.Title,
                         a.Description,
@@ -28,7 +30,8 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
                         a.View,
                         a.CategoryId,
                         a.Type,
-                        a.DepartmentId
+                        a.DepartmentId,
+                        CategoryName = b.Name
                     };
         if (filterOptions.CategoryId != null)
         {
