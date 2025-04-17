@@ -48,7 +48,7 @@ const Login: React.FC = () => {
             </Helmet>
             <Content className="h-screen">
                 <div className="h-full flex">
-                    <div className="h-full relative md:w-1/3">
+                    <div className="h-full relative md:w-1/3 shadow-lg">
                         <img src="https://dhhp.edu.vn/css/imgs/login_background.svg" className="absolute bottom-0" />
                         <div className="h-full flex flex-col justify-between items-center bg-white w-full">
                             <div className="flex flex-col items-center justify-center gap-2 py-4 relative flex-1 w-full px-10 md:px-20">

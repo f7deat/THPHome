@@ -490,11 +490,16 @@ public class UserController(
                 new(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String),
                 new(ClaimTypes.Name, user.UserName ?? string.Empty, ClaimValueTypes.String),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(ClaimTypes.Email, user.Email ?? string.Empty, ClaimValueTypes.String)
             };
 
             foreach (var userRole in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole, ClaimValueTypes.String));
+            }
+            if (user.UserType == UserType.Dean)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, "HOD", ClaimValueTypes.String));
             }
 
             var secretCode = _configuration["JWT:Secret"];
@@ -539,31 +544,24 @@ public class UserController(
                 };
                 await _userManager.CreateAsync(user);
             }
-            else
-            {
-                user.DepartmentId ??= thpUser.DepartmentId;
-                if (!string.IsNullOrWhiteSpace(thpUser.PhoneNumber) && string.IsNullOrEmpty(user.PhoneNumber))
-                {
-                    user.PhoneNumber = thpUser.PhoneNumber;
-                }
-                if (!string.IsNullOrWhiteSpace(thpUser.Email) && string.IsNullOrEmpty(user.Email))
-                {
-                    user.Email = thpUser.Email;
-                }
-                await _userManager.UpdateAsync(user);
-            }
 
             var authClaims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String),
                 new(ClaimTypes.Name, user.UserName ?? string.Empty, ClaimValueTypes.String),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(ClaimTypes.Email, user.Email ?? string.Empty, ClaimValueTypes.String)
             };
             var userRoles = await _userManager.GetRolesAsync(user);
 
             foreach (var userRole in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole, ClaimValueTypes.String));
+            }
+
+            if (user.UserType == UserType.Dean)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, "HOD", ClaimValueTypes.String));
             }
 
             var secretCode = _configuration["JWT:Secret"];

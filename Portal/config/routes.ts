@@ -101,7 +101,24 @@ export default [
     icon: 'CarryOutOutlined',
     name: 'task',
     path: '/task',
-    component: './task',
+    routes: [
+      {
+        name: 'Bảng tin',
+        path: '/task/dashboard',
+        component: './task/dashboard',
+      },
+      {
+        name: 'Nhiệm vụ',
+        path: '/task/board',
+        component: './task',
+      },
+      {
+        name: 'Chi tiết nhiệm vụ',
+        path: '/task/board/:id',
+        component: './task/center',
+        hideInMenu: true
+      }
+    ]
   },
   {
     icon: 'AppstoreAddOutlined',
