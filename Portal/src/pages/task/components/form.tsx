@@ -2,7 +2,7 @@ import MyCkEditor from "@/components/my-ckeditor"
 import { DrawerForm, DrawerFormProps, ProFormDatePicker, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea } from "@ant-design/pro-components"
 import { Col, message, Row } from "antd"
 import { apiTaskItemCreate } from "../services/task-item"
-import { TaskPriority } from "../constants"
+import { TaskPriorityList } from "../constants"
 import { useRef } from "react"
 
 type Props = DrawerFormProps & {
@@ -34,12 +34,7 @@ const FormTask: React.FC<Props> = (props) => {
                 </Col>
                 <Col md={8} xs={24}>
                     <ProFormSelect
-                        options={[
-                            { value: TaskPriority.Low, label: "📌 Thấp" },
-                            { value: TaskPriority.Medium, label: "⏳ Trung bình" },
-                            { value: TaskPriority.High, label: "⚠️ Cao" },
-                            { value: TaskPriority.Urgent, label: "🔥 Khẩn cấp" }
-                        ]}
+                        options={TaskPriorityList}
                         name="priority" label="Độ ưu tiên" placeholder="Nhập độ ưu tiên" rules={[{ required: true, message: "Vui lòng nhập độ ưu tiên!" }]} />
                 </Col>
             </Row>
