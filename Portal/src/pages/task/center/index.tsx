@@ -3,6 +3,7 @@ import { history, useParams, useRequest } from "@umijs/max"
 import { apiTaskItemDetail } from "../services/task-item"
 import { Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
+import 'ckeditor5/ckeditor5.css';
 
 const Index: React.FC = () => {
 
@@ -14,7 +15,9 @@ const Index: React.FC = () => {
             <div className="md:flex gap-4">
                 <div className="md:w-2/3">
                     <ProCard title="Thông tin nhiệm vụ" className="mb-4" headerBordered>
-                        <div dangerouslySetInnerHTML={{ __html: data?.content }}></div>
+                        <div className="ck ck-editor">
+                        <div dangerouslySetInnerHTML={{ __html: data?.content }} className="ck ck-content"></div>
+                        </div>
                     </ProCard>
                 </div>
                 <div className="md:w-1/3">

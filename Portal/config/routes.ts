@@ -132,10 +132,15 @@ export default [
     path: '/department',
     routes: [
       {
-        name: 'Công nghệ thông tin',
-        path: '/department/iformation-technology',
-        component: './departments/information-technology',
-        access: 'facultyOfInformationTechnology'
+        name: 'Danh sách',
+        path: '/department/list',
+        component: './departments',
+      },
+      {
+        name: 'Chi tiết',
+        path: '/department/list/center/:id',
+        component: './departments/center',
+        hideInMenu: true
       },
       {
         name: 'Chỉnh sửa',

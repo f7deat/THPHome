@@ -11,6 +11,7 @@ using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Args.Departments;
 using THPHome.Models.Filters;
 using THPHome.Models.Filters.Users;
+using THPIdentity.Constants;
 using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
@@ -20,6 +21,8 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] DepartmentFilterOptions filterOptions)
     {
+        var user = await _userManager.FindByIdAsync(User.GetId());
+        if (user is null) return BadRequest("User not found!");
         var query = from a in _context.Departments
                     where a.Locale == filterOptions.Locale
                     select new
@@ -36,6 +39,10 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
         if (filterOptions.DepartmentTypeId != null)
         {
             query = query.Where(x => x.DepartmentTypeId == filterOptions.DepartmentTypeId);
+        }
+        if (!User.IsInRole(RoleName.ADMIN))
+        {
+            query = query.Where(x => x.Id == user.DepartmentId);
         }
         query = query.OrderByDescending(x => x.ModifiedDate);
         return Ok(await ListResult<object>.Success(query, filterOptions));

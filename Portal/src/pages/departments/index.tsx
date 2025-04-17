@@ -1,21 +1,20 @@
 ﻿import { Button, Col, Form, Input, message, Popconfirm, Row } from "antd"
 import { useEffect, useRef, useState } from "react"
 import {
-    FolderOutlined,
     DeleteOutlined,
     PlusOutlined,
-    EditOutlined
+    EditOutlined,
+    EyeOutlined
 } from "@ant-design/icons";
-import { getLocale, history, request, useRequest } from "@umijs/max";
-import { ActionType, ModalForm, PageContainer, ProCard, ProColumnType, ProFormDigit, ProFormInstance, ProFormSelect, ProTable } from "@ant-design/pro-components";
-import { apiGetDepartmentList, apiGetDepartmentTypeOptions, apiGetDepartmentTypes, apiUpdateDepartment } from "@/services/department";
+import { getLocale, history, request } from "@umijs/max";
+import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormDigit, ProFormInstance, ProFormSelect, ProTable } from "@ant-design/pro-components";
+import { apiGetDepartmentList, apiGetDepartmentTypeOptions, apiUpdateDepartment } from "@/services/department";
 
 const Department: React.FC = () => {
 
     const [open, setOpen] = useState<boolean>(false);
     const formRef = useRef<ProFormInstance>();
     const actionRef = useRef<ActionType>();
-    const { data: departmentTypes, loading: departmentTypeLoading } = useRequest(apiGetDepartmentTypes);
     const [department, setDepartment] = useState<any>();
 
     useEffect(() => {
@@ -88,16 +87,17 @@ const Department: React.FC = () => {
             dataIndex: 'name'
         },
         {
-            title: 'Mô tả',
-            dataIndex: 'description',
-            search: false
+            title: 'Người tạo',
+            dataIndex: 'createdBy',
+            search: false,
+            width: 120
         },
         {
             title: 'Ngày tạo',
             dataIndex: 'createdDate',
             search: false,
-            valueType: 'dateTime',
-            width: 160
+            valueType: 'fromNow',
+            width: 140
         },
         {
             title: 'Ngày cập nhật',
@@ -110,13 +110,13 @@ const Department: React.FC = () => {
             title: 'Tác vụ',
             valueType: 'option',
             render: (value, record) => [
-                <Button size="small" icon={<EditOutlined />} key="edit" onClick={() => {
+                <Button size="small" icon={<EditOutlined />} key="edit" disabled onClick={() => {
                     setDepartment(record);
                     setOpen(true);
                 }} />,
-                <Button size="small" type="primary" key="detail" icon={<FolderOutlined />} onClick={() => history.push(`/department/detail/${record.id}`)}></Button>,
+                <Button size="small" type="primary" key="detail" icon={<EyeOutlined />} onClick={() => history.push(`/department/list/center/${record.id}`)}></Button>,
                 <Popconfirm title="Xóa bản ghi?" key="delete" onConfirm={() => onConfirm(record.id)}>
-                    <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
+                    <Button disabled type="primary" danger icon={<DeleteOutlined />} size="small" />
                 </Popconfirm>
             ],
             width: 100
@@ -125,29 +125,15 @@ const Department: React.FC = () => {
 
     return (
         <PageContainer>
-            <ProCard loading={departmentTypeLoading} tabs={{
-                type: 'card'
-            }}>
-                {
-                    departmentTypes?.map(((type: any) => (
-                        <ProCard.TabPane key={type.id} tab={type.name}>
-                            <ProTable
-                                ghost
-                                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}
-                                actionRef={actionRef}
-                                request={(params) => apiGetDepartmentList({
-                                    ...params,
-                                    departmentTypeId: type.id
-                                })}
-                                search={{
-                                    layout: 'vertical'
-                                }}
-                                columns={columns}
-                            />
-                        </ProCard.TabPane>
-                    )))
-                }
-            </ProCard>
+            <ProTable
+                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}
+                actionRef={actionRef}
+                request={apiGetDepartmentList}
+                search={{
+                    layout: 'vertical'
+                }}
+                columns={columns}
+            />
 
             <ModalForm title="Đơn vị" open={open} onOpenChange={setOpen} formRef={formRef} onFinish={onFinish}>
                 <Form.Item name="id" hidden>

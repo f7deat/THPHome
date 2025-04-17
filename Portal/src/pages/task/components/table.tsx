@@ -48,7 +48,7 @@ const TaskTable: React.FC = () => {
                     },
                     {
                         title: 'Người thực hiện',
-                        dataIndex: 'assignTo',
+                        dataIndex: 'assignedTo',
                         search: false,
                         width: 140
                     },

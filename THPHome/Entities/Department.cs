@@ -13,8 +13,8 @@ public class Department : BaseEntity<int>, ILocale
     public string Locale { get; set; } = default!;
     public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
-    [StringLength(450)]
+    [StringLength(256)]
     public string? ModifiedBy { get; set; }
-    [StringLength(450)]
+    [StringLength(256)]
     public string? CreatedBy { get; set; }
 }
