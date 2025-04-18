@@ -1,5 +1,4 @@
 import MyCkEditor from "@/components/my-ckeditor";
-import { apiGetDepartmentOptions } from "@/services/authen/department";
 import { apiCountUser } from "@/services/authen/user";
 import { apiGetUserTypeOptions } from "@/services/user";
 import { ReloadOutlined, SendOutlined, UserOutlined } from "@ant-design/icons";
@@ -8,6 +7,7 @@ import { Badge, Button, Col, Row, Space, Tooltip } from "antd";
 import { useEffect, useRef, useState } from "react";
 import ExcelEmailComponent from "./emails/excel";
 import { apiGetListEmailLog } from "@/services/tool";
+import { apiDepartmentOptions } from "@/services/department";
 
 const EmailToolPage: React.FC = () => {
 
@@ -119,7 +119,7 @@ const EmailToolPage: React.FC = () => {
                     </Col>
                     <Col md={16}>
                         <ProFormSelect label="Đơn vị" name="departmentId" showSearch
-                            request={apiGetDepartmentOptions}
+                            request={apiDepartmentOptions}
                             onChange={(value: number) => setDepartmentId(value)}
                         />
                     </Col>

@@ -103,15 +103,6 @@ const TaskTable: React.FC = () => {
                                             setTaskItem(record);
                                             setOpen(true);
                                         }
-                                    },
-                                    {
-                                        key: 'delete',
-                                        label: 'Xóa',
-                                        danger: true,
-                                        icon: <DeleteOutlined />,
-                                        onClick: () => {
-
-                                        }
                                     }
                                 ]
                             }}>

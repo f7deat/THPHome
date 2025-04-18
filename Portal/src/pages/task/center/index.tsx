@@ -1,11 +1,12 @@
 import { PageContainer, ProCard, ProDescriptions, ProForm, ProFormTextArea, ProList } from "@ant-design/pro-components"
 import { history, useParams, useRequest } from "@umijs/max"
-import { apiTaskItemDetail } from "../services/task-item"
+import { apiTaskItemDetail, apiTaskItemHistoryList } from "../services/task-item"
 import { Button, Divider, Popconfirm } from "antd";
-import { DeleteOutlined, LeftOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { CalendarOutlined, DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 import 'ckeditor5/ckeditor5.css';
 import { TaskPriorityList, TaskStatusList } from "../constants";
 import AssignModal from "./components/assign";
+import dayjs from "dayjs";
 
 const Index: React.FC = () => {
 
@@ -51,7 +52,7 @@ const Index: React.FC = () => {
                             <ProDescriptions.Item label="Ngày hết hạn" valueType="date">{data?.dueDate}</ProDescriptions.Item>
                             <ProDescriptions.Item label="Trạng thái" valueType="select" fieldProps={{
                                 options: TaskStatusList
-                            }}>{data?.status}</ProDescriptions.Item>
+                            }}>{data?.status}<Button icon={<EditOutlined />} size="small" type="link" /></ProDescriptions.Item>
                             <ProDescriptions.Item label="Độ ưu tiên"
                                 valueType="select"
                                 fieldProps={{
@@ -65,7 +66,22 @@ const Index: React.FC = () => {
                         </ProDescriptions>
                     </ProCard>
                     <ProCard title="Lịch sử thay đổi" className="mb-4" headerBordered>
-                        <ProList />
+                        <ProList request={(params) => apiTaskItemHistoryList({
+                            ...params,
+                            taskItemId: id
+                        })}
+                        metas={{
+                            description: {
+                                dataIndex: 'action',
+                                render: (_, record) => (
+                                    <div>
+                                        <div className="text-slate-900 font-medium">{record.action}</div>
+                                        <div className="text-gray-500"><CalendarOutlined /> {dayjs(record.createdDate).format('DD/MM/YYYY')}</div>
+                                    </div>
+                                )
+                            }
+                        }}
+                        />
                     </ProCard>
                 </div>
             </div>

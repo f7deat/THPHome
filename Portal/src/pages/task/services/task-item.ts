@@ -19,3 +19,11 @@ export async function apiTaskItemAssign(data: any) {
 export async function apiTaskItemDelete(id: string) {
     return request.delete(`task/${id}`);
 }
+
+export async function apiTaskItemHistoryList(params: any) {
+    return request.get(`task/history/list`, { params });
+}
+
+export async function apiTaskTeamWorkload(params: any) {
+    return request.get(`task/team-workload`, { params });
+}

@@ -94,6 +94,12 @@ export default [
         path: '/post/banners',
         component: './banners/banner-list',
         access: 'canEditor'
+      },
+      {
+        name: 'Menu',
+        path: '/post/menus',
+        component: './settings/menus',
+        access: 'canEditor'
       }
     ],
   },
@@ -330,11 +336,6 @@ export default [
         name: 'application',
         path: '/settings/application',
         component: './settings/app',
-      },
-      {
-        name: 'Menu',
-        path: '/settings/menus',
-        component: './settings/menus',
       },
       {
         name: 'language',
