@@ -38,7 +38,7 @@ public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(c
 
         foreach (var item in data)
         {
-            item.Children = await GetChildListAsync(menus, menus.Where(x => x.ParentId == item.Id));
+            item.Children = await GetChildListAsync(menus, menus.Where(x => x.ParentId == item.Id).OrderBy(x => x.Index));
         }
         return data;
     }
@@ -49,19 +49,16 @@ public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(c
         {
             if (all.Any(x => x.ParentId == item.Id))
             {
-                item.Children = await GetChildListAsync(all, all.Where(x => x.ParentId == item.Id));
+                item.Children = await GetChildListAsync(all, all.Where(x => x.ParentId == item.Id).OrderBy(x => x.Index));
             }
 
         }
-        return parents.ToList();
+        return [.. parents];
     }
 
     public async Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type)
     {
-        if (type == null)
-        {
-            return new List<Menu>();
-        }
+        if (type == null) return [];
         return await _context.Menus.Where(x => x.ParentId == 0 && x.Type == type).OrderBy(x => x.Name).ToListAsync();
     }
 }
