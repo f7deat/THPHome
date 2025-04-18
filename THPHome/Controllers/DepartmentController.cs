@@ -49,7 +49,7 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
     }
 
     [HttpGet("all"), AllowAnonymous]
-    public async Task<IActionResult> AllAsync() => Ok(await _context.Departments.ToListAsync());
+    public async Task<IActionResult> AllAsync([FromQuery] string locale) => Ok(await _departmentService.ListAllAsync(locale));
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(await _context.Departments.FindAsync(id));
@@ -214,4 +214,7 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
 
     [HttpGet("count-staff"), AllowAnonymous]
     public async Task<IActionResult> CountStaffAsync([FromQuery] int departmentId) => Ok(new { data = await _departmentService.CountStaffAsync(departmentId) });
+
+    [HttpGet("current-user-options")]
+    public async Task<IActionResult> CurrentUserOptionsAsync() => Ok(await _departmentService.CurrentUserOptionsAsync());
 }

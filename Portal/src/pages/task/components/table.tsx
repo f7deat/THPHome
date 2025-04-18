@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import FormTask from "./form";
 import { ActionType, ProTable } from "@ant-design/pro-components";
 import { DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
-import { Button, Dropdown } from "antd";
-import { apiTaskItemList } from "../services/task-item";
+import { Button, Dropdown, message, Popconfirm } from "antd";
+import { apiTaskItemDelete, apiTaskItemList } from "../services/task-item";
 import { history, useModel } from "@umijs/max";
 
 const TaskTable: React.FC = () => {
@@ -17,7 +17,10 @@ const TaskTable: React.FC = () => {
         <div>
             <ProTable
                 actionRef={actionRef}
-                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Tạo mới</Button>}
+                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => {
+                    setTaskItem(null);
+                    setOpen(true);
+                }}>Tạo mới</Button>}
                 request={(params) => apiTaskItemList({
                     ...params,
                     departmentId: initialState?.currentUser.departmentId
@@ -113,7 +116,14 @@ const TaskTable: React.FC = () => {
                                 ]
                             }}>
                                 <Button type="dashed" icon={<MoreOutlined />} size="small" />
-                            </Dropdown>
+                            </Dropdown>,
+                            <Popconfirm key="delete" title="Bạn có chắc chắn muốn xóa nhiệm vụ này không?" onConfirm={async () => {
+                                await apiTaskItemDelete(record.id);
+                                message.success('Xóa nhiệm vụ thành công!');
+                                actionRef.current?.reload();
+                            }}>
+                                <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
+                            </Popconfirm>
                         ]
                     }
                 ]}

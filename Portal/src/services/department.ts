@@ -20,3 +20,7 @@ export async function apiDepartmentOptions() {
 export async function apiDepartmentAcademicProgramList(params: any) {
     return request(`department/list-academic-program`, { params });
 }
+
+export async function apiDepartmentCurrentUserOptions() {
+    return request(`department/current-user-options`);
+}

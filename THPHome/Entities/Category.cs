@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using THPCore.Infrastructures;
 
 namespace THPHome.Entities;
@@ -20,7 +21,11 @@ public class Category : BaseEntity<int>
     public string? Icon { get; set; }
     [StringLength(10)]
     public string Locale { get; set; } = "vi-VN";
+    [ForeignKey(nameof(Department))]
     public int? DepartmentId { get; set; }
+
+    public Department? Department { get; set; }
+    public ICollection<Post>? Posts { get; set; }
 }
 
 public enum CategoryStatus

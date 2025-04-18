@@ -18,17 +18,7 @@ public class LeaveController(ApplicationDbContext context, ILeaveBalanceService 
     public async Task<IActionResult> GetTypeOptionsAsync() => Ok(await _leaveTypeService.GetOptionsAsync());
 
     [HttpGet("balance-by-type/{id}"), AllowAnonymous]
-    public async Task<IActionResult> GetBalanceAsync([FromRoute] int id)
-    {
-        try
-        {
-            return Ok(await _leaveBalanceService.GetBalanceByTypeAsync(id));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.ToString());
-        }
-    }
+    public async Task<IActionResult> GetBalanceAsync([FromRoute] int id) => Ok(await _leaveBalanceService.GetBalanceByTypeAsync(id));
 
     [HttpPost("request/create")]
     public async Task<IActionResult> CreateRequestAsync([FromBody] LeaveRequestCreateArgs args)

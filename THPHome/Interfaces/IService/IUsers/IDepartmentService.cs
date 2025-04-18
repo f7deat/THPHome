@@ -10,8 +10,10 @@ public interface IDepartmentService
 {
     Task<int> CountStaffAsync(int departmentId);
     Task<int> CountStudentAsync(int departmentId);
+    Task<object?> CurrentUserOptionsAsync();
     Task<Department?> GetByIdAsync(int? departmentId);
     Task<IEnumerable<SelectOption>> GetOptionsAsync();
     Task<ListResult<object>> ListAcademicProgramAsync(FilterOptions filterOptions);
+    Task<object?> ListAllAsync(string locale = "vi-VN");
     Task<ListResult<object>> UsersAsync(DepartmentUserFilterOptions filterOptions);
 }

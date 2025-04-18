@@ -17,4 +17,7 @@ public class Department : BaseEntity<int>, ILocale
     public string? ModifiedBy { get; set; }
     [StringLength(256)]
     public string? CreatedBy { get; set; }
+
+    public ICollection<Post>? Posts { get; set; }
+    public ICollection<Category>? Categories { get; set; }
 }

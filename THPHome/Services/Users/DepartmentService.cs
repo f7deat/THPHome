@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities;
@@ -17,9 +18,20 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IHCA
 
     public Task<int> CountStudentAsync(int departmentId) => _departmentRepository.CountStudentAsync(departmentId);
 
+    public async Task<object?> CurrentUserOptionsAsync()
+    {
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+        if (user is null) return default;
+        return await _userManager.Users.Where(x => x.Status == UserStatus.Active && x.UserType != UserType.Student && x.DepartmentId == user.DepartmentId).Select(x => new
+        {
+            label = $"{x.Name} - {x.UserName}",
+            value = x.UserName
+        }).ToListAsync();
+    }
+
     public Task<Department?> GetByIdAsync(int? departmentId) => _departmentRepository.GetByIdAsync(departmentId);
 
-    public Task<IEnumerable<SelectOption>> GetOptionsAsync() => _departmentRepository.GetCodeOptionsAsync();
+    public Task<IEnumerable<SelectOption>> GetOptionsAsync() => _departmentRepository.GetOptionsAsync();
 
     public async Task<ListResult<object>> ListAcademicProgramAsync(FilterOptions filterOptions)
     {
@@ -27,6 +39,8 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IHCA
         if (user is null) return new ListResult<object>([], 0, filterOptions);
         return await _departmentRepository.ListAcademicProgramAsync(user.DepartmentId, filterOptions);
     }
+
+    public Task<object?> ListAllAsync(string locale = "vi-VN") => _departmentRepository.ListAllAsync(locale);
 
     public Task<ListResult<object>> UsersAsync(DepartmentUserFilterOptions filterOptions) => _departmentRepository.UsersAsync(filterOptions);
 }

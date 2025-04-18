@@ -29,6 +29,7 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
     {
         var notification = await _context.UserNotifications.FindAsync(id);
         if (notification is null) return THPResult.Failed("Notification not found");
+        if (notification.Recipient != _hcaService.GetUserName()) return THPResult.Failed("Can not delete other user notification");
         _context.UserNotifications.Remove(notification);
         await _context.SaveChangesAsync();
         return THPResult.Success;

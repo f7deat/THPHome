@@ -20,7 +20,7 @@ public class DepartmentRepository(ApplicationDbContext context, UserManager<Appl
 
     public async Task<Department?> GetByIdAsync(int? departmentId) => await _context.Departments.FirstOrDefaultAsync(x => x.Code == departmentId);
 
-    public async Task<IEnumerable<SelectOption>> GetCodeOptionsAsync()
+    public async Task<IEnumerable<SelectOption>> GetOptionsAsync()
     {
         return await _context.Departments.Select(x => new SelectOption
         {
@@ -50,6 +50,18 @@ public class DepartmentRepository(ApplicationDbContext context, UserManager<Appl
                         b.Url
                     };
         return await ListResult<object>.Success(query, filterOptions);
+    }
+
+    public async Task<object?> ListAllAsync(string locale = "vi-VN")
+    {
+        var query = from a in _context.Departments
+                    where a.Locale == locale
+                    select new
+                    {
+                        a.Id,
+                        a.Name
+                    };
+        return await query.OrderBy(x => x.Name).ToListAsync();
     }
 
     public async Task<ListResult<object>> UsersAsync(DepartmentUserFilterOptions filterOptions)

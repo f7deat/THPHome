@@ -45,10 +45,9 @@ public class NotificationController(ApplicationDbContext context, INotificationS
         });
     }
 
-    [HttpPost("add")]
+    [HttpPost("add"), Authorize(Roles = RoleName.ADMIN)]
     public async Task<IActionResult> AddAsync([FromBody] Notification args)
     {
-        if (!User.IsInRole(RoleName.ADMIN)) return Unauthorized();
         args.CreatedDate = DateTime.Now;
         args.CreatedBy = User.GetUserName();
         await _context.Notifications.AddAsync(args);

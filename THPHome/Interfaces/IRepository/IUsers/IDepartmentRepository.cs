@@ -12,7 +12,8 @@ public interface IDepartmentRepository : IAsyncRepository<Department>
     Task<int> CountStaffAsync(int departmentId);
     Task<int> CountStudentAsync(int departmentId);
     Task<Department?> GetByIdAsync(int? departmentId);
-    Task<IEnumerable<SelectOption>> GetCodeOptionsAsync();
+    Task<IEnumerable<SelectOption>> GetOptionsAsync();
     Task<ListResult<object>> ListAcademicProgramAsync(int? departmentId, FilterOptions filterOptions);
+    Task<object?> ListAllAsync(string locale);
     Task<ListResult<object>> UsersAsync(DepartmentUserFilterOptions filterOptions);
 }
