@@ -2,7 +2,6 @@
 import React, { Fragment, useEffect, useRef, useState } from "react"
 import {
     DeleteOutlined,
-    UsergroupAddOutlined,
     PlusCircleOutlined,
     CheckCircleTwoTone,
     SearchOutlined,
@@ -10,13 +9,14 @@ import {
     UserAddOutlined,
     WomanOutlined,
     ManOutlined,
-    MoreOutlined
+    MoreOutlined,
 } from "@ant-design/icons";
 import { request, useAccess } from "@umijs/max";
 import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormSelect, ProFormText, ProTable } from "@ant-design/pro-components";
 import { apiDeactiveUser, apiStaffAdd, apiStaffList } from "@/services/user";
 import { apiDepartmentOptions } from "@/services/department";
 import { UserType } from "@/utils/constants";
+import ChangeDepartment from "./components/change-department";
 
 const UserList = () => {
 
@@ -28,10 +28,7 @@ const UserList = () => {
     const [departments, setDepartments] = useState<any>([]);
     const access = useAccess();
 
-    function openRolePanel(record: any) {
-        setUser(record)
-        setIsModalVisible(true)
-    }
+    const reload = () => actionRef.current?.reload();
 
     useEffect(() => {
         apiDepartmentOptions().then(response => setDepartments(response));
@@ -125,6 +122,14 @@ const UserList = () => {
             fieldProps: {
                 options: departments
             },
+            render: (dom, entity) => {
+                if (access.admin) {
+                    return (
+                        <div>{dom} <ChangeDepartment userId={entity.id} reload={reload} /></div>
+                    )
+                }
+                return dom;
+            }
         },
         {
             title: 'Email',
@@ -169,7 +174,8 @@ const UserList = () => {
                     text: 'Ngừng hoạt động',
                     status: 'Error'
                 }
-            }
+            },
+            width: 140
         },
         {
             title: 'Tác vụ',
@@ -186,7 +192,6 @@ const UserList = () => {
                 }}>
                     <Button icon={<MoreOutlined />} size="small" type="dashed"></Button>
                 </Dropdown>,
-                <Button icon={<UsergroupAddOutlined />} onClick={() => openRolePanel(record)} size="small" key="role"></Button>,
                 <Popconfirm key="delete"
                     title="Are you sure to delete?"
                     okText="Yes"
