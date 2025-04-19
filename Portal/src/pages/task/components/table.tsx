@@ -68,7 +68,7 @@ const TaskTable: React.FC = () => {
                             5: { text: 'Quá hạn', status: 'Error' },
                             6: { text: 'Tạm dừng', status: 'Warning' }
                         },
-                        width: 120
+                        width: 130
                     },
                     {
                         title: 'Độ ưu tiên',

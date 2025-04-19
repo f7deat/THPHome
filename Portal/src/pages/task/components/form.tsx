@@ -5,6 +5,8 @@ import { apiTaskItemCreate, apiTaskItemDetail, apiTaskItemUpdate } from "../serv
 import { TaskPriorityList } from "../constants"
 import { useEffect, useRef, useState } from "react"
 import dayjs from "dayjs"
+import { useAccess, useModel } from "@umijs/max"
+import { apiDepartmentCurrentUserOptions } from "@/services/department"
 
 type Props = DrawerFormProps & {
     reload?: () => void;
@@ -12,6 +14,8 @@ type Props = DrawerFormProps & {
 
 const FormTask: React.FC<Props> = (props) => {
 
+    const access = useAccess();
+    const { initialState } = useModel('@@initialState');
     const formRef = useRef<ProFormInstance>();
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -70,21 +74,29 @@ const FormTask: React.FC<Props> = (props) => {
     }
 
     return (
-        <DrawerForm {...props} title="Cài đặt" onFinish={onFinish} formRef={formRef}>
+        <DrawerForm {...props} title="Cài đặt" onFinish={onFinish} formRef={formRef} width={1000}>
             <ProFormText name="id" hidden />
             <ProFormText name="title" label="Tên nhiệm vụ" placeholder="Nhập tên nhiệm vụ" rules={[{ required: true, message: "Vui lòng nhập tên nhiệm vụ!" }]} />
             <ProFormTextArea name="description" label="Mô tả nhiệm vụ" placeholder="Nhập mô tả nhiệm vụ" />
             <Row gutter={16}>
-                <Col md={8} xs={24}>
-                    <ProFormDatePicker width="lg" name="startDate" label="Thời gian bắt đầu" placeholder="Nhập thời gian bắt đầu" rules={[{ required: true, message: "Vui lòng nhập thời gian bắt đầu!" }]} />
+                <Col md={4} xs={12}>
+                    <ProFormDatePicker name="startDate" label="Ngày bắt đầu" placeholder="Nhập thời gian bắt đầu" rules={[{ required: true, message: "Vui lòng nhập thời gian bắt đầu!" }]} />
                 </Col>
-                <Col md={8} xs={24}>
-                    <ProFormDatePicker width="lg" name="dueDate" label="Thời gian hoàn thành" placeholder="Nhập thời gian hoàn thành" />
+                <Col md={4} xs={12}>
+                    <ProFormDatePicker name="dueDate" label="Thời hạn" placeholder="Nhập thời gian hoàn thành" />
                 </Col>
-                <Col md={8} xs={24}>
+                <Col md={6} xs={24}>
                     <ProFormSelect
                         options={TaskPriorityList}
                         name="priority" label="Độ ưu tiên" placeholder="Nhập độ ưu tiên" rules={[{ required: true, message: "Vui lòng nhập độ ưu tiên!" }]} />
+                </Col>
+                <Col md={10} xs={24}>
+                    <ProFormSelect
+                        disabled={!access.hod}
+                        initialValue={initialState?.currentUser?.userName}
+                        request={apiDepartmentCurrentUserOptions}
+                        showSearch
+                        name="assignedTo" label="Người thực hiện" placeholder="Nhập người thực hiện" rules={[{ required: true, message: "Vui lòng nhập người thực hiện!" }]} />
                 </Col>
             </Row>
             {

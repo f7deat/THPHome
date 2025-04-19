@@ -77,6 +77,14 @@ public class UserController(
         var user = await _userManager.FindByIdAsync(User.GetId());
         if (user is null) return Unauthorized();
         var roles = await _userManager.GetRolesAsync(user);
+        if (user.UserType == UserType.Dean)
+        {
+            roles.Add("HOD");
+        }
+        if (user.UserType == UserType.Administrator)
+        {
+            roles.Add(RoleName.ADMIN);
+        }
 
         return Ok(new
         {

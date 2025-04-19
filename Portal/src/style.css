@@ -125,6 +125,10 @@ button.ant-btn-primary {
     padding-inline-end: 1rem;
 }
 
+.ant-menu-submenu-title .ant-menu-submenu-arrow {
+    color: white;
+}
+
 @media screen and (min-width: 768px) {
     .ant-pro-page-container-children-container {
         padding-inline: 40px;

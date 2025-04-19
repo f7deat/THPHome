@@ -27,7 +27,10 @@ const AssignModal: React.FC<Props> = ({ refresh }) => {
         <>
             <Button size="small" icon={<EditTwoTone />} type="link" onClick={() => setOpen(true)} />
             <ModalForm open={open} onOpenChange={setOpen} title="Gán nhiệm vụ" onFinish={onFinish}>
-                <ProFormSelect name="assignedTo" label="Người thực hiện" placeholder="Chọn người thực hiện" showSearch request={apiDepartmentCurrentUserOptions} />
+                <ProFormSelect name="assignedTo" label="Người thực hiện"
+                    rules={[
+                        { required: true, message: "Vui lòng chọn người thực hiện" }]}
+                    placeholder="Chọn người thực hiện" showSearch request={apiDepartmentCurrentUserOptions} />
             </ModalForm>
         </>
     )

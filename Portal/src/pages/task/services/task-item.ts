@@ -8,8 +8,8 @@ export const apiTaskItemUpdate = (data: any) => request.post(`task/update`, data
 
 export const apiTaskItemDetail = (id?: string) => request.get(`task/${id}`);
 
-export async function apiTaskItemCount() {
-    return request.get(`task/count`);
+export async function apiTaskItemCount(departmentId?: number) {
+    return request.get(`task/count`, { params: { departmentId } });
 }
 
 export async function apiTaskItemAssign(data: any) {
@@ -26,4 +26,12 @@ export async function apiTaskItemHistoryList(params: any) {
 
 export async function apiTaskTeamWorkload(params: any) {
     return request.get(`task/team-workload`, { params });
+}
+
+export async function apiTaskItemStatusOptions(params: any) {
+    return request.get(`task/status-options`, { params });
+}
+
+export async function apiTaskItemChangeStatus(data: any) {
+    return request.post(`task/change-status`, data);
 }

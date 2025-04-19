@@ -1,32 +1,46 @@
-import { CheckCircleOutlined, ExclamationCircleOutlined, LoadingOutlined, StopOutlined } from "@ant-design/icons";
-import { PageContainer, ProCard, ProForm, ProFormSelect, ProList } from "@ant-design/pro-components";
-import { useModel, useRequest } from "@umijs/max";
+import { CalendarOutlined, CheckCircleOutlined, ExclamationCircleOutlined, LoadingOutlined, StopOutlined } from "@ant-design/icons";
+import { ActionType, PageContainer, ProCard, ProForm, ProFormSelect, ProList } from "@ant-design/pro-components";
+import { useAccess, useModel, useRequest } from "@umijs/max";
 import { Progress, Statistic } from "antd";
-import { apiTaskItemCount, apiTaskTeamWorkload } from "../services/task-item";
+import { apiTaskItemCount, apiTaskItemHistoryList, apiTaskTeamWorkload } from "../services/task-item";
 import { apiDepartmentOptions } from "@/services/department";
+import { useEffect, useRef, useState } from "react";
+import dayjs from "dayjs";
 
 const Index: React.FC = () => {
 
+    const access = useAccess();
     const { initialState } = useModel('@@initialState');
-    const { data, loading } = useRequest(apiTaskItemCount);
+    const [departmentId, setDepartmentId] = useState<number>(initialState?.currentUser.departmentId || 0);
+    const { data, loading, refresh } = useRequest(() => apiTaskItemCount(departmentId));
+    const workLoadRef = useRef<ActionType>();
+    const historyRef = useRef<ActionType>();
+
+    useEffect(() => {
+        if (departmentId) {
+            refresh();
+            workLoadRef.current?.reload();
+            historyRef.current?.reload();
+        }
+    }, [departmentId]);
 
     return (
         <PageContainer extra={(
             <ProForm layout="inline" submitter={false}>
-                <ProFormSelect label="Đơn vị" initialValue={initialState?.currentUser.departmentId} name="departmentId" request={apiDepartmentOptions} showSearch placeholder="Chọn đơn vị" fieldProps={{
+                <ProFormSelect disabled={!access.admin} label="Đơn vị" initialValue={departmentId} name="departmentId" request={apiDepartmentOptions} showSearch placeholder="Chọn đơn vị" fieldProps={{
                     popupMatchSelectWidth: false
-                }} />
+                }} onChange={(value: number) => setDepartmentId(value)} />
             </ProForm>
         )}>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <ProCard>
-                    <Statistic loading={loading} title="Tổng" value={data?.notStarted + data?.needsReview + data?.approved + data?.inProgress + data?.complete + data?.onHold + data?.overdue} />
+                    <Statistic loading={loading} title="Tổng" value={data?.total} />
                 </ProCard>
                 <ProCard>
                     <Statistic loading={loading} title="Chưa bắt đầu" value={data?.notStarted} />
                 </ProCard>
                 <ProCard>
-                    <Statistic loading={loading} title="Chờ duyệt" value={data?.needsReview} />
+                    <Statistic loading={loading} title="Cần đánh giá" value={data?.needsReview} />
                 </ProCard>
                 <ProCard>
                     <Statistic loading={loading} title="Đã duyệt" value={data?.approved} />
@@ -47,9 +61,10 @@ const Index: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ProCard title="Khối lượng công việc" headerBordered>
                     <ProList
+                        actionRef={workLoadRef}
                         request={(params) => apiTaskTeamWorkload({
                             ...params,
-                            departmentId: initialState?.currentUser.departmentId
+                            departmentId: departmentId
                         })}
                         metas={{
                             title: {
@@ -60,45 +75,32 @@ const Index: React.FC = () => {
                             },
                             description: {
                                 dataIndex: 'taskCount',
-                                render: (text, row) => {
-                                    return (
-                                        <div>
-                                            <div className="flex gap-2 mb-2">
-                                                <div className="text-gray-500 w-32">Chưa bắt đầu:</div>
-                                                <Progress percent={row?.notStartedPercent} />
-                                            </div>
-                                            <div className="flex gap-2 mb-2">
-                                                <div className="text-gray-500 w-32">Đang thực hiện:</div>
-                                                <Progress percent={row?.inProgressPercent} />
-                                            </div>
-                                            <div className="flex gap-2 mb-2">
-                                                <div className="text-gray-500 w-32">Đã hoàn thành:</div>
-                                                <Progress percent={row?.completePercent} />
-                                            </div>
-                                            <div className="flex gap-2 mb-2">
-                                                <div className="text-gray-500 w-32">Cần đánh giá:</div>
-                                                <Progress percent={row?.needsReviewPercent} />
-                                            </div>
-                                            <div className="flex gap-2 mb-2">
-                                                <div className="text-gray-500 w-32">Đã duyệt:</div>
-                                                <Progress percent={row?.approvedPercent} />
-                                            </div>
-                                            <div className="flex gap-2 mb-2">
-                                                <div className="text-gray-500 w-32">Quá hạn:</div>
-                                                <Progress percent={row?.overduePercent} />
-                                            </div>
-                                            <div className="flex gap-2 mb-2">
-                                                <div className="text-gray-500 w-32">Tạm dừng:</div>
-                                                <Progress percent={row?.onHoldPercent} />
-                                            </div>
-                                        </div>
-                                    )
-                                }
+                                render: (_, row) => <Progress percent={row?.totalTaskPercent} />
                             }
                         }}
                     />
                 </ProCard>
                 <ProCard title="Hoạt động gần đây" headerBordered>
+                    <ProList 
+                    actionRef={historyRef}
+                    request={(params) => apiTaskItemHistoryList({
+                        ...params,
+                        departmentId: departmentId
+                    })}
+                        metas={{
+                            title: {
+                                dataIndex: 'title'
+                            },
+                            description: {
+                                dataIndex: 'action',
+                                render: (_, record) => (
+                                    <div>
+                                        <div><CalendarOutlined /> {dayjs(record.createdDate).format('DD/MM/YYYY HH:mm')}: {record.action} - {record.userName}</div>
+                                    </div>
+                                )
+                            }
+                        }}
+                    />
                 </ProCard>
             </div>
         </PageContainer>

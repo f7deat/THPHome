@@ -18,13 +18,13 @@ export enum TaskStatus
 }
 
 export const TaskStatusList = [
-    { label: 'Chưa bắt đầu', value: TaskStatus.NotStarted },
-    { label: 'Đang thực hiện', value: TaskStatus.InProgress },
-    { label: 'Hoàn thành', value: TaskStatus.Complete },
-    { label: 'Chờ duyệt', value: TaskStatus.NeedsReview },
-    { label: 'Đã phê duyệt', value: TaskStatus.Approved },
-    { label: 'Quá hạn', value: TaskStatus.Overdue },
-    { label: 'Tạm dừng', value: TaskStatus.OnHold }
+    { label: '🔄 Chưa bắt đầu', value: TaskStatus.NotStarted },
+    { label: '🚧 Đang thực hiện', value: TaskStatus.InProgress },
+    { label: '✅ Hoàn thành', value: TaskStatus.Complete },
+    { label: '📝 Cần đánh giá', value: TaskStatus.NeedsReview },
+    { label: '✔️ Đã phê duyệt', value: TaskStatus.Approved },
+    { label: '⏰ Quá hạn', value: TaskStatus.Overdue },
+    { label: '⏸️ Tạm dừng', value: TaskStatus.OnHold }
 ]
 
 export const TaskPriorityList = [

@@ -1,12 +1,13 @@
 import { PageContainer, ProCard, ProDescriptions, ProForm, ProFormTextArea, ProList } from "@ant-design/pro-components"
 import { history, useParams, useRequest } from "@umijs/max"
 import { apiTaskItemDetail, apiTaskItemHistoryList } from "../services/task-item"
-import { Button, Divider, Popconfirm } from "antd";
-import { CalendarOutlined, DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Divider} from "antd";
+import { CalendarOutlined, LeftOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 import 'ckeditor5/ckeditor5.css';
 import { TaskPriorityList, TaskStatusList } from "../constants";
 import AssignModal from "./components/assign";
 import dayjs from "dayjs";
+import StatusChange from "./components/status";
 
 const Index: React.FC = () => {
 
@@ -36,11 +37,6 @@ const Index: React.FC = () => {
                 </div>
                 <div className="md:w-1/3">
                     <ProCard title="Cài đặt" className="mb-4"
-                        actions={[
-                            <Popconfirm title="Bạn có chắc chắn muốn xóa nhiệm vụ này không?" onConfirm={() => { }} key="delete">
-                                <Button type="text" icon={<DeleteOutlined />} danger />
-                            </Popconfirm>
-                        ]}
                         headerBordered>
                         <ProDescriptions column={1} bordered size="small">
                             <ProDescriptions.Item label="Người thực hiện">
@@ -52,7 +48,7 @@ const Index: React.FC = () => {
                             <ProDescriptions.Item label="Ngày hết hạn" valueType="date">{data?.dueDate}</ProDescriptions.Item>
                             <ProDescriptions.Item label="Trạng thái" valueType="select" fieldProps={{
                                 options: TaskStatusList
-                            }}>{data?.status}<Button icon={<EditOutlined />} size="small" type="link" /></ProDescriptions.Item>
+                            }}>{data?.status}<StatusChange refresh={refresh} /></ProDescriptions.Item>
                             <ProDescriptions.Item label="Độ ưu tiên"
                                 valueType="select"
                                 fieldProps={{
