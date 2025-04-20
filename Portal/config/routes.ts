@@ -325,7 +325,7 @@ export default [
     icon: 'SettingOutlined',
     name: 'setting',
     path: '/settings',
-    access: 'canAdmin',
+    access: 'canEditor',
     routes: [
       {
         name: 'general',
@@ -336,6 +336,7 @@ export default [
         name: 'application',
         path: '/settings/application',
         component: './settings/app',
+        access: 'canAdmin'
       },
       {
         name: 'language',
@@ -346,6 +347,7 @@ export default [
         name: 'roles',
         path: '/settings/roles',
         component: './roles/role-list',
+        access: 'canAdmin'
       },
       {
         name: 'roleCenter',
@@ -358,12 +360,6 @@ export default [
         path: '/settings/application/zalo-article',
         component: './settings/app/zalo/article',
         hideInMenu: true,
-      },
-      {
-        name: 'Phòng ban',
-        path: '/settings/department',
-        component: './departments',
-        hideInMenu: true
       }
     ],
   },

@@ -293,3 +293,20 @@ export async function apiDeactiveUser(id: string) {
         method: 'POST'
     });
 }
+
+export async function apiUserNotificationDelete(id: string) {
+    return request(`user/notification/${id}`, {
+        method: 'DELETE'
+    });
+}
+
+export async function apiAddUserToRole(data: any) {
+    return request(`user/add-to-role`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiStaffIdOptions() {
+    return request(`user/staff-id-options`);
+}

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Interfaces.IService;
 using ApplicationCore.Interfaces.IRepository;
 using Infrastructure.Repositories;
-using ApplicationCore.Services;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -55,8 +54,6 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IPostService, PostService>();
         services.AddScoped<IPostRepository, PostRepository>();
-        services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
-        services.AddScoped<IPostCategoryService, PostCategoryService>();
         services.AddScoped<IBannerRepository, BannerRepository>();
         services.AddScoped<IBannerService, BannerService>();
         services.AddScoped<IMenuService, MenuService>();

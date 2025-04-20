@@ -1,12 +1,15 @@
-import React, { useState } from "react";
-import { PageContainer, ProList, ProCard } from "@ant-design/pro-components";
-import { Badge, Button, Dropdown, Empty } from "antd";
-import { apiUserListNotification } from "@/services/user";
+import React, { useRef, useState } from "react";
+import { PageContainer, ProList, ProCard, ActionType } from "@ant-design/pro-components";
+import { Badge, Button, Dropdown, Empty, message } from "antd";
+import { apiUserListNotification, apiUserNotificationDelete } from "@/services/user";
 import { CalendarOutlined, DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, MailOutlined, MoreOutlined } from "@ant-design/icons";
 import { apiGetNotification } from "@/services/notificaton";
 import { FormattedDate } from "@umijs/max";
 
 const NotificationPage: React.FC = () => {
+
+    const actionRef = useRef<ActionType>();
+
     const [selectedNotification, setSelectedNotification] = useState<string | null>(null);
     const [notification, setNotification] = useState<any>(null);
 
@@ -20,9 +23,9 @@ const NotificationPage: React.FC = () => {
                 <div className="md:w-1/3">
                     <ProCard title="Thông báo mới" headerBordered>
                         <ProList
+                            actionRef={actionRef}
                             request={apiUserListNotification}
                             pagination={{
-                                pageSize: 20,
                                 size: "small"
                             }}
                             size="small"
@@ -54,7 +57,12 @@ const NotificationPage: React.FC = () => {
                                                     key: 'delete',
                                                     label: 'Xóa',
                                                     icon: <DeleteOutlined />,
-                                                    danger: true
+                                                    danger: true,
+                                                    onClick: async () => {
+                                                        await apiUserNotificationDelete(entity.id);
+                                                        message.success("Xóa thông báo thành công");
+                                                        actionRef.current?.reload();
+                                                    }
                                                 },
                                             ]
                                         }}>

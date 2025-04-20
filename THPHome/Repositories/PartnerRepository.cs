@@ -2,8 +2,8 @@
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
+using THPHome.Models.Filters.Parners;
 using THPHome.Repositories.Base;
-using WebUI.Models.Filters.Parners;
 
 namespace THPHome.Repositories;
 

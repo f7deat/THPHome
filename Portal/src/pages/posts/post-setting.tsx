@@ -71,9 +71,6 @@ const PostSetting = () => {
                 ])
                 setPreviewImage(response.thumbnail);
             })
-            request(`post/get-list-category-id-in-post/${id}`).then((response: any) => {
-                form.current?.setFieldValue('categories', response);
-            })
             request(`post/attachment-list-in-post/${id}`).then((response: any) => {
                 let mapData = response.map(function (x: any) {
                     return {

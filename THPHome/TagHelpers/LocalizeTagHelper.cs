@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using THPCore.Helpers;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Helpers;
@@ -23,7 +24,8 @@ public class LocalizeTagHelper(ApplicationDbContext _context, IMemoryCache _memo
         output.TagName = null;
         if (_actionContextAccessor.ActionContext is null) return;
         _actionContextAccessor.ActionContext.HttpContext.Request.Cookies.TryGetValue("locale", out string? locale);
-
+        locale = string.IsNullOrWhiteSpace(locale) ? "vi-VN" : locale;
+        if (!LocaleHelper.IsAvailable(locale)) locale = "vi-VN";
         var cacheKey = $"{Key}-{nameof(Localization)}_{locale}";
         if (!_memoryCache.TryGetValue($"{cacheKey}", out string? cacheValue))
         {
@@ -34,8 +36,7 @@ public class LocalizeTagHelper(ApplicationDbContext _context, IMemoryCache _memo
                 {
                     Key = Key,
                     Locale = locale ?? "vi-VN",
-                    CreatedBy = Guid.Empty.ToString(),
-                    ModifiedBy = Guid.Empty.ToString(),
+                    ModifiedBy = "tandc",
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
                 };

@@ -1,10 +1,9 @@
-﻿using THPHome.Models.Filters;
+﻿using THPCore.Models;
 
-namespace WebUI.Models.Filters.Communications;
+namespace THPHome.Models.Filters.Communications;
 
 public class LogFilterOptions : FilterOptions
 {
-    public DateTime? SendDate { get; set; }
     public string? RecipientEmail { get; set; }
     public string? Subject { get; set; }
 }

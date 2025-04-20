@@ -57,7 +57,8 @@ public class OpenAPIController : Controller
                 x.Url,
                 x.CreatedDate,
                 x.ModifiedDate,
-                x.View
+                x.View,
+                x.CategoryId
             });
         if (!string.IsNullOrWhiteSpace(filterOptions.SearchTerm))
         {
@@ -65,24 +66,15 @@ public class OpenAPIController : Controller
         }
         query = query.Where(x => x.Locale == filterOptions.Locale);
         query = query.Where(x => x.Type == filterOptions.Type);
-        if (filterOptions.CategoryId != null)
-        {
-            query = from a in _context.PostCategories
-                    join b in query on a.PostId equals b.Id
-                    where a.CategoryId == filterOptions.CategoryId
-                    select b;
-        }
 
         var data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
 
-        var categories = await (from a in _context.PostCategories
-                                join b in _context.Categories on a.CategoryId equals b.Id
+        var categories = await (from b in _context.Categories
                                 select new
                                 {
                                     b.Id,
                                     b.Name,
-                                    b.NormalizeName,
-                                    a.PostId
+                                    b.NormalizeName
                                 }).ToListAsync();
 
         var result = data.Select(x => new
@@ -95,7 +87,7 @@ public class OpenAPIController : Controller
             x.Thumbnail,
             x.Url,
             x.View,
-            categories = categories.Where(c => c.PostId == x.Id).Select(c => new
+            categories = categories.Where(c => c.Id == x.CategoryId).Select(c => new
             {
                 c.Id,
                 c.Name,

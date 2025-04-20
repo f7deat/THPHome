@@ -1,8 +1,7 @@
-﻿using ApplicationCore.Entities;
+﻿using THPCore.Models;
 using THPHome.Entities;
-using THPHome.Models.Filters;
 
-namespace WebUI.Models.Filters.Parners;
+namespace THPHome.Models.Filters.Parners;
 
 public class PartnerFilterOptions : FilterOptions
 {

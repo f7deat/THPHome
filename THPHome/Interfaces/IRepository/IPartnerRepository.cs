@@ -1,7 +1,7 @@
 ﻿using THPCore.Models;
 using THPHome.Entities;
 using THPHome.Interfaces.Base;
-using WebUI.Models.Filters.Parners;
+using THPHome.Models.Filters.Parners;
 
 namespace ApplicationCore.Interfaces.IRepository;
 

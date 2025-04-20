@@ -1,4 +1,5 @@
-﻿using THPHome.Entities.Leaves;
+﻿using THPCore.Models;
+using THPHome.Entities.Leaves;
 
 namespace THPHome.Models.Filters.Leaves;
 

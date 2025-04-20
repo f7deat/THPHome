@@ -197,13 +197,11 @@ const UserList = () => {
                     okText="Yes"
                     cancelText="No"
                     onConfirm={async () => {
-                        const response = await request(`user/delete/${record.id}`, {
+                        await request(`user/delete/${record.id}`, {
                             method: 'POST'
                         });
-                        if (response.data) {
-                            message.success('Xóa thành công!');
-                            actionRef.current?.reload();
-                        }
+                        message.success('Xóa thành công!');
+                        actionRef.current?.reload();
                     }}
                 >
                     <Button type="primary" danger icon={<DeleteOutlined />} size="small" hidden={!access.admin} />

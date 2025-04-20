@@ -17,6 +17,5 @@ export async function apiNotificationUnreadCount() {
 export async function apiNotificationDelete(id: string) {
     return request(`notification/delete/${id}`, {
         method: 'POST'
-    })
-    
+    });
 }

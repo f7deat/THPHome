@@ -12,7 +12,7 @@ public class IndexModel(IPostService postService, ICategoryService _categoryServ
     public async Task<IActionResult> OnGetAsync()
     {
         Request.Cookies.TryGetValue("locale", out string? locale);
-        Categories = await _categoryService.ListAllAsync(locale);
+        Categories = await _categoryService.ListAllAsync(locale ?? "vi-VN");
         return Page();
     }
 }

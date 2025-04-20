@@ -1,4 +1,6 @@
-﻿namespace WebUI.Models.Filters.OpenAPI;
+﻿using THPHome.Models.Filters.OpenAPI;
+
+namespace WebUI.Models.Filters.OpenAPI;
 
 public class PhotoFilterOptions : OpenApiFilterOptions
 {

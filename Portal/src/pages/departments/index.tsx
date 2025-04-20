@@ -6,12 +6,13 @@ import {
     EditOutlined,
     EyeOutlined
 } from "@ant-design/icons";
-import { getLocale, history, request } from "@umijs/max";
+import { getLocale, history, request, useAccess } from "@umijs/max";
 import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormDigit, ProFormInstance, ProFormSelect, ProTable } from "@ant-design/pro-components";
 import { apiGetDepartmentList, apiGetDepartmentTypeOptions, apiUpdateDepartment } from "@/services/department";
 
 const Department: React.FC = () => {
 
+    const access = useAccess();
     const [open, setOpen] = useState<boolean>(false);
     const formRef = useRef<ProFormInstance>();
     const actionRef = useRef<ActionType>();
@@ -87,6 +88,13 @@ const Department: React.FC = () => {
             dataIndex: 'name'
         },
         {
+            title: 'Loại đơn vị',
+            dataIndex: 'departmentTypeId',
+            valueType: 'select',
+            request: apiGetDepartmentTypeOptions,
+            width: 180
+        },
+        {
             title: 'Người tạo',
             dataIndex: 'createdBy',
             search: false,
@@ -126,7 +134,7 @@ const Department: React.FC = () => {
     return (
         <PageContainer>
             <ProTable
-                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}
+                headerTitle={<Button type="primary" hidden={!access.admin} icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}
                 actionRef={actionRef}
                 request={apiGetDepartmentList}
                 search={{

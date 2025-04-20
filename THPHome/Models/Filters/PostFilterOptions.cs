@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using THPCore.Models;
 using THPHome.Enums;
 
 namespace THPHome.Models.Filters;

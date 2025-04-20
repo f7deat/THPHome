@@ -8,11 +8,10 @@ using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
 using THPHome.Models.Args.Files;
-using THPHome.Models.Files;
+using THPHome.Models.Filters.Files;
 using THPIdentity.Entities;
 using WebUI.Interfaces.IService;
 using WebUI.Models.Args.Files;
-using WebUI.Models.Filters.Files;
 using WebUI.Options;
 
 namespace THPHome.Controllers;
@@ -221,18 +220,6 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
             path,
             files
         });
-    }
-
-    [HttpPost("delete")]
-    public IActionResult Delete([FromBody] FileInfoModel file)
-    {
-        var path = _webHostEnvironment.WebRootPath + file.FullName;
-        if (!System.IO.File.Exists(path))
-        {
-            return Ok(new { succeeded = false, message = "File not exist!" });
-        }
-        System.IO.File.Delete(path);
-        return Ok(new { succeeded = true, message = "Succeeded!" });
     }
 
     [HttpGet("custom-css")]

@@ -1,4 +1,5 @@
-﻿namespace THPHome.Models.Filters.Users;
+﻿using THPCore.Models;
+namespace THPHome.Models.Filters.Users;
 
 public class DepartmentUserFilterOptions : FilterOptions
 {

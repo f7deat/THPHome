@@ -1,6 +1,6 @@
-﻿using THPHome.Models.Filters;
+﻿using THPCore.Models;
 
-namespace WebUI.Models.Filters.OpenAPI;
+namespace THPHome.Models.Filters.OpenAPI;
 
 public class OpenApiFilterOptions : FilterOptions
 {

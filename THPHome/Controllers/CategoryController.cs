@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Interfaces;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
@@ -11,7 +12,6 @@ using THPHome.Models.Categories;
 using THPHome.Models.Filters;
 using THPIdentity.Constants;
 using THPIdentity.Entities;
-using WebUI.Models.Filters;
 using WebUI.Models.Results;
 
 namespace THPHome.Controllers;

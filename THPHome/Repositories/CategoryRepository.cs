@@ -50,7 +50,7 @@ public class CategoryRepository(ApplicationDbContext context) : EfRepository<Cat
 
     public async Task<List<Category>> GetListInPostAsync(long postId)
     {
-        return await (from a in _context.PostCategories.Where(x => x.PostId == postId)
+        return await (from a in _context.Posts.Where(x => x.Id == postId)
                       join b in _context.Categories on a.CategoryId equals b.Id
                       select b).ToListAsync();
     }

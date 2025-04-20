@@ -2,7 +2,7 @@
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
-using WebUI.Models.Filters.Settings;
+using THPHome.Models.Filters.Settings;
 
 namespace THPHome.Services;
 

@@ -1,6 +1,6 @@
-﻿using THPHome.Models.Filters;
+﻿using THPCore.Models;
 
-namespace WebUI.Models.Filters;
+namespace THPHome.Models.Filters;
 
 public class CategoryFilterOptions : FilterOptions
 {

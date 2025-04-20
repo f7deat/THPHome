@@ -1,4 +1,4 @@
-﻿using THPHome.Models.Filters;
+﻿using THPCore.Models;
 
 namespace THPHome.Services.Leaves.Filters;
 

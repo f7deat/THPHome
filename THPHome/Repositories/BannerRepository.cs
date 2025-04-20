@@ -3,8 +3,8 @@ using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
+using THPHome.Models.Filters.Settings;
 using THPHome.Repositories.Base;
-using WebUI.Models.Filters.Settings;
 
 namespace THPHome.Repositories;
 

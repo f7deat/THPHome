@@ -6,8 +6,8 @@ using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters.Parners;
 using THPIdentity.Entities;
-using WebUI.Models.Filters.Parners;
 
 namespace THPHome.Controllers;
 

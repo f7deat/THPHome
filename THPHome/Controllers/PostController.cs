@@ -21,7 +21,7 @@ using THPHome.Foundations;
 
 namespace THPHome.Controllers;
 
-public class PostController(IHCAService _hcaService, IAttachmentService _attachmentService, IPostService _postService, IPostCategoryService _postCategoryService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, IZaloAPI _zaloAPI, ILogService _logService) : BaseController(context)
+public class PostController(IHCAService _hcaService, IAttachmentService _attachmentService, IPostService _postService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, IZaloAPI _zaloAPI, ILogService _logService) : BaseController(context)
 {
     [Route("post/tag")]
     public async Task<IActionResult> Tag(string name, string searchTerm)
@@ -124,7 +124,6 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
             var data = await _postService.AddAsync(post);
             if (data.Id > 0)
             {
-                await _postCategoryService.AddAsync(args.Categories, data.Id);
                 await _attachmentService.MapAsync(args.Attachments, data.Id);
             }
             return CreatedAtAction(nameof(AddAsync), IdentityResult.Success);
@@ -227,10 +226,6 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
             post.CategoryId = args.CategoryId;
             post.Url = SeoHelper.ToSeoFriendly(args.Title);
 
-            await _postCategoryService.DeleteAsync(args.Id);
-
-            await _postCategoryService.AddAsync(args.Categories, post.Id);
-
             await _attachmentService.MapAsync(args.Attachments, post.Id);
 
             return Ok(await _postService.EditAsync(post));
@@ -240,9 +235,6 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
             return BadRequest(ex.ToString());
         }
     }
-
-    [Route("get-list-category-id-in-post/{postId}")]
-    public async Task<IActionResult> GetListCategoryIdInPostAsync(long postId) => Ok(await _postCategoryService.GetListCategoryIdInPostAsync(postId));
 
     [HttpGet("attachment-list-in-post/{id}")]
     public async Task<IActionResult> GetAttachmentsAsync([FromRoute] long id) => Ok(await _attachmentService.GetListInPostAsync(id));

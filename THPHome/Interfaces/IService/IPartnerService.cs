@@ -1,6 +1,6 @@
 ﻿using THPCore.Models;
 using THPHome.Entities;
-using WebUI.Models.Filters.Parners;
+using THPHome.Models.Filters.Parners;
 
 namespace THPHome.Interfaces.IService;
 

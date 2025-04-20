@@ -233,13 +233,6 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
                 await _context.PostBlocks.AddAsync(item);
             }
 
-            var categories = await _context.PostCategories.Where(x => x.PostId == source.Id).ToListAsync();
-            foreach (var item in categories)
-            {
-                item.PostId = target.Id;
-                await _context.PostCategories.AddAsync(item);
-            }
-
             await _context.SaveChangesAsync();
 
             return Ok();

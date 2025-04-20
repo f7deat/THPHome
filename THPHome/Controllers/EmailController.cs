@@ -6,9 +6,9 @@ using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Foundations;
 using THPHome.Models.Args.Communications;
+using THPHome.Models.Filters.Communications;
 using WebUI.Entities.Communications;
 using WebUI.ExternalAPI.Interfaces;
-using WebUI.Models.Filters.Communications;
 
 namespace THPHome.Controllers;
 

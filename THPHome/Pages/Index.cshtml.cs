@@ -72,8 +72,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
                         }).ToListAsync();
 
         var pressTalks = from a in _context.Posts
-                         join b in _context.PostCategories on a.Id equals b.PostId
-                         where b.CategoryId == 551
+                         where a.CategoryId == 551
                          orderby a.CreatedDate descending
                          select new PostView
                          {

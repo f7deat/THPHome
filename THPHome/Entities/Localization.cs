@@ -12,8 +12,6 @@ public class Localization : BaseEntity, ILocale
     public DateTime? ModifiedDate { get; set; }
     [StringLength(450)]
     public string? ModifiedBy { get; set; }
-    [StringLength(450)]
-    public string? CreatedBy { get; set; }
     [StringLength(10)]
     public string Locale { get; set; } = "vi-VN";
 }

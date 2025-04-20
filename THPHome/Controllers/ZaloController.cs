@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.ExternalAPI.Interfaces;
 using THPHome.Foundations;
-using THPHome.Models.Filters;
 using ZaloSDK;
 using ZaloSDK.Articles;
 

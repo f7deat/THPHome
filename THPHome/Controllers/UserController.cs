@@ -24,7 +24,6 @@ using THPHome.Models.Args.Users;
 using WebUI.Interfaces.IService;
 using THPHome.Entities.Users;
 using ForeignLanguageProficiency = THPHome.Entities.Users.ForeignLanguageProficiency;
-using THPHome.Models.Filters;
 using THPCore.Models;
 using THPHome.Foundations;
 
@@ -260,7 +259,7 @@ public class UserController(
         return Ok(await ListResult<ApplicationUser>.Success(query, filterOptions));
     }
 
-    [HttpPost("add-to-role")]
+    [HttpPost("add-to-role"), Authorize(Roles = RoleName.ADMIN)]
     public async Task<IActionResult> AddToRoleAsync([FromBody] AddToRole addToRole)
     {
         var user = await _userManager.FindByIdAsync(addToRole.UserId);
@@ -277,7 +276,7 @@ public class UserController(
     [Route("is-authenticated"), AllowAnonymous]
     public IActionResult IsAuthenticated() => Ok(User.Identity?.IsAuthenticated ?? false);
 
-    [HttpDelete("remove-from-role/{role}/{id}")]
+    [HttpDelete("remove-from-role/{role}/{id}"), Authorize(Roles = RoleName.ADMIN)]
     public async Task<IActionResult> DeleteA([FromRoute] string role, [FromRoute] string id)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -946,4 +945,13 @@ public class UserController(
         return Ok(result);
     }
 
+    [HttpGet("staff-id-options")]
+    public async Task<IActionResult> GetStaffIdOptionsAsync() => Ok(await _userManager.Users
+        .Where(x => x.UserType != UserType.Student)
+        .Where(x => x.Status == UserStatus.Active)
+        .Select(x => new
+        {
+            label = $"{x.Name} - {x.UserName}",
+            value = x.Id
+        }).ToListAsync());
 }

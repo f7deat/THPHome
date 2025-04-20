@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using THPCore.Models;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
-using WebUI.Models.Filters.Parners;
+using THPHome.Models.Filters.Parners;
 
 namespace THPHome.Services;
 

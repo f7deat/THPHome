@@ -15,7 +15,7 @@ public class LocalizeService(ApplicationDbContext _context, IActionContextAccess
         if (string.IsNullOrWhiteSpace(key)) return key;
         var locale = "vi-VN";
         _actionContextAccessor.ActionContext?.HttpContext.Request.Cookies.TryGetValue("locale", out locale);
-
+        locale = string.IsNullOrWhiteSpace(locale) ? "vi-VN" : locale;
         var cacheKey = $"{key}-{nameof(Localization)}_{locale}";
         if (!_memoryCache.TryGetValue($"{cacheKey}", out string? cacheValue))
         {

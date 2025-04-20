@@ -1,5 +1,5 @@
 ﻿using THPHome.Entities.Notifications;
-using THPHome.Models.Filters;
+using THPCore.Models;
 
 namespace THPHome.Services.Notifications.Models;
 

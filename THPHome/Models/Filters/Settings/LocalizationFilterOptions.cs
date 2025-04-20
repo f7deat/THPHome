@@ -1,6 +1,6 @@
-﻿using THPHome.Models.Filters;
+﻿using THPCore.Models;
 
-namespace WebUI.Models.Filters.Settings;
+namespace THPHome.Models.Filters.Settings;
 
 public class LocalizationFilterOptions : FilterOptions
 {

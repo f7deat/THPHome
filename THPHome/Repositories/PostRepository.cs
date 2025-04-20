@@ -3,7 +3,6 @@ using ApplicationCore.Helpers;
 using ApplicationCore.Models.Posts;
 using Microsoft.AspNetCore.Identity;
 using THPIdentity.Entities;
-using WebUI.Foundations.Interfaces;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
@@ -154,7 +153,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         return await ListResult<dynamic>.Success(query, filterOptions);
     }
 
-    public async Task<bool> IsExistInCategory(int id) => await _context.PostCategories.AnyAsync(x => x.CategoryId == id);
+    public async Task<bool> IsExistInCategory(int id) => await _context.Posts.AnyAsync(x => x.CategoryId == id);
 
     public async Task<dynamic> AddRangeAsync(List<Post> posts)
     {
@@ -178,8 +177,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         return post.View;
     }
 
-    public IQueryable<PostView> GetListInCategory(int categoryId, string searchTerm) => from a in _context.PostCategories.Where(x => x.CategoryId == categoryId)
-                                                                                        join b in _context.Posts on a.PostId equals b.Id
+    public IQueryable<PostView> GetListInCategory(int categoryId, string searchTerm) => from b in _context.Posts.Where(x => x.CategoryId == categoryId)
                                                                                         where (string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)) && b.Status == PostStatus.PUBLISH && b.DepartmentId == null
                                                                                         orderby b.CreatedDate descending
                                                                                         select new PostView
@@ -196,8 +194,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
     public async Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0)
     {
         var query = from a in _context.Posts
-                    join b in _context.PostCategories on a.Id equals b.PostId
-                    where (categoryId == 0 || b.CategoryId == categoryId) && a.Status == PostStatus.PUBLISH
+                    where (categoryId == 0 || a.CategoryId == categoryId) && a.Status == PostStatus.PUBLISH
                     orderby Guid.NewGuid()
                     select new PostView
                     {
@@ -286,8 +283,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
     public async Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int current, int pageSize)
     {
         var query = from a in _context.Posts
-                    join b in _context.PostCategories on a.Id equals b.PostId
-                    where a.Title.ToLower().Contains(searchTerm) && (b.CategoryId == categoryId || categoryId == null) && a.Status == PostStatus.PUBLISH
+                    where a.Title.ToLower().Contains(searchTerm) && (a.CategoryId == categoryId || categoryId == null) && a.Status == PostStatus.PUBLISH
                     orderby a.ModifiedDate descending
                     select new PostView
                     {
@@ -305,8 +301,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
     public async Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize)
     {
         var query = from a in _context.Categories
-                    join b in _context.PostCategories on a.Id equals b.CategoryId
-                    join c in _context.Posts on b.PostId equals c.Id
+                    join c in _context.Posts on a.Id equals c.CategoryId
                     where a.NormalizeName == normalizeName && c.Status == PostStatus.PUBLISH
                     orderby c.ModifiedDate descending
                     select new PostView
@@ -328,9 +323,8 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         var categories = await _context.Categories.OrderBy(x => x.Index).Where(x => x.IsDisplayOnHome == true).ToListAsync();
         foreach (var item in categories)
         {
-            var posts = from a in _context.PostCategories
-                        join b in _context.Posts on a.PostId equals b.Id
-                        where a.CategoryId == item.Id && b.Status == PostStatus.PUBLISH
+            var posts = from b in _context.Posts
+                        where b.CategoryId == item.Id && b.Status == PostStatus.PUBLISH
                         orderby b.IssuedDate descending
                         select new PostView
                         {

@@ -1,6 +1,6 @@
-﻿using THPHome.Models.Filters;
+﻿using THPCore.Models;
 
-namespace WebUI.Models.Filters.Files;
+namespace THPHome.Models.Filters.Files;
 
 public class FileFilterOptions : FilterOptions
 {

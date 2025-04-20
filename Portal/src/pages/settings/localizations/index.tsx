@@ -70,13 +70,21 @@ const Localization: React.FC = () => {
             title: 'Ngày tạo',
             dataIndex: 'createdDate',
             valueType: 'fromNow',
-            search: false
+            search: false,
+            width: 150
+        },
+        {
+            title: 'Người cập nhật',
+            dataIndex: 'modifiedBy',
+            search: false,
+            width: 200
         },
         {
             title: 'Ngày cập nhật',
             dataIndex: 'modifiedDate',
             valueType: 'fromNow',
-            search: false
+            search: false,
+            width: 150
         },
         {
             title: 'Tác vụ',

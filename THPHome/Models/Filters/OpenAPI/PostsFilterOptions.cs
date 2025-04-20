@@ -1,5 +1,5 @@
-﻿using THPHome.Enums;
-using THPHome.Models.Filters;
+﻿using THPCore.Models;
+using THPHome.Enums;
 
 namespace THPHome.Models.Filters.OpenAPI;
 

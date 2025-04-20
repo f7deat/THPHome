@@ -1,4 +1,5 @@
-﻿using THPHome.Enums;
+﻿using THPCore.Models;
+using THPHome.Enums;
 
 namespace THPHome.Models.Filters.Articles;
 

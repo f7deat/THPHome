@@ -1,4 +1,5 @@
-﻿using THPHome.Entities.Contacts;
+﻿using THPCore.Models;
+using THPHome.Entities.Contacts;
 
 namespace THPHome.Models.Filters.Contacts;
 

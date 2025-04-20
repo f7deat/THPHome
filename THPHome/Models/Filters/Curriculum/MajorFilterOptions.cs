@@ -1,4 +1,6 @@
-﻿namespace THPHome.Models.Filters.Curriculum;
+﻿using THPCore.Models;
+
+namespace THPHome.Models.Filters.Curriculum;
 
 public class MajorFilterOptions : FilterOptions
 {

@@ -1,12 +1,5 @@
 ﻿using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using THPHome.Entities;
 using THPHome.Enums;
 
@@ -14,7 +7,7 @@ namespace ApplicationCore.Helpers
 {
     public class ExcelHelper
     {
-        public static async Task<byte[]> ExportProduct(IReadOnlyList<Post> posts, IReadOnlyList<Category> categories, IReadOnlyList<PostCategory> postCategories)
+        public static async Task<byte[]> ExportProduct(IReadOnlyList<Post> posts, IReadOnlyList<Category> categories)
         {
             using ExcelPackage package = new ExcelPackage();
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(nameof(Post));
@@ -79,16 +72,9 @@ namespace ApplicationCore.Helpers
 
             // Post Category
             ExcelWorksheet worksheet3 = package.Workbook.Worksheets.Add(nameof(PostCategory));
-            totalRows = postCategories.Count() + 1;
             worksheet3.Cells[1, 1].Value = "PostId";
             worksheet3.Cells[1, 2].Value = "CategoryId";
             i = 0;
-            for (int row = 2; row < totalRows; row++)
-            {
-                worksheet3.Cells[row, 1].Value = postCategories[i].PostId;
-                worksheet3.Cells[row, 2].Value = postCategories[i].CategoryId;
-                i++;
-            }
 
             return await package.GetAsByteArrayAsync();
         }

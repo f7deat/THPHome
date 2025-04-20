@@ -5,8 +5,8 @@ using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
+using THPHome.Models.Filters.Settings;
 using THPIdentity.Constants;
-using WebUI.Models.Filters.Settings;
 
 namespace THPHome.Controllers;
 
@@ -27,7 +27,7 @@ public class LocalizationController(ApplicationDbContext context) : BaseControll
         return Ok(await ListResult<Localization>.Success(query.OrderBy(x => x.Key), filterOptions));
     }
 
-    [HttpPost("update"), Authorize(Roles = RoleName.ADMIN)]
+    [HttpPost("update")]
     public async Task<IActionResult> UpdateAsync([FromBody] Localization localization)
     {
         var locale = await _context.Localizations.FindAsync(localization.Id);

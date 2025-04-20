@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;

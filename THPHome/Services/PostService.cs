@@ -10,25 +10,11 @@ using THPHome.Models.Filters;
 
 namespace THPHome.Services;
 
-public class PostService : IPostService
+public class PostService(
+    IPostRepository _postRepository,
+    ICategoryRepository _categoryRepository,
+    IBannerRepository _bannerRepository) : IPostService
 {
-    private readonly IPostRepository _postRepository;
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IPostCategoryRepository _postCategoryRepository;
-    private readonly IBannerRepository _bannerRepository;
-
-    public PostService(
-        IPostRepository postRepository,
-        ICategoryRepository categoryRepository,
-        IPostCategoryRepository postCategoryRepository,
-        IBannerRepository bannerRepository)
-    {
-        _postRepository = postRepository;
-        _categoryRepository = categoryRepository;
-        _postCategoryRepository = postCategoryRepository;
-        _bannerRepository = bannerRepository;
-    }
-
     public async Task<Post> AddAsync(Post post)
     {
         post.CreatedDate = DateTime.Now;
@@ -57,11 +43,9 @@ public class PostService : IPostService
     {
         var posts = await _postRepository.ListAllAsync();
         var categories = await _categoryRepository.ListAllAsync();
-        var postCategories = await _postCategoryRepository.ListAllAsync();
         return await ExcelHelper.ExportProduct(
             posts,
-            categories,
-            postCategories
+            categories
             );
     }
 
@@ -98,8 +82,6 @@ public class PostService : IPostService
         var post = await _postRepository.FindAsync(id);
         if (post is null) return new { succeeded = false };
         await _postRepository.DeleteAsync(post);
-        var postCategories = await _postCategoryRepository.GetListInPostAsync(id);
-        await _postCategoryRepository.RemoveRangeAsync(postCategories);
         await _bannerRepository.RemoveRangeAsync(id);
         return new { succeeded = true };
     }

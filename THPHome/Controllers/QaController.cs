@@ -8,7 +8,6 @@ using THPHome.Data;
 using THPHome.Entities.QA;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService;
-using THPHome.Models.Filters;
 using THPHome.Models.Results.QAs;
 using THPIdentity.Entities;
 

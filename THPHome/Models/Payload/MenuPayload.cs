@@ -1,5 +1,5 @@
 ﻿using THPHome.Entities;
-using THPHome.Models.Filters;
+using THPCore.Models;
 
 namespace THPHome.Models.Payload;
 
