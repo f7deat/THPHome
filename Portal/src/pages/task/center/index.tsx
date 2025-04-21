@@ -1,13 +1,14 @@
 import { PageContainer, ProCard, ProDescriptions, ProForm, ProFormTextArea, ProList } from "@ant-design/pro-components"
 import { history, useParams, useRequest } from "@umijs/max"
 import { apiTaskItemDetail, apiTaskItemHistoryList } from "../services/task-item"
-import { Button, Divider} from "antd";
-import { CalendarOutlined, LeftOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import { CalendarOutlined, LeftOutlined, UserOutlined } from "@ant-design/icons";
 import 'ckeditor5/ckeditor5.css';
 import { TaskPriorityList, TaskStatusList } from "../constants";
 import AssignModal from "./components/assign";
 import dayjs from "dayjs";
 import StatusChange from "./components/status";
+import TaskAttachments from "./components/attachment";
 
 const Index: React.FC = () => {
 
@@ -22,12 +23,7 @@ const Index: React.FC = () => {
                         <div className="ck ck-editor">
                             <div dangerouslySetInnerHTML={{ __html: data?.content }} className="ck ck-content"></div>
                         </div>
-                        <Divider orientation="left">Tệp đính kèm</Divider>
-                        <div className="flex gap-2">
-                            <div className="h-16 w-16 bg-gray-100 border border-dashed hover:border-blue-500 rounded flex items-center justify-center">
-                                <PlusOutlined />
-                            </div>
-                        </div>
+                        <TaskAttachments />
                     </ProCard>
                     <ProCard title="Bình luận" className="mb-4" headerBordered>
                         <ProForm disabled>
@@ -48,7 +44,7 @@ const Index: React.FC = () => {
                             <ProDescriptions.Item label="Ngày hết hạn" valueType="date">{data?.dueDate}</ProDescriptions.Item>
                             <ProDescriptions.Item label="Trạng thái" valueType="select" fieldProps={{
                                 options: TaskStatusList
-                            }}>{data?.status}<StatusChange refresh={refresh} /></ProDescriptions.Item>
+                            }}>{data?.status}<StatusChange refresh={refresh} status={data?.status} /></ProDescriptions.Item>
                             <ProDescriptions.Item label="Độ ưu tiên"
                                 valueType="select"
                                 fieldProps={{

@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
-using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Payload;
 
 namespace THPHome.Controllers;
 
 public class MenuController(IMenuService _menuService, ApplicationDbContext context) : BaseController(context)
 {
     [HttpGet("list")]
-    public async Task<IActionResult> GetListAsync([FromQuery] FilterOptions payload) => Ok(await _menuService.GetListAsync(payload));
+    public async Task<IActionResult> GetListAsync([FromQuery] MenuFilterOptions filterOptions) => Ok(await _menuService.GetListAsync(filterOptions));
 
     [HttpGet("options")]
     public async Task<IActionResult> OptionsAsync([FromQuery] string locale)

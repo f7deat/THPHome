@@ -2,15 +2,18 @@ import { EditOutlined } from "@ant-design/icons"
 import { ProForm, ProFormSelect } from "@ant-design/pro-components"
 import { Button, message, Popover } from "antd"
 import { apiTaskItemChangeStatus, apiTaskItemStatusOptions } from "../../services/task-item"
-import { useParams } from "@umijs/max"
+import { useAccess, useParams } from "@umijs/max"
+import { TaskStatus } from "../../constants"
 
 type Props = {
-    refresh: () => void
+    refresh: () => void;
+    status?: TaskStatus;
 }
 
-const StatusChange: React.FC<Props> = ({ refresh }) => {
+const StatusChange: React.FC<Props> = ({ refresh, status }) => {
 
     const { id } = useParams<{ id: string }>();
+    const access = useAccess();
     
     const Content = () => {
         return (
@@ -30,9 +33,15 @@ const StatusChange: React.FC<Props> = ({ refresh }) => {
         )
     }
 
+    const canChange = () => {
+        if (access.hod || access.admin) return true;
+        if (status === TaskStatus.NeedsReview) return false;
+        return true;
+    }
+
     return (
         <Popover content={Content}>
-            <Button icon={<EditOutlined />} size="small" type="link" />
+            <Button icon={<EditOutlined />} size="small" type="link" hidden={!canChange()} />
         </Popover>
     )
 }

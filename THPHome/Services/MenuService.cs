@@ -4,7 +4,6 @@ using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
-using THPHome.Models.Filters;
 using THPHome.Models.Payload;
 using THPHome.ViewModels;
 
@@ -12,34 +11,27 @@ namespace THPHome.Services;
 
 public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _context) : IMenuService
 {
-    public async Task<object> AddAsync(Menu menu)
+    public async Task<THPResult> AddAsync(Menu menu)
     {
-        return new
-        {
-            succeeded = true,
-            data = await _menuRepository.AddAsync(menu),
-            message = "Thành công!"
-        };
+        await _menuRepository.AddAsync(menu);
+        return THPResult.Success;
     }
 
-    public async Task<object> DeleteAsyn(int id)
+    public async Task<THPResult> DeleteAsyn(int id)
     {
         var menu = await _menuRepository.GetByIdAsync(id);
-        if (menu is null) return new { succeeded = false };
+        if (menu is null) return THPResult.Failed("Không tìm thấy danh mục!");
         await _menuRepository.DeleteAsync(menu);
-        return new
-        {
-            succeeded = true,
-            data = menu,
-            message = "Thành công!"
-        };
+        return THPResult.Success;
     }
 
     public Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload) => _menuRepository.GetListAsync(payload);
 
-    public async Task<object> GetListAsync(FilterOptions filterOptions)
+    public async Task<object> GetListAsync(MenuFilterOptions filterOptions)
     {
-        var menus = await _context.Menus.Where(x => x.Locale == filterOptions.Locale && (x.Type == MenuType.MAIN || x.Type == MenuType.DEFAULT)).AsNoTracking().ToListAsync();
+        var menus = await _context.Menus.Where(x => x.Locale == filterOptions.Locale)
+            .Where(x => x.Type == filterOptions.Type)
+            .AsNoTracking().ToListAsync();
 
         var parents = menus.Where(x => x.ParentId == 0 || x.ParentId == null).Select(x => new MenuViewModel
                 {
@@ -117,13 +109,9 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
 
     public Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type) => _menuRepository.GetListParrentAsync(type);
 
-    public async Task<object> UpdateAsync(Menu menu)
+    public async Task<THPResult> UpdateAsync(Menu menu)
     {
-        return new
-        {
-            succeeded = true,
-            data = await _menuRepository.UpdateAsync(menu),
-            message = "Thành công!"
-        };
+        await _menuRepository.UpdateAsync(menu);
+        return THPResult.Success;
     }
 }

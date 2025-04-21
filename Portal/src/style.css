@@ -129,6 +129,11 @@ button.ant-btn-primary {
     color: white;
 }
 
+.ck ul {
+    padding-left: 2rem;
+    list-style: disc;
+}
+
 @media screen and (min-width: 768px) {
     .ant-pro-page-container-children-container {
         padding-inline: 40px;

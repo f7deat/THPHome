@@ -8,9 +8,9 @@ namespace THPHome.Interfaces.IService;
 public interface IMenuService
 {
     Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload);
-    Task<object> GetListAsync(FilterOptions payload);
-    Task<object> AddAsync(Menu menu);
-    Task<object> UpdateAsync(Menu menu);
-    Task<object> DeleteAsyn(int id);
+    Task<object> GetListAsync(MenuFilterOptions payload);
+    Task<THPResult> AddAsync(Menu menu);
+    Task<THPResult> UpdateAsync(Menu menu);
+    Task<THPResult> DeleteAsyn(int id);
     Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type);
 }

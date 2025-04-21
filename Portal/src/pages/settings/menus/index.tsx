@@ -105,7 +105,26 @@ const MenuSetting = () => {
         },
         {
             title: 'Kiểu hiển thị',
-            dataIndex: 'mode'
+            dataIndex: 'mode',
+            search: false
+        },
+        {
+            title: 'Vị trí hiển thị',
+            dataIndex: 'type',
+            fieldProps: {
+                options: [
+                    {
+                        label: 'Menu chính',
+                        value: 2
+                    },
+                    {
+                        label: 'Điều hành',
+                        value: 3
+                    }
+                ]
+            },
+            valueType: 'select',
+            initialValue: 2
         },
         {
             title: 'Liên kết',

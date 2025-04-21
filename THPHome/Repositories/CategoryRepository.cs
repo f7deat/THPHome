@@ -17,14 +17,12 @@ public class CategoryRepository(ApplicationDbContext context) : EfRepository<Cat
     public async Task<List<GroupCategory>> GetGroupCategories(string locale)
     {
         var returnValue = new List<GroupCategory>();
-        var parrents = await _context.Categories
-            .Where(x => x.Locale == locale)
-            .Where(x => (x.ParentId == null || x.ParentId < 1) && x.IsDisplayOnHome == true).ToListAsync();
+        var categories = await _context.Categories.Where(x => x.Status == CategoryStatus.Active && x.Locale == locale && x.IsDisplayOnHome == true).AsNoTracking().ToListAsync();
+
+        var parrents = categories.Where(x => x.ParentId == null || x.ParentId == 0);
         foreach (var item in parrents)
         {
-            var childs = await _context.Categories
-                .Where(x => x.Locale == locale)
-                .Where(x => x.ParentId == item.Id && x.IsDisplayOnHome == true).ToListAsync();
+            var childs = categories.Where(x => x.ParentId == item.Id).ToList();
             returnValue.Add(new GroupCategory
             {
                 Id = item.Id,

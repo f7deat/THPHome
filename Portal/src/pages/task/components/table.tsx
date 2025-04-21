@@ -3,15 +3,27 @@ import FormTask from "./form";
 import { ActionType, ProTable } from "@ant-design/pro-components";
 import { DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Dropdown, message, Popconfirm } from "antd";
-import { apiTaskItemDelete, apiTaskItemList } from "../services/task-item";
-import { history, useModel } from "@umijs/max";
+import { apiTaskItemDelete, apiTaskItemList, apiTaskItemPriorityOptions, apiTaskItemStatusOptions } from "../services/task-item";
+import { history, useAccess, useModel } from "@umijs/max";
+import { TaskStatus } from "../constants";
 
 const TaskTable: React.FC = () => {
 
+    const access = useAccess();
     const actionRef = useRef<ActionType>();
     const [open, setOpen] = useState<boolean>(false);
     const { initialState } = useModel('@@initialState');
     const [taskItem, setTaskItem] = useState<any>(null);
+
+    const canDelete = (status: TaskStatus, assignedTo: string) => {
+        if (access.admin || access.hod) return true;
+        return status === TaskStatus.NeedsReview && assignedTo === initialState?.currentUser.userName;
+    }
+
+    const canEdit = (status: TaskStatus, assignedTo: string) => {
+        if (access.admin || access.hod) return true;
+        return status !== TaskStatus.Complete && assignedTo === initialState?.currentUser.userName;
+    }
 
     return (
         <div>
@@ -59,27 +71,14 @@ const TaskTable: React.FC = () => {
                         title: 'Trạng thái',
                         dataIndex: 'status',
                         valueType: 'select',
-                        valueEnum: {
-                            0: { text: 'Chưa bắt đầu', status: 'Default' },
-                            1: { text: 'Đang thực hiện', status: 'Processing' },
-                            2: { text: 'Hoàn thành', status: 'Success' },
-                            3: { text: 'Chờ duyệt', status: 'Warning' },
-                            4: { text: 'Đã duyệt', status: 'Success' },
-                            5: { text: 'Quá hạn', status: 'Error' },
-                            6: { text: 'Tạm dừng', status: 'Warning' }
-                        },
-                        width: 130
+                        request: apiTaskItemStatusOptions as any,
+                        width: 140
                     },
                     {
                         title: 'Độ ưu tiên',
                         dataIndex: 'priority',
                         valueType: 'select',
-                        valueEnum: {
-                            0: { text: '📌 Thấp' },
-                            1: { text: '⏳ Trung bình' },
-                            2: { text: '⚠️ cao' },
-                            3: { text: '🔥 Khẩn cấp' },
-                        },
+                        request: apiTaskItemPriorityOptions as any,
                         width: 120
                     },
                     {
@@ -102,7 +101,8 @@ const TaskTable: React.FC = () => {
                                         onClick: () => {
                                             setTaskItem(record);
                                             setOpen(true);
-                                        }
+                                        },
+                                        disabled: !canEdit(record.status, record.assignedTo)
                                     }
                                 ]
                             }}>
@@ -113,9 +113,10 @@ const TaskTable: React.FC = () => {
                                 message.success('Xóa nhiệm vụ thành công!');
                                 actionRef.current?.reload();
                             }}>
-                                <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
+                                <Button type="primary" danger icon={<DeleteOutlined />} size="small" disabled={!canDelete(record.status, record.assignedTo)} />
                             </Popconfirm>
-                        ]
+                        ],
+                        align: 'center'
                     }
                 ]}
                 search={{

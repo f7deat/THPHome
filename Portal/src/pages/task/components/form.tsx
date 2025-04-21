@@ -92,7 +92,7 @@ const FormTask: React.FC<Props> = (props) => {
                 </Col>
                 <Col md={10} xs={24}>
                     <ProFormSelect
-                        disabled={!access.hod}
+                        disabled={!access.hod && !access.admin}
                         initialValue={initialState?.currentUser?.userName}
                         request={apiDepartmentCurrentUserOptions}
                         showSearch

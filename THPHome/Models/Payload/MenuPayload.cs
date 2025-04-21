@@ -5,6 +5,11 @@ namespace THPHome.Models.Payload;
 
 public class ListMenuPayload : FilterOptions
 {
-    public MenuType Type { get; set; }
+    public MenuType Type { get; set; } = MenuType.MAIN;
     public int ParentId { get; set; }
+}
+
+public class MenuFilterOptions : FilterOptions
+{
+    public MenuType? Type { get; set; } = MenuType.MAIN;
 }

@@ -35,3 +35,19 @@ export async function apiTaskItemStatusOptions(params: any) {
 export async function apiTaskItemChangeStatus(data: any) {
     return request.post(`task/change-status`, data);
 }
+
+export async function apiTaskItemAttachments(id?: string, params?: any) {
+    return request.get(`task/attachments/${id}`, { params });
+}
+
+export async function apiTaskItemAttachmentUpload(data: any) {
+    return request.post(`task/add-attachment`, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+}
+
+export async function apiTaskItemPriorityOptions(params?: any) {
+    return request.get(`task/priority-options`, { params });
+}
