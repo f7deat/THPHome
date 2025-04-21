@@ -11,6 +11,8 @@ export interface UserListItem {
     academicDegree?: string;
     academicTitle?: string;
     dateOfBirth?: string;
+    titleCode?: string;
+    degreeCode?: string;
 }
 
 interface Award {

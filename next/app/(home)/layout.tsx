@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "../globals.css";
+import Footer from "./components/layout/footer";
+import Header from "./components/layout/header";
 
 export const metadata: Metadata = {
     title: "Sơ yếu lý lịch khoa học Giảng viên",
@@ -13,7 +15,9 @@ export default function RootLayout({
 }>) {
     return (
         <div>
+            <Header />
             {children}
+            <Footer />
         </div>
     );
 }

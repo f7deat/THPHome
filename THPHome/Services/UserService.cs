@@ -205,6 +205,7 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
     public async Task<object?> ListLecturerAsync(UserFilterOptions filterOptions)
     {
         var query = from a in _userManager.Users.Where(x => x.UserType != UserType.Student)
+                    where a.Status == UserStatus.Active
                     select new
                     {
                         a.Id,
@@ -234,6 +235,9 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         var result = await query.OrderByDescending(x => x.UserType).ThenBy(x => x.UserName).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
         var academicDegrees = await _context.AcademicDegrees.AsNoTracking().ToListAsync();
         var academicTitles = await _context.AcademicTitles.AsNoTracking().ToListAsync();
+
+        var departments = await _context.Departments.AsNoTracking().ToListAsync();
+
         var data = new List<ProfileListItem>();
         foreach (var item in result)
         {
@@ -251,11 +255,27 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             var detail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == item.Id);
             if (detail != null)
             {
-                listItem.AcademicDegree = detail.AcademicDegreeId != null ? academicDegrees.FirstOrDefault(x => x.Id == detail.AcademicDegreeId)?.Name : null;
-                listItem.AcademicTitle = detail.AcademicTitleId != null ? academicTitles.FirstOrDefault(x => x.Id == detail.AcademicTitleId)?.Name : null;
                 listItem.Position = detail.Position;
+                if (detail.AcademicDegreeId != null)
+                {
+                    var academicDegree = academicDegrees.FirstOrDefault(x => x.Id == detail.AcademicDegreeId);
+                    if (academicDegree != null)
+                    {
+                        listItem.DegreeCode = academicDegree.ShortName;
+                        listItem.AcademicDegree = academicDegree.Name;
+                    }
+                }
+                if (detail.AcademicTitleId != null)
+                {
+                    var academicTitle = academicTitles.FirstOrDefault(x => x.Id == detail.AcademicTitleId);
+                    if (academicTitle != null)
+                    {
+                        listItem.TitleCode = academicTitle.ShortName;
+                        listItem.AcademicTitle = academicTitle.Name;
+                    }
+                }
             }
-            var department = await _context.Departments.FirstOrDefaultAsync(x => x.Code == item.DepartmentId);
+            var department = departments.FirstOrDefault(x => x.Id == item.DepartmentId);
             if (department != null)
             {
                 listItem.Department = department.Name;

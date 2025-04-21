@@ -14,4 +14,6 @@ public class ProfileListItem
     public string? AcademicTitle { get; set; }
     public string? AcademicDegree { get; set; }
     public string? Position { get; set; }
+    public string? TitleCode { get; set; }
+    public string? DegreeCode { get; set; }
 }
