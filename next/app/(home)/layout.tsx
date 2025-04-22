@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../globals.css";
 import Footer from "./components/layout/footer";
 import Header from "./components/layout/header";
+import { ConfigProvider } from "antd";
 
 export const metadata: Metadata = {
     title: "Sơ yếu lý lịch khoa học Giảng viên",
@@ -14,10 +15,14 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div>
+        <ConfigProvider theme={{
+            token: {
+                fontFamily: 'inter, sans-serif'
+            }
+        }}>
             <Header />
             {children}
             <Footer />
-        </div>
+        </ConfigProvider>
     );
 }

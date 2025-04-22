@@ -15,13 +15,10 @@ export const Filter: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex justify-center md:justify-end gap-2 items-center mb-4 2xl:mb-8">
+        <div className="flex justify-center gap-2 items-center mb-4 2xl:mb-8">
             <Form layout="vertical">
                 <Form.Item name="departmentCode" label="Đơn vị">
-                    <Select className="min-w-52" showSearch options={options} placeholder="Chọn đơn vị" onChange={(value) => {
-                        if (!value) {
-                            return;
-                        }
+                    <Select size="large" className="min-w-52" allowClear showSearch options={options} placeholder="Chọn đơn vị" onChange={(value) => {
                         router.push(`/?departmentCode=${value}`);
                     }} popupMatchSelectWidth={false} />
                 </Form.Item>

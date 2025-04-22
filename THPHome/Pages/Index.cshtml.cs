@@ -51,7 +51,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
         // Thông báo
         ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Locale ?? "vi-VN");
         // Tin tức nổi bật
-        ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 8, PageData.Locale ?? "vi-VN");
+        ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 11, PageData.Locale ?? "vi-VN");
 
         BoxMenu = await _menuService.GetListAsync(new ListMenuPayload
         {

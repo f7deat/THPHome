@@ -27,8 +27,10 @@ const Footer: React.FC = () => {
                                     <PhoneOutlined />
                                 </div>
                                 <div className="flex-1">
-                                    <div className="text-blue-400 text-sm">Hotline</div>
-                                    <div className="text-white font-semibold text-lg">0773.171.171</div>
+                                    <div className="flex gap-2">
+                                        <div className="text-blue-400 text-sm">Hotline</div>
+                                        <div className="text-white font-semibold text-lg">0773.171.171</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -49,11 +51,11 @@ const Footer: React.FC = () => {
             <div className="container mx-auto p-4 2xl:py-10">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                        <div className="mb-4">
-                            <img src="https://dhhp.edu.vn/css/imgs/logo1.png" alt="Logo" className="md:w-72" />
+                        <div className="mb-4 2xl:mb-8">
+                            <img src="https://dhhp.edu.vn/css/imgs/logo1.png" alt="Logo" className="md:w-80" />
                         </div>
-                        <div className="text-white mb-4 uppercase text-sm">
-                            Khai phóng - Phụng sự - Nhân văn
+                        <div className="text-white mb-4 text-sm">
+                            Tìm chúng tôi trên
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="h-10 w-10 border rounded border-blue-700 flex items-center justify-center">
@@ -89,10 +91,18 @@ const Footer: React.FC = () => {
                         </div>
                     </div>
                     <div>
-                        <div className="font-bold mb-2">Nhận thông tin</div>
-                        <div className="flex">
+                        <div className="font-bold mb-4 text-lg uppercase ">
+                            <span className="border-b-2 pb-1">Liên hệ</span>
+                        </div>
+                        <div className="mb-2 text-sm">Đăng ký nhận thông tin mới nhất</div>
+                        <div className="flex mb-4">
                             <input type="email" placeholder="Nhập email của bạn" className="flex-1 p-2 rounded-l-md border border-blue-700" />
                             <button className="bg-blue-700 text-white p-2 rounded-r-md">Đăng ký</button>
+                        </div>
+                        <div className="mb-2 text-sm">Cài đặt ứng dụng</div>
+                        <div className="flex gap-2">
+                            <img src="	https://dhhp.edu.vn/css/imgs/google-play.svg" alt="Google Play" className="h-12" />
+                            <img src="https://dhhp.edu.vn/css/imgs/app-store.svg" alt="App Store" className="h-12" />
                         </div>
                     </div>
                 </div>
