@@ -75,7 +75,7 @@ const Index: React.FC = () => {
                             },
                             description: {
                                 dataIndex: 'taskCount',
-                                render: (_, row) => <Progress percent={row?.totalTaskPercent} />
+                                render: (_, row) => <Progress percent={Number(Number(row?.totalTaskPercent || 0).toFixed(1))} />
                             }
                         }}
                     />
