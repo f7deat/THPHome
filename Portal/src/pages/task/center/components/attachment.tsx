@@ -6,6 +6,7 @@ import { useParams } from "@umijs/max";
 import { useRef } from "react";
 import dayjs from "dayjs";
 import { humanFileSize } from "@/utils/format";
+import { apiTaskAttachmentDelete } from "../../services/attachment";
 
 const TaskAttachments: React.FC = () => {
 
@@ -27,6 +28,12 @@ const TaskAttachments: React.FC = () => {
         maxCount: 1,
         showUploadList: false
     };
+
+    const onDelete = async (id: string) => {
+        await apiTaskAttachmentDelete(id);
+        message.success('Xóa thành công!');
+        actionRef.current?.reload();
+    }
 
     return (
         <div>
@@ -55,7 +62,7 @@ const TaskAttachments: React.FC = () => {
                     actions: {
                         render: (_, row) => [
                             <Button key="download" type="primary" size="small" icon={<DownloadOutlined />} onClick={() => window.open(row.fileUrl)} />,
-                            <Popconfirm key="delete" title="Bạn có chắc chắn muốn xóa?">
+                            <Popconfirm key="delete" title="Bạn có chắc chắn muốn xóa?" onConfirm={() => onDelete(row.id)}>
                                 <Button type="primary" size="small" danger icon={<DeleteOutlined />} />
                             </Popconfirm>
                         ]
