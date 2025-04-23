@@ -2,17 +2,17 @@ import { EditOutlined } from "@ant-design/icons"
 import { ProForm, ProFormSelect } from "@ant-design/pro-components"
 import { Button, message, Popover } from "antd"
 import { apiTaskItemChangeStatus, apiTaskItemStatusOptions } from "../../services/task-item"
-import { useAccess, useParams } from "@umijs/max"
+import { useAccess } from "@umijs/max"
 import { TaskStatus } from "../../constants"
 
 type Props = {
     refresh: () => void;
     status?: TaskStatus;
+    taskItemId?: string;
 }
 
-const StatusChange: React.FC<Props> = ({ refresh, status }) => {
+const StatusChange: React.FC<Props> = ({ refresh, status, taskItemId }) => {
 
-    const { id } = useParams<{ id: string }>();
     const access = useAccess();
     
     const Content = () => {
@@ -25,7 +25,7 @@ const StatusChange: React.FC<Props> = ({ refresh, status }) => {
                 ]} fieldProps={{
                     popupMatchSelectWidth: false,
                 }} onChange={async (value) => {
-                    await apiTaskItemChangeStatus({ status: value, taskItemId: id });
+                    await apiTaskItemChangeStatus({ status: value, taskItemId });
                     message.success('Cập nhật trạng thái thành công!');
                     refresh();
                 }} />

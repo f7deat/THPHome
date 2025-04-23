@@ -1,11 +1,13 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FormTask from "./form";
-import { ActionType, ProTable } from "@ant-design/pro-components";
+import { ActionType, ProForm, ProFormSelect, ProTable } from "@ant-design/pro-components";
 import { DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
-import { Button, Dropdown, message, Popconfirm } from "antd";
+import { Button, Dropdown, message, Popconfirm, Space } from "antd";
 import { apiTaskItemDelete, apiTaskItemList, apiTaskItemPriorityOptions, apiTaskItemStatusOptions } from "../services/task-item";
 import { history, useAccess, useModel } from "@umijs/max";
 import { TaskStatus } from "../constants";
+import { apiDepartmentOptions } from "@/services/department";
+import StatusChange from "../center/components/status";
 
 const TaskTable: React.FC = () => {
 
@@ -14,6 +16,13 @@ const TaskTable: React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const { initialState } = useModel('@@initialState');
     const [taskItem, setTaskItem] = useState<any>(null);
+    const [departmentId, setDepartmentId] = useState<number>(initialState?.currentUser.departmentId || 0);
+
+    useEffect(() => {
+        if (departmentId) {
+            actionRef.current?.reload();
+        }
+    }, [departmentId]);
 
     const canDelete = (status: TaskStatus, assignedTo: string) => {
         if (access.admin || access.hod) return true;
@@ -29,13 +38,23 @@ const TaskTable: React.FC = () => {
         <div>
             <ProTable
                 actionRef={actionRef}
-                headerTitle={<Button type="primary" icon={<PlusOutlined />} onClick={() => {
-                    setTaskItem(null);
-                    setOpen(true);
-                }}>Tạo mới</Button>}
+                headerTitle={(
+                    <Space>
+                        <ProForm layout="inline" submitter={false}>
+                            <ProFormSelect
+                                width="lg"
+                                onChange={(value: number) => setDepartmentId(value)}
+                                hidden={!access.admin} name="departmentId" placeholder="Phòng ban" initialValue={departmentId} request={apiDepartmentOptions} />
+                        </ProForm>
+                        <Button type="primary" icon={<PlusOutlined />} onClick={() => {
+                            setTaskItem(null);
+                            setOpen(true);
+                        }}>Tạo mới</Button>
+                    </Space>
+                )}
                 request={(params) => apiTaskItemList({
                     ...params,
-                    departmentId: initialState?.currentUser.departmentId
+                    departmentId: departmentId
                 })}
                 columns={[
                     {
@@ -72,7 +91,18 @@ const TaskTable: React.FC = () => {
                         dataIndex: 'status',
                         valueType: 'select',
                         request: apiTaskItemStatusOptions as any,
-                        width: 140
+                        width: 170,
+                        render: (dom, record) => {
+                            if (record.status === TaskStatus.Complete || record.status === TaskStatus.Overdue) {
+                                return dom;
+                            }
+                            return (
+                                <div className="flex items-center gap-1">
+                                    {dom}
+                                    <StatusChange refresh={() => actionRef.current?.reload()} taskItemId={record.id} />
+                                </div>
+                            );
+                        }
                     },
                     {
                         title: 'Độ ưu tiên',

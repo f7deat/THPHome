@@ -100,6 +100,10 @@ const Index: React.FC = () => {
                                 )
                             }
                         }}
+                        pagination={{
+                            pageSize: 10,
+                            size: 'small'
+                        }}
                     />
                 </ProCard>
             </div>

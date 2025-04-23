@@ -162,4 +162,7 @@ public class NotificationController(ApplicationDbContext context, INotificationS
 
     [HttpGet("unread-count")]
     public async Task<IActionResult> UnreadCountAsync() => Ok(new { data = await _notificationService.GetUnreadCountAsync(User.GetUserName()) });
+
+    [HttpPost("create-private")]
+    public async Task<IActionResult> CreatePrivateAsync([FromBody] CreatePrivateArgs args) => Ok(await _notificationService.CreatePrivateAsync(args));
 }

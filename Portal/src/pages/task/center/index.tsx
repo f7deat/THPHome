@@ -1,4 +1,4 @@
-import { PageContainer, ProCard, ProDescriptions, ProForm, ProFormTextArea, ProList } from "@ant-design/pro-components"
+import { PageContainer, ProCard, ProDescriptions, ProList } from "@ant-design/pro-components"
 import { history, useParams, useRequest } from "@umijs/max"
 import { apiTaskItemDetail, apiTaskItemHistoryList } from "../services/task-item"
 import { Button } from "antd";
@@ -9,6 +9,7 @@ import AssignModal from "./components/assign";
 import dayjs from "dayjs";
 import StatusChange from "./components/status";
 import TaskAttachments from "./components/attachment";
+import TaskComment from "./components/comment";
 
 const Index: React.FC = () => {
 
@@ -25,11 +26,7 @@ const Index: React.FC = () => {
                         </div>
                         <TaskAttachments />
                     </ProCard>
-                    <ProCard title="Bình luận" className="mb-4" headerBordered>
-                        <ProForm disabled>
-                            <ProFormTextArea label="Bình luận" name="comment" placeholder="Nhập bình luận" rows={4} />
-                        </ProForm>
-                    </ProCard>
+                    <TaskComment />
                 </div>
                 <div className="md:w-1/3">
                     <ProCard title="Cài đặt" className="mb-4"
@@ -44,7 +41,7 @@ const Index: React.FC = () => {
                             <ProDescriptions.Item label="Ngày hết hạn" valueType="date">{data?.dueDate}</ProDescriptions.Item>
                             <ProDescriptions.Item label="Trạng thái" valueType="select" fieldProps={{
                                 options: TaskStatusList
-                            }}>{data?.status}<StatusChange refresh={refresh} status={data?.status} /></ProDescriptions.Item>
+                            }}>{data?.status}<StatusChange refresh={refresh} status={data?.status} taskItemId={id} /></ProDescriptions.Item>
                             <ProDescriptions.Item label="Độ ưu tiên"
                                 valueType="select"
                                 fieldProps={{
