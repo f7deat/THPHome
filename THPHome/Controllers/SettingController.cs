@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using THPCore.Extensions;
+using THPCore.Helpers;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
-using THPHome.Models.Filters;
 using THPHome.Models.Settings;
 using WebUI.Interfaces.IService;
 
@@ -70,6 +71,36 @@ public class SettingController(ApplicationDbContext context, ISettingService _se
                     select a;
         var data = await query.FirstOrDefaultAsync();
         return Ok(new { data = data?.Image });
+    }
+
+    [HttpPost("logo")]
+    public async Task<IActionResult> SetLogoAsync([FromBody] Banner args, [FromQuery] string locale)
+    {
+        if (!LocaleHelper.IsAvailable(locale)) return BadRequest("Locale not available!");
+        var data = await _context.Banners.FirstOrDefaultAsync(x => x.Type == BannerType.LOGO && x.Locale == locale);
+        if (data is null)
+        {
+            data = new Banner
+            {
+                Locale = locale,
+                Active = true,
+                Image = args.Image,
+                CreatedBy = User.GetUserName(),
+                CreatedDate = DateTime.Now,
+                Status = BannerStatus.ACTIVE,
+                Url = "/",
+                Type = BannerType.LOGO
+            };
+            await _context.Banners.AddAsync(data);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        data.Image = args.Image;
+        data.ModifiedBy = User.GetUserName();
+        data.ModifiedDate = DateTime.Now;
+        _context.Banners.Update(data);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     [HttpGet("slides")]

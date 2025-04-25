@@ -99,7 +99,11 @@ public class BannerController(IBannerService _bannerService, UserManager<Applica
             };
             await _context.Banners.AddAsync(logo);
             await _context.SaveChangesAsync();
+            return Ok(new { data = logo.Image });
         }
-        return Ok(logo);
+        return Ok(new
+        {
+            data = logo.Image
+        });
     }
 }

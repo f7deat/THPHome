@@ -1,35 +1,22 @@
 import FileUpload from "@/components/files/upload";
-import { apiBannerUpdate, apiLogo } from "@/services/setting";
+import { apiLogo, apiSetLogo } from "@/services/setting";
 import { UploadOutlined } from "@ant-design/icons";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
-import { FormattedMessage } from "@umijs/max";
-import { useIntl } from "@umijs/max";
+import { FormattedMessage, useRequest } from "@umijs/max";
 import { Button, Col, Image, Row, message } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const GeneralSettingPage: React.FC = () => {
 
-    const [logo, setLogo] = useState<any>();
     const [openUpload, setOpenUpload] = useState<boolean>(false);
-    const intl = useIntl();
-
-    const fetchLogo = () => {
-        apiLogo(intl.locale).then(response => {
-            setLogo(response);
-        })
-    }
-
-    useEffect(() => {
-        fetchLogo();
-    }, []);
+    const { data, refresh } = useRequest(apiLogo);
 
     const onChangeLogo = async (values: any) => {
-        await apiBannerUpdate({
-            ...logo,
+        await apiSetLogo({
             image: values.url
         });
         message.success('Thay đổi thành công!');
-        fetchLogo();
+        refresh();
     }
 
     return (
@@ -39,7 +26,7 @@ const GeneralSettingPage: React.FC = () => {
                     <ProCard title="Logo" headerBordered extra={<Button type="primary" icon={<UploadOutlined />} onClick={() => setOpenUpload(true)}>
                         <span><FormattedMessage id='general.change' /></span>
                     </Button>}>
-                        <Image src={logo?.image} />
+                        <Image src={data} />
                     </ProCard>
                 </Col>
             </Row>

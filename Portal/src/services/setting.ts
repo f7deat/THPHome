@@ -11,11 +11,7 @@ export const apiBannerUpdate = (data: any) => request(`banner/update`, {
     data
 })
 
-export const apiLogo = (locale: string) => request(`banner/logo`, {
-    params: {
-        locale
-    }
-});
+export const apiLogo = () => request(`banner/logo`);
 
 export const apiSettingList = () => request(`setting/list`);
 
@@ -31,3 +27,10 @@ export const apiGetZaloArtices = (params: any) => request(`setting/zalo/articles
 export const apiVerifyZaloArticle = (id: string) => request(`setting/zalo/article/verify/${id}`, {
     method: 'POST'
 });
+
+export async function apiSetLogo(data: any) {
+    return request(`setting/logo`, {
+        method: 'POST',
+        data
+    });
+}
