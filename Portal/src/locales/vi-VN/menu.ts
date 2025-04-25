@@ -27,6 +27,7 @@ export default {
     'menu.setting.general': 'Cài đặt chung',
     'menu.setting.roleCenter': 'Chi tiết quyền',
     'menu.task': 'Công việc',
+    'menu.task.kanban': 'Kanban',
     'menu.component': 'Component',
     'menu.component.articleLister': 'Article Lister',
     'menu.component.affiliateLink': 'Affiliate Link',

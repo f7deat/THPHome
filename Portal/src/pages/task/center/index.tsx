@@ -1,8 +1,8 @@
 import { PageContainer, ProCard, ProDescriptions, ProList } from "@ant-design/pro-components"
 import { history, useParams, useRequest } from "@umijs/max"
 import { apiTaskItemDetail, apiTaskItemHistoryList } from "../services/task-item"
-import { Button } from "antd";
-import { CalendarOutlined, LeftOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Space } from "antd";
+import { CalendarOutlined, HistoryOutlined, LeftOutlined, MoreOutlined, ShareAltOutlined, UserOutlined } from "@ant-design/icons";
 import 'ckeditor5/ckeditor5.css';
 import { TaskPriorityList, TaskStatusList } from "../constants";
 import AssignModal from "./components/assign";
@@ -10,17 +10,37 @@ import dayjs from "dayjs";
 import StatusChange from "./components/status";
 import TaskAttachments from "./components/attachment";
 import TaskComment from "./components/comment";
+import { useState } from "react";
+import WorkLog from "./components/work-log";
 
 const Index: React.FC = () => {
 
     const { id } = useParams<{ id: string }>();
     const { data, refresh } = useRequest(() => apiTaskItemDetail(id));
+    const [openWork, setOpenWork] = useState(false);
 
     return (
         <PageContainer title={data?.title} extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <div className="md:flex gap-4">
                 <div className="md:w-2/3">
-                    <ProCard title="Thông tin nhiệm vụ" className="mb-4" headerBordered>
+                    <ProCard title="Thông tin nhiệm vụ" className="mb-4" headerBordered
+                    extra={(
+                        <Space>
+                            <Button type="dashed" icon={<ShareAltOutlined />} size="small" />
+                            <Dropdown menu={{
+                            items: [
+                                {
+                                    key: 'log-work',
+                                    label: 'Log Work',
+                                    onClick: () => setOpenWork(true),
+                                    icon: <HistoryOutlined />
+                                }
+                            ]
+                        }}>
+                            <Button icon={<MoreOutlined />} type="dashed" size="small" />
+                        </Dropdown>
+                        </Space>
+                    )}>
                         <div className="ck ck-editor">
                             <div dangerouslySetInnerHTML={{ __html: data?.content }} className="ck ck-content"></div>
                         </div>
@@ -74,6 +94,7 @@ const Index: React.FC = () => {
                     </ProCard>
                 </div>
             </div>
+            <WorkLog open={openWork} onOpenChange={setOpenWork} />
         </PageContainer>
     )
 }

@@ -123,6 +123,11 @@ export default [
         path: '/task/board/:id',
         component: './task/center',
         hideInMenu: true
+      },
+      {
+        name: 'kanban',
+        path: '/task/kanban',
+        component: './task/kanban'
       }
     ]
   },

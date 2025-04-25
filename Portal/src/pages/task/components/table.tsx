@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import FormTask from "./form";
 import { ActionType, ProForm, ProFormSelect, ProTable } from "@ant-design/pro-components";
-import { DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
+import { CalendarOutlined, DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Dropdown, message, Popconfirm, Space } from "antd";
 import { apiTaskItemDelete, apiTaskItemList, apiTaskItemPriorityOptions, apiTaskItemStatusOptions } from "../services/task-item";
-import { history, useAccess, useModel } from "@umijs/max";
+import { FormattedNumber, history, useAccess, useModel } from "@umijs/max";
 import { TaskStatus } from "../constants";
 import { apiDepartmentOptions } from "@/services/department";
 import StatusChange from "../center/components/status";
+import dayjs from "dayjs";
 
 const TaskTable: React.FC = () => {
 
@@ -65,33 +66,36 @@ const TaskTable: React.FC = () => {
                     {
                         title: 'Nhiệm vụ',
                         dataIndex: 'title',
-                    },
-                    {
-                        title: 'Ngày bắt đầu',
-                        dataIndex: 'startDate',
-                        valueType: 'date',
-                        search: false,
-                        width: 110
+                        render: (dom, record) => (
+                            <div>
+                                <div className="font-medium hover:text-blue-500 text-slate-800 mb-1 cursor-pointer" onClick={() => history.push(`/task/board/${record.id}`)}>{dom}</div>
+                                <div className="text-gray-500 text-xs">
+                                    <span className="mr-2"><CalendarOutlined /> {dayjs(record.createdDate).format('DD/MM/YYYY HH:mm')}</span>
+                                    <span><EyeOutlined /> <FormattedNumber value={record.viewCount} /></span>
+                                </div>
+                            </div>
+                        ),
+                        minWidth: 200
                     },
                     {
                         title: 'Ngày hết hạn',
                         search: false,
                         dataIndex: 'dueDate',
                         valueType: 'date',
-                        width: 110
+                        minWidth: 110
                     },
                     {
                         title: 'Người thực hiện',
                         dataIndex: 'assignedTo',
                         search: false,
-                        width: 140
+                        width: 120,
                     },
                     {
                         title: 'Trạng thái',
                         dataIndex: 'status',
                         valueType: 'select',
                         request: apiTaskItemStatusOptions as any,
-                        width: 170,
+                        minWidth: 170,
                         render: (dom, record) => {
                             if (record.status === TaskStatus.Complete || record.status === TaskStatus.Overdue) {
                                 return dom;
@@ -109,7 +113,7 @@ const TaskTable: React.FC = () => {
                         dataIndex: 'priority',
                         valueType: 'select',
                         request: apiTaskItemPriorityOptions as any,
-                        width: 120
+                        minWidth: 120
                     },
                     {
                         title: <SettingOutlined />,
@@ -151,6 +155,9 @@ const TaskTable: React.FC = () => {
                 ]}
                 search={{
                     layout: 'vertical'
+                }}
+                scroll={{
+                    x: true
                 }}
             />
             <FormTask open={open} onOpenChange={setOpen} reload={() => actionRef.current?.reload()} id={taskItem?.id} />

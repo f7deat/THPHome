@@ -2,9 +2,10 @@ import { PageContainer, ProCard, ProList } from '@ant-design/pro-components';
 import { FormattedNumber, history, Link, request } from '@umijs/max';
 import { Button, Col, List, Row, Statistic } from 'antd';
 import { useEffect, useState } from 'react';
-import { ArrowRightOutlined, EyeOutlined, FolderOpenOutlined, LoginOutlined, MailOutlined, UserAddOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, EyeOutlined, MailOutlined } from '@ant-design/icons';
 import { apiGetChartPostCreatedInYear } from '@/services/post';
 import EChartsReact from 'echarts-for-react';
+import Application from './components/application';
 
 const HomePage: React.FC = () => {
   const [postCount, setPostCount] = useState(0);
@@ -81,37 +82,7 @@ const HomePage: React.FC = () => {
         </Row>
         <Row gutter={16}>
           <Col md={18} className='mb-4'>
-            <ProCard title="Ứng dụng" headerBordered className='h-full'>
-              <div className='grid md:grid-cols-4 gap-4'>
-                <Link to={`/onboard`}>
-                  <div className='border p-4 rounded hover:border-blue-500 h-full'>
-                    <div className='font-semibold uppercase mb-2 flex gap-2 items-center'>
-                      <div className='h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white'><LoginOutlined /></div>
-                      <div className='text-base'>Onboard</div>
-                    </div>
-                    <div className='text-gray-500'>Giúp sinh viên mới làm quen, tiếp xúc với môi trường, văn hóa ĐHHP.</div>
-                  </div>
-                </Link>
-                <a href='https://qlvb.dhhp.edu.vn'>
-                  <div className='border p-4 rounded hover:border-blue-500 h-full'>
-                    <div className='font-semibold uppercase mb-2 flex gap-2 items-center'>
-                      <div className='h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white'><FolderOpenOutlined /></div>
-                      <div className='text-base'>Văn bản nội sinh</div>
-                    </div>
-                    <div className='text-gray-500'>Tối ưu quy trình làm việc bằng văn bản, đảm bảo tính nhất quán và chính xác của thông tin</div>
-                  </div>
-                </a>
-                <Link to='/admission'>
-                  <div className='border p-4 rounded hover:border-blue-500 h-full'>
-                    <div className='font-semibold uppercase mb-2 flex gap-2 items-center'>
-                      <div className='h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white'><UserAddOutlined /></div>
-                      <div className='text-base'>Tuyển sinh</div>
-                    </div>
-                    <div className='text-gray-500'>Theo dõi, đăng tải, quản lý thông tin tuyển sinh</div>
-                  </div>
-                </Link>
-              </div>
-            </ProCard>
+            <Application />
           </Col>
           <Col md={6} className='mb-4'>
             <ProCard title="Công cụ" headerBordered className='h-full'>

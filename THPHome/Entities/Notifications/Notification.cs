@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using THPCore.Infrastructures;
+using THPIdentity.Entities;
 
 namespace THPHome.Entities.Notifications;
 

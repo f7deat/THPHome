@@ -51,3 +51,7 @@ export async function apiTaskItemAttachmentUpload(data: any) {
 export async function apiTaskItemPriorityOptions(params?: any) {
     return request.get(`task/priority-options`, { params });
 }
+
+export async function apiTaskItemKanban(params: any) {
+    return request.get(`task/kanban`, { params });
+}

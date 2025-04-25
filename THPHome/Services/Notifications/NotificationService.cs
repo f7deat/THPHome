@@ -1,13 +1,16 @@
-﻿using THPCore.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities.Notifications;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Services.Notifications.Models;
+using THPIdentity.Entities;
 
 namespace THPHome.Services.Notifications;
 
-public class NotificationService(INotificationRepository _notificationRepository, IHCAService _hcaService) : INotificationService
+public class NotificationService(INotificationRepository _notificationRepository, IHCAService _hcaService, UserManager<ApplicationUser> _userManager) : INotificationService
 {
     public async Task<THPResult> CreatePrivateAsync(CreatePrivateArgs args)
     {
@@ -33,6 +36,32 @@ public class NotificationService(INotificationRepository _notificationRepository
                 await _notificationRepository.AddUserNotificationAsync(item, notification.Id);
             }
             await _notificationRepository.SaveChangesAsync();
+            return THPResult.Success;
+        }
+        catch (Exception ex)
+        {
+            return THPResult.Failed(ex.ToString());
+        }
+    }
+
+    public async Task<THPResult> CreatePublicForStaffAsync(CreatePublicArgs args)
+    {
+        try
+        {
+            var notification = new Notification
+            {
+                Id = Guid.NewGuid(),
+                Title = args.Title,
+                Content = args.Content,
+                Type = NotificationType.Private,
+                CreatedBy = "tandc",
+                CreatedDate = DateTime.Now
+            };
+            await _notificationRepository.AddAsync(notification);
+
+            var recipients = await _userManager.Users.Where(x => x.UserType != UserType.Student && x.Status != UserStatus.Active).Select(x => x.UserName).ToListAsync();
+
+            await _notificationRepository.SendToRecipientsAsync(notification.Id, recipients.Distinct());
             return THPResult.Success;
         }
         catch (Exception ex)

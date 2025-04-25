@@ -9,6 +9,8 @@ export default {
   'menu.article.list': 'Article list',
   'menu.catalog': 'Catalog',
   'menu.dashboard': 'Dashboard',
+  'menu.task': 'Task',
+  'menu.task.kanban': 'Kanban',
   'menu.component': 'Components',
   'menu.component.articleLister': 'Article Lister',
   'menu.component.articlePicker': 'Article Picker',

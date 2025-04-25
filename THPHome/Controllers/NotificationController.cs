@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using THPCore.Extensions;
 using THPCore.Models;
 using THPHome.Data;
@@ -12,11 +13,14 @@ using THPHome.Models.Args.Notifications;
 using THPHome.Services.Notifications.Models;
 using THPIdentity.Constants;
 using THPIdentity.Entities;
+using WebUI.Options;
 
 namespace THPHome.Controllers;
 
-public class NotificationController(ApplicationDbContext context, INotificationService _notificationService, UserManager<ApplicationUser> _userManager) : BaseController(context)
+public class NotificationController(ApplicationDbContext context, INotificationService _notificationService, UserManager<ApplicationUser> _userManager, IOptions<SettingOptions> _optionsAccessor) : BaseController(context)
 {
+    public SettingOptions Options { get; } = _optionsAccessor.Value;
+
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] NotificationFilterOptions filterOptions)
     {
@@ -165,4 +169,12 @@ public class NotificationController(ApplicationDbContext context, INotificationS
 
     [HttpPost("create-private")]
     public async Task<IActionResult> CreatePrivateAsync([FromBody] CreatePrivateArgs args) => Ok(await _notificationService.CreatePrivateAsync(args));
+
+    [HttpPost("create-public-for-staff")]
+    public async Task<IActionResult> CreatePublicForStaffAsync([FromBody] CreatePublicArgs args)
+    {
+        if (string.IsNullOrWhiteSpace(args.APIKey)) return BadRequest("API Key is required!");
+        if (args.APIKey != Options.OpenApiKey) return BadRequest("API Key is invalid!");
+        return Ok(await _notificationService.CreatePublicForStaffAsync(args));
+    }
 }

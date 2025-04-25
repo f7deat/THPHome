@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import TaskCard from './task-card';
+import { ProCard } from '@ant-design/pro-components';
 
 interface Task {
     id: number;
@@ -21,12 +22,13 @@ const Column: React.FC<Props> = ({ title, tasks, column }) => {
     });
 
     return (
-        <div ref={setNodeRef} className="p-4 bg-gray-100 rounded border border-blue-500">
-            <h2 className="font-bold mb-2">{title}</h2>
-            {tasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-            ))}
-        </div>
+        <ProCard title={title} headerBordered size='small'>
+            <div ref={setNodeRef}>
+                {tasks.map((task) => (
+                    <TaskCard key={task.id} task={task} />
+                ))}
+            </div>
+        </ProCard>
     );
 };
 

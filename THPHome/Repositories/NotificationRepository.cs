@@ -20,4 +20,20 @@ public class NotificationRepository(ApplicationDbContext context) : EfRepository
     public async Task<int> GetUnreadCountAsync(string userName) => await _context.UserNotifications.CountAsync(x => x.Recipient == userName && !x.IsRead);
 
     public async Task<UserNotification?> GetUserNotificationAsync(Guid notificationId, string userName) => await _context.UserNotifications.FirstOrDefaultAsync(x => x.NotificationId == notificationId && x.Recipient == userName);
+
+    public async Task SendToRecipientsAsync(Guid id, IEnumerable<string?> recipients)
+    {
+        var userNotifications = new List<UserNotification>();
+        foreach (var item in recipients)
+        {
+            if (string.IsNullOrEmpty(item)) continue;
+            userNotifications.Add(new()
+            {
+                NotificationId = id,
+                Recipient = item
+            });
+        }
+        await _context.UserNotifications.AddRangeAsync(userNotifications);
+        await _context.SaveChangesAsync();
+    }
 }

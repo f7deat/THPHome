@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { DndContext, closestCenter, DragOverlay } from '@dnd-kit/core';
 import Column from './column';
 import TaskCard from './task-card';
+import { useModel, useRequest } from '@umijs/max';
+import { apiTaskItemKanban } from '../services/task-item';
 
 interface Task {
     id: number;
@@ -21,6 +23,10 @@ interface Props {
 const Board: React.FC<Props> = ({ tasks: initialTasks }) => {
     const [tasks, setTasks] = useState(initialTasks);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
+    const { initialState } = useModel('@@initialState');
+    const { data } = useRequest(() => apiTaskItemKanban({ departmentId: initialState?.currentUser.departmentId }));
+
+    console.log(data);
 
     const handleDragStart = (event: any) => {
         const { active } = event;
@@ -65,25 +71,22 @@ const Board: React.FC<Props> = ({ tasks: initialTasks }) => {
     };
 
     return (
-        <DndContext
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-        >
-            <div className="grid grid-cols-4 gap-4">
-                <Column title="To Do" tasks={tasks.todo} column="todo" />
-                <Column title="In Progress" tasks={tasks.inProgress} column="inProgress" />
-                <Column title="Completed" tasks={tasks.completed} column="completed" />
-                <Column title="Canceled" tasks={tasks.canceled} column="canceled" />
+        // <DndContext
+        //     collisionDetection={closestCenter}
+        //     onDragStart={handleDragStart}
+        //     onDragEnd={handleDragEnd}
+        // >
+            <div className='overflow-x-auto'>
+                <div className="grid grid-cols-7 gap-2 min-w-[1800px]">
+                    {
+                        data?.map((column: any) => (
+                            <Column key={column.id} title={column.title} tasks={column.items} column={column.key} />
+                        ))
+                    }
+                </div>
             </div>
 
-            {/* DragOverlay for animation */}
-            <DragOverlay>
-                {activeTask ? (
-                    <TaskCard task={activeTask} />
-                ) : null}
-            </DragOverlay>
-        </DndContext>
+        // </DndContext>
     );
 };
 

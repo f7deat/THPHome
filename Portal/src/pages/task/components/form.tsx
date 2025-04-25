@@ -52,6 +52,10 @@ const FormTask: React.FC<Props> = (props) => {
                     {
                         name: "content",
                         value: data.content
+                    },
+                    {
+                        name: "assignedTo",
+                        value: data.assignedTo
                     }
                 ]);
                 setLoading(false);
