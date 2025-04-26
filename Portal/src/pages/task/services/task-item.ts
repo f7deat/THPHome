@@ -55,3 +55,7 @@ export async function apiTaskItemPriorityOptions(params?: any) {
 export async function apiTaskItemKanban(params: any) {
     return request.get(`task/kanban`, { params });
 }
+
+export async function apiTaskTags(params: any) {
+    return request.get(`task/tags`, { params });
+}

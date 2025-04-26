@@ -2,7 +2,7 @@ import { PageContainer, ProCard, ProDescriptions, ProList } from "@ant-design/pr
 import { history, useParams, useRequest } from "@umijs/max"
 import { apiTaskItemDetail, apiTaskItemHistoryList } from "../services/task-item"
 import { Button, Dropdown, Space } from "antd";
-import { CalendarOutlined, HistoryOutlined, LeftOutlined, MoreOutlined, ShareAltOutlined, UserOutlined } from "@ant-design/icons";
+import { CalendarOutlined, LeftOutlined, MoreOutlined, ShareAltOutlined, UserOutlined } from "@ant-design/icons";
 import 'ckeditor5/ckeditor5.css';
 import { TaskPriorityList, TaskStatusList } from "../constants";
 import AssignModal from "./components/assign";
@@ -10,43 +10,51 @@ import dayjs from "dayjs";
 import StatusChange from "./components/status";
 import TaskAttachments from "./components/attachment";
 import TaskComment from "./components/comment";
-import { useState } from "react";
-import WorkLog from "./components/work-log";
+import Tags from "./components/tags";
+import WorkLogList from "./components/work-log-list";
 
 const Index: React.FC = () => {
 
     const { id } = useParams<{ id: string }>();
     const { data, refresh } = useRequest(() => apiTaskItemDetail(id));
-    const [openWork, setOpenWork] = useState(false);
 
     return (
         <PageContainer title={data?.title} extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <div className="md:flex gap-4">
                 <div className="md:w-2/3">
                     <ProCard title="Thông tin nhiệm vụ" className="mb-4" headerBordered
-                    extra={(
-                        <Space>
-                            <Button type="dashed" icon={<ShareAltOutlined />} size="small" />
-                            <Dropdown menu={{
-                            items: [
-                                {
-                                    key: 'log-work',
-                                    label: 'Log Work',
-                                    onClick: () => setOpenWork(true),
-                                    icon: <HistoryOutlined />
-                                }
-                            ]
-                        }}>
-                            <Button icon={<MoreOutlined />} type="dashed" size="small" />
-                        </Dropdown>
-                        </Space>
-                    )}>
-                        <div className="ck ck-editor">
+                        extra={(
+                            <Space>
+                                <Button type="dashed" icon={<ShareAltOutlined />} size="small" />
+                                <Dropdown menu={{
+                                    items: []
+                                }}>
+                                    <Button icon={<MoreOutlined />} type="dashed" size="small" />
+                                </Dropdown>
+                            </Space>
+                        )}>
+                        <div className="ck ck-editor mb-4">
                             <div dangerouslySetInnerHTML={{ __html: data?.content }} className="ck ck-content"></div>
                         </div>
+                        <Tags />
                         <TaskAttachments />
                     </ProCard>
-                    <TaskComment />
+                    <ProCard
+                        tabs={{
+                            items: [
+                                {
+                                    key: 'comment',
+                                    label: 'Bình luận',
+                                    children: <TaskComment />
+                                },
+                                {
+                                    key: 'log-work',
+                                    label: 'Nhật ký công việc',
+                                    children: <WorkLogList />
+                                }
+                            ]
+                        }}
+                    />
                 </div>
                 <div className="md:w-1/3">
                     <ProCard title="Cài đặt" className="mb-4"
@@ -79,22 +87,21 @@ const Index: React.FC = () => {
                             ...params,
                             taskItemId: id
                         })}
-                        metas={{
-                            description: {
-                                dataIndex: 'action',
-                                render: (_, record) => (
-                                    <div>
-                                        <div className="text-slate-900 font-medium">{record.action}</div>
-                                        <div className="text-gray-500"><CalendarOutlined /> {dayjs(record.createdDate).format('DD/MM/YYYY')}</div>
-                                    </div>
-                                )
-                            }
-                        }}
+                            metas={{
+                                description: {
+                                    dataIndex: 'action',
+                                    render: (_, record) => (
+                                        <div>
+                                            <div className="text-slate-900 font-medium">{record.action}</div>
+                                            <div className="text-gray-500"><CalendarOutlined /> {dayjs(record.createdDate).format('DD/MM/YYYY')}</div>
+                                        </div>
+                                    )
+                                }
+                            }}
                         />
                     </ProCard>
                 </div>
             </div>
-            <WorkLog open={openWork} onOpenChange={setOpenWork} />
         </PageContainer>
     )
 }

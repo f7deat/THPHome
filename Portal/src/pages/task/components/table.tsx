@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import FormTask from "./form";
 import { ActionType, ProForm, ProFormSelect, ProTable } from "@ant-design/pro-components";
-import { CalendarOutlined, DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
-import { Button, Dropdown, message, Popconfirm, Space } from "antd";
+import { CalendarOutlined, DeleteOutlined, EditOutlined, EyeOutlined, HistoryOutlined, MoreOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
+import { Button, Dropdown, message, Popconfirm, Space, Tag } from "antd";
 import { apiTaskItemDelete, apiTaskItemList, apiTaskItemPriorityOptions, apiTaskItemStatusOptions } from "../services/task-item";
 import { FormattedNumber, history, useAccess, useModel } from "@umijs/max";
 import { TaskStatus } from "../constants";
@@ -71,7 +71,13 @@ const TaskTable: React.FC = () => {
                                 <div className="font-medium hover:text-blue-500 text-slate-800 mb-1 cursor-pointer" onClick={() => history.push(`/task/board/${record.id}`)}>{dom}</div>
                                 <div className="text-gray-500 text-xs">
                                     <span className="mr-2"><CalendarOutlined /> {dayjs(record.createdDate).format('DD/MM/YYYY HH:mm')}</span>
-                                    <span><EyeOutlined /> <FormattedNumber value={record.viewCount} /></span>
+                                    <span className="mr-2"><EyeOutlined /> <FormattedNumber value={record.viewCount} /></span>
+                                    <span className="mr-2" hidden={record.timeSpent === 0}><HistoryOutlined /> Giờ làm: <span className="text-red-500 font-medium">{record.timeSpentFormatted}</span></span>
+                                    <span>
+                                        {
+                                            record.tags.map((tag: any) => <Tag key={tag.id} color="blue" className="mr-1">{tag}</Tag>)
+                                        }
+                                    </span>
                                 </div>
                             </div>
                         ),

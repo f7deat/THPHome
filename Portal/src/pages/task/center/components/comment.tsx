@@ -1,4 +1,4 @@
-import { ActionType, ProCard, ProForm, ProFormInstance, ProFormTextArea, ProList } from "@ant-design/pro-components"
+import { ActionType, ProForm, ProFormInstance, ProFormTextArea, ProList } from "@ant-design/pro-components"
 import { Button, Divider, message, Popconfirm } from "antd"
 import { apiTaskCommentCreate, apiTaskCommentDelete, apiTaskCommentList } from "../../services/comment"
 import { useParams } from "@umijs/max";
@@ -27,38 +27,36 @@ const TaskComment: React.FC = () => {
 
     return (
         <div>
-            <ProCard title="Bình luận" className="mb-4" headerBordered>
-                <ProList
-                    actionRef={actionRef}
-                    request={(params) => apiTaskCommentList({
-                        ...params,
-                        taskItemId: id
-                    })}
-                    metas={{
-                        title: {
-                            dataIndex: 'createdBy'
-                        },
-                        subTitle: {
-                            dataIndex: 'createdDate',
-                            valueType: 'fromNow'
-                        },
-                        description: {
-                            dataIndex: 'content'
-                        },
-                        actions: {
-                            render: (_, record) => [
-                                <Popconfirm key="delete" title="Bạn có chắc chắn muốn xóa bình luận này?" onConfirm={() => onDelete(record.id)}>
-                                    <Button danger size="small" icon={<DeleteOutlined />} />
-                                </Popconfirm>
-                            ]
-                        }
-                    }}
-                />
-                <Divider orientation="left">Gửi bình luận</Divider>
-                <ProForm onFinish={onFinish} formRef={formRef}>
-                    <ProFormTextArea label="Nội dung" name="content" placeholder="Nhập bình luận" rows={4} />
-                </ProForm>
-            </ProCard>
+            <ProList
+                actionRef={actionRef}
+                request={(params) => apiTaskCommentList({
+                    ...params,
+                    taskItemId: id
+                })}
+                metas={{
+                    title: {
+                        dataIndex: 'createdBy'
+                    },
+                    subTitle: {
+                        dataIndex: 'createdDate',
+                        valueType: 'fromNow'
+                    },
+                    description: {
+                        dataIndex: 'content'
+                    },
+                    actions: {
+                        render: (_, record) => [
+                            <Popconfirm key="delete" title="Bạn có chắc chắn muốn xóa bình luận này?" onConfirm={() => onDelete(record.id)}>
+                                <Button danger size="small" icon={<DeleteOutlined />} />
+                            </Popconfirm>
+                        ]
+                    }
+                }}
+            />
+            <Divider orientation="left">Gửi bình luận</Divider>
+            <ProForm onFinish={onFinish} formRef={formRef}>
+                <ProFormTextArea label="Nội dung" name="content" placeholder="Nhập bình luận" rows={4} />
+            </ProForm>
         </div>
     )
 }

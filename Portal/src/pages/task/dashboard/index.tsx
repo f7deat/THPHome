@@ -75,7 +75,12 @@ const Index: React.FC = () => {
                             },
                             description: {
                                 dataIndex: 'taskCount',
-                                render: (_, row) => <Progress percent={Number(Number(row?.totalTaskPercent || 0).toFixed(1))} />
+                                render: (_, row) => (
+                                    <div>
+                                        <Progress percent={Number(Number(row.totalTaskPercent || 0).toFixed(1))} />
+                                        <div className="text-gray-500 text-xs">Giờ làm tháng {dayjs().format('MM')}: <span className="text-red-500 font-medium">{row.formattedWorkingHours}</span></div>
+                                    </div>
+                                )
                             }
                         }}
                     />
