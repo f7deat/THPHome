@@ -1,8 +1,8 @@
 import { ModalForm, ProFormText } from "@ant-design/pro-components";
 import { history } from "@umijs/max";
-import { Button, Form, Layout, message } from "antd";
+import { Button, Divider, Form, Layout, message } from "antd";
 import { Helmet } from "@umijs/max";
-import { LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
+import { GoogleCircleFilled, LockOutlined, LoginOutlined, UserOutlined } from "@ant-design/icons";
 import { apiLogin } from "@/services/user";
 import { useModel } from "@umijs/max";
 import { flushSync } from "react-dom";
@@ -76,6 +76,12 @@ const Login: React.FC = () => {
                                 <div className="flex justify-end w-full">
                                     <Button type="link" size="small" onClick={() => setOpen(true)} className="poppins-regular">Quên mật khẩu?</Button>
                                 </div>
+                                <Divider>Hoặc</Divider>
+                                <div className="flex justify-center w-full gap-4">
+                                    <div className="w-10 text-white flex items-center justify-center h-10 bg-blue-500 rounded-full">
+                                        <GoogleCircleFilled className="text-lg" />
+                                    </div>
+                                    </div>
                             </div>
                             <div className="p-4 poppins-medium">© 2022 <a href="https://dhhp.edu.vn">Hai Phong University</a></div>
                         </div>

@@ -52,7 +52,7 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
     public async Task<IActionResult> AllAsync([FromQuery] string locale) => Ok(await _departmentService.ListAllAsync(locale));
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(await _context.Departments.FindAsync(id));
+    public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(new { data = await _departmentService.FindAsync(id) });
 
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync([FromBody] Department args)

@@ -29,6 +29,8 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IHCA
         }).ToListAsync();
     }
 
+    public Task<Department?> FindAsync(Guid id) => _departmentRepository.FindAsync(id);
+
     public Task<Department?> GetByIdAsync(int? departmentId) => _departmentRepository.GetByIdAsync(departmentId);
 
     public Task<IEnumerable<SelectOption>> GetOptionsAsync() => _departmentRepository.GetOptionsAsync();

@@ -5,4 +5,5 @@ public class DepartmentUserFilterOptions : FilterOptions
 {
     public int? Code { get; set; }
     public string? Name { get; set; }
+    public int? DepartmentId { get; set; }
 }
