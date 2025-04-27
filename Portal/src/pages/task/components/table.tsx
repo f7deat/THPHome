@@ -119,7 +119,8 @@ const TaskTable: React.FC = () => {
                         dataIndex: 'priority',
                         valueType: 'select',
                         request: apiTaskItemPriorityOptions as any,
-                        minWidth: 120
+                        minWidth: 120,
+                        search: false
                     },
                     {
                         title: <SettingOutlined />,

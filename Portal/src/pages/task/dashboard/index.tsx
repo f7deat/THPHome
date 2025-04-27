@@ -1,4 +1,4 @@
-import { CalendarOutlined, CheckCircleOutlined, ExclamationCircleOutlined, LoadingOutlined, StopOutlined } from "@ant-design/icons";
+import { CalendarOutlined, CheckCircleOutlined, ExclamationCircleOutlined, HistoryOutlined, LoadingOutlined, StopOutlined, SunOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProCard, ProForm, ProFormSelect, ProList } from "@ant-design/pro-components";
 import { useAccess, useModel, useRequest } from "@umijs/max";
 import { Progress, Statistic } from "antd";
@@ -78,7 +78,10 @@ const Index: React.FC = () => {
                                 render: (_, row) => (
                                     <div>
                                         <Progress percent={Number(Number(row.totalTaskPercent || 0).toFixed(1))} />
-                                        <div className="text-gray-500 text-xs">Giờ làm tháng {dayjs().format('MM')}: <span className="text-red-500 font-medium">{row.formattedWorkingHours}</span></div>
+                                        <div className="text-gray-500 text-xs">
+                                            <HistoryOutlined /> Giờ làm tháng {dayjs().format('M')}: <span className="text-red-500 font-medium">{row.formattedWorkingHours}</span>
+                                            <span className="ml-2"><SunOutlined /> Tổng số công việc: {row.taskCount}</span>
+                                        </div>
                                     </div>
                                 )
                             }

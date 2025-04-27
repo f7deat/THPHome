@@ -4,12 +4,14 @@ import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
 import { Button, Dropdown, message, Popconfirm } from "antd";
 import { useRef, useState } from "react";
 import NotificationForm from "./components/form";
+import SentInfo from "./components/sent-info";
 
 const NotificationPage: React.FC = () => {
 
     const [open, setOpen] = useState<boolean>(false);
     const [notification, setNotification] = useState<any>();
     const actionRef = useRef<ActionType>();
+    const [openSent, setOpenSent] = useState<boolean>(false);
 
     const onDelete = async (id: string) => {
         await apiNotificationDelete(id);
@@ -51,13 +53,21 @@ const NotificationPage: React.FC = () => {
                                 text: 'Thông báo hệ thống',
                                 status: 'Warning'
                             },
-                        }
+                        },
+                        width: 150
                     },
                     {
                         title: 'Lượt gửi',
                         dataIndex: 'sentCount',
                         valueType: 'digit',
-                        search: false
+                        search: false,
+                        width: 80,
+                        render: (dom, entity) => (
+                            <Button type="link" size="small" disabled={entity.sentCount === 0} onClick={() => {
+                                setNotification(entity);
+                                setOpenSent(true);
+                            }}>{dom}</Button>
+                        )
                     },
                     {
                         title: 'Xem',
@@ -112,6 +122,7 @@ const NotificationPage: React.FC = () => {
                 ]}
             />
             <NotificationForm open={open} onOpenChange={setOpen} notificationId={notification?.id} />
+            <SentInfo open={openSent} onClose={() => setOpenSent(false)} notification={notification} />
         </PageContainer>
     )
 }
