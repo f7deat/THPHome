@@ -103,7 +103,7 @@ const TaskTable: React.FC = () => {
                         request: apiTaskItemStatusOptions as any,
                         minWidth: 170,
                         render: (dom, record) => {
-                            if (record.status === TaskStatus.Complete || record.status === TaskStatus.Overdue) {
+                            if ((record.status === TaskStatus.Complete || record.status === TaskStatus.Overdue || record.status === TaskStatus.NeedsReview) && !access.admin) {
                                 return dom;
                             }
                             return (

@@ -1,8 +1,8 @@
 import FileUpload from "@/components/files/upload";
 import { apiLogo, apiSetLogo } from "@/services/setting";
-import { UploadOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, UploadOutlined } from "@ant-design/icons";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
-import { FormattedMessage, useRequest } from "@umijs/max";
+import { FormattedMessage, history, useRequest } from "@umijs/max";
 import { Button, Col, Image, Row, message } from "antd";
 import { useState } from "react";
 
@@ -27,6 +27,11 @@ const GeneralSettingPage: React.FC = () => {
                         <span><FormattedMessage id='general.change' /></span>
                     </Button>}>
                         <Image src={data} />
+                    </ProCard>
+                </Col>
+                <Col md={6} xs={24}>
+                    <ProCard title="Entry" headerBordered className="h-full" extra={<Button type="primary" icon={<ArrowRightOutlined />} onClick={() => history.push('/post/entry')}>Cài đặt</Button>}>
+                        Cài đặt thông tin trang mặc định
                     </ProCard>
                 </Col>
             </Row>

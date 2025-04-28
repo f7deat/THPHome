@@ -34,8 +34,8 @@ const RolePage = () => {
             dataIndex: 'name',
         },
         {
-            title: 'Normalized Name',
-            dataIndex: 'normalizedName',
+            title: 'Mô tả',
+            dataIndex: 'displayName',
             search: false
         },
         {

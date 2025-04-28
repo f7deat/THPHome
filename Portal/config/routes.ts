@@ -18,7 +18,8 @@ export default [
         name: 'Entry',
         path: '/post/entry',
         component: './posts/entry',
-        access: 'canAdmin'
+        access: 'canAdmin',
+        hideInMenu: true
       },
       {
         name: 'Tin tức',
