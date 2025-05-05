@@ -47,7 +47,8 @@ public class DepartmentRepository(ApplicationDbContext context, UserManager<Appl
                         a.PostId,
                         a.Code,
                         b.Title,
-                        b.Url
+                        b.Url,
+                        a.SortOrder
                     };
         return await ListResult<object>.Success(query, filterOptions);
     }
@@ -55,7 +56,6 @@ public class DepartmentRepository(ApplicationDbContext context, UserManager<Appl
     public async Task<object?> ListAllAsync(string locale = "vi-VN")
     {
         var query = from a in _context.Departments
-                    where a.Locale == locale
                     select new
                     {
                         a.Id,

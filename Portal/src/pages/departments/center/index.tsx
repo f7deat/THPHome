@@ -2,7 +2,7 @@ import DepartmentUsers from "@/pages/users/profile/components/department";
 import { apiDepartmentAcademicProgramList } from "@/services/department";
 import { apiPostActive, apiPostDelete } from "@/services/post";
 import { PostStatus } from "@/utils/enum";
-import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, MoreOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
 import { history, useAccess } from "@umijs/max"
 import { Button, Dropdown, message, Popconfirm } from "antd";
@@ -83,12 +83,21 @@ const Index: React.FC = () => {
                                     <Dropdown key="more" menu={{
                                         items: [
                                             {
-                                                key: 'edit',
-                                                label: 'Chỉnh sửa',
+                                                key: 'detail',
+                                                label: 'Chi tiết',
                                                 onClick: () => {
                                                     history.push(`/post/page/${record.postId}`);
                                                 },
-                                                icon: <EditOutlined />
+                                                icon: <EyeOutlined />
+                                            },
+                                            {
+                                                key: 'edit',
+                                                label: 'Chỉnh sửa',
+                                                onClick: () => {
+                                                    history.push(`/post/edit/${record.postId}`);
+                                                },
+                                                icon: <EditOutlined />,
+                                                disabled: !access.hod
                                             },
                                             {
                                                 key: 'approve',

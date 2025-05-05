@@ -34,6 +34,11 @@ const GeneralSettingPage: React.FC = () => {
                         Cài đặt thông tin trang mặc định
                     </ProCard>
                 </Col>
+                <Col md={6} xs={24}>
+                    <ProCard title="Đơn vị" headerBordered className="h-full" extra={<Button type="primary" icon={<ArrowRightOutlined />} onClick={() => history.push('/settings/general/department')}>Cài đặt</Button>}>
+                        Cài đặt thông tin phòng ban - khoa, trung tâm
+                    </ProCard>
+                </Col>
             </Row>
             <FileUpload open={openUpload} onCancel={() => setOpenUpload(false)} onFinish={onChangeLogo} />
         </PageContainer>

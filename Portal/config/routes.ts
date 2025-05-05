@@ -144,21 +144,14 @@ export default [
     path: '/department',
     routes: [
       {
-        name: 'Danh sách',
-        path: '/department/list',
-        component: './departments',
+        path: '/department',
+        redirect: '/department/center',
       },
       {
         name: 'Chi tiết',
-        path: '/department/list/center/:id',
+        path: '/department/center',
         component: './departments/center',
         hideInMenu: true
-      },
-      {
-        name: 'Chỉnh sửa',
-        path: '/department/article/:id',
-        component: './posts/post-setting',
-        hideInMenu: true,
       }
     ]
   },
@@ -366,7 +359,14 @@ export default [
         path: '/settings/application/zalo-article',
         component: './settings/app/zalo/article',
         hideInMenu: true,
-      }
+      },
+      {
+        name: 'general',
+        path: '/settings/general/department',
+        component: './settings/general/department',
+        hideInMenu: true,
+        access: 'canAdmin'
+      },
     ],
   },
   {

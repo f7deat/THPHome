@@ -34,6 +34,7 @@ const StatusChange: React.FC<Props> = ({ refresh, status, taskItemId }) => {
     }
 
     const canChange = () => {
+        if (status === TaskStatus.Overdue) return false;
         if (access.hod || access.admin) return true;
         if (status === TaskStatus.NeedsReview) return false;
         return true;

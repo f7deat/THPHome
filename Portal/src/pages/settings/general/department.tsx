@@ -1,10 +1,11 @@
-﻿import { Button, Col, Form, Input, message, Popconfirm, Row } from "antd"
+import { Button, Col, Form, Input, message, Popconfirm, Row } from "antd"
 import { useEffect, useRef, useState } from "react"
 import {
     DeleteOutlined,
     PlusOutlined,
     EditOutlined,
-    EyeOutlined
+    EyeOutlined,
+    LeftOutlined
 } from "@ant-design/icons";
 import { getLocale, history, request, useAccess } from "@umijs/max";
 import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormDigit, ProFormInstance, ProFormSelect, ProTable } from "@ant-design/pro-components";
@@ -118,13 +119,13 @@ const Department: React.FC = () => {
             title: 'Tác vụ',
             valueType: 'option',
             render: (value, record) => [
-                <Button size="small" icon={<EditOutlined />} key="edit" disabled onClick={() => {
+                <Button size="small" icon={<EditOutlined />} key="edit" onClick={() => {
                     setDepartment(record);
                     setOpen(true);
                 }} />,
                 <Button size="small" type="primary" key="detail" icon={<EyeOutlined />} onClick={() => history.push(`/department/list/center/${record.id}`)}></Button>,
                 <Popconfirm title="Xóa bản ghi?" key="delete" onConfirm={() => onConfirm(record.id)}>
-                    <Button disabled type="primary" danger icon={<DeleteOutlined />} size="small" />
+                    <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
                 </Popconfirm>
             ],
             width: 100
@@ -132,7 +133,7 @@ const Department: React.FC = () => {
     ]
 
     return (
-        <PageContainer>
+        <PageContainer extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <ProTable
                 headerTitle={<Button type="primary" hidden={!access.admin} icon={<PlusOutlined />} onClick={() => setOpen(true)}>Thêm mới</Button>}
                 actionRef={actionRef}
