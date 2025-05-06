@@ -26,6 +26,7 @@ using THPHome.Entities.Users;
 using ForeignLanguageProficiency = THPHome.Entities.Users.ForeignLanguageProficiency;
 using THPCore.Models;
 using THPHome.Foundations;
+using THPHome.Services.Notifications.Models;
 
 namespace THPHome.Controllers;
 
@@ -611,7 +612,7 @@ public class UserController(
     }));
 
     [HttpGet("my-notifications")]
-    public async Task<IActionResult> GetMyNotificationsAsync([FromQuery] FilterOptions filterOptions)
+    public async Task<IActionResult> GetMyNotificationsAsync([FromQuery] NotificationFilterOptions filterOptions)
     {
         var userName = User.GetUserName();
         var query = from a in _context.Notifications
@@ -625,30 +626,22 @@ public class UserController(
                         a.CreatedDate,
                         a.ModifiedDate,
                         b.IsRead,
-                        b.NotificationId
+                        b.NotificationId,
+                        a.Type
                     };
-        return Ok(new
+        if (filterOptions.Type != null)
         {
-            data = await query.OrderByDescending(x => x.CreatedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
-            total = await query.CountAsync()
-        });
+            query = query.Where(x => x.Type == filterOptions.Type);
+        }
+        query = query.OrderByDescending(x => x.CreatedDate);
+        return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
     [HttpGet("lecturer/list"), AllowAnonymous]
     public async Task<IActionResult> ListLecturerAsync([FromQuery] UserFilterOptions filterOptions) => Ok(await _userService.ListLecturerAsync(filterOptions));
 
     [HttpGet("lecturer/public-info/{userName}"), AllowAnonymous]
-    public async Task<IActionResult> GetLecturerPublicInfoAsync([FromRoute] string userName)
-    {
-        try
-        {
-            return Ok(await _userService.GetLecturerPublicInfoAsync(userName));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.ToString());
-        }
-    }
+    public async Task<IActionResult> GetLecturerPublicInfoAsync([FromRoute] string userName) => Ok(await _userService.GetLecturerPublicInfoAsync(userName));
 
     [HttpGet("academic-title/options")]
     public async Task<IActionResult> GetAcademicTitleOptionsAsync() => Ok(await _academicTitleService.GetOptionsAsync());
@@ -665,19 +658,17 @@ public class UserController(
             if (!file.ContentType.Contains("image")) return BadRequest("Định dạng tệp tin không được hỗ trợ!");
             var user = await _userManager.FindByIdAsync(User.GetId());
             if (user is null) return BadRequest("User not found!");
-            var rootPath = Path.Combine(_webHostEnvironment.WebRootPath, "avatars");
-            var folder = user.UserName ?? "files";
+            var rootPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", "user");
+            var folder = user.UserName ?? "undefined";
             var folderPath = Path.Combine(rootPath, folder);
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
             var filePath = Path.Combine(folderPath, file.FileName);
             using (var stream = System.IO.File.Create(filePath))
             {
                 await file.CopyToAsync(stream);
             }
-            user.Avatar = $"https://dhhp.edu.vn/avatars/{folder}/{file.FileName}";
+            user.Avatar = $"https://dhhp.edu.vn/files/user/{folder}/{file.FileName}";
             await _userManager.UpdateAsync(user);
             return Ok();
         }

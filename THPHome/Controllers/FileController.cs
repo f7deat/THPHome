@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using THPCore.Extensions;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
@@ -39,11 +40,8 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
                         a.Size,
                         a.ContentType
                     };
-        return Ok(new
-        {
-            data = await query.OrderByDescending(x => x.ModifiedDate).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync(),
-            total = await query.CountAsync()
-        });
+        query = query.OrderByDescending(x => x.ModifiedDate);
+        return Ok(await ListResult<object>.Success(query, filterOptions));
     }
 
     [HttpPost("upload-multi")]

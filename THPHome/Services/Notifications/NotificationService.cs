@@ -10,7 +10,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Services.Notifications;
 
-public class NotificationService(INotificationRepository _notificationRepository, IHCAService _hcaService, UserManager<ApplicationUser> _userManager) : INotificationService
+public class NotificationService(INotificationRepository _notificationRepository, IHCAService _hcaService, ILogService _logService, UserManager<ApplicationUser> _userManager) : INotificationService
 {
     public async Task<THPResult> CreatePrivateAsync(CreatePrivateArgs args)
     {
@@ -18,6 +18,9 @@ public class NotificationService(INotificationRepository _notificationRepository
         {
             if (!args.Recipients.Any()) return THPResult.Failed("No recipients found!");
             var userName = _hcaService.GetUserName();
+            // DO NOT add the sender to the recipients
+            args.Recipients = args.Recipients.Where(x => x != userName).Distinct();
+            if (!args.Recipients.Any()) return THPResult.Failed("No recipients found!");
             var notification = new Notification
             {
                 Id = Guid.NewGuid(),
@@ -28,8 +31,6 @@ public class NotificationService(INotificationRepository _notificationRepository
                 CreatedDate = DateTime.Now
             };
             await _notificationRepository.AddAsync(notification);
-            // DO NOT add the sender to the recipients
-            args.Recipients = args.Recipients.Where(x => x != userName).Distinct();
             foreach (var item in args.Recipients)
             {
                 if (item is null) continue;
@@ -40,6 +41,7 @@ public class NotificationService(INotificationRepository _notificationRepository
         }
         catch (Exception ex)
         {
+            await _logService.ExeptionAsync(ex);
             return THPResult.Failed(ex.ToString());
         }
     }

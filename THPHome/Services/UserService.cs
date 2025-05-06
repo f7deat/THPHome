@@ -227,9 +227,9 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             query = query.Where(x => x.Name.ToLower().Contains(filterOptions.Name.ToLower()));
         }
 
-        if (filterOptions.DepartmentCode != null)
+        if (filterOptions.DepartmentId != null)
         {
-            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentCode);
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
         }
 
         var result = await query.OrderByDescending(x => x.UserType).ThenBy(x => x.UserName).Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
