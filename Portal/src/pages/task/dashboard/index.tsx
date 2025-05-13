@@ -1,11 +1,11 @@
 import { CalendarOutlined, CheckCircleOutlined, ExclamationCircleOutlined, HistoryOutlined, LoadingOutlined, StopOutlined, SunOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProCard, ProForm, ProFormSelect, ProList } from "@ant-design/pro-components";
 import { useAccess, useModel, useRequest } from "@umijs/max";
-import { Progress, Statistic } from "antd";
+import { DatePicker, Progress, Statistic } from "antd";
 import { apiTaskItemCount, apiTaskItemHistoryList, apiTaskTeamWorkload } from "../services/task-item";
 import { apiDepartmentOptions } from "@/services/department";
 import { useEffect, useRef, useState } from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 const Index: React.FC = () => {
 
@@ -15,6 +15,7 @@ const Index: React.FC = () => {
     const { data, loading, refresh } = useRequest(() => apiTaskItemCount(departmentId));
     const workLoadRef = useRef<ActionType>();
     const historyRef = useRef<ActionType>();
+    const [month, setMonth] = useState<Dayjs>(dayjs());
 
     useEffect(() => {
         if (departmentId) {
@@ -59,12 +60,17 @@ const Index: React.FC = () => {
                 </ProCard>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <ProCard title="Khối lượng công việc" headerBordered>
+                <ProCard title="Khối lượng công việc" headerBordered extra={<DatePicker.MonthPicker allowClear={false} defaultValue={month} onChange={(v) => {
+                    setMonth(v);
+                    workLoadRef.current?.reload();
+                }} />}>
                     <ProList
                         actionRef={workLoadRef}
                         request={(params) => apiTaskTeamWorkload({
                             ...params,
-                            departmentId: departmentId
+                            departmentId: departmentId,
+                            month: month?.format('MM'),
+                            year: month?.format('YYYY')
                         })}
                         metas={{
                             title: {

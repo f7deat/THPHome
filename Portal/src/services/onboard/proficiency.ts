@@ -36,3 +36,7 @@ export async function apiMoveProficiencyBatch(data: any) {
 export async function apiProficiencyBatchAvailableOptions() {
     return await request.get(`proficiency/batch/available-options`) as any;
 }
+
+export async function apiProficiencyExamUpdateStatus(data: any) {
+    return await request.post(`program/update-status`, data);
+}

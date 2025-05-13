@@ -205,7 +205,7 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
     public async Task<object?> ListLecturerAsync(UserFilterOptions filterOptions)
     {
         var query = from a in _userManager.Users.Where(x => x.UserType != UserType.Student)
-                    where a.Status == UserStatus.Active
+                    where a.Status != UserStatus.Inactive
                     select new
                     {
                         a.Id,

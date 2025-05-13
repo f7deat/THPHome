@@ -84,6 +84,12 @@ const TaskTable: React.FC = () => {
                         minWidth: 200
                     },
                     {
+                        title: 'Ngày bắt đầu',
+                        dataIndex: 'startDate',
+                        valueType: 'dateRange',
+                        hideInTable: true
+                    },
+                    {
                         title: 'Ngày hết hạn',
                         search: false,
                         dataIndex: 'dueDate',

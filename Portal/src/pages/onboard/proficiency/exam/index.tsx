@@ -1,7 +1,7 @@
-import { apiDeleteProficiency, apiExportProficiencyExam, apiProficiencyExamList, apiProficiencyTypeOptions } from "@/services/onboard/proficiency";
+import { apiDeleteProficiency, apiExportProficiencyExam, apiProficiencyExamList, apiProficiencyExamUpdateStatus, apiProficiencyTypeOptions } from "@/services/onboard/proficiency";
 import { DeleteOutlined, EditOutlined, EyeOutlined, FileExcelOutlined, ManOutlined, WomanOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
-import { Button, Image, message, Popconfirm, Popover, Tag } from "antd";
+import { Button, Image, message, Popconfirm, Popover, Select, Tag } from "antd";
 import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
@@ -150,7 +150,46 @@ const ProficiencyExamPage: React.FC = () => {
                                     value: 4
                                 }
                             ]
-                        }
+                        },
+                        render: (dom, entity) => (
+                            <div className="flex items-center gap=1">
+                                {dom}
+                                {entity.status === 0 && (
+                                    <Popover content={(
+                                        <div>
+                                            <Select defaultValue={entity.status} options={[
+                                                {
+                                                    label: 'Chờ xác nhận',
+                                                    value: 0
+                                                },
+                                                {
+                                                    label: 'Đã thanh toán',
+                                                    value: 2
+                                                },
+                                                {
+                                                    label: 'Hủy đăng ký',
+                                                    value: 3
+                                                },
+                                                {
+                                                    label: 'Đã lên danh sách thi',
+                                                    value: 4
+                                                }]}
+                                                onChange={async (value) => {
+                                                    await apiProficiencyExamUpdateStatus({
+                                                        id: entity.id,
+                                                        status: value
+                                                    });
+                                                    message.success('Cập nhật trạng thái thành công!');
+                                                    actionRef.current?.reload();
+                                                }}
+                                            />
+                                        </div>
+                                    )}>
+                                        <Button type="text" icon={<EditOutlined />} size="small" />
+                                    </Popover>
+                                )}
+                            </div>
+                        )
                     },
                     {
                         title: 'Ngày thanh toán',
