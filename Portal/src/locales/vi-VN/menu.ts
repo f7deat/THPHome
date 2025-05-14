@@ -62,6 +62,7 @@ export default {
     'menu.component.videoPlayer': 'Video Player',
     'menu.component.tag': 'Tag',
     'menu.component.wordPressLister': 'WordPress Lister',
+    'menu.department': 'Phòng ban',
     'menu.setting.language': 'Ngôn ngữ',
     'menu.setting.roles': 'Quyền',
     'menu.setting.application': 'Ứng dụng',

@@ -129,6 +129,18 @@ export default [
         name: 'kanban',
         path: '/task/kanban',
         component: './task/kanban'
+      },
+      {
+        name: 'tag',
+        path: '/task/tag',
+        component: './task/tag',
+        hideInMenu: true
+      },
+      {
+        name: 'backlog',
+        path: '/task/backlog',
+        component: './task/backlog',
+        hideInMenu: true
       }
     ]
   },
@@ -140,7 +152,7 @@ export default [
   },
   {
     icon: 'ApartmentOutlined',
-    name: 'Phòng ban',
+    name: 'department',
     path: '/department',
     routes: [
       {
@@ -366,43 +378,6 @@ export default [
         component: './settings/general/department',
         hideInMenu: true,
         access: 'canAdmin'
-      },
-    ],
-  },
-  {
-    path: '/onboard',
-    name: 'Onboard',
-    icon: 'LoginOutlined',
-    access: 'admin',
-    routes: [
-      {
-        path: '/onboard',
-        redirect: '/onboard/dashboard',
-      },
-      {
-        name: 'Dashboard',
-        path: '/onboard/dashboard',
-        component: './onboard/dashboard',
-      },
-      {
-        name: 'Chuyên ngành',
-        path: '/onboard/major',
-        component: './onboard/major',
-      },
-      {
-        name: 'Đăng ký chuyên ngành',
-        path: '/onboard/form',
-        component: './onboard',
-      },
-      {
-        name: 'Tuần CDSV',
-        path: '/onboard/fist-week',
-        component: './onboard/fist-week',
-      },
-      {
-        name: 'Lịch sử',
-        path: '/onboard/history',
-        component: './onboard/history',
       },
     ],
   },

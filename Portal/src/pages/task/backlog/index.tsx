@@ -1,23 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import FormTask from "./form";
-import { ActionType, ProForm, ProFormSelect, ProTable } from "@ant-design/pro-components";
-import { CalendarOutlined, DeleteOutlined, EditOutlined, EyeOutlined, HistoryOutlined, MoreOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
-import { Button, Dropdown, message, Popconfirm, Space, Tag } from "antd";
-import { apiTaskItemDelete, apiTaskItemList, apiTaskItemPriorityOptions, apiTaskItemStatusOptions } from "../services/task-item";
-import { FormattedNumber, history, useAccess, useModel } from "@umijs/max";
-import { TaskStatus } from "../constants";
-import { apiDepartmentOptions } from "@/services/department";
-import StatusChange from "../center/components/status";
+import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
+import { apiTaskBacklogs, apiTaskItemDelete, apiTaskItemPriorityOptions, apiTaskItemStatusOptions } from "../services/task-item";
+import { CalendarOutlined, EyeOutlined, HistoryOutlined, SettingOutlined, MoreOutlined, DeleteOutlined, LeftOutlined } from "@ant-design/icons";
+import { useAccess, useModel, FormattedNumber, history } from "@umijs/max";
+import { Tag, Dropdown, Button, Popconfirm, message } from "antd";
 import dayjs from "dayjs";
+import { useRef, useState, useEffect } from "react";
+import StatusChange from "../center/components/status";
+import { TaskStatus } from "../constants";
 
-const TaskTable: React.FC = () => {
+const Index: React.FC = () => {
 
     const access = useAccess();
     const actionRef = useRef<ActionType>();
-    const [open, setOpen] = useState<boolean>(false);
     const { initialState } = useModel('@@initialState');
-    const [taskItem, setTaskItem] = useState<any>(null);
-    const [departmentId, setDepartmentId] = useState<number>(initialState?.currentUser.departmentId || 0);
+    const [departmentId] = useState<number>(initialState?.currentUser.departmentId || 0);
 
     useEffect(() => {
         if (departmentId) {
@@ -29,31 +25,12 @@ const TaskTable: React.FC = () => {
         if (access.admin || access.hod) return true;
         return status === TaskStatus.NeedsReview && assignedTo === initialState?.currentUser.userName;
     }
-
-    const canEdit = (status: TaskStatus, assignedTo: string) => {
-        if (access.admin || access.hod) return true;
-        return status !== TaskStatus.Complete && assignedTo === initialState?.currentUser.userName;
-    }
-
+    
     return (
-        <div>
+        <PageContainer extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <ProTable
                 actionRef={actionRef}
-                headerTitle={(
-                    <Space>
-                        <ProForm layout="inline" submitter={false}>
-                            <ProFormSelect
-                                width="lg"
-                                onChange={(value: number) => setDepartmentId(value)}
-                                hidden={!access.admin} name="departmentId" placeholder="Phòng ban" initialValue={departmentId} request={apiDepartmentOptions} />
-                        </ProForm>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={() => {
-                            setTaskItem(null);
-                            setOpen(true);
-                        }}>Tạo mới</Button>
-                    </Space>
-                )}
-                request={(params) => apiTaskItemList({
+                request={(params) => apiTaskBacklogs({
                     ...params,
                     departmentId: departmentId,
                     fromDate: params.startDate ? dayjs(params.startDate[0]).format('YYYY-MM-DD') : undefined,
@@ -84,28 +61,6 @@ const TaskTable: React.FC = () => {
                             </div>
                         ),
                         minWidth: 200
-                    },
-                    {
-                        title: 'Ngày bắt đầu',
-                        dataIndex: 'startDate',
-                        valueType: 'dateRange',
-                        hideInTable: true
-                    },
-                    {
-                        title: 'Thời gian',
-                        search: false,
-                        dataIndex: 'dueDate',
-                        valueType: 'date',
-                        minWidth: 110,
-                        render: (dom, record) => {
-                            if (!record.dueDate) return '-';
-                            return (
-                                <div>
-                                    <div>Bắt đầu: {dayjs(record.startDate).format('DD/MM/YYYY')}</div>
-                                    <div>Hết hạn: {dayjs(record.dueDate).format('DD/MM/YYYY')}</div>
-                                </div>
-                            )
-                        }
                     },
                     {
                         title: 'Thực hiện bởi',
@@ -153,16 +108,6 @@ const TaskTable: React.FC = () => {
                                         label: 'Chi tiết',
                                         icon: <EyeOutlined />,
                                         onClick: () => history.push(`/task/board/${record.id}`)
-                                    },
-                                    {
-                                        key: 'edit',
-                                        label: 'Chỉnh sửa',
-                                        icon: <EditOutlined />,
-                                        onClick: () => {
-                                            setTaskItem(record);
-                                            setOpen(true);
-                                        },
-                                        disabled: !canEdit(record.status, record.assignedTo)
                                     }
                                 ]
                             }}>
@@ -186,9 +131,8 @@ const TaskTable: React.FC = () => {
                     x: true
                 }}
             />
-            <FormTask open={open} onOpenChange={setOpen} reload={() => actionRef.current?.reload()} id={taskItem?.id} />
-        </div>
-    );
+        </PageContainer>
+    )
 }
 
-export default TaskTable;
+export default Index;

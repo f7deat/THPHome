@@ -12,7 +12,7 @@ const HomePage: React.FC = () => {
   const [fileCount, setFileCount] = useState(0);
   const [postView, setPostView] = useState(0);
   const [posts, setPosts] = useState<any>([]);
-  const [totalStudent, setTotalStudent] = useState<number>(0);
+  const [totalStudent] = useState<number>(0);
   const [chartData, setChartData] = useState<any>();
 
   useEffect(() => {
@@ -20,7 +20,6 @@ const HomePage: React.FC = () => {
     request('post/get-view').then(response => setPostView(response));
     request('post/get-list-popular').then(response => setPosts(response));
     request('file/total').then(response => setFileCount(response));
-    request('https://dkxtdev.dhhp.edu.vn/api/student/total').then(response => setTotalStudent(response));
     apiGetChartPostCreatedInYear().then(response => {
       setChartData(response);
       console.log(response)

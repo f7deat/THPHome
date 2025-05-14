@@ -59,3 +59,7 @@ export async function apiTaskItemKanban(params: any) {
 export async function apiTaskTags(params: any) {
     return request.get(`task/tags`, { params });
 }
+
+export async function apiTaskBacklogs(params: any) {
+    return request.get(`task/backlogs`, { params });
+}

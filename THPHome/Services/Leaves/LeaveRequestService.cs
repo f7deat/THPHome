@@ -17,7 +17,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Services.Leaves;
 
-public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INotificationService _notificationService, IDepartmentService _departmentService, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
+public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEmailSender _emailSender, INotificationService _notificationService, IDepartmentService _departmentService, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
 {
     static bool IsValidLeaveDays(double leaveDays) => leaveDays % 0.5 == 0;
 
@@ -89,6 +89,12 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, INot
                 x.Name,
                 x.UserName
             }).ToListAsync();
+
+            foreach ( var item in headOfDepartments)
+            {
+                if (string.IsNullOrEmpty(item.Email)) continue;
+                await _emailSender.SendAsync(item.Email, "Có đơn xin nghỉ phép mới", $"Đơn xin nghỉ phép mới từ {user.Name} cần được duyệt. Vui lòng truy cập hệ thống để xem chi tiết.");
+            }
 
             await _notificationService.CreatePrivateAsync(new CreatePrivateArgs
             {

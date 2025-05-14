@@ -1,6 +1,6 @@
-import { PageContainer, ProFormSelect } from "@ant-design/pro-components"
+import { PageContainer, ProFormDateTimeRangePicker, ProFormSelect } from "@ant-design/pro-components"
 import Board from "../components/board";
-import { history, useModel, useRequest } from "@umijs/max";
+import { history, Link, useModel, useRequest } from "@umijs/max";
 import { apiTaskItemKanban } from "../services/task-item";
 import { Button, Dropdown, Input, Segmented, Select } from "antd";
 import { AppstoreOutlined, BarsOutlined, MoreOutlined, StopOutlined, TagOutlined } from "@ant-design/icons";
@@ -29,11 +29,14 @@ const Index: React.FC = () => {
             <div className="bg-white mb-2">
                 <div className="flex items-center border-b font-medium uppercase">
                     <div className="p-2 border-b border-blue-500"><BarsOutlined /> Tổng quan</div>
-                    <div className="p-2 hover:bg-slate-100 cursor-pointer"><StopOutlined /> Backlog</div>
+                    <Link to='/task/backlog'>
+                        <div className="p-2 hover:bg-slate-100 cursor-pointer"><StopOutlined /> Backlog</div>
+                    </Link>
                 </div>
-                <div className="flex p-2 gap-2">
+                <div className="flex p-2 gap-2 overflow-x-auto">
                     <Select placeholder="CBVC - NLĐ" />
                     <ProFormSelect placeholder="Thẻ" request={apiTaskTagOptions as any} showSearch fieldProps={{ popupMatchSelectWidth: false }} formItemProps={{ className: 'mb-0' }} />
+                    <ProFormDateTimeRangePicker placeholder="Thời gian" formItemProps={{ className: 'mb-0' }} />
                     <div className="flex">
                         <Input.Search placeholder="Nhập từ khóa" />
                     </div>
@@ -43,7 +46,8 @@ const Index: React.FC = () => {
                                 {
                                     label: 'Tags',
                                     key: 'tags',
-                                    icon: <TagOutlined />
+                                    icon: <TagOutlined />,
+                                    onClick: () => history.push('/task/tag')
                                 }
                             ]
                         }}>

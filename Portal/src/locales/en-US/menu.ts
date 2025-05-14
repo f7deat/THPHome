@@ -44,6 +44,7 @@ export default {
   'menu.component.videoPlaylist': 'Video Playlist',
   'menu.component.videoPlayer': 'Video Player',
   'menu.component.wordPressLister': 'WordPress Lister',
+  'menu.department': 'Department',
   'menu.fileManager': 'File manager',
   'menu.fileManager.fileCenter': 'File center',
   'menu.home': 'Home',
