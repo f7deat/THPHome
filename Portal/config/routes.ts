@@ -108,41 +108,7 @@ export default [
     icon: 'CarryOutOutlined',
     name: 'task',
     path: '/task',
-    routes: [
-      {
-        name: 'Bảng tin',
-        path: '/task/dashboard',
-        component: './task/dashboard',
-      },
-      {
-        name: 'Nhiệm vụ',
-        path: '/task/board',
-        component: './task',
-      },
-      {
-        name: 'Chi tiết nhiệm vụ',
-        path: '/task/board/:id',
-        component: './task/center',
-        hideInMenu: true
-      },
-      {
-        name: 'kanban',
-        path: '/task/kanban',
-        component: './task/kanban'
-      },
-      {
-        name: 'tag',
-        path: '/task/tag',
-        component: './task/tag',
-        hideInMenu: true
-      },
-      {
-        name: 'backlog',
-        path: '/task/backlog',
-        component: './task/backlog',
-        hideInMenu: true
-      }
-    ]
+    component: './task'
   },
   {
     icon: 'AppstoreAddOutlined',

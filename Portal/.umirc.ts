@@ -30,4 +30,5 @@ export default defineConfig({
   tailwindcss: {},
   hash: true,
   esbuildMinifyIIFE: true,
+  mako: {}
 });

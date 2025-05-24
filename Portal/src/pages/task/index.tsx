@@ -1,29 +1,11 @@
 import { PageContainer } from "@ant-design/pro-components"
-import { Segmented } from "antd";
-import { AppstoreOutlined, BarsOutlined } from "@ant-design/icons";
-import TaskTable from "./components/table";
-import { history } from "@umijs/max";
+import { Alert } from "antd";
 
 const Index: React.FC = () => {
 
     return (
-        <PageContainer extra={(
-            <Segmented
-                defaultValue="List"
-                options={[
-                    { value: 'List', icon: <BarsOutlined /> },
-                    { value: 'Kanban', icon: <AppstoreOutlined /> },
-                ]}
-                onChange={(value) => {
-                    if (value === 'List') {
-                        history.push('/task/board');
-                    } else {
-                        history.push('/task/kanban');
-                    }
-                }}
-            />
-        )}>
-            <TaskTable />
+        <PageContainer>
+            <Alert type="info" message={<div>Công việc được chuyển qua <a href="https://office.dhhp.edu.vn" target="_blank" className="font-bold text-blue-500">office.dhhp.edu.vn</a></div>} showIcon />
         </PageContainer>
     )
 }
