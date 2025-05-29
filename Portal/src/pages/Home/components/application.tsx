@@ -18,10 +18,11 @@ const Application: React.FC = () => {
     return (
         <ProCard title="Ứng dụng" headerBordered className='h-full'>
             <div className='grid md:grid-cols-4 gap-4'>
-                <AppItem url={`https://qlvb.dhhp.edu.vn/#/user/login`} name="Quản lý văn bản" />
-                <AppItem url={`https://qltl.dhhp.edu.vn/#/user/login`} name="Quản lý tài liệu" />
-                <AppItem url={`https://qlbg.dhhp.edu.vn/#/user/login`} name="Quản lý bài giảng" />
-                <AppItem url={`https://admin.exam.dhhp.edu.vn/#/user/login`} name="Ngân hàng ôn tập" />
+                <AppItem url={`https://qlvb.dhhp.edu.vn/#/user/verify-login`} name="Quản lý văn bản" />
+                <AppItem url={`https://qltl.dhhp.edu.vn/#/user/verify-login`} name="Quản lý tài liệu" />
+                <AppItem url={`https://qlbg.dhhp.edu.vn/#/user/verify-login`} name="Quản lý bài giảng" />
+                <AppItem url={`https://admin.exam.dhhp.edu.vn/#/user/verify-login`} name="Ngân hàng ôn tập" />
+                <AppItem url={`https://office.dhhp.edu.vn/#/user/verify-login`} name="HPUni's Office" />
             </div>
         </ProCard>
     )

@@ -63,12 +63,22 @@ const GalleryPage: React.FC = () => {
   return (
     <PageContainer extra={<Button icon={<PlusOutlined />} type="primary" onClick={() => setOpen(true)}>Tạo mới</Button>}>
       <ProList
+        search={{
+          layout: 'vertical'
+        }}
+        rowKey="id"
         actionRef={actionRef}
         request={(params) => apiGalleryList({
           ...params,
           departmentId: access.canEditor ? null : initialState?.currentUser?.departmentId
         })}
         grid={{ gutter: 16, column: 4 }}
+        metas={{
+          title: {
+            dataIndex: 'title',
+            title: 'Tên Album'
+          }
+        }}
         renderItem={(item, index) => {
           return (
             <ProCard

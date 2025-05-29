@@ -2,10 +2,10 @@ import FileExplorer from "@/components/files/explorer";
 import FileUpload from "@/components/files/upload";
 import PostSetting from "@/components/posts/setting";
 import { apiPhotoAdd, apiPhotoDelete, apiPhotoList } from "@/services/file";
-import { DeleteOutlined, FolderOutlined, LeftOutlined, UploadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, LeftOutlined, UploadOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProCard, ProList } from "@ant-design/pro-components"
 import { history, useParams } from "@umijs/max";
-import { Button, Image, Popconfirm, Row, Space, Tag, message } from "antd";
+import { Button, Image, Popconfirm, Space, message } from "antd";
 import { useRef, useState } from "react";
 
 const PhotoPage: React.FC = () => {
@@ -42,6 +42,9 @@ const PhotoPage: React.FC = () => {
         <ProCard.TabPane key="list" tab="Danh sách">
           <ProList<any>
             actionRef={actionRef}
+            search={{
+              layout: 'vertical'
+            }}
             ghost
             pagination={{
               defaultPageSize: 18,
@@ -50,6 +53,12 @@ const PhotoPage: React.FC = () => {
               ...params,
               postId: id
             })}
+            metas={{
+              title: {
+                dataIndex: 'searchTerm',
+                title: 'Từ khóa tìm kiếm'
+              }
+            }}
             grid={{ gutter: 16, column: 6 }}
             renderItem={(item) => (
               <div className="bg-white shadow p-2">
@@ -64,7 +73,7 @@ const PhotoPage: React.FC = () => {
           />
         </ProCard.TabPane>
         <ProCard.TabPane key="setting" tab="Cài đặt">
-            <PostSetting />
+          <PostSetting />
         </ProCard.TabPane>
       </ProCard>
       <FileExplorer open={open} setOpen={setOpen} />
