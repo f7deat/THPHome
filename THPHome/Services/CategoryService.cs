@@ -23,7 +23,10 @@ public class CategoryService(ICategoryRepository _categoryRepository, IPostRepos
         if (await _categoryRepository.IsExistAsync(category.NormalizeName.ToLower())) return THPResult.Failed("Danh mục đã tồn tại");
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return THPResult.Failed("Người dùng không tồn tại");
-        category.DepartmentId = user.DepartmentId;
+        if (!_hcaService.IsUserInAnyRole(RoleName.EDITOR, RoleName.ADMIN))
+        {
+            category.DepartmentId = user.DepartmentId;
+        }
         category.Locale = locale;
         await _categoryRepository.AddAsync(category);
         return THPResult.Success;
