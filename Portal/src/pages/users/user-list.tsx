@@ -1,10 +1,8 @@
-﻿import { Button, Checkbox, Input, message, Modal, Popconfirm, Space, Table, Form, Row, Col, Dropdown } from "antd"
+﻿import { Button, Input, message, Popconfirm, Space, Form, Row, Col, Dropdown } from "antd"
 import React, { Fragment, useEffect, useRef, useState } from "react"
 import {
     DeleteOutlined,
-    PlusCircleOutlined,
     CheckCircleTwoTone,
-    SearchOutlined,
     UserOutlined,
     UserAddOutlined,
     WomanOutlined,
@@ -20,9 +18,6 @@ import ChangeDepartment from "./components/change-department";
 
 const UserList = () => {
 
-    const [isModalVisible, setIsModalVisible] = useState(false)
-    const [listRole, setListRole] = useState<any>([])
-    const [user, setUser] = useState<any>()
     const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const [departments, setDepartments] = useState<any>([]);
@@ -38,48 +33,6 @@ const UserList = () => {
         await apiDeactiveUser(id);
         message.success('Vô hiệu hóa tài khoản thành công!');
         actionRef.current?.reload();
-    }
-
-    useEffect(() => {
-        if (isModalVisible && user?.id) {
-            request('role/get-list').then(response => {
-                if (!user) {
-                    return;
-                }
-                request(`user/roles/${user.id}`).then(responseRoleInUser => {
-                    response.forEach((value: any) => {
-                        let isInRole = responseRoleInUser.find((x: any) => x === value.name)
-                        if (isInRole) {
-                            value.isInRole = true
-                        } else {
-                            value.isInRole = false
-                        }
-                    })
-                    setListRole(response)
-                })
-            })
-        }
-    }, [isModalVisible, user]);
-
-    function addToRole(roleName: string) {
-        if (!user) {
-            return message.warning('User not found!');
-        }
-        request(`user/add-to-role`, {
-            data: {
-                userId: user.id,
-                roleName: roleName
-            },
-            method: 'POST'
-        }).then((response: any) => {
-            if (response.succeeded) {
-                message.success('Succeeded!');
-            } else {
-                response.errors.forEach((value: any) => {
-                    message.error(value.description);
-                })
-            }
-        })
     }
 
     const columns: ProColumnType<any>[] = [
@@ -184,9 +137,24 @@ const UserList = () => {
                 <Dropdown key="action" menu={{
                     items: [
                         {
+                            key: 'edit',
+                            label: 'Chỉnh sửa',
+                            disabled: true
+                        },
+                        {
                             key: 'deactive',
-                            label: 'Vô hiệu hóa tài khoản',
+                            label: record.status === 3 ? 'Mở tài khoản' : 'Khóa tài khoản',
                             onClick: () => onDeactive(record.id)
+                        },
+                        {
+                            key: 'password',
+                            label: 'Đặt lại mật khẩu',
+                            disabled: true
+                        },
+                        {
+                            key: 'notification',
+                            label: 'Gửi thông báo',
+                            disabled: true
                         }
                     ]
                 }}>
@@ -207,50 +175,13 @@ const UserList = () => {
                     <Button type="primary" danger icon={<DeleteOutlined />} size="small" hidden={!access.admin} />
                 </Popconfirm>
             ],
-            width: 100
+            width: 60
         }
     ];
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
 
     const handleAdd = () => {
         setDrawerVisible(true)
     }
-
-    const handleSetRole = (role: any) => {
-        if (role.isInRole) {
-            request(`user/remove-from-role/${role.name}/${user.id}`, {
-                method: 'DELETE'
-            }).then(response => {
-                if (response.succeeded) {
-                    message.success('succeeded')
-                } else {
-                    response.errors.forEach((value: any) => {
-                        message.error(value.description)
-                    })
-                }
-            })
-        } else {
-            addToRole(role.name)
-        }
-    }
-
-    const roleColumns = [
-        {
-            title: 'Name',
-            dataIndex: 'name'
-        },
-        {
-            title: 'Normalized Name',
-            dataIndex: 'normalizedName'
-        },
-        {
-            title: 'Is In Role',
-            render: (record: any) => <Checkbox checked={record.isInRole} onClick={() => handleSetRole(record)} />
-        }
-    ];
 
     const onAddUser = async (values: any) => {
         values.userType = UserType.Staff;
@@ -269,16 +200,6 @@ const UserList = () => {
                 actionRef={actionRef}
                 request={apiStaffList}
                 columns={columns} rowKey="id" />
-            <Modal title="Assign Role" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)}>
-                <div className="p-2 flex justify-between">
-                    <Space>
-                        <Input />
-                        <Button type="primary" icon={<SearchOutlined />}></Button>
-                    </Space>
-                    <Button icon={<PlusCircleOutlined />} type="primary">New role</Button>
-                </div>
-                <Table columns={roleColumns} rowKey="id" dataSource={listRole} />
-            </Modal>
             <DrawerForm open={drawerVisible} width={700} onOpenChange={setDrawerVisible} title="Tài khoản" onFinish={onAddUser}>
                 <Form.Item name="name" label="Họ và tên" rules={[
                     {

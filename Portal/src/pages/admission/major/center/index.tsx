@@ -1,6 +1,6 @@
 import { apiGetListAcademicProgram } from "@/services/admission/academic-program";
 import { apiGetMajor } from "@/services/admission/major";
-import { DeleteOutlined, EditOutlined, EyeOutlined, LeftOutlined, MoreOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, LeftOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { PageContainer, ProTable } from "@ant-design/pro-components";
 import { history, useParams, useRequest } from "@umijs/max";
 import { Button, Dropdown } from "antd";
@@ -13,6 +13,7 @@ const Center: React.FC = () => {
     return (
         <PageContainer title={data?.name} extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
             <ProTable
+                headerTitle={<Button type="primary" icon={<PlusOutlined />}>Thêm mới</Button>}
                 request={(params) => apiGetListAcademicProgram({ ...params, majorId: id })}
                 columns={[
                     {

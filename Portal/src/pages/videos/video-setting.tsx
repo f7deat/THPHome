@@ -1,22 +1,20 @@
-﻿import { Button, Drawer, Form, Input, message, Popconfirm, Space } from "antd"
-import React, { useEffect, useState } from "react"
+﻿import { Button, Form, Input, message, Popconfirm } from "antd"
+import React, { useEffect, useRef, useState } from "react"
 import {
     EditOutlined,
     DeleteOutlined,
-    PlusOutlined,
-    SaveOutlined,
-    ArrowRightOutlined
+    PlusOutlined
 } from "@ant-design/icons";
 import { Link, request } from "@umijs/max";
-import { PageContainer, ProColumnType, ProTable } from "@ant-design/pro-components";
+import { DrawerForm, PageContainer, ProColumnType, ProFormInstance, ProTable } from "@ant-design/pro-components";
 
 const VideoSetting = () => {
 
     const [menus, setMenus] = useState<any>([])
     const [visible, setVisible] = useState(false)
-    const [fields, setFields] = useState<any>([]);
+    const formRef = useRef<ProFormInstance>();
 
-    const [form] = Form.useForm();
+    const [video, setVideo] = useState<any>();
 
     const fetchData = () => {
         request(`video/get-list`).then(response => {
@@ -29,13 +27,10 @@ const VideoSetting = () => {
     }, [])
 
     function handleAdd() {
-        form.resetFields()
+        setVideo(undefined);
+        formRef.current?.resetFields();
         setVisible(true)
     }
-
-    const onClose = () => {
-        setVisible(false);
-    };
 
     function handleRemove(id: number) {
         request(`video/delete/${id}`, {
@@ -50,29 +45,26 @@ const VideoSetting = () => {
         })
     }
 
-    function handleUpdate(record: any) {
-        setFields([
-            {
-                name: ['id'],
-                value: record.id
-            },
-            {
-                name: ['name'],
-                value: record.name
-            },
-            {
-                name: ['thumbnail'],
-                value: record.thumbnail
-            },
-            {
-                name: ['url'],
-                value: record.url
-            }
-        ])
-        setVisible(true)
-    }
+    useEffect(() => {
+        if (visible && video) {
+            formRef.current?.setFields([
+                {
+                    name: 'id',
+                    value: video.id
+                },
+                {
+                    name: 'name',
+                    value: video.name
+                },
+                {
+                    name: 'url',
+                    value: video.url
+                }
+            ])
+        }
+    }, [video, visible]);
 
-    const onFinish = (values: any) => {
+    const onFinish = async (values: any) => {
         let url = '';
         values.index = Number(values.index)
         values.type = Number(values.type)
@@ -115,20 +107,23 @@ const VideoSetting = () => {
         },
         {
             title: 'Tác vụ',
-            render: (record: any) => [
-                    <Button size="small" type="primary" icon={<EditOutlined />} onClick={() => handleUpdate(record)} key="edit" />,
-                    <Popconfirm
-                        key="delete"
-                        title="Are you sure to delete?"
-                        okText="Yes"
-                        cancelText="No"
-                        onConfirm={() => handleRemove(record.id)}
-                    >
-                        <Button size="small" type="primary" danger icon={<DeleteOutlined />}></Button>
-                    </Popconfirm>
+            render: (_, record: any) => [
+                <Button size="small" type="primary" icon={<EditOutlined />} onClick={() => {
+                    setVideo(record);
+                    setVisible(true);
+                }} key="edit" />,
+                <Popconfirm
+                    key="delete"
+                    title="Are you sure to delete?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={() => handleRemove(record.id)}
+                >
+                    <Button size="small" type="primary" danger icon={<DeleteOutlined />}></Button>
+                </Popconfirm>
             ],
             valueType: 'option',
-            width: 100
+            width: 60
         }
     ]
 
@@ -140,36 +135,23 @@ const VideoSetting = () => {
                 }}
                 dataSource={menus} columns={columns} rowKey="id" rowSelection={{}} />
 
-            <Drawer
+            <DrawerForm
                 title="Cài đặt"
-                placement="right"
-                closable={false}
-                onClose={onClose}
                 open={visible}
+                onOpenChange={setVisible}
                 width={700}
+                onFinish={onFinish}
+                formRef={formRef}
             >
-                <Form onFinish={onFinish} layout="vertical" fields={fields} form={form}>
-                    <Form.Item hidden={true} name="id"></Form.Item>
-                    <Form.Item label="Name" name="name">
-                        <Input />
-                    </Form.Item>
+                <Form.Item hidden={true} name="id"></Form.Item>
+                <Form.Item label="Tiêu đề" name="name">
+                    <Input />
+                </Form.Item>
 
-                    <Form.Item label="Thumbnail" name="thumbnail">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item label="Youtube Video Id" name="url">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Space>
-                            <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>Save</Button>
-                            <Button htmlType="button" icon={<ArrowRightOutlined />} onClick={() => setVisible(false)}>Close</Button>
-                        </Space>
-                    </Form.Item>
-                </Form>
-            </Drawer>
+                <Form.Item label="Youtube Video Id" name="url">
+                    <Input />
+                </Form.Item>
+            </DrawerForm>
         </PageContainer>
     )
 }

@@ -5,11 +5,10 @@ import {
     DeleteOutlined,
     PlusOutlined,
     FolderOutlined,
-    ArrowLeftOutlined,
     CheckOutlined
 } from "@ant-design/icons";
 import { Link, request, useIntl } from "@umijs/max";
-import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormCheckbox, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
+import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormCheckbox, ProFormDigit, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
 import { language } from "@/utils/format";
 import { apiGetCategories, apiGetCategory, apiGetParentCategoryOptions, apiGetPostsCategory } from "@/services/categoy";
 
@@ -242,9 +241,6 @@ const CategoryList = () => {
             <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
                 Tạo mới
             </Button>
-            <Button icon={<ArrowLeftOutlined />} onClick={() => setId(0)} hidden={id === 0}>
-                Quay lại
-            </Button>
         </Space>}>
 
             <ProTable
@@ -308,6 +304,7 @@ const CategoryList = () => {
                         ) : (
                             <Empty />
                         )}
+                        <ProFormDigit name="sortOrder" label="Thứ tự hiển thị" initialValue={0} />
                         <ProFormCheckbox name="isDisplayOnHome" label="Hiển thị trên trang chủ" />
                     </Col>
                 </Row>
