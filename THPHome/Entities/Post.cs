@@ -34,6 +34,7 @@ public class Post : BaseEntity<long>, ILocale
     public string? CreatedBy { get; set; }
     [ForeignKey(nameof(Department))]
     public int? DepartmentId { get; set; }
+    public bool IsDeleted { get; set; }
 
     public Category? Category { get; set; }
     public Department? Department { get; set; }

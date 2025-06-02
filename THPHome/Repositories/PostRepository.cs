@@ -23,7 +23,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
 
     public async Task<PaginatedList<Post>> GetListPostByTagIdAsync(int tagId, int current, int pageSize)
     {
-        var query = from a in _context.Posts.Where(x => x.Status == PostStatus.PUBLISH)
+        var query = from a in _context.Posts.Where(x => !x.IsDeleted).Where(x => x.Status == PostStatus.PUBLISH)
                     select a;
         return await PaginatedList<Post>.CreateAsync(query.AsNoTracking(), current, pageSize);
     }
@@ -230,7 +230,8 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         return await PaginatedList<PostView>.CreateAsync(query, 1, 12);
     }
 
-    public async Task<IEnumerable<PostView>> GetRandomPostsAsync() => await _context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderBy(x => Guid.NewGuid()).Take(5).Select(x => new PostView
+    public async Task<IEnumerable<PostView>> GetRandomPostsAsync() => await _context.Posts
+        .Where(x => !x.IsDeleted).Where(x => x.Status == PostStatus.PUBLISH).OrderBy(x => Guid.NewGuid()).Take(5).Select(x => new PostView
     {
         Id = x.Id,
         Thumbnail = x.Thumbnail,
@@ -240,7 +241,8 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         IssuedDate = x.IssuedDate
     }).ToListAsync();
 
-    public async Task<PaginatedList<PostView>> GetListAsync(int current) => await PaginatedList<PostView>.CreateAsync(_context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.ModifiedDate).Select(x => new PostView
+    public async Task<PaginatedList<PostView>> GetListAsync(int current) => await PaginatedList<PostView>.CreateAsync(_context.Posts
+        .Where(x => !x.IsDeleted).Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.ModifiedDate).Select(x => new PostView
     {
         Id = x.Id,
         Description = x.Description,
@@ -253,7 +255,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
 
     public async Task<IEnumerable<Post>> GetListPopularAsync() => await _context.Posts.OrderByDescending(x => x.View).Take(5).ToListAsync();
 
-    public async Task<IEnumerable<Post>> GetListByUserAsync(string id) => await _context.Posts.Where(x => x.CreatedBy == id).OrderByDescending(x => x.ModifiedDate).ToListAsync();
+    public async Task<IEnumerable<Post>> GetListByUserAsync(string id) => await _context.Posts.Where(x => !x.IsDeleted).Where(x => x.CreatedBy == id).OrderByDescending(x => x.ModifiedDate).ToListAsync();
 
     public async Task<IEnumerable<PostView>> GetListInTagAsync(string tagName, int pageSize) => await _context.Posts.Where(x => x.Tags != null && x.Tags.Contains(tagName)).OrderByDescending(x => x.Id).Take(pageSize).Select(x => new PostView
     {
@@ -266,7 +268,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         View = x.View
     }).ToListAsync();
 
-    public async Task<IEnumerable<PostView>> GetLastedListAsync(int pageSize) => await _context.Posts.Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.Id).Take(pageSize).Select(x => new PostView
+    public async Task<IEnumerable<PostView>> GetLastedListAsync(int pageSize) => await _context.Posts.Where(x => !x.IsDeleted).Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.Id).Take(pageSize).Select(x => new PostView
     {
         Id = x.Id,
         Description = x.Description,
@@ -278,7 +280,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         IssuedDate = x.IssuedDate
     }).ToListAsync();
 
-    public async Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize) => await _context.Posts.Where(x => x.Title.ToLower().Contains(keyword.ToLower())).OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
+    public async Task<IEnumerable<Post>> GetRelatedListAsync(string keyword, int pageSize) => await _context.Posts.Where(x => !x.IsDeleted).Where(x => x.Title.ToLower().Contains(keyword.ToLower())).OrderByDescending(x => x.Id).Take(pageSize).ToListAsync();
 
     public async Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int current, int pageSize)
     {
@@ -349,7 +351,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
 
     public async Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, string locale)
     {
-        return await _context.Posts.Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Locale == locale)
+        return await _context.Posts.Where(x => !x.IsDeleted).Where(x => x.Type == type && x.Status == PostStatus.PUBLISH && x.Locale == locale)
             .Where(x => x.DepartmentId == null)
             .OrderByDescending(x => x.IssuedDate).Skip((current - 1) * pageSize).Take(pageSize).Select(x => new PostView
             {

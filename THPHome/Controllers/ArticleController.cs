@@ -17,7 +17,7 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
         var query = from a in _context.Posts
                     join b in _context.Categories on a.CategoryId equals b.Id into ab
                     from b in ab.DefaultIfEmpty()
-                    where a.Locale == filterOptions.Locale && a.Status == PostStatus.PUBLISH && a.Type == PostType.NEWS
+                    where a.Locale == filterOptions.Locale && a.Status == PostStatus.PUBLISH && a.Type == PostType.NEWS && !a.IsDeleted
                     select new
                     {
                         a.Id,

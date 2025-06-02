@@ -27,6 +27,12 @@ export default [
         component: './posts/article',
       },
       {
+        name: 'Thùng rác',
+        path: '/post/trash',
+        component: './posts/trash',
+        hideInMenu: true
+      },
+      {
         name: 'Thông báo',
         path: '/post/notification',
         component: './posts/notification',
