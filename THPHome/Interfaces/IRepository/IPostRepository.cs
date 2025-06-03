@@ -38,5 +38,7 @@ namespace THPHome.Interfaces.IRepository
         Task<List<CategoryWithPost>> GetListByAllCategoryAsync();
         Task<IEnumerable<PostView>> GetListByTypeAsync(PostType type, int current, int pageSize, string locale);
         Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale);
+        Task<ListResult<object>> GetTrashAsync(TrashedPostFilterOptions filterOptions);
+        Task<THPResult> DeleteAsync(long id);
     }
 }

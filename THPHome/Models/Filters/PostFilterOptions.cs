@@ -14,3 +14,8 @@ public class PostFilterOptions : FilterOptions
     public int? CategoryId { get; set; }
     public int? DepartmentId { get; set; }
 }
+
+public class TrashedPostFilterOptions : PostFilterOptions
+{
+    
+}

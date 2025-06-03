@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Helpers;
 using ApplicationCore.Models.Posts;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities;
 using THPHome.Enums;
@@ -10,10 +11,7 @@ using THPHome.Models.Filters;
 
 namespace THPHome.Services;
 
-public class PostService(
-    IPostRepository _postRepository,
-    ICategoryRepository _categoryRepository,
-    IBannerRepository _bannerRepository) : IPostService
+public class PostService(IPostRepository _postRepository, ICategoryRepository _categoryRepository, IHCAService _hcaService) : IPostService
 {
     public async Task<Post> AddAsync(Post post)
     {
@@ -77,13 +75,16 @@ public class PostService(
 
     public Task<int> IncreaseViewAsync(Post post) => _postRepository.IncreaseViewAsync(post);
 
-    public async Task<dynamic> RemoveAsync(long id)
+    public async Task<THPResult> RemoveAsync(long id)
     {
         var post = await _postRepository.FindAsync(id);
-        if (post is null) return new { succeeded = false };
-        await _postRepository.DeleteAsync(post);
-        await _bannerRepository.RemoveRangeAsync(id);
-        return new { succeeded = true };
+        if (post is null) return THPResult.Failed("Không tìm thấy bài viết!");
+        if (post.IsDeleted) return THPResult.Failed("Bài viết đã được xóa!");
+        post.IsDeleted = true;
+        post.ModifiedDate = DateTime.Now;
+        post.ModifiedBy = _hcaService.GetUserId();
+        await _postRepository.UpdateAsync(post);
+        return THPResult.Success;
     }
 
     public Task<dynamic> SetStatusAsync(Post post) => _postRepository.SetStatusAsync(post);
@@ -133,8 +134,20 @@ public class PostService(
         return new { succeeded = true, message = "Thành công!" };
     }
 
-    public async Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale)
+    public Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale) => _postRepository.EnsureDataAsync(url, pAGE, locale);
+
+    public Task<ListResult<object>> GetTrashAsync(TrashedPostFilterOptions filterOptions) => _postRepository.GetTrashAsync(filterOptions);
+
+    public async Task<THPResult> RestoreAsync(long id)
     {
-        return await _postRepository.EnsureDataAsync(url, pAGE, locale);
+        var post = await _postRepository.FindAsync(id);
+        if (post is null) return THPResult.Failed("Không tìm thấy bài viết!");
+        post.IsDeleted = false;
+        post.ModifiedDate = DateTime.Now;
+        post.ModifiedBy = _hcaService.GetUserId();
+        await _postRepository.UpdateAsync(post);
+        return THPResult.Success;
     }
+
+    public Task<THPResult> DeleteAsync(long id) => _postRepository.DeleteAsync(id);
 }

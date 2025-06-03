@@ -37,7 +37,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
                       join post in _context.Posts on slide.PostId equals post.Id
                       into slidePost
                       from post in slidePost.DefaultIfEmpty()
-                      where slide.Type == BannerType.SLIDE && slide.Locale == PageData.Locale && slide.Active
+                      where slide.Type == BannerType.SLIDE && slide.Locale == PageData.Locale && slide.Active && !post.IsDeleted
                       select new Banner
                       {
                           Name = post.Title ?? slide.Name,
@@ -72,7 +72,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
                         }).ToListAsync();
 
         var pressTalks = from a in _context.Posts
-                         where a.CategoryId == 551
+                         where a.CategoryId == 551 && !a.IsDeleted
                          orderby a.CreatedDate descending
                          select new PostView
                          {

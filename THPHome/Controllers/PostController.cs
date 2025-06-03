@@ -142,22 +142,10 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
     public async Task<IActionResult> SetStatusAsync(Post post) => Ok(await _postService.SetStatusAsync(post));
 
     [HttpPost("remove/{id}")]
-    public async Task<IActionResult> RemoveAsync([FromRoute] long id)
-    {
-        var post = await _context.Posts.FindAsync(id);
-        var user = await _userManager.FindByIdAsync(User.GetId());
-        if (_webHostEnvironment.IsProduction())
-        {
-            await _telegramService.SendMessageAsync($"{user?.UserName} deleted: {post?.Title} -> https://dhhp.edu.vn/post/{post?.Url}-{post?.Id}.html");
-        }
-        var blocks = await _context.PostBlocks.Where(x => x.PostId == id).ToListAsync();
-        if (blocks.Count != 0)
-        {
-            _context.PostBlocks.RemoveRange(blocks);
-            await _context.SaveChangesAsync();
-        }
-        return Ok(await _postService.RemoveAsync(id));
-    }
+    public async Task<IActionResult> RemoveAsync([FromRoute] long id) => Ok(await _postService.RemoveAsync(id));
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] long id) => Ok(await _postService.DeleteAsync(id));
 
     [Route("get/{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] long id)
@@ -428,4 +416,10 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
             post.Thumbnail
         });
     }
+
+    [HttpGet("trash")]
+    public async Task<IActionResult> GetTrashAsync([FromQuery] TrashedPostFilterOptions filterOptions) => Ok(await _postService.GetTrashAsync(filterOptions));
+
+    [HttpPost("restore/{id}")]
+    public async Task<IActionResult> RestoreAsync([FromRoute] long id) => Ok(await _postService.RestoreAsync(id));
 }

@@ -39,3 +39,19 @@ export async function apiPostActive(id: number) {
         method: 'POST',
     });
 }
+
+export async function apiPostTrash(params: any) {
+    return request(`post/trash`, { params });
+}
+
+export async function apiPostRestore(id: number) {
+    return request(`post/restore/${id}`, {
+        method: 'POST',
+    });
+}
+
+export async function apiPostPermanentDelete(id: number) {
+    return request(`post/permanent-delete/${id}`, {
+        method: 'DELETE',
+    });
+}

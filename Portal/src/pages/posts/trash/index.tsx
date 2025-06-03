@@ -1,12 +1,20 @@
+import { apiPostPermanentDelete, apiPostRestore, apiPostTrash } from "@/services/post";
 import { LeftOutlined } from "@ant-design/icons";
-import { PageContainer, ProTable } from "@ant-design/pro-components";
+import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components";
 import { history } from "@umijs/max";
-import { Button } from "antd";
+import { Button, message, Popconfirm } from "antd";
+import { useRef } from "react";
 
 const TrashPage: React.FC = () => {
+
+  const actionRef = useRef<ActionType>();
+
   return (
     <PageContainer extra={<Button icon={<LeftOutlined />} onClick={() => history.back()}>Quay lại</Button>}>
       <ProTable
+        actionRef={actionRef}
+        rowKey="id"
+        request={apiPostTrash}
         search={{
           layout: 'vertical'
         }}
@@ -23,9 +31,24 @@ const TrashPage: React.FC = () => {
           },
           {
             title: 'Ngày đăng',
-            dataIndex: 'createdAt',
+            dataIndex: 'createdDate',
             valueType: 'date',
-            width: 150,
+            width: 120,
+            search: false
+          },
+          {
+            title: 'Ngày xoá',
+            dataIndex: 'modifiedDate',
+            valueType: 'date',
+            width: 120,
+            search: false
+          },
+          {
+            title: 'Lượt xem',
+            dataIndex: 'view',
+            valueType: 'digit',
+            width: 100,
+            search: false
           },
           {
             title: 'Hành động',
@@ -33,14 +56,22 @@ const TrashPage: React.FC = () => {
             valueType: 'option',
             width: 100,
             render: (_, record) => [
-              <Button key="restore" type="primary" onClick={() => {
+              <Popconfirm key="restore" title="Bạn có chắc muốn khôi phục bài viết này?" onConfirm={async () => {
                 // Logic to restore the post
-                console.log(`Restoring post with ID: ${record.id}`);
-              }}>Khôi phục</Button>,
-              <Button key="delete" danger onClick={() => {
+                await apiPostRestore(record.id);
+                message.success('Bài viết đã được khôi phục thành công');
+                actionRef.current?.reload();
+              }}>
+                <Button type="primary" size="small">Khôi phục</Button>
+              </Popconfirm>,
+              <Popconfirm key="delete" title="Bạn có chắc muốn xóa vĩnh viễn bài viết này?" onConfirm={async () => {
                 // Logic to permanently delete the post
-                console.log(`Permanently deleting post with ID: ${record.id}`);
-              }}>Xóa vĩnh viễn</Button>
+                await apiPostPermanentDelete(record.id);
+                message.success('Bài viết đã được xóa vĩnh viễn');
+                actionRef.current?.reload();
+              }}>
+                <Button size="small" danger>Xóa vĩnh viễn</Button>
+              </Popconfirm>
             ]
           }
         ]}

@@ -23,7 +23,7 @@ public interface IPostService
     Task<dynamic> ImportAsync(IFormFile file);
     Task<Post> AddAsync(Post post);
     Task<dynamic> SetStatusAsync(Post post);
-    Task<dynamic> RemoveAsync(long id);
+    Task<THPResult> RemoveAsync(long id);
     Task<Post?> FindAsync(long id);
     Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0);
     Task<PaginatedList<PostView>> SearchAsync(string searchTerm, int? categoryId, int current, int pageSize);
@@ -42,4 +42,7 @@ public interface IPostService
     Task<IEnumerable<PostView>> GetListByCategoryAsync(string normalizeName, int current, int pageSize);
     Task<dynamic> SetActiveAsync(long id);
     Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale);
+    Task<ListResult<object>> GetTrashAsync(TrashedPostFilterOptions filterOptions);
+    Task<THPResult> RestoreAsync(long id);
+    Task<THPResult> DeleteAsync(long id);
 }

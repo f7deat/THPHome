@@ -37,7 +37,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         catch (Exception)
         {
             return 0;
-        };
+        }
     }
 
     public async Task<IEnumerable<Post>> GetTopViewAsync(int pageSize) => await _context.Posts.OrderByDescending(x => x.View).Take(pageSize).ToListAsync();
@@ -62,7 +62,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         if (user is null) return default;
         var isEditor = _hcaService.IsUserInRole(RoleName.EDITOR);
         var query = from a in _context.Posts.Where(x => filterOptions.Type == null || x.Type == filterOptions.Type)
-                    where a.Locale == filterOptions.Locale
+                    where a.Locale == filterOptions.Locale && !a.IsDeleted
                     select new
                     {
                         a.Id,
@@ -131,7 +131,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
     public async Task<ListResult<dynamic>> GetInCategoryAsync(PostInCategoryFilterOptions filterOptions)
     {
         var query = from a in _context.Posts
-                    where a.Locale == filterOptions.Locale && a.CategoryId == filterOptions.CategoryId
+                    where a.Locale == filterOptions.Locale && a.CategoryId == filterOptions.CategoryId && !a.IsDeleted
                     select new
                     {
                         a.Id,
@@ -177,7 +177,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         return post.View;
     }
 
-    public IQueryable<PostView> GetListInCategory(int categoryId, string searchTerm) => from b in _context.Posts.Where(x => x.CategoryId == categoryId)
+    public IQueryable<PostView> GetListInCategory(int categoryId, string searchTerm) => from b in _context.Posts.Where(x => !x.IsDeleted).Where(x => x.CategoryId == categoryId)
                                                                                         where (string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)) && b.Status == PostStatus.PUBLISH && b.DepartmentId == null
                                                                                         orderby b.CreatedDate descending
                                                                                         select new PostView
@@ -194,7 +194,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
     public async Task<IEnumerable<PostView>> GetListRandomAsync(int pageSize, int categoryId = 0)
     {
         var query = from a in _context.Posts
-                    where (categoryId == 0 || a.CategoryId == categoryId) && a.Status == PostStatus.PUBLISH
+                    where (categoryId == 0 || a.CategoryId == categoryId) && a.Status == PostStatus.PUBLISH && !a.IsDeleted
                     orderby Guid.NewGuid()
                     select new PostView
                     {
@@ -232,28 +232,28 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
 
     public async Task<IEnumerable<PostView>> GetRandomPostsAsync() => await _context.Posts
         .Where(x => !x.IsDeleted).Where(x => x.Status == PostStatus.PUBLISH).OrderBy(x => Guid.NewGuid()).Take(5).Select(x => new PostView
-    {
-        Id = x.Id,
-        Thumbnail = x.Thumbnail,
-        Title = x.Title,
-        Url = x.Url,
-        View = x.View,
-        IssuedDate = x.IssuedDate
-    }).ToListAsync();
+        {
+            Id = x.Id,
+            Thumbnail = x.Thumbnail,
+            Title = x.Title,
+            Url = x.Url,
+            View = x.View,
+            IssuedDate = x.IssuedDate
+        }).ToListAsync();
 
     public async Task<PaginatedList<PostView>> GetListAsync(int current) => await PaginatedList<PostView>.CreateAsync(_context.Posts
         .Where(x => !x.IsDeleted).Where(x => x.Status == PostStatus.PUBLISH).OrderByDescending(x => x.ModifiedDate).Select(x => new PostView
-    {
-        Id = x.Id,
-        Description = x.Description,
-        Thumbnail = x.Thumbnail,
-        Title = x.Title,
-        Url = x.Url,
-        View = x.View,
-        IssuedDate = x.IssuedDate
-    }), current, 8);
+        {
+            Id = x.Id,
+            Description = x.Description,
+            Thumbnail = x.Thumbnail,
+            Title = x.Title,
+            Url = x.Url,
+            View = x.View,
+            IssuedDate = x.IssuedDate
+        }), current, 8);
 
-    public async Task<IEnumerable<Post>> GetListPopularAsync() => await _context.Posts.OrderByDescending(x => x.View).Take(5).ToListAsync();
+    public async Task<IEnumerable<Post>> GetListPopularAsync() => await _context.Posts.Where(x => !x.IsDeleted).OrderByDescending(x => x.View).Take(5).ToListAsync();
 
     public async Task<IEnumerable<Post>> GetListByUserAsync(string id) => await _context.Posts.Where(x => !x.IsDeleted).Where(x => x.CreatedBy == id).OrderByDescending(x => x.ModifiedDate).ToListAsync();
 
@@ -388,5 +388,60 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         _context.Update(post);
         await _context.SaveChangesAsync();
         return post;
+    }
+
+    public async Task<ListResult<object>> GetTrashAsync(TrashedPostFilterOptions filterOptions)
+    {
+        var query = from a in _context.Posts
+                    where a.IsDeleted && a.Locale == filterOptions.Locale
+                    select new
+                    {
+                        a.Id,
+                        a.Title,
+                        a.View,
+                        a.ModifiedDate,
+                        a.Url,
+                        a.Status,
+                        a.Locale,
+                        a.CreatedDate,
+                        a.CreatedBy,
+                        a.Description,
+                        a.Thumbnail,
+                        a.IssuedDate,
+                        a.CategoryId,
+                        a.DepartmentId
+                    };
+        if (!string.IsNullOrWhiteSpace(filterOptions.Title))
+        {
+            query = query.Where(x => !string.IsNullOrEmpty(x.Title) && x.Title.ToLower().Contains(filterOptions.Title.ToLower()));
+        }
+        if (filterOptions.CategoryId != null)
+        {
+            query = query.Where(x => x.CategoryId == filterOptions.CategoryId);
+        }
+        if (filterOptions.Status != null)
+        {
+            query = query.Where(x => x.Status == filterOptions.Status);
+        }
+        if (filterOptions.DepartmentId != null)
+        {
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
+        }
+        query = query.OrderByDescending(x => x.ModifiedDate);
+        return await ListResult<object>.Success(query, filterOptions);
+    }
+
+    public async Task<THPResult> DeleteAsync(long id)
+    {
+        var post = await _context.Posts.FindAsync(id);
+        if (post is null) return THPResult.Failed("Không tìm thấy bài viết!");
+        var blocks = await _context.PostBlocks.Where(x => x.PostId == id).ToListAsync();
+        if (blocks.Count != 0)
+        {
+            _context.PostBlocks.RemoveRange(blocks);
+        }
+        _context.Posts.Remove(post);
+        await _context.SaveChangesAsync();
+        return THPResult.Success;
     }
 }
