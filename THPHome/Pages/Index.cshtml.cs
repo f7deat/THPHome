@@ -37,7 +37,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
                       join post in _context.Posts on slide.PostId equals post.Id
                       into slidePost
                       from post in slidePost.DefaultIfEmpty()
-                      where slide.Type == BannerType.SLIDE && slide.Locale == PageData.Locale && slide.Active && !post.IsDeleted
+                      where slide.Type == BannerType.SLIDE && slide.Locale == PageData.Locale && slide.Active
                       select new Banner
                       {
                           Name = post.Title ?? slide.Name,
@@ -49,7 +49,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
         Slides = await banners.ToListAsync();
 
         // Thông báo
-        ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 6, PageData.Locale ?? "vi-VN");
+        ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 10, PageData.Locale ?? "vi-VN");
         // Tin tức nổi bật
         ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 11, PageData.Locale ?? "vi-VN");
 
