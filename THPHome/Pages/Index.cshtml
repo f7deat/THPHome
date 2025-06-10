@@ -26,7 +26,16 @@
                     @foreach (var item in Model.Slides)
                     {
                         <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <img src="@item.Image" class="d-block w-100" alt="@item.Name">
+                            @if (string.IsNullOrEmpty(item.Url))
+                            {
+                                <img src="@item.Image" class="d-block w-100" alt="@item.Name">
+                            }
+                            else
+                            {
+                                <a href="@item.Url">
+                                    <img src="@item.Image" class="d-block w-100" alt="@item.Name">
+                                </a>
+                            }
                             @if (!string.IsNullOrEmpty(item.Name))
                             {
                                 <div class="carousel-overlay">
