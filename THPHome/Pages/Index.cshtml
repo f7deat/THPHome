@@ -11,6 +11,22 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
 
+<!-- Overlay nền tối -->
+<div id="ad-overlay" class="position-fixed top-0 start-0 w-100 h-100" style="display:none; background: rgba(0,0,0,0.6); z-index: 1049;"
+     onclick="closeAdPopup()"></div>
+
+<!-- Quảng cáo chính giữa -->
+<div id="center-ad-banner" class="position-fixed top-50 start-50 translate-middle shadow-lg text-center" style="display:none; z-index: 1050; width: 90%; max-width: 400px;">
+    <div class="position-relative">
+        <a href="https://dkxt.dhhp.edu.vn" target="_blank">
+            <img src="~/img/popupdkxt5.png" alt="Quảng cáo tuyển sinh" class="img-fluid w-100 rounded" style="display: block;" />
+        </a>
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Close" onclick="closeAdPopup()"
+                style="background-color: white; border: 1px solid #ccc; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></button>
+    </div>
+</div>
+
+
 <div class="container">
     <div class="row">
         <div class="col-md-8 mb-4">
@@ -18,7 +34,7 @@
                 <div class="carousel-indicators">
                     @foreach (var item in Model.Slides)
                     {
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@j" class="@(j == 0 ? "active" : "")" aria-label="Slide @j")></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@j" class="@(j == 0 ? "active" : "")" aria-label="Slide @j" )></button>
                         j++;
                     }
                 </div>
@@ -98,7 +114,7 @@
                 <div class="carousel-indicators">
                     @foreach (var item in Model.PressTalks)
                     {
-                        <button type="button" data-bs-target="#carouselPressTalks" data-bs-slide-to="@f" class="@(f == 0 ? "active" : "")" aria-label="Slide @f")></button>
+                        <button type="button" data-bs-target="#carouselPressTalks" data-bs-slide-to="@f" class="@(f == 0 ? "active" : "")" aria-label="Slide @f" )></button>
                         f++;
                     }
                 </div>
@@ -346,5 +362,19 @@
 
             player.play();
         }
+        const adKey = 'hasSeenAdPopup2025';
+        function closeAdPopup() {
+            document.getElementById('center-ad-banner').style.display = 'none';
+            document.getElementById('ad-overlay').style.display = 'none';
+            localStorage.setItem(adKey, 'true');
+        }
+
+        window.addEventListener('load', function () {
+            const hasSeenAd = localStorage.getItem(adKey);
+            if (!hasSeenAd) {
+                document.getElementById('center-ad-banner').style.display = 'block';
+                document.getElementById('ad-overlay').style.display = 'block';
+            }
+        });
     </script>
 }
