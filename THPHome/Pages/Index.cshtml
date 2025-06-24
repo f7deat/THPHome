@@ -11,6 +11,21 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
 
+<div class="modal fade" id="adPopupModal" tabindex="-1" aria-labelledby="adPopupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body p-0 position-relative">
+                <a href="https://dkxt.dhhp.edu.vn" target="_blank">
+                    <img src="~/img/pop-up dkxt5.png" alt="Quảng cáo tuyển sinh" class="img-fluid w-100 rounded" />
+                </a>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"
+                        style="background-color: white; border: 1px solid #ccc; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container">
     <div class="row">
         <div class="col-md-8 mb-4">
@@ -346,5 +361,15 @@
 
             player.play();
         }
+        const adKey = 'hasSeenAdPopup2025';
+
+        document.addEventListener('DOMContentLoaded', function () {
+          const hasSeenAd = localStorage.getItem(adKey);
+          if (!hasSeenAd) {
+            const modalEl = new bootstrap.Modal(document.getElementById('adPopupModal'));
+            modalEl.show();
+            localStorage.setItem(adKey, 'true');
+          }
+        });
     </script>
 }
