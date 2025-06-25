@@ -177,4 +177,7 @@ public class NotificationController(ApplicationDbContext context, INotificationS
         if (args.APIKey != Options.OpenApiKey) return BadRequest("API Key is invalid!");
         return Ok(await _notificationService.CreatePublicForStaffAsync(args));
     }
+
+    [HttpPost("mark-as-unread/{id}")]
+    public async Task<IActionResult> MaskAsUnreadAsync([FromRoute] Guid id) => Ok(await _notificationService.MarkAsUnreadAsync(id));
 }

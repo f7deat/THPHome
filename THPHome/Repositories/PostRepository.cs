@@ -179,7 +179,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
 
     public IQueryable<PostView> GetListInCategory(int categoryId, string searchTerm) => from b in _context.Posts.Where(x => !x.IsDeleted).Where(x => x.CategoryId == categoryId)
                                                                                         where (string.IsNullOrEmpty(searchTerm) || b.Title.Contains(searchTerm)) && b.Status == PostStatus.PUBLISH && b.DepartmentId == null
-                                                                                        orderby b.CreatedDate descending
+                                                                                        orderby b.IssuedDate descending
                                                                                         select new PostView
                                                                                         {
                                                                                             Id = b.Id,

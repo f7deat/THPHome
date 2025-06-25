@@ -10,4 +10,5 @@ public interface INotificationService
     Task<THPResult> CreatePublicForStaffAsync(CreatePublicArgs args);
     Task<Notification?> GetAsync(Guid id);
     Task<int> GetUnreadCountAsync(string userName);
+    Task<THPResult> MarkAsUnreadAsync(Guid id);
 }

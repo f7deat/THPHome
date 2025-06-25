@@ -97,4 +97,6 @@ public class NotificationService(INotificationRepository _notificationRepository
     }
 
     public Task<int> GetUnreadCountAsync(string userName) => _notificationRepository.GetUnreadCountAsync(userName);
+
+    public Task<THPResult> MarkAsUnreadAsync(Guid id) => _notificationRepository.MarkAsUnreadAsync(id);
 }
