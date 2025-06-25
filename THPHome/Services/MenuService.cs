@@ -42,33 +42,35 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
     public async Task<object> GetListAsync(MenuFilterOptions filterOptions)
     {
         var query = _context.Menus.Where(x => x.Locale == filterOptions.Locale).Where(x => x.Type == filterOptions.Type).AsNoTracking();
-        if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor))
+        if (filterOptions.DepartmentId != null)
         {
-            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
-            if (user is null) return ListResult<object>.Failed("User not found!");
-            query = query.Where(x => x.DepartmentId == user.DepartmentId);
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
+        }
+        else
+        {
+            query = query.Where(x => x.DepartmentId == null);
         }
 
         var menus = await query.ToListAsync();
 
         var parents = menus.Where(x => x.ParentId == 0 || x.ParentId == null).Select(x => new MenuViewModel
-                {
-                    Url = x.Url,
-                    ParentId = x.ParentId,
-                    CreatedBy = x.CreatedBy,
-                    CreatedDate = x.CreatedDate,
-                    Description = x.Description,
-                    Icon = x.Icon,
-                    Index = x.Index,
-                    Locale = x.Locale,
-                    Mode = x.Mode,
-                    ModifiedBy = x.ModifiedBy,
-                    ModifiedDate = x.ModifiedDate,
-                    Name = x.Name,
-                    Status = x.Status,
-                    Type = x.Type,
-                    Id = x.Id
-                })
+        {
+            Url = x.Url,
+            ParentId = x.ParentId,
+            CreatedBy = x.CreatedBy,
+            CreatedDate = x.CreatedDate,
+            Description = x.Description,
+            Icon = x.Icon,
+            Index = x.Index,
+            Locale = x.Locale,
+            Mode = x.Mode,
+            ModifiedBy = x.ModifiedBy,
+            ModifiedDate = x.ModifiedDate,
+            Name = x.Name,
+            Status = x.Status,
+            Type = x.Type,
+            Id = x.Id
+        })
                 .OrderBy(x => x.Index).ToList();
 
         var data = new List<MenuViewModel>();
@@ -119,7 +121,8 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
             data.Add(item);
         }
 
-        return new {
+        return new
+        {
             data,
             total = parents.Count,
         };

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using THPCore.Extensions;
 using THPHome.Data;
@@ -12,7 +13,7 @@ namespace THPHome.Controllers;
 
 public class MenuController(IMenuService _menuService, ApplicationDbContext context) : BaseController(context)
 {
-    [HttpGet("list")]
+    [HttpGet("list"), AllowAnonymous]
     public async Task<IActionResult> GetListAsync([FromQuery] MenuFilterOptions filterOptions) => Ok(await _menuService.GetListAsync(filterOptions));
 
     [HttpGet("options")]

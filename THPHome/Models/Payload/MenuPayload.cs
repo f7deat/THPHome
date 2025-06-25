@@ -13,4 +13,5 @@ public class ListMenuPayload : FilterOptions
 public class MenuFilterOptions : FilterOptions
 {
     public MenuType? Type { get; set; } = MenuType.MAIN;
+    public int? DepartmentId { get; set; }
 }
