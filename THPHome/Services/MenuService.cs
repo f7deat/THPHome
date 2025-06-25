@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
@@ -6,13 +9,22 @@ using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Payload;
 using THPHome.ViewModels;
+using THPIdentity.Entities;
 
 namespace THPHome.Services;
 
-public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _context) : IMenuService
+public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _context, IHCAService _hcaService, UserManager<ApplicationUser> _userManager) : IMenuService
 {
     public async Task<THPResult> AddAsync(Menu menu)
     {
+        if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor))
+        {
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+            if (user is null) return THPResult.Failed("Người dùng không tồn tại");
+            menu.DepartmentId = user.DepartmentId;
+        }
+        menu.CreatedBy = _hcaService.GetUserName();
+        menu.CreatedDate = DateTime.Now;
         await _menuRepository.AddAsync(menu);
         return THPResult.Success;
     }
@@ -29,9 +41,15 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
 
     public async Task<object> GetListAsync(MenuFilterOptions filterOptions)
     {
-        var menus = await _context.Menus.Where(x => x.Locale == filterOptions.Locale)
-            .Where(x => x.Type == filterOptions.Type)
-            .AsNoTracking().ToListAsync();
+        var query = _context.Menus.Where(x => x.Locale == filterOptions.Locale).Where(x => x.Type == filterOptions.Type).AsNoTracking();
+        if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor))
+        {
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+            if (user is null) return ListResult<object>.Failed("User not found!");
+            query = query.Where(x => x.DepartmentId == user.DepartmentId);
+        }
+
+        var menus = await query.ToListAsync();
 
         var parents = menus.Where(x => x.ParentId == 0 || x.ParentId == null).Select(x => new MenuViewModel
                 {

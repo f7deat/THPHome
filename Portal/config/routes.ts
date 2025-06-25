@@ -105,16 +105,9 @@ export default [
       {
         name: 'Menu',
         path: '/post/menus',
-        component: './settings/menus',
-        access: 'canEditor'
+        component: './settings/menus'
       }
     ],
-  },
-  {
-    icon: 'CarryOutOutlined',
-    name: 'task',
-    path: '/task',
-    component: './task'
   },
   {
     icon: 'AppstoreAddOutlined',

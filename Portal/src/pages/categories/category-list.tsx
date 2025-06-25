@@ -7,7 +7,7 @@ import {
     FolderOutlined,
     CheckOutlined
 } from "@ant-design/icons";
-import { Link, request, useIntl } from "@umijs/max";
+import { Link, request, useAccess, useIntl, useModel } from "@umijs/max";
 import { ActionType, ModalForm, PageContainer, ProColumnType, ProFormCheckbox, ProFormDigit, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
 import { language } from "@/utils/format";
 import { apiGetCategories, apiGetCategory, apiGetParentCategoryOptions, apiGetPostsCategory } from "@/services/categoy";
@@ -21,6 +21,8 @@ const CategoryList = () => {
     const postActionRef = useRef<ActionType>();
     const formRef = useRef<ProFormInstance>();
     const [thumbnail, setThumbnail] = useState<string>('');
+    const access = useAccess();
+    const { initialState } = useModel('@@initialState');
 
     useEffect(() => {
         if (id) {
@@ -53,6 +55,10 @@ const CategoryList = () => {
                     {
                         name: 'isDisplayOnHome',
                         value: response.isDisplayOnHome
+                    },
+                    {
+                        name: 'index',
+                        value: response.index
                     }
                 ]);
                 setThumbnail(response.thumbnail);
@@ -138,6 +144,12 @@ const CategoryList = () => {
     }
 
     const columns: ProColumnType<any>[] = [
+        {
+            title: 'TT',
+            dataIndex: 'index',
+            width: 30,
+            search: false
+        },
         {
             title: "Tên danh mục",
             dataIndex: 'name'
@@ -289,7 +301,10 @@ const CategoryList = () => {
                         ]} />
                         <ProFormText label="Icon" name="icon" />
                         <ProFormSelect label="Danh mục cha" name="parentId"
-                            request={apiGetParentCategoryOptions}
+                            request={(params) => apiGetParentCategoryOptions({
+                                ...params,
+                                departmentId: access.canEditor ? null : initialState?.currentUser?.departmentId
+                            })}
                         />
                         <ProFormTextArea label="Mô tả" name='description' />
                     </Col>
@@ -304,7 +319,7 @@ const CategoryList = () => {
                         ) : (
                             <Empty />
                         )}
-                        <ProFormDigit name="sortOrder" label="Thứ tự hiển thị" initialValue={0} />
+                        <ProFormDigit name="index" label="Thứ tự hiển thị" initialValue={0} />
                         <ProFormCheckbox name="isDisplayOnHome" label="Hiển thị trên trang chủ" />
                     </Col>
                 </Row>

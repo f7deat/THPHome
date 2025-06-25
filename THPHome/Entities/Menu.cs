@@ -7,7 +7,7 @@ namespace THPHome.Entities;
 public class Menu : BaseEntity<int>, ILocale
 {
     [StringLength(250)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = default!;
     [StringLength(250)]
     public string? Url { get; set; }
     [StringLength(500)]
@@ -26,6 +26,7 @@ public class Menu : BaseEntity<int>, ILocale
     public string? ModifiedBy { get; set; }
     [StringLength(450)]
     public string? CreatedBy { get; set; }
+    public int? DepartmentId { get; set; }
 }
 
 public class MenuMode

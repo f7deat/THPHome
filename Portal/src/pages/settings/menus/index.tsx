@@ -5,18 +5,20 @@ import {
     DeleteOutlined,
     PlusOutlined
 } from "@ant-design/icons";
-import { request } from "@umijs/max";
+import { request, useAccess, useModel } from "@umijs/max";
 import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormInstance, ProFormSelect, ProFormText, ProTable } from "@ant-design/pro-components";
-import { apiListMenu, queryMenuOptions } from "@/services/menu";
+import { apiListMenu, apiMenuAdd, apiMenuUpdate, queryMenuOptions } from "@/services/menu";
 
 const { Option } = Select;
 
-const MenuSetting = () => {
+const MenuSetting: React.FC = () => {
 
     const [visible, setVisible] = useState(false)
     const [menu, setMenu] = useState<any>();
     const formRef = useRef<ProFormInstance>();
     const actionRef = useRef<ActionType>();
+    const access = useAccess();
+    const { initialState } = useModel('@@initialState');
 
     useEffect(() => {
         formRef.current?.setFields([
@@ -65,22 +67,17 @@ const MenuSetting = () => {
     }
 
     const onFinish = async (values: any) => {
-        let url = '';
         values.type = 2;
         if (values.id) {
-            url = `menu/update`;
+            await apiMenuUpdate(values);
         } else {
-            url = `menu/add`;
+            await apiMenuAdd(values);
         }
-        request(url, {
-            data: values,
-            method: 'POST'
-        }).then(() => {
-            message.success('Thành công!');
-            setVisible(false);
-            formRef.current?.resetFields();
-            actionRef.current?.reload();
-        })
+        message.success('Thành công!');
+        setVisible(false);
+        formRef.current?.resetFields();
+        actionRef.current?.reload();
+        setMenu(null);
     };
 
     const columns: ProColumnType<any>[] = [
@@ -131,6 +128,17 @@ const MenuSetting = () => {
             dataIndex: 'url'
         },
         {
+            title: 'Người tạo',
+            dataIndex: 'createdBy',
+            search: false
+        },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdDate',
+            valueType: 'fromNow',
+            search: false
+        },
+        {
             title: 'Tác vụ',
             valueType: 'option',
             render: (_, record: any) => [
@@ -157,7 +165,7 @@ const MenuSetting = () => {
     ]
 
     return (
-        <PageContainer extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => setVisible(true)}>Thêm</Button>}>
+        <PageContainer extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => setVisible(true)}>Thêm mới</Button>}>
             <ProTable
                 actionRef={actionRef}
                 search={{
@@ -181,7 +189,10 @@ const MenuSetting = () => {
                     }
                 ]} />
 
-                <ProFormSelect label="Menu cha" name="parentId" allowClear showSearch request={queryMenuOptions} />
+                <ProFormSelect label="Menu cha" name="parentId" allowClear showSearch request={(params) => queryMenuOptions({
+                    ...params,
+                    departmentId: access.canEditor ? null : initialState?.currentUser?.departmentId
+                })} />
                 <ProFormText name="type" initialValue={2} hidden />
 
                 <Form.Item label="Ảnh đại diện" name="thumbnail">

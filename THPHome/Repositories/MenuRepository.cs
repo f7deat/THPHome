@@ -12,28 +12,36 @@ public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(c
 {
     public async Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload)
     {
-        var menus = await _context.Menus
-            .Where(x => x.Locale == payload.Locale && x.Type == payload.Type)
-            .Select(x => new MenuViewModel
-            {
-                Url = x.Url,
-                ParentId = x.ParentId,
-                CreatedBy = x.CreatedBy,
-                CreatedDate = x.CreatedDate,
-                Description = x.Description,
-                Icon = x.Icon,
-                Index = x.Index,
-                Locale = x.Locale,
-                Mode = x.Mode,
-                ModifiedBy = x.ModifiedBy,
-                ModifiedDate = x.ModifiedDate,
-                Name = x.Name,
-                Status = x.Status,
-                Type = x.Type,
-                Id = x.Id
-            })
-            .OrderBy(x => x.Index)
-            .ToListAsync();
+        var query = _context.Menus.Where(x => x.Locale == payload.Locale && x.Type == payload.Type);
+        if (payload.DepartmentId != null)
+        {
+            query = query.Where(x => x.DepartmentId == payload.DepartmentId);
+        }
+        else
+        {
+            query = query.Where(x => x.DepartmentId == null);
+        }
+
+        query = query.OrderBy(x => x.Index);
+
+        var menus = await query.Select(x => new MenuViewModel
+        {
+            Url = x.Url,
+            ParentId = x.ParentId,
+            CreatedBy = x.CreatedBy,
+            CreatedDate = x.CreatedDate,
+            Description = x.Description,
+            Icon = x.Icon,
+            Index = x.Index,
+            Locale = x.Locale,
+            Mode = x.Mode,
+            ModifiedBy = x.ModifiedBy,
+            ModifiedDate = x.ModifiedDate,
+            Name = x.Name,
+            Status = x.Status,
+            Type = x.Type,
+            Id = x.Id
+        }).ToListAsync();
         var data = menus.Where(x => x.ParentId == 0 || x.ParentId == null).ToList();
 
         foreach (var item in data)
@@ -51,7 +59,6 @@ public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(c
             {
                 item.Children = await GetChildListAsync(all, all.Where(x => x.ParentId == item.Id).OrderBy(x => x.Index));
             }
-
         }
         return [.. parents];
     }

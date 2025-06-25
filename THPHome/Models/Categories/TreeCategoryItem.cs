@@ -12,5 +12,6 @@ public class TreeCategoryItem : BaseEntity<int>
     public int? ParentId { get; set; }
     public bool IsDisplayOnHome { get; set; }
     public int? DepartmentId { get; set; }
+    public int Index { get; set; }
     public IEnumerable<TreeCategoryItem>? Children { get; set; }
 }

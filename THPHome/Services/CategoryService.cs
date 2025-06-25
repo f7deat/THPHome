@@ -20,13 +20,13 @@ public class CategoryService(ICategoryRepository _categoryRepository, IPostRepos
         {
             category.NormalizeName = SeoHelper.ToSeoFriendly(category.Name);
         }
-        if (await _categoryRepository.IsExistAsync(category.NormalizeName.ToLower())) return THPResult.Failed("Danh mục đã tồn tại");
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return THPResult.Failed("Người dùng không tồn tại");
         if (!_hcaService.IsUserInAnyRole(RoleName.EDITOR, RoleName.ADMIN))
         {
             category.DepartmentId = user.DepartmentId;
         }
+        if (await _categoryRepository.IsExistAsync(category.NormalizeName.ToLower(), category.DepartmentId)) return THPResult.Failed("Danh mục đã tồn tại");
         category.Locale = locale;
         await _categoryRepository.AddAsync(category);
         return THPResult.Success;

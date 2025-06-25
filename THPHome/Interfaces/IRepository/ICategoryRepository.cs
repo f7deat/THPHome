@@ -14,7 +14,7 @@ public interface ICategoryRepository : IAsyncRepository<Category>
     Task<Category?> GetParrentAsync(int categoryId);
     Task<IEnumerable<Category>> GetListAsyc(int id, string locale);
     Task<List<Category>> GetListInPostAsync(long postId);
-    Task<bool> IsExistAsync(string normalizeName);
+    Task<bool> IsExistAsync(string normalizeName, int? departmentId);
     Task<List<GroupCategory>> GetGroupCategories(string locale);
     Task<IReadOnlyList<Category>> ListAllAsync(string? locale);
 }

@@ -68,7 +68,7 @@ public class CategoryRepository(ApplicationDbContext context) : EfRepository<Cat
         }).Take(pageSize).ToListAsync();
     }
 
-    public async Task<bool> IsExistAsync(string name) => await _context.Categories.AnyAsync(x => !string.IsNullOrEmpty(x.NormalizeName) && x.NormalizeName.ToLower() == name);
+    public async Task<bool> IsExistAsync(string name, int? departmentId) => await _context.Categories.AnyAsync(x => !string.IsNullOrEmpty(x.NormalizeName) && x.NormalizeName.ToLower() == name && x.DepartmentId == departmentId);
 
     public async Task<IReadOnlyList<Category>> ListAllAsync(string? locale) => await _context.Categories.Where(x => x.Locale == locale)
             .OrderBy(x => x.Index)

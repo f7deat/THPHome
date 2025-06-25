@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
 
 <div class="modal fade" id="adPopupModal" tabindex="-1" aria-labelledby="adPopupModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm modal-dialog-scrollable">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0">
             <div class="modal-body p-0 position-relative">
                 <a href="https://dkxt.dhhp.edu.vn" target="_blank">
                     <img src="~/img/pop-up dkxt5.png" alt="Quảng cáo tuyển sinh" class="img-fluid w-100 rounded" />
@@ -24,7 +24,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="container">
     <div class="row">
@@ -368,8 +367,12 @@
           if (!hasSeenAd) {
             const modalEl = new bootstrap.Modal(document.getElementById('adPopupModal'));
             modalEl.show();
-            localStorage.setItem(adKey, 'true');
           }
         });
+
+        const myModalEl = document.getElementById('adPopupModal')
+        myModalEl.addEventListener('hidden.bs.modal', event => {
+            localStorage.setItem(adKey, 'true');
+        })
     </script>
 }

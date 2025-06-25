@@ -23,6 +23,7 @@ const Application: React.FC = () => {
                 <AppItem url={`https://qlbg.dhhp.edu.vn/#/user/verify-login`} name="Quản lý bài giảng" />
                 <AppItem url={`https://admin.exam.dhhp.edu.vn/#/user/verify-login`} name="Ngân hàng ôn tập" />
                 <AppItem url={`https://office.dhhp.edu.vn/#/accounts/login/verify`} name="HPUni's Office" />
+                <AppItem url={`https://admin.tuyensinh.dhhp.edu.vn/#/user/verify-login`} name="Tuyển sinh" />
             </div>
         </ProCard>
     )

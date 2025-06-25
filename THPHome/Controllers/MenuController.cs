@@ -5,6 +5,7 @@ using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService;
+using THPHome.Models.Filters;
 using THPHome.Models.Payload;
 
 namespace THPHome.Controllers;
@@ -15,9 +16,18 @@ public class MenuController(IMenuService _menuService, ApplicationDbContext cont
     public async Task<IActionResult> GetListAsync([FromQuery] MenuFilterOptions filterOptions) => Ok(await _menuService.GetListAsync(filterOptions));
 
     [HttpGet("options")]
-    public async Task<IActionResult> OptionsAsync([FromQuery] string locale)
+    public async Task<IActionResult> OptionsAsync([FromQuery] Select args)
     {
-        return Ok(await _context.Menus.Where(x => x.Locale == locale).OrderBy(x => x.Name).Select(x => new
+        var query = _context.Menus.Where(x => x.Locale == args.Locale);
+        if (!string.IsNullOrEmpty(args.KeyWords))
+        {
+            query = query.Where(x => x.Name.ToLower().Contains(args.KeyWords.ToLower()));
+        }
+        if (args.DepartmentId != null)
+        {
+            query = query.Where(x => x.DepartmentId == args.DepartmentId);
+        }
+        return Ok(await query.OrderBy(x => x.Name).Select(x => new
         {
             label = x.Name,
             value = x.Id
@@ -29,8 +39,6 @@ public class MenuController(IMenuService _menuService, ApplicationDbContext cont
     {
         try
         {
-            menu.CreatedBy = User.GetUserName();
-            menu.CreatedDate = DateTime.Now;
             menu.Locale = locale;
             return Ok(await _menuService.AddAsync(menu));
         }

@@ -5,7 +5,7 @@ import { RequestOptions } from '@umijs/max';
 import { message } from 'antd';
 import { RunTimeLayoutConfig } from '@umijs/max';
 import { DefaultFooter } from '@ant-design/pro-components';
-import { GithubOutlined } from '@ant-design/icons';
+import { HomeOutlined } from '@ant-design/icons';
 import { AvatarDropdown } from './components/right-content/avatar-dropdown';
 import { SelectLang } from '@umijs/max';
 import { Question } from './components/right-content';
@@ -68,15 +68,15 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     footerRender: () => (
       <DefaultFooter copyright="Produced by Hai Phong University" links={[
         {
-          key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/f7deat/THPHome',
+          key: 'home',
+          title: <HomeOutlined />,
+          href: 'https://dhhp.edu.vn',
           blankTarget: true,
         },
         {
-          key: 'THP Home',
-          title: 'THP Home',
-          href: 'https://github.com/f7deat/THPHome',
+          key: 'website',
+          title: 'Trang chủ',
+          href: 'https://dhhp.edu.vn',
           blankTarget: true,
         },
       ]} />

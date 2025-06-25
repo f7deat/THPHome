@@ -44,7 +44,8 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
                 Status = x.Status,
                 Count = _context.Posts.Count(c => c.CategoryId == x.Id),
                 IsDisplayOnHome = x.IsDisplayOnHome,
-                DepartmentId = x.DepartmentId
+                DepartmentId = x.DepartmentId,
+                Index = x.Index
             });
 
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
@@ -227,7 +228,8 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
             category.NormalizeName,
             category.IsDisplayOnHome,
             category.Icon,
-            category.Thumbnail
+            category.Thumbnail,
+            category.Index
         });
     }
 }
