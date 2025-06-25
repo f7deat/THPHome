@@ -80,24 +80,9 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
             var childs = menus.Where(x => x.ParentId == item.Id).ToList();
             if (childs.Count != 0)
             {
-                item.Children = childs.Select(x => new MenuViewModel
+                var level2 = childs.Select(x =>
                 {
-                    Url = x.Url,
-                    ParentId = x.ParentId,
-                    CreatedBy = x.CreatedBy,
-                    CreatedDate = x.CreatedDate,
-                    Description = x.Description,
-                    Icon = x.Icon,
-                    Index = x.Index,
-                    Locale = x.Locale,
-                    Mode = x.Mode,
-                    ModifiedBy = x.ModifiedBy,
-                    ModifiedDate = x.ModifiedDate,
-                    Name = x.Name,
-                    Status = x.Status,
-                    Type = x.Type,
-                    Id = x.Id,
-                    Children = menus.Where(m => m.ParentId == x.Id).Select(x => new MenuViewModel
+                    return new MenuViewModel
                     {
                         Url = x.Url,
                         ParentId = x.ParentId,
@@ -106,17 +91,37 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
                         Description = x.Description,
                         Icon = x.Icon,
                         Index = x.Index,
-                        Locale = x.Locale,
                         Mode = x.Mode,
                         ModifiedBy = x.ModifiedBy,
                         ModifiedDate = x.ModifiedDate,
                         Name = x.Name,
                         Status = x.Status,
                         Type = x.Type,
-                        Id = x.Id
-                    })
+                        Id = x.Id,
+                        Children = menus.Where(m => m.ParentId == x.Id).Select(x => new MenuViewModel
+                        {
+                            Url = x.Url,
+                            ParentId = x.ParentId,
+                            CreatedBy = x.CreatedBy,
+                            CreatedDate = x.CreatedDate,
+                            Description = x.Description,
+                            Icon = x.Icon,
+                            Index = x.Index,
+                            Mode = x.Mode,
+                            ModifiedBy = x.ModifiedBy,
+                            ModifiedDate = x.ModifiedDate,
+                            Name = x.Name,
+                            Status = x.Status,
+                            Type = x.Type,
+                            Id = x.Id
+                        })
+                    };
                 })
                 .OrderBy(x => x.Index);
+                if (level2.Any())
+                {
+                    item.Children = level2;
+                }
             }
             data.Add(item);
         }

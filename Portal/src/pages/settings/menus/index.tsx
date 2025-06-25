@@ -6,7 +6,7 @@ import {
     PlusOutlined
 } from "@ant-design/icons";
 import { request, useAccess, useModel } from "@umijs/max";
-import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormInstance, ProFormSelect, ProFormText, ProTable } from "@ant-design/pro-components";
+import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
 import { apiListMenu, apiMenuAdd, apiMenuUpdate, queryMenuOptions } from "@/services/menu";
 
 const { Option } = Select;
@@ -33,10 +33,6 @@ const MenuSetting: React.FC = () => {
             {
                 name: 'parentId',
                 value: menu?.parentId
-            },
-            {
-                name: 'thumbnail',
-                value: menu?.thumbnail
             },
             {
                 name: 'description',
@@ -171,7 +167,10 @@ const MenuSetting: React.FC = () => {
                 search={{
                     layout: 'vertical'
                 }}
-                request={apiListMenu}
+                request={(params) => apiListMenu({
+                    ...params,
+                    departmentId: access.canEditor ? null : initialState?.currentUser?.departmentId
+                })}
                 columns={columns} rowKey="id" />
 
             <DrawerForm
@@ -195,17 +194,8 @@ const MenuSetting: React.FC = () => {
                 })} />
                 <ProFormText name="type" initialValue={2} hidden />
 
-                <Form.Item label="Ảnh đại diện" name="thumbnail">
-                    <Input />
-                </Form.Item>
-
-                <Form.Item label="Mô tả" name="description">
-                    <Input.TextArea />
-                </Form.Item>
-                <Form.Item label="Liên kết" name="url">
-                    <Input />
-                </Form.Item>
-
+                <ProFormTextArea label="Mô tả" name="description" />
+                <ProFormText label="Liên kết" name="url" />
                 <Row gutter={16}>
                     <Col span={8}>
                         <Form.Item name="mode" label="Kiểu hiển thị" initialValue="Flyout">
