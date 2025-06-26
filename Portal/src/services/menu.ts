@@ -21,3 +21,9 @@ export async function apiMenuUpdate(data: any) {
         data
     })
 }
+
+export async function apiMenuDelete(id: number) {
+    return request(`menu/${id}`, {
+        method: 'DELETE'
+    })
+}

@@ -212,7 +212,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
         label = x.Name
     }).ToListAsync());
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}"), AllowAnonymous]
     public async Task<IActionResult> GetAsync([FromRoute] int id)
     {
         var category = await _context.Categories.FindAsync(id);

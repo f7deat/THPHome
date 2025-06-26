@@ -9,4 +9,5 @@ public interface IMenuRepository : IAsyncRepository<Menu>
 {
     Task<List<MenuViewModel>> GetListAsync(ListMenuPayload payload);
     Task<IEnumerable<Menu>> GetListParrentAsync(MenuType? type);
+    Task<bool> IsExistAsycn(int? parentId);
 }

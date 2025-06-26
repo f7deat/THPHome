@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
@@ -52,21 +51,11 @@ public class MenuController(IMenuService _menuService, ApplicationDbContext cont
     [HttpPost("update")]
     public async Task<IActionResult> UpdateAsync([FromBody] Menu menu)
     {
-        var data = await _context.Menus.FindAsync(menu.Id);
-        if (data is null) return BadRequest("Data not found!");
-        data.ModifiedBy = User.GetUserName();
-        data.ModifiedDate = DateTime.Now;
-        data.Name = menu.Name;
-        data.Description = menu.Description;
-        data.Icon = menu.Icon;
-        data.ParentId = menu.ParentId;
-        data.Index = menu.Index;
-        data.Url = menu.Url;
-        data.Mode = menu.Mode;
-        return Ok(await _menuService.UpdateAsync(data));
+        if (menu.Id == menu.ParentId) return BadRequest("Menu cha không được chứa chính nó!");
+        return Ok(await _menuService.UpdateAsync(menu));
     }
 
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] int id) => Ok(await _menuService.DeleteAsyn(id));
 
     [Route("parrent-list")]

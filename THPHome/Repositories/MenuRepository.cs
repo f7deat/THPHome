@@ -68,4 +68,6 @@ public class MenuRepository(ApplicationDbContext context) : EfRepository<Menu>(c
         if (type == null) return [];
         return await _context.Menus.Where(x => x.ParentId == 0 && x.Type == type).OrderBy(x => x.Name).ToListAsync();
     }
+
+    public async Task<bool> IsExistAsycn(int? parentId) => await _context.Menus.AnyAsync(x => x.Id == parentId);
 }

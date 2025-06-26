@@ -53,7 +53,7 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
 
         var menus = await query.ToListAsync();
 
-        var parents = menus.Where(x => x.ParentId == 0 || x.ParentId == null).Select(x => new MenuViewModel
+        var parents = menus.Where(x => x.ParentId == null).Select(x => new MenuViewModel
         {
             Url = x.Url,
             ParentId = x.ParentId,
@@ -70,8 +70,7 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
             Status = x.Status,
             Type = x.Type,
             Id = x.Id
-        })
-                .OrderBy(x => x.Index).ToList();
+        }).OrderBy(x => x.Index).ToList();
 
         var data = new List<MenuViewModel>();
 
@@ -116,8 +115,8 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
                             Id = x.Id
                         })
                     };
-                })
-                .OrderBy(x => x.Index);
+                }).OrderBy(x => x.Index);
+
                 if (level2.Any())
                 {
                     item.Children = level2;
@@ -137,7 +136,22 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
 
     public async Task<THPResult> UpdateAsync(Menu menu)
     {
-        await _menuRepository.UpdateAsync(menu);
+        if (menu.ParentId != null)
+        {
+            if (await _menuRepository.IsExistAsycn(menu.ParentId)) return THPResult.Failed("Menu cha không tồn tại!");
+        }
+        var data = await _context.Menus.FindAsync(menu.Id);
+        if (data is null) return THPResult.Failed("Data not found!");
+        data.ModifiedBy = _hcaService.GetUserName();
+        data.ModifiedDate = DateTime.Now;
+        data.Name = menu.Name;
+        data.Description = menu.Description;
+        data.Icon = menu.Icon;
+        data.ParentId = menu.ParentId;
+        data.Index = menu.Index;
+        data.Url = menu.Url ?? "#";
+        data.Mode = menu.Mode;
+        await _menuRepository.UpdateAsync(data);
         return THPResult.Success;
     }
 }

@@ -1,15 +1,13 @@
-﻿import { Button, Col, Form, Input, InputNumber, message, Popconfirm, Row, Select } from "antd"
+﻿import { Button, Col, message, Popconfirm, Row } from "antd"
 import React, { useEffect, useRef, useState } from "react"
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined
 } from "@ant-design/icons";
-import { request, useAccess, useModel } from "@umijs/max";
-import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
-import { apiListMenu, apiMenuAdd, apiMenuUpdate, queryMenuOptions } from "@/services/menu";
-
-const { Option } = Select;
+import { useAccess, useModel } from "@umijs/max";
+import { ActionType, DrawerForm, PageContainer, ProColumnType, ProFormDigit, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components";
+import { apiListMenu, apiMenuAdd, apiMenuDelete, apiMenuUpdate, queryMenuOptions } from "@/services/menu";
 
 const MenuSetting: React.FC = () => {
 
@@ -53,13 +51,10 @@ const MenuSetting: React.FC = () => {
         ])
     }, [menu]);
 
-    function handleRemove(id: number) {
-        request(`menu/delete/${id}`, {
-            method: 'DELETE'
-        }).then(() => {
-            message.success('Thành công!');
-            actionRef.current?.reload();
-        })
+    async function handleRemove(id: number) {
+        await apiMenuDelete(id);
+        message.success('Thành công!');
+        actionRef.current?.reload();
     }
 
     const onFinish = async (values: any) => {
@@ -138,10 +133,6 @@ const MenuSetting: React.FC = () => {
             title: 'Tác vụ',
             valueType: 'option',
             render: (_, record: any) => [
-                <Button size="small" key="add" type="primary" icon={<PlusOutlined />} onClick={() => {
-                    setMenu(record);
-                    setVisible(true);
-                }}></Button>,
                 <Button size="small" key="edit" icon={<EditOutlined />} onClick={() => {
                     setMenu(record);
                     setVisible(true);
@@ -182,38 +173,29 @@ const MenuSetting: React.FC = () => {
                 formRef={formRef}
             >
                 <ProFormText hidden name="id" />
-                <ProFormText name="name" label="Tên" rules={[
-                    {
-                        required: true
-                    }
-                ]} />
+                <ProFormText name="name" label="Tên" rules={[{
+                    required: true
+                }]} />
 
                 <ProFormSelect label="Menu cha" name="parentId" allowClear showSearch request={(params) => queryMenuOptions({
                     ...params,
                     departmentId: access.canEditor ? null : initialState?.currentUser?.departmentId
                 })} />
                 <ProFormText name="type" initialValue={2} hidden />
-
                 <ProFormTextArea label="Mô tả" name="description" />
                 <ProFormText label="Liên kết" name="url" />
                 <Row gutter={16}>
                     <Col span={8}>
-                        <Form.Item name="mode" label="Kiểu hiển thị" initialValue="Flyout">
-                            <Select>
-                                <Option value="Flyout">Flyout</Option>
-                                <Option value="Mega">Mega</Option>
-                            </Select>
-                        </Form.Item>
+                        <ProFormSelect name="mode" label="Kiểu hiển thị" initialValue="Flyout" options={[
+                            { label: 'Flyout', value: 'Flyout' },
+                            { label: 'Mega', value: 'Mega' }
+                        ]} />
                     </Col>
                     <Col span={8}>
-                        <Form.Item label="Thứ tự" name="index">
-                            <InputNumber style={{ width: '100%' }} />
-                        </Form.Item>
+                        <ProFormDigit label="Thứ tự" name="index" initialValue={0} fieldProps={{ min: 0, precision: 0 }} />
                     </Col>
                     <Col span={8}>
-                        <Form.Item label="Icon" name="icon">
-                            <Input />
-                        </Form.Item>
+                        <ProFormText label="Icon" name="icon" />
                     </Col>
                 </Row>
             </DrawerForm>

@@ -142,11 +142,16 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
                         a.Description,
                         a.Url,
                         a.CreatedDate,
-                        a.Status
+                        a.Status,
+                        a.DepartmentId
                     };
         if (filterOptions.Status != null)
         {
             query = query.Where(x => x.Status == filterOptions.Status);
+        }
+        if (filterOptions.DepartmentId != null)
+        {
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
         }
 
         query = query.OrderByDescending(x => x.CreatedDate);
