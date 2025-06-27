@@ -145,6 +145,12 @@ const CategoryList = () => {
 
     const columns: ProColumnType<any>[] = [
         {
+            title: '#',
+            width: 20,
+            align: 'center',
+            search: false
+        },
+        {
             title: 'TT',
             dataIndex: 'index',
             width: 30,
