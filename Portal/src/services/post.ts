@@ -51,7 +51,7 @@ export async function apiPostRestore(id: number) {
 }
 
 export async function apiPostPermanentDelete(id: number) {
-    return request(`post/permanent-delete/${id}`, {
+    return request(`post/${id}`, {
         method: 'DELETE',
     });
 }

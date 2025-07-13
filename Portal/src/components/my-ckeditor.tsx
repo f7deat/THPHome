@@ -42,7 +42,8 @@ import {
     FontSize,
     FontColor,
     FontBackgroundColor,
-    FontFamily
+    FontFamily,
+    MediaEmbed
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
 import { ProForm, ProFormItemProps } from '@ant-design/pro-components';
@@ -86,6 +87,7 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
                 'outdent',
                 'indent',
                 'imageUpload',
+                'mediaEmbed',
                 'alignment',
                 'code',
                 'blockQuote',
@@ -135,7 +137,8 @@ const MyCkEditor: React.FC<ProFormItemProps> = (props) => {
             FontSize,
             FontColor,
             FontBackgroundColor,
-            FontFamily
+            FontFamily,
+            MediaEmbed
         ],
         heading: {
             options: [
