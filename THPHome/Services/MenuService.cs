@@ -136,10 +136,7 @@ public class MenuService(IMenuRepository _menuRepository, ApplicationDbContext _
 
     public async Task<THPResult> UpdateAsync(Menu menu)
     {
-        if (menu.ParentId != null)
-        {
-            if (await _menuRepository.IsExistAsycn(menu.ParentId)) return THPResult.Failed("Menu cha không tồn tại!");
-        }
+        if (menu.ParentId != null && !await _menuRepository.IsExistAsycn(menu.ParentId)) return THPResult.Failed("Menu cha không tồn tại!");
         var data = await _context.Menus.FindAsync(menu.Id);
         if (data is null) return THPResult.Failed("Data not found!");
         data.ModifiedBy = _hcaService.GetUserName();

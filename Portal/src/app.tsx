@@ -112,12 +112,16 @@ export const request: RequestConfig = {
   ],
   responseInterceptors: [
     (response: any) => {
+      if (response.data && response.data.succeeded === false) {
+        message.error(response.data.message || 'An error occurred');
+        throw new Error(response.data.message || 'An error occurred');
+      }
       return response;
     },
   ],
   errorConfig: {
     errorHandler: (error: any) => {
-      if (error.response.data) {
+      if (error.response && error.response.data) {
         message.error(error.response.data)
       }
     }
