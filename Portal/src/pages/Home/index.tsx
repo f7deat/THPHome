@@ -1,80 +1,98 @@
-import { PageContainer, ProCard, ProList } from '@ant-design/pro-components';
-import { FormattedNumber, history, Link, request } from '@umijs/max';
-import { Button, Col, List, Row, Statistic } from 'antd';
+import { PageContainer, ProCard, ProForm, ProFormDatePicker, ProList, Statistic } from '@ant-design/pro-components';
+import { FormattedNumber, history, Link, useRequest } from '@umijs/max';
+import { Button, Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
-import { ArrowRightOutlined, EyeOutlined, MailOutlined } from '@ant-design/icons';
-import { apiGetChartPostCreatedInYear } from '@/services/post';
+import { ArrowRightOutlined, FormOutlined, MailOutlined, PictureOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { apiGetChartPostCreatedInYear, apiPostStatistics } from '@/services/post';
 import EChartsReact from 'echarts-for-react';
 import Application from './components/application';
+import dayjs from 'dayjs';
+import { apiUserTopPosts } from '@/services/user';
 
 const HomePage: React.FC = () => {
-  const [postCount, setPostCount] = useState(0);
-  const [fileCount, setFileCount] = useState(0);
-  const [postView, setPostView] = useState(0);
-  const [posts, setPosts] = useState<any>([]);
   const [totalStudent] = useState<number>(0);
   const [chartData, setChartData] = useState<any>();
+  const { data: postStatistics } = useRequest(apiPostStatistics);
 
   useEffect(() => {
-    request('post/get-total').then(response => setPostCount(response));
-    request('post/get-view').then(response => setPostView(response));
-    request('post/get-list-popular').then(response => setPosts(response));
-    request('file/total').then(response => setFileCount(response));
     apiGetChartPostCreatedInYear().then(response => {
       setChartData(response);
-      console.log(response)
     })
-  }, [])
+  }, []);
 
   return (
     <PageContainer ghost>
       <div>
-        <Row gutter={16}>
+        <Row gutter={[16, 16]} className='mb-4'>
           <Col xs={12} md={6}>
-            <ProCard className="bg-white rounded mb-4">
+            <ProCard title="Bài viết" headerBordered>
               <Statistic
-                title="Xem"
-                value={postView}
-                className="p-4"
+                title="Tổng số bài viết"
+                layout='vertical'
+                value={postStatistics?.totalPosts}
+                suffix={<FormOutlined className='text-blue-500 ml-1' />}
+                className='mb-2'
               />
-              <div className="border-t px-4 py-2">
-                Số bài viết: <FormattedNumber value={postCount} />
+              <div className='mb-2 flex gap-2'>
+                <div className=''>Tháng này: {postStatistics?.totalPostsInMonth}</div>
+                <div className=''>Năm này: {postStatistics?.totalPostsInYear}</div>
+              </div>
+              <div className="border-t py-1">
+                Số lượt xem: <FormattedNumber value={postStatistics?.totalViews} />
               </div>
             </ProCard>
           </Col>
           <Col xs={12} md={6}>
-            <ProCard className="bg-white rounded mb-4">
+            <ProCard title="Hình ảnh" headerBordered>
               <Statistic
-                title="Tuyển sinh"
+                title="Tổng số hình ảnh"
+                layout='vertical'
+                className='mb-2'
                 value={totalStudent}
-                className="p-4"
+                suffix={<PictureOutlined className='text-red-500 ml-1' />}
               />
-              <div className="border-t px-4 py-2">
-                Số đơn ĐKXT: {totalStudent}
+              <div className='mb-2 flex gap-2'>
+                <div className=''>Tháng này: {0}</div>
+                <div className=''>Năm này: {0}</div>
+              </div>
+              <div className="border-t py-1">
+                Số lượt thích: <FormattedNumber value={0} />
               </div>
             </ProCard>
           </Col>
           <Col xs={12} md={6}>
-            <ProCard className="bg-white rounded mb-4">
+            <ProCard title="Video" headerBordered>
               <Statistic
-                title="Tệp tin"
-                value={fileCount}
-                className="p-4"
-              />
-              <div className="border-t px-4 py-2">
-                Đang chờ: 0
-              </div>
-            </ProCard>
-          </Col>
-          <Col xs={12} md={6}>
-            <ProCard className="bg-white rounded">
-              <Statistic
-                title="Giảng viên"
+                title="Tổng số video"
+                layout='vertical'
+                suffix={<VideoCameraOutlined className='text-orange-500 ml-1' />}
+                className='mb-2'
                 value={0}
-                className="p-4"
               />
-              <div className="border-t px-4 py-2">
-                Phòng ban: 0
+              <div className='mb-2 flex gap-2'>
+                <div className=''>Tháng này: {0}</div>
+                <div className=''>Năm này: {0}</div>
+              </div>
+              <div className="border-t py-1">
+                Số lượt thích: <FormattedNumber value={0} />
+              </div>
+            </ProCard>
+          </Col>
+          <Col xs={12} md={6}>
+            <ProCard title="Liên hệ" headerBordered>
+              <Statistic
+                title="Tổng số liên hệ"
+                value={0}
+                layout='vertical'
+                className='mb-2'
+                suffix={<MailOutlined className='text-green-500 ml-1' />}
+              />
+              <div className='mb-2 flex gap-2'>
+                <div className=''>Tháng này: {0}</div>
+                <div className=''>Năm này: {0}</div>
+              </div>
+              <div className="border-t py-1">
+                Đã hỗ trợ: <FormattedNumber value={0} />
               </div>
             </ProCard>
           </Col>
@@ -111,9 +129,21 @@ const HomePage: React.FC = () => {
             </ProCard>
           </Col>
           <Col md={24}>
-            <Row gutter={16}>
-              <Col md={16}>
-                <ProCard title="Hoạt động trong năm" headerBordered>
+            <ProCard title="Hoạt động trong năm" headerBordered extra={(
+              <ProForm submitter={false}>
+                <ProFormDatePicker.Year name="year" initialValue={dayjs()}
+                  fieldProps={{
+                    variant: 'filled',
+                    autoFocus: false
+                  }}
+                  formItemProps={{
+                    className: 'mb-0'
+                  }}
+                />
+              </ProForm>
+            )}>
+              <Row gutter={[16, 16]}>
+                <Col md={16}>
                   <EChartsReact
                     option={{
                       xAxis: {
@@ -142,21 +172,31 @@ const HomePage: React.FC = () => {
                       height: 350
                     }}
                   />
-                </ProCard>
-              </Col>
-              <Col md={8}>
-                <ProCard title="Truy cập nhiều" headerBordered className='h-full'>
-                  <List
-                    dataSource={posts}
-                    renderItem={(item: any) => (
-                      <List.Item>
-                        <a href={`${item.url}-${item.id}.html`} target="_blank" rel="noreferrer">{item.title}</a> - <span className="text-sm text-gray-400">{<FormattedNumber value={item.view} />} <EyeOutlined /></span>
-                      </List.Item>
-                    )}
+                </Col>
+                <Col md={8} xs={24}>
+                  <div className='mb-2 font-semibold px-4 text-base'>Thành viên tích cực</div>
+                  <ProList
+                    request={apiUserTopPosts}
+                    size='small'
+                    ghost
+                    metas={{
+                      avatar: {
+                        dataIndex: 'avatar',
+                        valueType: 'indexBorder'
+                      },
+                      title: {
+                        dataIndex: 'name'
+                      },
+                      actions: {
+                        render: (text, record) => [
+                          <div key="post-count" className='bg-orange-100 text-orange-500 font-semibold w-10 h-6 rounded flex items-center justify-center'>{record.postCount}</div>
+                        ]
+                      }
+                    }}
                   />
-                </ProCard>
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+            </ProCard>
           </Col>
         </Row>
       </div>

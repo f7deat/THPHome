@@ -202,6 +202,44 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
         };
     }
 
+    public async Task<object?> GetTopPostsAsync()
+    {
+        var query = from a in _context.Posts
+                    where !a.IsDeleted
+                    select new
+                    {
+                        a.Id,
+                        a.CreatedBy
+                    };
+        var topPosts = await query.GroupBy(x => x.CreatedBy)
+                                  .Select(g => new
+                                  {
+                                      UserId = g.Key,
+                                      Count = g.Count()
+                                  })
+                                  .OrderByDescending(x => x.Count)
+                                  .Take(10)
+                                  .ToListAsync();
+        var users = await _userManager.Users.Where(x => x.Status != UserStatus.Inactive && x.UserType != UserType.Student).ToListAsync();
+        var result = new List<object>();
+        foreach (var item in topPosts)
+        {
+            var user = users.FirstOrDefault(x => x.Id == item.UserId);
+            if (user != null)
+            {
+                result.Add(new
+                {
+                    user.Id,
+                    user.Name,
+                    user.UserName,
+                    user.Avatar,
+                    PostCount = item.Count
+                });
+            }
+        }
+        return result;
+    }
+
     public async Task<object?> ListLecturerAsync(UserFilterOptions filterOptions)
     {
         var query = from a in _userManager.Users.Where(x => x.UserType != UserType.Student)

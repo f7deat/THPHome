@@ -40,5 +40,7 @@ namespace THPHome.Interfaces.IRepository
         Task<Post> EnsureDataAsync(string url, PostType pAGE, string locale);
         Task<ListResult<object>> GetTrashAsync(TrashedPostFilterOptions filterOptions);
         Task<THPResult> DeleteAsync(long id);
+        Task<int> GetCountInYearAsync(int year);
+        Task<int> GetCountInMonthAsync(int month, int year);
     }
 }

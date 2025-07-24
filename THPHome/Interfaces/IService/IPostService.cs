@@ -45,4 +45,6 @@ public interface IPostService
     Task<ListResult<object>> GetTrashAsync(TrashedPostFilterOptions filterOptions);
     Task<THPResult> RestoreAsync(long id);
     Task<THPResult> DeleteAsync(long id);
+    Task<int> GetCountInYearAsync(int year);
+    Task<int> GetCountInMonthAsync(int month, int year);
 }

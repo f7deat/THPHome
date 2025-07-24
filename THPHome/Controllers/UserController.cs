@@ -945,4 +945,7 @@ public class UserController(
             label = $"{x.Name} - {x.UserName}",
             value = x.Id
         }).ToListAsync());
+
+    [HttpGet("top-posts")]
+    public async Task<IActionResult> GetTopPostsAsync() => Ok(THPResult.Ok(await _userService.GetTopPostsAsync()));
 }

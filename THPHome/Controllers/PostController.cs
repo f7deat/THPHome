@@ -18,6 +18,7 @@ using THPHome.Enums;
 using THPHome.ExternalAPI.Interfaces;
 using THPCore.Interfaces;
 using THPHome.Foundations;
+using THPCore.Models;
 
 namespace THPHome.Controllers;
 
@@ -422,4 +423,20 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
 
     [HttpPost("restore/{id}")]
     public async Task<IActionResult> RestoreAsync([FromRoute] long id) => Ok(await _postService.RestoreAsync(id));
+
+    [HttpGet("statistics")]
+    public async Task<IActionResult> GetStatisticsAsync()
+    {
+        var totalPosts = await _postService.GetTotalAsync();
+        var totalViews = await _postService.GetTotalViewAsync();
+        var totalPostsInYear = await _postService.GetCountInYearAsync(DateTime.Now.Year);
+        var totalPostsInMonth = await _postService.GetCountInMonthAsync(DateTime.Now.Month, DateTime.Now.Year);
+        return Ok(THPResult.Ok(new
+        {
+            TotalPosts = totalPosts,
+            TotalViews = totalViews,
+            TotalPostsInYear = totalPostsInYear,
+            TotalPostsInMonth = totalPostsInMonth
+        }));
+    }
 }

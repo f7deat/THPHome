@@ -55,3 +55,7 @@ export async function apiPostPermanentDelete(id: number) {
         method: 'DELETE',
     });
 }
+
+export async function apiPostStatistics() {
+    return request(`post/statistics`);
+}

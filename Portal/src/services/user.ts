@@ -310,3 +310,7 @@ export async function apiAddUserToRole(data: any) {
 export async function apiStaffIdOptions() {
     return request(`user/staff-id-options`);
 }
+
+export async function apiUserTopPosts(params: any) {
+    return request(`user/top-posts`, { params });
+}

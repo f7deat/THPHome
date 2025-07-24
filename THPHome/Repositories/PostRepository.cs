@@ -449,4 +449,8 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         await _context.SaveChangesAsync();
         return THPResult.Success;
     }
+
+    public async Task<int> GetCountInYearAsync(int year) => await _context.Posts.CountAsync(x => x.CreatedDate.Year == year && !x.IsDeleted);
+
+    public async Task<int> GetCountInMonthAsync(int month, int year) => await _context.Posts.CountAsync(x => x.CreatedDate.Month == month && x.CreatedDate.Year == year && !x.IsDeleted);
 }

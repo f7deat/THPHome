@@ -150,4 +150,8 @@ public class PostService(IPostRepository _postRepository, ICategoryRepository _c
     }
 
     public Task<THPResult> DeleteAsync(long id) => _postRepository.DeleteAsync(id);
+
+    public Task<int> GetCountInYearAsync(int year) => _postRepository.GetCountInYearAsync(year);
+
+    public Task<int> GetCountInMonthAsync(int month, int year) => _postRepository.GetCountInMonthAsync(month, year);
 }
