@@ -30,13 +30,19 @@ const RolePage = () => {
             align: 'center'
         },
         {
-            title: 'Name',
+            title: 'Quyền',
             dataIndex: 'name',
         },
         {
             title: 'Mô tả',
             dataIndex: 'displayName',
             search: false
+        },
+        {
+            title: 'Số lượng người dùng',
+            dataIndex: 'userCount',
+            search: false,
+            valueType: 'digit'
         },
         {
             title: 'Tác vụ',

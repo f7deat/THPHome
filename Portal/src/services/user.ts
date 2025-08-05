@@ -300,17 +300,17 @@ export async function apiUserNotificationDelete(id: string) {
     });
 }
 
-export async function apiAddUserToRole(data: any) {
-    return request(`user/add-to-role`, {
-        method: 'POST',
-        data
-    });
-}
-
 export async function apiStaffIdOptions() {
     return request(`user/staff-id-options`);
 }
 
 export async function apiUserTopPosts(params: any) {
     return request(`user/top-posts`, { params });
+}
+
+export async function apiAddUserToRole(data: any) {
+    return request(`https://identity.dhhp.edu.vn/user/add-to-role`, {
+        method: 'POST',
+        data
+    });
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Leaves;
@@ -14,12 +16,12 @@ using THPIdentity.Entities;
 
 namespace THPHome.Repositories.Leaves;
 
-public class LeaveRequestRepository(ApplicationDbContext context, UserManager<ApplicationUser> _userManager) : EfRepository<LeaveRequest>(context), ILeaveRequestRepository
+public class LeaveRequestRepository(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, IHCAService _hcaService) : EfRepository<LeaveRequest>(context), ILeaveRequestRepository
 {
     public async Task<object?> GetCountByDepartmentAsync(DateTime fromDate, DateTime toDate)
     {
         var query = from a in _context.LeaveRequests
-                    join b in _context.Departments on a.DepartmentId equals b.Code
+                    join b in _context.Departments on a.DepartmentId equals b.Id
                     where a.StartDate.Date >= fromDate.Date && a.StartDate.Date <= toDate.Date
                     group new { b.Name, a.Status } by new { b.Name, b.Id }  into g
                     select new
@@ -57,7 +59,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
     {
         var query = from a in _context.LeaveRequests
                     select a;
-        if (user.UserType == UserType.Dean)
+        if (_hcaService.IsUserInRole(RoleName.HOD))
         {
             query = query.Where(x => x.DepartmentId == user.DepartmentId);
         }
@@ -79,10 +81,6 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
         var data = await query.Skip((filterOptions.Current - 1) * filterOptions.PageSize).Take(filterOptions.PageSize).ToListAsync();
 
         var userQuery =  _userManager.Users.Where(x => x.Status != UserStatus.Inactive && x.UserType != UserType.Student);
-        if (user.UserType == UserType.Administrator)
-        {
-            userQuery = userQuery.Where(x => x.UserType == UserType.Dean);
-        }
 
         var users = await userQuery.AsNoTracking().ToListAsync();
 

@@ -34,6 +34,12 @@ const RoleCenter: React.FC = () => {
             dataIndex: 'name',
         },
         {
+            title: 'Ngày sinh',
+            dataIndex: 'dateOfBirth',
+            valueType: 'date',
+            search: false
+        },
+        {
             title: 'Email',
             dataIndex: 'email',
         },
