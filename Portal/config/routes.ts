@@ -252,47 +252,6 @@ export default [
     ]
   },
   {
-    name: 'Đào tạo',
-    path: '/training',
-    icon: 'ReadOutlined',
-    access: 'training',
-    routes: [
-      {
-        name: 'Chuẩn đầu ra',
-        path: '/training/proficiency',
-        component: './onboard/proficiency/practice'
-      },
-      {
-        name: 'Đợt ôn tập',
-        path: '/training/proficiency/batch/:id',
-        component: './onboard/proficiency/practice/batch',
-        hideInMenu: true
-      }
-    ]
-  },
-  {
-    name: 'Khảo thí',
-    path: '/quality-assurance',
-    icon: 'SafetyOutlined',
-    routes: [
-      {
-        path: '/quality-assurance',
-        redirect: '/quality-assurance/dashboard',
-      },
-      {
-        name: 'Dashboard',
-        path: '/quality-assurance/dashboard',
-        component: './quality-assurance'
-      },
-      {
-        name: 'Thi chuẩn đầu ra',
-        path: '/quality-assurance/proficiency-exam',
-        component: './onboard/proficiency/exam'
-      }
-    ],
-    access: 'qualityAssurance'
-  },
-  {
     icon: 'SettingOutlined',
     name: 'setting',
     path: '/settings',

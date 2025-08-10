@@ -22,7 +22,12 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      return await queryCurrentUser();
+      const response = await queryCurrentUser();
+      if (response.userType === 0) {
+        localStorage.removeItem('thp_token');
+        return null;
+      }
+      return response;
     } catch (error) {
       history.push(loginPath);
     }

@@ -17,7 +17,7 @@ const AppItem = ({ url, name }: { url: string, name: string }) => {
 const Application: React.FC = () => {
     return (
         <ProCard title="Ứng dụng" headerBordered className='h-full'>
-            <div className='grid md:grid-cols-4 gap-4'>
+            <div className='grid md:grid-cols-4 gap-2 md:gap-4'>
                 <AppItem url={`https://qlvb.dhhp.edu.vn/`} name="Quản lý văn bản" />
                 <AppItem url={`https://qltl.dhhp.edu.vn/`} name="Quản lý tài liệu" />
                 <AppItem url={`https://qlbg.dhhp.edu.vn/`} name="Quản lý bài giảng" />

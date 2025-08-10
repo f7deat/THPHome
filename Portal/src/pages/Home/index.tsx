@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
     <PageContainer ghost>
       <div>
         <Row gutter={[16, 16]} className='mb-4'>
-          <Col xs={12} md={6}>
+          <Col xs={24} md={6}>
             <ProCard title="Bài viết" headerBordered>
               <Statistic
                 title="Tổng số bài viết"
@@ -42,7 +42,7 @@ const HomePage: React.FC = () => {
               </div>
             </ProCard>
           </Col>
-          <Col xs={12} md={6}>
+          <Col xs={24} md={6}>
             <ProCard title="Hình ảnh" headerBordered>
               <Statistic
                 title="Tổng số hình ảnh"
@@ -60,7 +60,7 @@ const HomePage: React.FC = () => {
               </div>
             </ProCard>
           </Col>
-          <Col xs={12} md={6}>
+          <Col xs={24} md={6}>
             <ProCard title="Video" headerBordered>
               <Statistic
                 title="Tổng số video"
@@ -78,7 +78,7 @@ const HomePage: React.FC = () => {
               </div>
             </ProCard>
           </Col>
-          <Col xs={12} md={6}>
+          <Col xs={24} md={6}>
             <ProCard title="Liên hệ" headerBordered>
               <Statistic
                 title="Tổng số liên hệ"
@@ -97,11 +97,11 @@ const HomePage: React.FC = () => {
             </ProCard>
           </Col>
         </Row>
-        <Row gutter={16}>
-          <Col md={18} className='mb-4'>
+        <Row gutter={[16, 16]}>
+          <Col md={18} xs={24}>
             <Application />
           </Col>
-          <Col md={6} className='mb-4'>
+          <Col md={6} xs={24}>
             <ProCard title="Công cụ" headerBordered className='h-full'>
               <ProList
                 ghost
