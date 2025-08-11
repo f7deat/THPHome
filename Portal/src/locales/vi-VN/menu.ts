@@ -61,6 +61,7 @@ export default {
     'menu.component.tag': 'Tag',
     'menu.component.wordPressLister': 'WordPress Lister',
     'menu.department': 'Phòng ban',
+    'menu.department.setting': 'Cài đặt',
     'menu.setting.language': 'Ngôn ngữ',
     'menu.setting.roles': 'Quyền',
     'menu.setting.application': 'Ứng dụng',

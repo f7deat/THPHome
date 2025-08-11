@@ -23,6 +23,10 @@ const DepartmentUsers: React.FC = () => {
                 },
                 {
                     title: 'Tài khoản',
+                    dataIndex: 'userName'
+                },
+                {
+                    title: 'Tài khoản',
                     dataIndex: 'userName',
                     render: (dom, entity) => (
                         <div>
@@ -30,21 +34,17 @@ const DepartmentUsers: React.FC = () => {
                                 {entity.gender === 1 ? <ManOutlined className="text-blue-500 mr-1" /> : <WomanOutlined className="text-red-500 mr-1" />}
                                 {entity.name}
                             </div>
-                            <div className="text-gray-500">{entity.userName}</div>
                         </div>
                     )
 
                 },
                 {
                     title: 'Email',
-                    dataIndex: 'email',
-                    valueType: 'text',
-                    render: (dom, entity) => (
-                        <div>
-                            <div className="text-slate-900"><MailOutlined /> {entity.email}</div>
-                            <div className="text-slate-900"><PhoneOutlined /> {entity.phoneNumber}</div>
-                        </div>
-                    )
+                    dataIndex: 'email'
+                },
+                {
+                    title: 'Số điện thoại',
+                    dataIndex: 'phoneNumber',
                 }
             ]}
             request={(params) => apiDepartmentUsers({

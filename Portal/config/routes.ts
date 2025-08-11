@@ -129,6 +129,12 @@ export default [
         path: '/department/center',
         component: './departments/center',
         hideInMenu: true
+      },
+      {
+        name: 'setting',
+        path: '/department/setting',
+        component: './departments/setting',
+        hideInMenu: true
       }
     ]
   },

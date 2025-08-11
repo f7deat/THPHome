@@ -48,7 +48,7 @@ export default async function Page({
                 <div className='hidden md:block'>
                     <SideBar data={data} />
                 </div>
-                <div className="flex-1 2xl:ml-96 md:ml-80">
+                <div className="flex-1 2xl:ml-96 md:ml-80 bg-white">
                     <div className='flex justify-end border-b border-gray-200'>
                         <MobileBar data={data} />
                         <div className='h-14 w-14 flex items-center justify-center border-r border-gray-200 text-xl text-gray-600'>

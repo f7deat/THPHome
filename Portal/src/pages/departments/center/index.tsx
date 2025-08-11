@@ -2,7 +2,7 @@ import DepartmentUsers from "@/pages/users/profile/components/department";
 import { apiDepartmentAcademicProgramList } from "@/services/department";
 import { apiPostActive, apiPostDelete } from "@/services/post";
 import { PostStatus } from "@/utils/enum";
-import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, SettingOutlined } from "@ant-design/icons";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
 import { history, useAccess } from "@umijs/max"
 import { Button, Dropdown, message, Popconfirm } from "antd";
@@ -26,7 +26,9 @@ const Index: React.FC = () => {
     }
 
     return (
-        <PageContainer>
+        <PageContainer extra={<Button icon={<SettingOutlined />} onClick={() => {
+            history.push('/department/setting');
+        }} disabled={!access.hod && !access.canAdmin}>Cài đặt</Button>}>
             <div className="flex gap-4">
                 <div className="md:w-2/3">
                     <ProTable

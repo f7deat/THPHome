@@ -1,13 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { FacebookFilled, HomeOutlined, InstagramFilled, LinkedinFilled, PhoneOutlined, SearchOutlined, TagOutlined, TikTokFilled } from "@ant-design/icons";
-import { Quicksand } from "next/font/google";
 import Link from "next/link";
-
-const quicksand = Quicksand({ subsets: ['latin'] });
 
 const Header: React.FC = () => {
     return (
-        <header className={quicksand.className}>
+        <header className="bg-white">
             <div className="bg-blue-500">
                 <div className="container mx-auto">
                     <div className="flex items-center justify-between">

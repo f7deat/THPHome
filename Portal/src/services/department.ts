@@ -1,6 +1,6 @@
 import { request } from "@umijs/max";
 
-export const apiGetDepartmentList = (params: any) => request(`department/list`, { params });
+export const apiGetDepartmentList = (params: any) => request(`https://identity.dhhp.edu.vn/department/list`, { params });
 
 export const apiGetDepartmentTypes = () => request(`department/types`);
 

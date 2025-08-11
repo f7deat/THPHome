@@ -1,12 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import { BankOutlined, FacebookFilled, InstagramFilled, LinkedinFilled, MailOutlined, PhoneOutlined, RightCircleOutlined, TikTokFilled } from "@ant-design/icons";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ['latin'] });
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-slate-900 text-white" style={inter.style}>
+        <footer className="bg-slate-900 text-white">
             <div className="border-b border-slate-700">
                 <div className="container mx-auto">
                     <div className="grid grid-cols-3 gap-4">
@@ -81,8 +78,9 @@ const Footer: React.FC = () => {
                             <li><a href="#"><RightCircleOutlined className="mr-2" />Đào tạo</a></li>
                             <li><a href="#"><RightCircleOutlined className="mr-2" />Nghiên cứu</a></li>
                             <li><a href="#"><RightCircleOutlined className="mr-2" />Hợp tác quốc tế</a></li>
-                            <li><a href="#"><RightCircleOutlined className="mr-2" />Tin tức</a></li>
-                            <li><a href="#"><RightCircleOutlined className="mr-2" />Tuyển sinh</a></li>
+                            <li><a href="https://dhhp.edu.vn" className="hover:text-white"><RightCircleOutlined className="mr-2" />Tin tức</a></li>
+                            <li><a href="https://tuyensinh.dhhp.edu.vn" className="hover:text-white"><RightCircleOutlined className="mr-2" />Tuyển sinh</a></li>
+                            <li><a href="https://career.dhhp.edu.vn" className="hover:text-white"><RightCircleOutlined className="mr-2" />Cơ hội việc làm</a></li>
                         </ul>
                     </div>
                     <div>
