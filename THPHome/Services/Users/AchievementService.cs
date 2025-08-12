@@ -1,4 +1,5 @@
-﻿using THPCore.Models;
+﻿using THPCore.Interfaces;
+using THPCore.Models;
 using THPHome.Entities.Users;
 using THPHome.Interfaces.IRepository.IUsers;
 using THPHome.Interfaces.IService;
@@ -6,7 +7,7 @@ using THPHome.Interfaces.IService.IUsers;
 
 namespace THPHome.Services.Users;
 
-public class AchievementService(IAchievementRepository _achievementRepository, ILogService _logService) : IAchievementService
+public class AchievementService(IAchievementRepository _achievementRepository, ILogService _logService, IHCAService _hcaService) : IAchievementService
 {
     public async Task<THPResult> AddAsync(Achievement args)
     {
@@ -31,6 +32,19 @@ public class AchievementService(IAchievementRepository _achievementRepository, I
         achievement.Name = args.Name;
         achievement.Year = args.Year;
         await _achievementRepository.UpdateAsync(achievement);
+        return THPResult.Success;
+    }
+
+    public async Task<THPResult> UploadEvidenceAsync(Guid id, string fileUrl)
+    {
+        var userName = _hcaService.GetUserName();
+        var achievement = await _achievementRepository.FindAsync(id);
+        if (achievement is null) return THPResult.Failed("Không tìm thấy thành tựu");
+        if (achievement.UserName != userName) return THPResult.Failed("Bạn không có quyền upload minh chứng cho thành tựu này");
+        achievement.EvidenceUrl = fileUrl;
+        achievement.ModifiedDate = DateTime.Now;
+        await _achievementRepository.UpdateAsync(achievement);
+        await _logService.AddAsync($"Cập nhật minh chứng cho thành tựu {achievement.Name}.");
         return THPResult.Success;
     }
 }

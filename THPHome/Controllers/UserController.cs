@@ -856,8 +856,12 @@ public class UserController(
     [HttpGet("my-achievements")]
     public async Task<IActionResult> GetMyAchievementsAsync([FromQuery] AchievementFilterOptions filterOptions)
     {
-        var query = _context.Achievements.Where(x => x.UserName == filterOptions.UserName).OrderByDescending(x => x.Year);
-        return Ok(await ListResult<Achievement>.Success(query, filterOptions));
+        var query = _context.Achievements.Where(x => x.UserName == filterOptions.UserName);
+        if (!string.IsNullOrWhiteSpace(filterOptions.Name))
+        {
+            query = query.Where(x => x.Name.ToLower().Contains(filterOptions.Name.ToLower()));
+        }
+        return Ok(await ListResult<Achievement>.Success(query.OrderByDescending(x => x.Year), filterOptions));
     }
 
     [HttpPost("my-achievement/add")]

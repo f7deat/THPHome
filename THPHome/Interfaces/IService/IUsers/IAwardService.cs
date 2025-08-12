@@ -10,4 +10,5 @@ public interface IAwardService
     Task<THPResult> DeleteAsync(Guid id);
     Task<object?> ListAsync(AwardFilterOptions filterOptions);
     Task<THPResult> UpdateAsync(Award args);
+    Task<THPResult> UploadEvidenceAsync(Guid id, string fileUrl);
 }

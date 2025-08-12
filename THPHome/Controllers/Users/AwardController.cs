@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using THPCore.Extensions;
 using THPHome.Data;
 using THPHome.Entities.Users;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Filters.Users;
+using THPHome.Models.Users.Awards;
 
 namespace THPHome.Controllers.Users;
 
-public class AwardController(ApplicationDbContext context, IAwardService _awardService) : BaseController(context)
+public class AwardController(ApplicationDbContext context, IAwardService _awardService, IWebHostEnvironment _webHostEnvironment) : BaseController(context)
 {
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] AwardFilterOptions filterOptions) => Ok(await _awardService.ListAsync(filterOptions));
@@ -34,5 +36,27 @@ public class AwardController(ApplicationDbContext context, IAwardService _awardS
         var result = await _awardService.DeleteAsync(id);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
+    }
+
+    [HttpPost("upload-evidence")]
+    public async Task<IActionResult> UploadEvidenceAsync([FromForm] AwardEvidenceUploadArgs args)
+    {
+        if (args.File == null || args.File.Length == 0)
+        {
+            return BadRequest("No file uploaded.");
+        }
+        var userName = User.GetUserName();
+        var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+        var filePath = Path.Combine(folderPath, args.File.FileName);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await args.File.CopyToAsync(stream);
+        }
+        var fileUrl = $"{Request.Scheme}://{Request.Host.Value}/files/{userName}/{args.File.FileName}";
+        return Ok(await _awardService.UploadEvidenceAsync(args.Id, fileUrl));
     }
 }
