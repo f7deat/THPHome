@@ -16,7 +16,7 @@ export const queryUserList = (params: any) => request(`user/list`, { params });
 export const apiGetUserTypeOptions = () => request(`user/type/options`);
 
 export async function apiForeignLanguageProficiencyList(params: any) {
-    return request(`user/foreign-language-proficiency/list`, { params } );
+    return request(`user/foreign-language-proficiency/list`, { params });
 }
 
 export async function apiForeignLanguageProficiencyCreate(data: any) {
@@ -51,7 +51,7 @@ export async function apiChangeAvatar(data: any) {
             'Content-Type': 'multipart/form-data'
         }
     });
-    
+
 }
 
 export async function apiAcademicTitleOptions(params: any) {
@@ -123,6 +123,16 @@ export async function apiAwardDelete(id: string) {
 
 export async function apiAwardList(params: any) {
     return request(`award/list`, { params });
+}
+
+export async function apiAwardUploadEvidence(data: FormData) {
+    return request('award/upload-evidence', {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 }
 
 export async function apiResearchProjectAdd(data: any) {
@@ -249,6 +259,16 @@ export async function apiAchievementList(params: any) {
     return request(`user/my-achievements`, { params });
 }
 
+export async function apiAchievementUploadEvidence(data: FormData) {
+    return request('achievement/upload-evidence', {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
+
 export async function apiMyTeachingExperiences(params: any) {
     return request(`user/teaching-experience/list`, { params });
 }
@@ -314,3 +334,4 @@ export async function apiAddUserToRole(data: any) {
         data
     });
 }
+
