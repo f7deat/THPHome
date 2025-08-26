@@ -52,7 +52,6 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEma
     {
         try
         {
-            if (args.StartDate < DateTime.Now) return THPResult.Failed("Ngày bắt đầu không thể nhỏ hơn ngày hiện tại!");
             if (!IsValidLeaveDays(args.TotalDays)) return THPResult.Failed("Số ngày nghỉ phép không hợp lệ!");
 
             var leaveType = await _leaveTypeRepository.FindAsync(args.LeaveTypeId);
