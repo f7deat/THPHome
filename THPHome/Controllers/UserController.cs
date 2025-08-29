@@ -27,6 +27,7 @@ using ForeignLanguageProficiency = THPHome.Entities.Users.ForeignLanguageProfici
 using THPCore.Models;
 using THPHome.Foundations;
 using THPHome.Services.Notifications.Models;
+using THPHome.Models.Users.ForeignLanguage;
 
 namespace THPHome.Controllers;
 
@@ -43,6 +44,7 @@ public class UserController(
     IJournalService _journalService,
     IAchievementService _achievementService,
     IWorkingExperienceService _workingExperienceService,
+    IForeignLanguageService _foreignLanguageService,
     UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
@@ -217,6 +219,25 @@ public class UserController(
         {
             return BadRequest(ex.ToString());
         }
+    }
+
+    [HttpPost("foreign-language-proficiency/upload-evidence")]
+    public async Task<IActionResult> UploadEvidenceAsync([FromForm] UploadEvidenceCeritficateArgs args)
+    {
+        if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
+        var userName = User.GetUserName();
+        var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+        var filePath = Path.Combine(folderPath, args.File.FileName);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await args.File.CopyToAsync(stream);
+        }
+        var fileUrl = $"{Request.Scheme}://{Request.Host}/files/{userName}/{args.File.FileName}";
+        return Ok(await _foreignLanguageService.UploadCertificateEvidenceAsync(args.ForeignLanguageId, fileUrl));
     }
 
     [HttpGet("staff/list")]

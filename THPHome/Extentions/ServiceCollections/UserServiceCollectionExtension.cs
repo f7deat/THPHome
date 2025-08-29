@@ -1,4 +1,6 @@
-﻿using THPHome.Interfaces.IRepository.IUsers;
+﻿using THPHome.Interfaces.IRepository;
+using THPHome.Interfaces.IRepository.IUsers;
+using THPHome.Interfaces.IService;
 using THPHome.Interfaces.IService.IUsers;
 using THPHome.Repositories.Users;
 using THPHome.Services.Users;
@@ -41,6 +43,9 @@ public static class UserServiceCollectionExtension
 
         services.AddScoped<IWorkingExperienceRepository, WorkingExperienceRepository>();
         services.AddScoped<IWorkingExperienceService, WorkingExperienceService>();
+
+        services.AddScoped<IForeignLanguageRepository, ForeignLanguageRepository>();
+        services.AddScoped<IForeignLanguageService, ForeignLanguageService>();
 
         return services;
     }

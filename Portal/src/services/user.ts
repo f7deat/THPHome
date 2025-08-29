@@ -26,6 +26,16 @@ export async function apiForeignLanguageProficiencyCreate(data: any) {
     });
 }
 
+export async function apiForeignLanguageProficiencyUploadEvidence(data: FormData) {
+    return request(`user/foreign-language-proficiency/upload-evidence`, {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
+
 export async function apiForeignLanguageProficiencyUpdate(data: any) {
     return request(`user/foreign-language-proficiency/update`, {
         method: 'POST',
