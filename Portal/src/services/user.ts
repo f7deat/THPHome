@@ -111,6 +111,16 @@ export async function apiEducationHistoryList(params: any) {
     return request(`user/education-history/list`, { params });
 }
 
+export async function apiEducationHistoryUploadEvidence(data: FormData) {
+    return request(`user/education-history/upload-evidence`, {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
+
 export async function apiAwardAdd(data: any) {
     return request(`award/add`, {
         method: 'POST',

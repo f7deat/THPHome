@@ -8,4 +8,5 @@ public interface IEducationHistoryService
     Task<THPResult> AddAsync(EducationHistory args);
     Task<THPResult> DeleteAsync(Guid id);
     Task<THPResult> UpdateAsync(EducationHistory args);
+    Task<THPResult> UploadCertificateEvidenceAsync(Guid id, string fileUrl);
 }
