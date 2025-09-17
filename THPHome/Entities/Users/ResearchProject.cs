@@ -8,6 +8,7 @@ public class ResearchProject : BaseEntity
     public string Name { get; set; } = default!;
     public int? StartYear { get; set; }
     public int? EndYear { get; set; }
+    public string? EvidenceUrl { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
     public string? Status { get; set; }

@@ -12,16 +12,7 @@ public class TeachingExperienceRepository(ApplicationDbContext context) : EfRepo
     public async Task<ListResult<object>> ListAsync(UserFilterOptions filterOptions)
     {
         var query = from a in _context.TeachingExperiences
-                    select new
-                    {
-                        a.Id,
-                        a.CourseName,
-                        a.CourseCode,
-                        a.UserName,
-                        a.CreatedDate,
-                        a.Description,
-                        a.Level
-                    };
+                    select a;
         if (!string.IsNullOrEmpty(filterOptions.UserName))
         {
             query = query.Where(x => x.UserName == filterOptions.UserName);

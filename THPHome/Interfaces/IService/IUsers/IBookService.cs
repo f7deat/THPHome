@@ -8,4 +8,5 @@ public interface IBookService
     Task<THPResult> AddAsync(Book args);
     Task<THPResult> DeleteAsync(Guid id);
     Task<THPResult> UpdateAsync(Book args);
+    Task<THPResult> UploadCertificateEvidenceAsync(Guid id, string fileUrl);
 }

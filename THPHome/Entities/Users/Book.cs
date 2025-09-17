@@ -14,4 +14,5 @@ public class Book : BaseEntity
     public string? Authors { get; set; }
     [StringLength(256)]
     public string UserName { get; set; } = default!;
+    public string? EvidenceUrl { get; set; }
 }

@@ -8,4 +8,5 @@ public interface IJournalService
     Task<THPResult> AddAsync(Journal args);
     Task<THPResult> DeleteAsync(Guid id);
     Task<THPResult> UpdateAsync(Journal args);
+    Task<THPResult> UploadCertificateEvidenceAsync(Guid id, string fileUrl);
 }

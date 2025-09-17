@@ -10,6 +10,7 @@ public class TeachingExperience : BaseEntity
     public string? Description { get; set; }
     [StringLength(256)]
     public string UserName { get; set; } = default!;
+    public string? EvidenceUrl { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
     public string? Level { get; set; }

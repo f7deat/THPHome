@@ -1,11 +1,14 @@
-﻿using THPCore.Models;
+﻿using THPCore.Interfaces;
+using THPCore.Models;
 using THPHome.Entities.Users;
 using THPHome.Interfaces.IRepository.IUsers;
+using THPHome.Interfaces.IService;
 using THPHome.Interfaces.IService.IUsers;
+using THPHome.Repositories.Users;
 
 namespace THPHome.Services.Users;
 
-public class ResearchProjectService(IResearchProjectRepository _researchProjectRepository) : IResearchProjectService
+public class ResearchProjectService(IResearchProjectRepository _researchProjectRepository, ILogService _logService, IHCAService _hcaService) : IResearchProjectService
 {
     public async Task<THPResult> AddAsync(ResearchProject args)
     {
@@ -35,6 +38,18 @@ public class ResearchProjectService(IResearchProjectRepository _researchProjectR
         data.Role = args.Role;
         data.Level = args.Level;
         await _researchProjectRepository.UpdateAsync(data);
+        return THPResult.Success;
+    }
+
+    public async Task<THPResult> UploadCertificateEvidenceAsync(Guid id, string fileUrl)
+    {
+        var userName = _hcaService.GetUserName();
+        var researchProject = await _researchProjectRepository.FindAsync(id);
+        if (researchProject is null) return THPResult.Failed("Không tìm thấy thông tin về nghiên cứu khoa học");
+        if (researchProject.UserName != userName) return THPResult.Failed("Bạn không có quyền upload minh chứng cho nghiên cứu khoa học này");
+        researchProject.EvidenceUrl = fileUrl;
+        await _researchProjectRepository.UpdateAsync(researchProject);
+        await _logService.AddAsync($"Cập nhật minh chứng cho nghiên cứu khoa học {researchProject.Name}.");
         return THPResult.Success;
     }
 }

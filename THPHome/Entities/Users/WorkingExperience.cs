@@ -12,6 +12,7 @@ public class WorkingExperience : BaseEntity
     public DateTime? EndDate { get; set; }
     [StringLength(256)]
     public string UserName { get; set; } = default!;
+    public string? EvidenceUrl { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
 }
