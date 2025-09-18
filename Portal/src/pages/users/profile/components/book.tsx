@@ -1,10 +1,12 @@
 import { apiBookAdd, apiBookDelete, apiBookUpdate, apiBookUploadEvidence, apiMyBooks } from "@/services/user";
-import { CloseOutlined, DeleteOutlined, EditOutlined, PictureOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { ActionType, ModalForm, ProFormDatePicker, ProFormInstance, ProFormText, ProFormUploadDragger, ProTable } from "@ant-design/pro-components";
+import { CloseOutlined, DeleteOutlined, EditOutlined, PictureOutlined, PlusOutlined, UploadOutlined, InboxOutlined } from "@ant-design/icons";
+import { ActionType, ModalForm, ProForm, ProFormDatePicker, ProFormInstance, ProFormText, ProTable } from "@ant-design/pro-components";
 import { useModel } from "@umijs/max";
 import { Button, message, Modal, Popconfirm, Space, Upload } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
+
+const { Dragger } = Upload;
 
 const BookTab: React.FC = () => {
 
@@ -14,49 +16,30 @@ const BookTab: React.FC = () => {
     const [book, setBook] = useState<any>();
     const { initialState } = useModel('@@initialState');
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [openEvidence, setOpenEvidence] = useState<boolean>(false);
-    const evidenceFormRef = useRef<ProFormInstance>();
+
     useEffect(() => {
         formRef.current?.setFields([
+            { name: 'id', value: book?.id },
+            { name: 'name', value: book?.name },
+            { name: 'authors', value: book?.authors },
+            { name: 'publisher', value: book?.publisher },
+            { name: 'publishYear', value: book?.publishYear ? dayjs(`${book.publishYear}-01-01`) : null },
+            { name: 'isbn', value: book?.isbn },
             {
-                name: 'id',
-                value: book?.id
+                name: 'evidence',
+                value: book?.evidenceUrl
+                    ? [
+                        {
+                            uid: '-1',
+                            name: book?.evidenceUrl.split('/').pop(),
+                            status: 'done',
+                            url: book?.evidenceUrl,
+                        },
+                    ]
+                    : [],
             },
-            {
-                name: 'name',
-                value: book?.name
-            },
-            {
-                name: 'authors',
-                value: book?.authors
-            },
-            {
-                name: 'publisher',
-                value: book?.publisher
-            },
-            {
-                name: 'publishYear',
-                value: book?.publishYear ? dayjs(`${book.publishYear}-01-01`) : null
-            },
-            {
-                name: 'isbn',
-                value: book?.isbn
-            }
         ])
     }, [book, open])
-
-    const onFinish = async (values: any) => {
-        if (values.id) {
-            await apiBookUpdate(values);
-        } else {
-            await apiBookAdd(values);
-        }
-        message.success('Thành công!');
-        formRef.current?.resetFields();
-        setBook(null);
-        actionRef.current?.reload();
-        setOpen(false);
-    }
 
     const onDelete = async (id: string) => {
         await apiBookDelete(id);
@@ -76,56 +59,23 @@ const BookTab: React.FC = () => {
                 search={false}
                 ghost
                 columns={[
-                    {
-                        title: '#',
-                        valueType: 'indexBorder',
-                        width: 30
-                    },
-                    {
-                        title: 'Tên sách',
-                        dataIndex: 'name'
-                    },
-                    {
-                        title: 'Loại sách / ISBN',
-                        dataIndex: 'isbn'
-                    },
-                    {
-                        title: 'Nhà xuất bản',
-                        dataIndex: 'publisher'
-                    },
-                    {
-                        title: 'Năm xuất bản',
-                        dataIndex: 'publishYear',
-                        width: 120
-                    },
-                    {
-                        title: 'Tác giả',
-                        dataIndex: 'authors'
-                    },
+                    { title: '#', valueType: 'indexBorder', width: 30 },
+                    { title: 'Tên sách', dataIndex: 'name' },
+                    { title: 'Loại sách / ISBN', dataIndex: 'isbn' },
+                    { title: 'Nhà xuất bản', dataIndex: 'publisher' },
+                    { title: 'Năm xuất bản', dataIndex: 'publishYear', width: 120 },
+                    { title: 'Tác giả', dataIndex: 'authors' },
                     {
                         title: 'Minh chứng',
                         dataIndex: 'evidence',
                         render: (_, entity) => (
-                            <Space> {entity.evidenceUrl ? (
-                                <Button type="dashed" icon={<PictureOutlined />} size="small"
-                                    onClick={() => { setPreviewUrl(entity.evidenceUrl); }}>
-                                    Xem minh chứng
-                                </Button>
-                            ) : (<span style={{ color: "#aaa" }}>Chưa có</span>)}
-                                <Button
-                                    size="small"
-                                    type="dashed"
-                                    icon={<UploadOutlined />}
-                                    onClick={() => {
-                                        setBook(entity);
-                                        setOpenEvidence(true);
-                                        // reset danh sách file trước khi mở
-                                        setTimeout(() => {
-                                            evidenceFormRef.current?.setFieldValue("evidence", []);
-                                        }, 0);
-                                    }}
-                                >
-                                </Button>
+                            <Space>
+                                {entity.evidenceUrl ? (
+                                    <Button type="dashed" icon={<PictureOutlined />} size="small"
+                                        onClick={() => { setPreviewUrl(entity.evidenceUrl); }}>
+                                        Xem minh chứng
+                                    </Button>
+                                ) : (<span style={{ color: "#aaa" }}>Chưa có</span>)}
                             </Space>
                         ),
                         search: false,
@@ -135,10 +85,8 @@ const BookTab: React.FC = () => {
                         title: 'Tác vụ',
                         valueType: 'option',
                         render: (_, record) => [
-                            <Button key="edit" size="small" type="primary" icon={<EditOutlined />} onClick={() => {
-                                setBook(record);
-                                setOpen(true);
-                            }} />,
+                            <Button key="edit" size="small" type="primary" icon={<EditOutlined />}
+                                onClick={() => { setBook(record); setOpen(true); }} />,
                             <Popconfirm key="delete" title="Xác nhận xóa?" onConfirm={() => onDelete(record.id)} okText="Xóa" cancelText="Hủy">
                                 <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
                             </Popconfirm>
@@ -147,62 +95,81 @@ const BookTab: React.FC = () => {
                     }
                 ]}
             />
-            <ModalForm open={open} onOpenChange={setOpen} title="Cài đặt" onFinish={onFinish} formRef={formRef}>
-                <ProFormText name="id" hidden />
-                <ProFormText name="name" label="Tên sách" />
-                <ProFormText name="isbn" label="Loại sách / ISBN" />
-                <div className="flex gap-4">
-                    <div className="flex-1">
-                        <ProFormText name="publisher" label="Nhà xuất bản" />
-                    </div>
-                    <ProFormDatePicker.Year name="publishYear" label="Năm xuất bản" />
-                </div>
-                <ProFormText name="authors" label="Tác giả" />
-            </ModalForm>
-            <ModalForm
-                formRef={evidenceFormRef}
-                open={openEvidence}
-                onOpenChange={setOpenEvidence}
-                title="Minh chứng"
+
+            <ModalForm open={open} onOpenChange={setOpen} title="Cài đặt sách" formRef={formRef}
                 onFinish={async (values) => {
-                    if (!values?.evidence || values.evidence.length === 0) {
-                        message.error("Vui lòng chọn file");
-                        return false;
+                    let bookId = values.id;
+                    if (values.id) {
+                        await apiBookUpdate(values);
+                    } else {
+                        const newBook = await apiBookAdd(values);
+                        bookId = newBook?.id;
                     }
-                    const formData = new FormData();
-                    formData.append("BookId", book?.id);
-                    values.evidence.forEach((file: any) => {
-                        formData.append("File", file.originFileObj);
-                    });
-                    await apiBookUploadEvidence(formData);
-                    message.success("Tải minh chứng thành công");
+
+                    if (values?.evidence && values.evidence.length > 0) {
+                        const formData = new FormData();
+                        formData.append("BookId", bookId);
+                        values.evidence.forEach((file: any) => {
+                            formData.append("File", file.originFileObj);
+                        });
+                        await apiBookUploadEvidence(formData);
+                    }
+
+                    message.success("Thành công!");
+                    formRef.current?.resetFields();
+                    setBook(null);
                     actionRef.current?.reload();
                     return true;
                 }}
             >
-                <ProFormUploadDragger
-                    name="evidence"
-                    title="Tải lên minh chứng"
-                    description="Chỉ hỗ trợ ảnh và PDF"
-                    fieldProps={{
-                        multiple: true,
-                        accept: ".jpg,.jpeg,.png,.gif,.pdf",
-                        beforeUpload: (file) => {
-                            const isAllowed =
-                                file.type === "image/png" ||
-                                file.type === "image/jpeg" ||
-                                file.type === "image/gif" ||
-                                file.type === "application/pdf";
+                <ProFormText name="id" hidden />
+                <ProFormText name="name" label="Tên sách" />
+                <div className="flex gap-4">
+                    <div className="flex-1">
+                        <ProFormText name="isbn" label="Loại sách / ISBN" />
+                    </div>
+                    <ProFormText name="publisher" label="Nhà xuất bản" />
+                </div>
+                <div className="flex gap-4">
+                    <ProFormDatePicker.Year name="publishYear" label="Năm xuất bản" />
+                    <div className="flex-1">
+                        <ProFormText name="authors" label="Tác giả" />
+                    </div>
+                </div>
 
+                <ProForm.Item
+                    name="evidence"
+                    label="Minh chứng"
+                    valuePropName="fileList"
+                    destroyOnClose
+                    getValueFromEvent={(e: any) => (Array.isArray(e) ? e : e?.fileList)}
+                >
+                    <Dragger
+                        multiple={false}
+                        maxCount={1}
+                        accept=".jpg,.jpeg,.png,.gif,.pdf"
+                        showUploadList={{ showRemoveIcon: false }}
+                        beforeUpload={(file) => {
+                            const isAllowed =
+                                file.type === 'image/png' ||
+                                file.type === 'image/jpeg' ||
+                                file.type === 'image/gif' ||
+                                file.type === 'application/pdf';
                             if (!isAllowed) {
-                                message.error("Chỉ hỗ trợ ảnh (.png, .jpg, .gif) và PDF!");
+                                message.error('Chỉ hỗ trợ ảnh (.png, .jpg, .gif) và PDF!');
                                 return Upload.LIST_IGNORE;
                             }
                             return false;
-                        },
-                    }}
-                />
+                        }}
+                    >
+                        <p>
+                            <InboxOutlined className="text-[20px] text-blue-500" />
+                        </p>
+                        <p className="text-gray-400 text-sm">Hỗ trợ 1 file ảnh / PDF</p>
+                    </Dragger>
+                </ProForm.Item>
             </ModalForm>
+
             <Modal open={!!previewUrl} onCancel={() => setPreviewUrl(null)} footer={null} width="60%" closeIcon={
                 <CloseOutlined
                     style={{
