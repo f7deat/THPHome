@@ -29,6 +29,11 @@ using THPHome.Foundations;
 using THPHome.Services.Notifications.Models;
 using THPHome.Models.Users.ForeignLanguage;
 using THPHome.Models.Users.EducationHistory;
+using THPHome.Models.Users.WorkingExperience;
+using THPHome.Models.Users.TeachingExperience;
+using THPHome.Models.Users.ResearchProject;
+using THPHome.Models.Users.Journal;
+using THPHome.Models.Users.Book;
 
 namespace THPHome.Controllers;
 
@@ -784,6 +789,24 @@ public class UserController(
         return Ok(result);
     }
 
+    [HttpPost("teaching-experience/upload-evidence")]
+    public async Task<IActionResult> TeachingExperienceUploadEvidenceAsync([FromForm] TeachingExperienceUploadEvidenceArgs args)
+    {
+        if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
+        var userName = User.GetUserName();
+        var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+        var filePath = Path.Combine(folderPath, args.File.FileName);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await args.File.CopyToAsync(stream);
+        }
+        var fileUrl = $"{Request.Scheme}://{Request.Host}/files/{userName}/{args.File.FileName}";
+        return Ok(await _teachingExperienceService.UploadCertificateEvidenceAsync(args.TeachingExperienceId, fileUrl));
+    }
     [HttpGet("research-project/list")]
     public async Task<IActionResult> GetResearchProjectListAsync([FromQuery] UserFilterOptions filterOptions)
     {
@@ -819,6 +842,25 @@ public class UserController(
         var result = await _researchProjectService.DeleteAsync(id);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
+    }
+
+    [HttpPost("research-project/upload-evidence")]
+    public async Task<IActionResult> ResearchProjectUploadEvidenceAsync([FromForm] ResearchProjectUploadEvidenceArgs args)
+    {
+        if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
+        var userName = User.GetUserName();
+        var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+        var filePath = Path.Combine(folderPath, args.File.FileName);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await args.File.CopyToAsync(stream);
+        }
+        var fileUrl = $"{Request.Scheme}://{Request.Host}/files/{userName}/{args.File.FileName}";
+        return Ok(await _researchProjectService.UploadCertificateEvidenceAsync(args.ResearchProjectId, fileUrl));
     }
 
     [HttpGet("my-department")]
@@ -862,6 +904,25 @@ public class UserController(
         return Ok(result);
     }
 
+    [HttpPost("my-book/upload-evidence")]
+    public async Task<IActionResult> BookUploadEvidenceAsync([FromForm] BookUploadEvidenceArgs args)
+    {
+        if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
+        var userName = User.GetUserName();
+        var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+        var filePath = Path.Combine(folderPath, args.File.FileName);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await args.File.CopyToAsync(stream);
+        }
+        var fileUrl = $"{Request.Scheme}://{Request.Host}/files/{userName}/{args.File.FileName}";
+        return Ok(await _bookService.UploadCertificateEvidenceAsync(args.BookId, fileUrl));
+    }
+
     [HttpGet("my-journals")]
     public async Task<IActionResult> GetMyJournalsAsync([FromQuery] JournalFilterOptions filterOptions)
     {
@@ -892,6 +953,25 @@ public class UserController(
         var result = await _journalService.DeleteAsync(id);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
+    }
+
+    [HttpPost("my-journal/upload-evidence")]
+    public async Task<IActionResult> JournalUploadEvidenceAsync([FromForm] JournalUploadEvidenceArgs args)
+    {
+        if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
+        var userName = User.GetUserName();
+        var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+        var filePath = Path.Combine(folderPath, args.File.FileName);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await args.File.CopyToAsync(stream);
+        }
+        var fileUrl = $"{Request.Scheme}://{Request.Host}/files/{userName}/{args.File.FileName}";
+        return Ok(await _journalService.UploadCertificateEvidenceAsync(args.JournalId, fileUrl));
     }
 
     [HttpGet("my-achievements")]
@@ -960,6 +1040,25 @@ public class UserController(
         var result = await _workingExperienceService.DeleteAsync(id);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
+    }
+
+    [HttpPost("my-working-experiences/upload-evidence")]
+    public async Task<IActionResult> WorkingExperienceUploadEvidenceAsync([FromForm] WorkingExperienceUploadEvidenceArgs args)
+    {
+        if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
+        var userName = User.GetUserName();
+        var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+        var filePath = Path.Combine(folderPath, args.File.FileName);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await args.File.CopyToAsync(stream);
+        }
+        var fileUrl = $"{Request.Scheme}://{Request.Host}/files/{userName}/{args.File.FileName}";
+        return Ok(await _workingExperienceService.UploadCertificateEvidenceAsync(args.WorkingExperienceId, fileUrl));
     }
 
     [HttpGet("list-notification")]

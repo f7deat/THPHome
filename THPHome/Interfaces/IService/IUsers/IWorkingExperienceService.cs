@@ -8,4 +8,5 @@ public interface IWorkingExperienceService
     Task<THPResult> AddAsync(WorkingExperience args);
     Task<THPResult> DeleteAsync(Guid id);
     Task<THPResult> UpdateAsync(WorkingExperience args);
+    Task<THPResult> UploadCertificateEvidenceAsync(Guid id, string fileUrl);
 }

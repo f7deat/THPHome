@@ -10,4 +10,5 @@ public interface ITeachingExperienceService
     Task<THPResult> DeleteAsync(Guid id);
     Task<ListResult<object>> ListAsync(UserFilterOptions filterOptions);
     Task<THPResult> UpdateAsync(TeachingExperience args);
+    Task<THPResult> UploadCertificateEvidenceAsync(Guid id, string fileUrl);
 }

@@ -179,6 +179,15 @@ export async function apiResearchProjectList(params: any) {
     return request(`user/research-project/list`, { params });
 }
 
+export async function apiResearchProjectUploadEvidence(data: FormData) {
+    return request(`user/research-project/upload-evidence`, {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
 export async function apiMyDepartment() {
     return request(`user/my-department`);
 }
@@ -207,6 +216,16 @@ export async function apiBookDelete(id: string) {
     });
 }
 
+export async function apiBookUploadEvidence(data: FormData) {
+    return request(`user/my-book/upload-evidence`, {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
+
 export async function apiJournalAdd(data: any) {
     return request(`user/my-journal/add`, {
         method: 'POST',
@@ -229,6 +248,16 @@ export async function apiJournalDelete(id: string) {
 
 export async function apiJournalList(params: any) {
     return request(`user/my-journals`, { params });
+}
+
+export async function apiJournalUploadEvidence(data: FormData) {
+    return request(`user/my-journal/upload-evidence`, {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 }
 
 export async function apiWorkingExperienceAdd(data: any) {
@@ -255,6 +284,15 @@ export async function apiWorkingExperienceList(params: any) {
     return request(`user/my-working-experiences`, { params });
 }
 
+export async function apiWorkingExperienceUploadEvidence(data: FormData) {
+    return request(`user/my-working-experiences/upload-evidence`, {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
 export async function apiAchievementAdd(data: any) {
     return request(`user/my-achievement/add`, {
         method: 'POST',
@@ -312,7 +350,15 @@ export async function apiTeachingExperienceDelete(id: string) {
         method: 'POST'
     });
 }
-
+export async function apiTeachingExperienceUploadEvidence(data: FormData) {
+    return request(`user/teaching-experience/upload-evidence`, {
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
 export async function apiStaffList(params: any) {
     return request(`user/staff/list`, { params });
 }

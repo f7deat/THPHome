@@ -15,4 +15,5 @@ public class Journal : BaseEntity
     public string? Page { get; set; }
     public int? PublishYear { get; set; }
     public string UserName { get; set; } = default!;
+    public string? EvidenceUrl { get; set; }
 }
