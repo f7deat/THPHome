@@ -28,6 +28,7 @@ using THPCore.Models;
 using THPHome.Foundations;
 using THPHome.Services.Notifications.Models;
 using THPHome.Models.Users.ForeignLanguage;
+using THPHome.Models.Users.EducationHistory;
 
 namespace THPHome.Controllers;
 
@@ -734,6 +735,25 @@ public class UserController(
         var result = await _educationHistoryService.DeleteAsync(id);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
+    }
+
+    [HttpPost("education-history/upload-evidence")]
+    public async Task<IActionResult> EducationHistoryUploadEvidenceAsync([FromForm] EducationHistoryUploadArgs args)
+    {
+        if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
+        var userName = User.GetUserName();
+        var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+        var filePath = Path.Combine(folderPath, args.File.FileName);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await args.File.CopyToAsync(stream);
+        }
+        var fileUrl = $"{Request.Scheme}://{Request.Host}/files/{userName}/{args.File.FileName}";
+        return Ok(await _educationHistoryService.UploadCertificateEvidenceAsync(args.EducationHistoryId, fileUrl));
     }
 
     [HttpGet("teaching-experience/list"), AllowAnonymous]
