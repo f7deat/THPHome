@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities.Leaves;
@@ -25,7 +26,7 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEma
     {
         var user = await _userManager.FindByNameAsync(_hcaService.GetUserName());
         if (user == null || string.IsNullOrEmpty(user.UserName)) return THPResult.Failed("Không tìm thấy thông tin người dùng!");
-        if (user.UserType == UserType.Student || user.UserType == UserType.Lecturer) return THPResult.Failed("Không có quyền thực hiện thao tác này!");
+        if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.HOD)) return THPResult.Failed("Không có quyền thực hiện thao tác này!");
 
         var leaveRequest = await _leaveRequestRepository.FindAsync(args.Id);
         if (leaveRequest == null) return THPResult.Failed("Không tìm thấy đơn xin nghỉ phép!");
