@@ -63,7 +63,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
         {
             query = query.Where(x => x.DepartmentId == user.DepartmentId);
         }
-        if (user.UserType == UserType.Lecturer)
+        if (!_hcaService.IsUserInAnyRole(RoleName.HOD, RoleName.Admin))
         {
             query = query.Where(x => x.UserName == user.UserName);
         }
@@ -111,7 +111,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                 leaveItem.Gender = lecturer.Gender != null && (lecturer.Gender == 1);
                 leaveItem.FullName = lecturer.Name;
                 leaveItem.DateOfBirth = lecturer.DateOfBirth;
-                leaveItem.CanApprove = item.Status == LeaveStatus.Pending && lecturer.UserType != UserType.Dean;
+                leaveItem.CanApprove = item.Status == LeaveStatus.Pending;
             }
             else
             {
@@ -121,7 +121,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
             }
 
             // Can approve if the user is an administrator and the leave status is pending
-            if (leaveItem.Status == LeaveStatus.Pending && user.UserType == UserType.Administrator)
+            if (leaveItem.Status == LeaveStatus.Pending && _hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.HOD))
             {
                 leaveItem.CanApprove = true;
             }
