@@ -139,25 +139,57 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                         a.Id,
                         a.Status,
                         a.UserName,
-                        a.DepartmentId
+                        a.DepartmentId,
+                        a.StartDate
                     };
-
-        if (user.UserType == UserType.Lecturer)
-        {
-            query = query.Where(x => x.UserName == user.UserName);
-        }
-
-        if (user.UserType != UserType.Administrator)
+        if (!_hcaService.IsUserInRole(RoleName.Admin))
         {
             query = query.Where(x => x.DepartmentId == user.DepartmentId);
         }
 
+        var previousMonth = DateTime.Now.AddMonths(-1);
+
+        var total = await query.CountAsync(x => x.Status == LeaveStatus.Approved);
+        var previousMonthlyTotal = await query.CountAsync(x => x.StartDate.Month == previousMonth.Month && x.StartDate.Year == previousMonth.Year);
+        var monthlyTotal = await query.CountAsync(x => x.StartDate.Month == DateTime.Now.Month && x.StartDate.Year == DateTime.Now.Year);
+        var yearlyTotal = await query.CountAsync(x => x.StartDate.Year == DateTime.Now.Year);
+
+        var pending = await query.CountAsync(x => x.Status == LeaveStatus.Pending);
+        var previousMonthlyPending = await query.CountAsync(x => x.Status == LeaveStatus.Pending && x.StartDate.Month == previousMonth.Month && x.StartDate.Year == previousMonth.Year);
+        var monthlyPending = await query.CountAsync(x => x.Status == LeaveStatus.Pending && DateTime.Now.Month == DateTime.Now.Month && DateTime.Now.Year == DateTime.Now.Year);
+        var yearlyPending = await query.CountAsync(x => x.Status == LeaveStatus.Pending && DateTime.Now.Year == DateTime.Now.Year);
+
+        var rejected = await query.CountAsync(x => x.Status == LeaveStatus.Rejected);
+        var previousMonthlyRejected = await query.CountAsync(x => x.Status == LeaveStatus.Rejected && previousMonth.Month == previousMonth.Month && previousMonth.Year == previousMonth.Year);
+        var monthlyRejected = await query.CountAsync(x => x.Status == LeaveStatus.Rejected && DateTime.Now.Month == DateTime.Now.Month && DateTime.Now.Year == DateTime.Now.Year);
+        var yearlyRejected = await query.CountAsync(x => x.Status == LeaveStatus.Rejected && DateTime.Now.Year == DateTime.Now.Year);
+
+        var approved = await query.CountAsync(x => x.Status == LeaveStatus.Approved);
+        var previousMonthlyApproved = await query.CountAsync(x => x.Status == LeaveStatus.Approved && previousMonth.Month == previousMonth.Month && previousMonth.Year == previousMonth.Year);
+        var monthlyApproved = await query.CountAsync(x => x.Status == LeaveStatus.Approved && DateTime.Now.Month == DateTime.Now.Month && DateTime.Now.Year == DateTime.Now.Year);
+        var yearlyApproved = await query.CountAsync(x => x.Status == LeaveStatus.Approved && DateTime.Now.Year == DateTime.Now.Year);
+
         return new
         {
-            total = await query.CountAsync(),
-            reject = await query.CountAsync(x => x.Status == LeaveStatus.Rejected),
-            pending = await query.CountAsync(x => x.Status == LeaveStatus.Pending),
-            approved = await query.CountAsync(x => x.Status == LeaveStatus.Approved)
+            total,
+            previousMonthlyTotal,
+            monthlyTotal,
+            yearlyTotal,
+
+            pending,
+            previousMonthlyPending,
+            monthlyPending,
+            yearlyPending,
+
+            rejected,
+            previousMonthlyRejected,
+            monthlyRejected,
+            yearlyRejected,
+
+            approved,
+            previousMonthlyApproved,
+            monthlyApproved,
+            yearlyApproved
         };
     }
 
