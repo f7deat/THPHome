@@ -84,6 +84,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
         var userQuery =  _userManager.Users.Where(x => x.Status != UserStatus.Inactive && x.UserType != UserType.Student);
 
         var users = await userQuery.AsNoTracking().ToListAsync();
+        var departments = await _context.Departments.AsNoTracking().ToListAsync();
 
         var result = new List<LeaveRequestListItem>();
         foreach (var item in data)
@@ -103,22 +104,19 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                 Status = item.Status,
                 Reason = item.Reason,
                 Comments = item.Comments,
-                SectionType = item.SessionType
+                SectionType = item.SessionType,
+                DepartmentId = item.DepartmentId,
             };
-            if (user.UserType != UserType.Lecturer)
+            var lecturer = users.FirstOrDefault(x => x.UserName == item.UserName);
+            if (lecturer is null) continue;
+            leaveItem.Gender = lecturer.Gender != null && (lecturer.Gender == 1);
+            leaveItem.FullName = lecturer.Name;
+            leaveItem.DateOfBirth = lecturer.DateOfBirth;
+            leaveItem.CanApprove = item.Status == LeaveStatus.Pending;
+            var department = departments.FirstOrDefault(x => x.Id == item.DepartmentId);
+            if (department != null)
             {
-                var lecturer = users.FirstOrDefault(x => x.UserName == item.UserName);
-                if (lecturer is null) continue;
-                leaveItem.Gender = lecturer.Gender != null && (lecturer.Gender == 1);
-                leaveItem.FullName = lecturer.Name;
-                leaveItem.DateOfBirth = lecturer.DateOfBirth;
-                leaveItem.CanApprove = item.Status == LeaveStatus.Pending;
-            }
-            else
-            {
-                leaveItem.FullName = user.Name;
-                leaveItem.DateOfBirth = user.DateOfBirth;
-                leaveItem.Gender = user.Gender != null && (user.Gender == 1);
+                leaveItem.DepartmentName = department.Name;
             }
 
             // Can approve if the user is an administrator and the leave status is pending
