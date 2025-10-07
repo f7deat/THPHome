@@ -16,4 +16,5 @@ public interface ILeaveRequestRepository : IAsyncRepository<LeaveRequest>
     Task<object?> GetRequestCountAsync(RequestCountFilterOptions filterOptions, ApplicationUser user);
     Task<ColumnChart> CountAllByDepartmentAsync(DateTime fromDate, DateTime toDate);
     Task<ListResult<LeaveUserListItem>> ListUserAsync(LeaveUserFilterOptions filterOptions);
+    Task<List<object>> GetChartAsync(LeaveRequestFilterOptions filterOptions);
 }

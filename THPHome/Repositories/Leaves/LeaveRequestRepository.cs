@@ -20,9 +20,9 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
 {
     public async Task<object?> GetCountByDepartmentAsync(DateTime fromDate, DateTime toDate)
     {
-        var query = from a in _context.LeaveRequests
-                    join b in _context.Departments on a.DepartmentId equals b.Id
-                    where a.StartDate.Date >= fromDate.Date && a.StartDate.Date <= toDate.Date
+        var query = from b in _context.Departments
+                    join a in _context.LeaveRequests.Where(x => x.StartDate.Date >= fromDate.Date && x.StartDate.Date <= toDate.Date) on b.Id equals a.DepartmentId into ab
+                    from a in ab.DefaultIfEmpty()
                     group new { b.Name, a.Status } by new { b.Name, b.Id }  into g
                     select new
                     {
@@ -33,6 +33,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                         Approved = g.Count(x => x.Status == LeaveStatus.Approved),
                         Rejected = g.Count(x => x.Status == LeaveStatus.Rejected)
                     };
+        query = query.OrderByDescending(x => x.Count);
         return new { data = await query.ToListAsync(), total = await query.CountAsync() };
     }
 
@@ -229,5 +230,33 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
         }
 
         return new ListResult<LeaveUserListItem>(data, await userQuery.CountAsync(), filterOptions);
+    }
+
+    public async Task<List<object>> GetChartAsync(LeaveRequestFilterOptions filterOptions)
+    {
+        var query = from a in _context.LeaveRequests
+                    where a.Status == LeaveStatus.Approved
+                    where a.StartDate.Year == filterOptions.Year
+                    select new
+                    {
+                        a.Id,
+                        a.Status,
+                        a.StartDate,
+                        a.DepartmentId
+                    };
+        if (filterOptions.DepartmentId != null)
+        {
+            query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
+        }
+        var result = new List<object>();
+        for (int i = 1; i < 13; i++)
+        {
+            result.Add(new
+            {
+                month = i,
+                total = await query.CountAsync(x => x.StartDate.Month == i),
+            });
+        }
+        return result;
     }
 }

@@ -10,4 +10,5 @@ public class LeaveRequestFilterOptions : FilterOptions
     public LeaveStatus? Status { get; set; }
     public DateTime? FromDate { get; set; }
     public DateTime? ToDate { get; set; }
+    public int Year { get; set; }
 }

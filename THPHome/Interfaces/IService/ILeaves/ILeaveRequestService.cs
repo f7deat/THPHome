@@ -12,7 +12,7 @@ public interface ILeaveRequestService
     Task<THPResult> ApproveAsync(LeaveRequestApproveArgs args);
     Task<THPResult> CreateAsync(LeaveRequestCreateArgs args);
     Task<THPResult> DeleteAsync(Guid id);
-    Task<ColumnChart> GetChartAsync(LeaveRequestFilterOptions filterOptions);
+    Task<List<object>> GetChartAsync(LeaveRequestFilterOptions filterOptions);
     Task<object?> GetCountByDepartmentAsync(LeaveRequestFilterOptions filterOptions);
     Task<object?> GetListAsync(LeaveRequestFilterOptions filterOptions);
     Task<object?> GetRequestCountAsync(RequestCountFilterOptions filterOptions);

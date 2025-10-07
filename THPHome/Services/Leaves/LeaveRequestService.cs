@@ -135,14 +135,7 @@ public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEma
         }
     }
 
-    public async Task<ColumnChart> GetChartAsync(LeaveRequestFilterOptions filterOptions)
-    {
-        var departments = await _departmentService.GetOptionsAsync();
-        var xAxis = departments.Select(x => x.Label).ToList();
-        var fromDate = filterOptions.FromDate ?? DateTime.Today;
-        var toDate = filterOptions.ToDate ?? DateTime.Today;
-        return await _leaveRequestRepository.CountAllByDepartmentAsync(fromDate, toDate);
-    }
+    public Task<List<object>> GetChartAsync(LeaveRequestFilterOptions filterOptions) => _leaveRequestRepository.GetChartAsync(filterOptions);
 
     public Task<object?> GetCountByDepartmentAsync(LeaveRequestFilterOptions filterOptions)
     {

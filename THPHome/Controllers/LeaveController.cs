@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService.ILeaves;
@@ -67,7 +68,7 @@ public class LeaveController(ApplicationDbContext context, ILeaveBalanceService 
     public async Task<IActionResult> GetCountByDepartmentAsync([FromQuery] LeaveRequestFilterOptions filterOptions) => Ok(await _leaveRequestService.GetCountByDepartmentAsync(filterOptions));
 
     [HttpGet("chart")]
-    public async Task<IActionResult> GetChartAsync([FromQuery] LeaveRequestFilterOptions filterOptions) => Ok(new { data = await _leaveRequestService.GetChartAsync(filterOptions) });
+    public async Task<IActionResult> GetChartAsync([FromQuery] LeaveRequestFilterOptions filterOptions) => Ok(THPResult<List<object>>.Ok(await _leaveRequestService.GetChartAsync(filterOptions)));
 
     [HttpGet("list-user")]
     public async Task<IActionResult> ListUserAsync([FromQuery] LeaveUserFilterOptions filterOptions) => Ok(await _leaveRequestService.ListUserAsync(filterOptions));
