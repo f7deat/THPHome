@@ -22,7 +22,7 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IHCA
     {
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return default;
-        return await _userManager.Users.Where(x => x.Status == UserStatus.Active && x.UserType != UserType.Student && x.DepartmentId == user.DepartmentId).Select(x => new
+        return await _userManager.Users.Where(x => x.Status != UserStatus.Inactive && x.UserType != UserType.Student && x.DepartmentId == user.DepartmentId).Select(x => new
         {
             label = $"{x.Name} - {x.UserName}",
             value = x.UserName
