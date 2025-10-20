@@ -513,14 +513,16 @@ public class UserController(
     public async Task<IActionResult> PasswordSignInAsync([FromBody] LoginModel login)
     {
         if (string.IsNullOrWhiteSpace(login.UserName) || string.IsNullOrWhiteSpace(login.Password)) return BadRequest("Vui lòng nhập tên đăng nhập hoặc mật khẩu!");
-        var result = await _signInManager.PasswordSignInAsync(login.UserName, login.Password, false, false);
-        if (result.Succeeded)
+        try
         {
-            var user = await _userManager.FindByNameAsync(login.UserName);
-            if (user is null) return BadRequest($"User {login.UserName} not found!");
-            var userRoles = await _userManager.GetRolesAsync(user);
+            var result = await _signInManager.PasswordSignInAsync(login.UserName, login.Password, false, false);
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByNameAsync(login.UserName);
+                if (user is null) return BadRequest($"User {login.UserName} not found!");
+                var userRoles = await _userManager.GetRolesAsync(user);
 
-            var authClaims = new List<Claim>
+                var authClaims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String),
                 new(ClaimTypes.Name, user.UserName ?? string.Empty, ClaimValueTypes.String),
@@ -528,96 +530,101 @@ public class UserController(
                 new(ClaimTypes.Email, user.Email ?? string.Empty, ClaimValueTypes.String)
             };
 
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole, ClaimValueTypes.String));
-            }
-            if (user.UserType == UserType.Dean)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, "HOD", ClaimValueTypes.String));
-            }
-
-            var secretCode = _configuration["JWT:Secret"];
-            if (string.IsNullOrEmpty(secretCode)) return BadRequest($"Secret code not found!");
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretCode));
-
-            var token = new JwtSecurityToken(
-                expires: DateTime.Now.AddDays(7),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return Ok(new
-            {
-                token = generatedToken,
-                expiration = token.ValidTo,
-                succeeded = true
-            });
-        }
-        else
-        {
-            var thpUser = await _thpAuthen.LoginAsync(login.UserName, login.Password);
-            if (thpUser is null) return BadRequest("Tài khoản hoặc mật khẩu không đúng!");
-            if (thpUser.UserType == 0) return BadRequest("Bạn không có quyền truy cập vào hệ thống!");
-            var user = await _userManager.FindByNameAsync(login.UserName);
-            if (user is null)
-            {
-                user = new ApplicationUser
+                foreach (var userRole in userRoles)
                 {
-                    UserName = login.UserName,
-                    Name = $"{thpUser.LastName} {thpUser.FirstName}",
-                    Email = thpUser.Email,
-                    PhoneNumber = thpUser.PhoneNumber,
-                    DepartmentId = thpUser.DepartmentId,
-                    UserType = thpUser.UserType,
-                    Address = thpUser.Address,
-                    Gender = thpUser.Gender,
-                    DateOfBirth = thpUser.DateOfBirth
-                };
-                await _userManager.CreateAsync(user);
-            }
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole, ClaimValueTypes.String));
+                }
+                if (user.UserType == UserType.Dean)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, "HOD", ClaimValueTypes.String));
+                }
 
-            var authClaims = new List<Claim>
+                var secretCode = _configuration["JWT:Secret"];
+                if (string.IsNullOrEmpty(secretCode)) return BadRequest($"Secret code not found!");
+
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretCode));
+
+                var token = new JwtSecurityToken(
+                    expires: DateTime.Now.AddDays(7),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                    );
+
+                var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                return Ok(new
+                {
+                    token = generatedToken,
+                    expiration = token.ValidTo,
+                    succeeded = true
+                });
+            }
+            else
+            {
+                var thpUser = await _thpAuthen.LoginAsync(login.UserName, login.Password);
+                if (thpUser is null) return BadRequest("Tài khoản hoặc mật khẩu không đúng!");
+                if (thpUser.UserType == 0) return BadRequest("Bạn không có quyền truy cập vào hệ thống!");
+                var user = await _userManager.FindByNameAsync(login.UserName);
+                if (user is null)
+                {
+                    user = new ApplicationUser
+                    {
+                        UserName = login.UserName,
+                        Name = $"{thpUser.LastName} {thpUser.FirstName}",
+                        Email = thpUser.Email,
+                        PhoneNumber = thpUser.PhoneNumber,
+                        DepartmentId = thpUser.DepartmentId,
+                        UserType = thpUser.UserType,
+                        Address = thpUser.Address,
+                        Gender = thpUser.Gender,
+                        DateOfBirth = thpUser.DateOfBirth
+                    };
+                    await _userManager.CreateAsync(user);
+                }
+
+                var authClaims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String),
                 new(ClaimTypes.Name, user.UserName ?? string.Empty, ClaimValueTypes.String),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new(ClaimTypes.Email, user.Email ?? string.Empty, ClaimValueTypes.String)
             };
-            var userRoles = await _userManager.GetRolesAsync(user);
+                var userRoles = await _userManager.GetRolesAsync(user);
 
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole, ClaimValueTypes.String));
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole, ClaimValueTypes.String));
+                }
+
+                if (user.UserType == UserType.Dean)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, "HOD", ClaimValueTypes.String));
+                }
+
+                var secretCode = _configuration["JWT:Secret"];
+                if (string.IsNullOrEmpty(secretCode)) return BadRequest($"Secret code not found!");
+
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretCode));
+
+                var token = new JwtSecurityToken(
+                    expires: DateTime.Now.AddDays(7),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                    );
+
+                var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                return Ok(new
+                {
+                    token = generatedToken,
+                    expiration = token.ValidTo,
+                    succeeded = true
+                });
             }
-
-            if (user.UserType == UserType.Dean)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, "HOD", ClaimValueTypes.String));
-            }
-
-            var secretCode = _configuration["JWT:Secret"];
-            if (string.IsNullOrEmpty(secretCode)) return BadRequest($"Secret code not found!");
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretCode));
-
-            var token = new JwtSecurityToken(
-                expires: DateTime.Now.AddDays(7),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return Ok(new
-            {
-                token = generatedToken,
-                expiration = token.ValidTo,
-                succeeded = true
-            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
         }
     }
 
