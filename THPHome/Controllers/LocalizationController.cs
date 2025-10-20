@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
@@ -10,7 +10,7 @@ using THPIdentity.Constants;
 
 namespace THPHome.Controllers;
 
-public class LocalizationController(ApplicationDbContext context) : BaseController(context)
+public class LocalizationController(ApplicationDbContext context, IHCAService _hcaService) : BaseController(context)
 {
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] LocalizationFilterOptions filterOptions)
@@ -34,7 +34,7 @@ public class LocalizationController(ApplicationDbContext context) : BaseControll
         if (locale is null) return BadRequest("Data not found!");
         locale.Value = localization.Value;
         locale.ModifiedDate = DateTime.Now;
-        locale.ModifiedBy = User.GetUserName();
+        locale.ModifiedBy = _hcaService.GetUserName();
         _context.Update(locale);
         await _context.SaveChangesAsync();
         return Ok();

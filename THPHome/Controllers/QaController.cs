@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.QA;
@@ -13,7 +13,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
 
-public class QaController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, ILogService _logService) : BaseController(context)
+public class QaController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, ILogService _logService, IHCAService _hcaService) : BaseController(context)
 {
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(new { data = await _context.QaGroups.FindAsync(id) });
@@ -32,7 +32,7 @@ public class QaController(ApplicationDbContext context, UserManager<ApplicationU
         if (data == null) return BadRequest("Data not found!");
         data.Title = args.Title;
         data.ModifiedDate = DateTime.Now;
-        data.ModifiedBy = User.GetId();
+        data.ModifiedBy = _hcaService.GetUserId();
         data.SortOrder = args.SortOrder;
         _context.QaGroups.Update(data);
         await _context.SaveChangesAsync();
@@ -55,7 +55,7 @@ public class QaController(ApplicationDbContext context, UserManager<ApplicationU
     public async Task<IActionResult> AddAsync([FromBody] QaGroup args, [FromQuery] string locale)
     {
         args.CreatedDate = DateTime.Now;
-        args.CreatedBy = User.GetId();
+        args.CreatedBy = _hcaService.GetUserId();
         args.ModifiedDate = DateTime.Now;
         args.Active = true;
         args.Locale = locale;
@@ -129,7 +129,7 @@ public class QaController(ApplicationDbContext context, UserManager<ApplicationU
             data.Question = args.Question;
             data.SortOrder = args.SortOrder;
             data.ModifiedDate = DateTime.Now;
-            data.ModifiedBy = User.GetId();
+            data.ModifiedBy = _hcaService.GetUserId();
             _context.QaItems.Update(data);
             await _logService.AddAsync($"Update QaItem: {data.Question} -> {args.Question}. {data.Answer} -> {args.Answer}");
             await _context.SaveChangesAsync();
@@ -146,7 +146,7 @@ public class QaController(ApplicationDbContext context, UserManager<ApplicationU
     public async Task<IActionResult> ItemAddAsync([FromBody] QaItem args)
     {
         args.CreatedDate = DateTime.Now;
-        args.CreatedBy = User.GetId();
+        args.CreatedBy = _hcaService.GetUserId();
         args.ModifiedDate = DateTime.Now;
         await _context.QaItems.AddAsync(args);
         await _context.SaveChangesAsync();

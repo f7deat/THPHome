@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Entities.Users;
 using THPHome.Foundations;
@@ -9,7 +9,7 @@ using THPHome.Models.Users.Awards;
 
 namespace THPHome.Controllers.Users;
 
-public class AwardController(ApplicationDbContext context, IAwardService _awardService, IWebHostEnvironment _webHostEnvironment) : BaseController(context)
+public class AwardController(ApplicationDbContext context, IHCAService _hcaService, IAwardService _awardService, IWebHostEnvironment _webHostEnvironment) : BaseController(context)
 {
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] AwardFilterOptions filterOptions) => Ok(await _awardService.ListAsync(filterOptions));
@@ -45,7 +45,7 @@ public class AwardController(ApplicationDbContext context, IAwardService _awardS
         {
             return BadRequest("No file uploaded.");
         }
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
         if (!Directory.Exists(folderPath))
         {

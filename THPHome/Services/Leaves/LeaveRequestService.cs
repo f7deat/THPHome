@@ -18,7 +18,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Services.Leaves;
 
-public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEmailSender _emailSender, INotificationService _notificationService, IDepartmentService _departmentService, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
+public class LeaveRequestService(UserManager<ApplicationUser> _userManager, IEmailSender _emailSender, INotificationService _notificationService, ILogService _logService, ILeaveRequestRepository _leaveRequestRepository, ILeaveBalanceRepository _leaveBalanceRepository, ILeaveTypeRepository _leaveTypeRepository, IHCAService _hcaService) : ILeaveRequestService
 {
     static bool IsValidLeaveDays(double leaveDays) => leaveDays % 0.5 == 0;
 

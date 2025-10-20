@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Notifications;
@@ -17,7 +17,7 @@ using WebUI.Options;
 
 namespace THPHome.Controllers;
 
-public class NotificationController(ApplicationDbContext context, INotificationService _notificationService, UserManager<ApplicationUser> _userManager, IOptions<SettingOptions> _optionsAccessor) : BaseController(context)
+public class NotificationController(ApplicationDbContext context, IHCAService _hcaService, INotificationService _notificationService, UserManager<ApplicationUser> _userManager, IOptions<SettingOptions> _optionsAccessor) : BaseController(context)
 {
     public SettingOptions Options { get; } = _optionsAccessor.Value;
 
@@ -53,7 +53,7 @@ public class NotificationController(ApplicationDbContext context, INotificationS
     public async Task<IActionResult> AddAsync([FromBody] Notification args)
     {
         args.CreatedDate = DateTime.Now;
-        args.CreatedBy = User.GetUserName();
+        args.CreatedBy = _hcaService.GetUserId();
         await _context.Notifications.AddAsync(args);
         await _context.SaveChangesAsync();
         return Ok(IdentityResult.Success);
@@ -63,7 +63,7 @@ public class NotificationController(ApplicationDbContext context, INotificationS
     public async Task<IActionResult> MensionAsync([FromBody] MensionsArgs args)
     {
         if (args.Mensions is null) return BadRequest("Vui lòng nhập thông tin người được nhắc tới!");
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null || string.IsNullOrEmpty(user.UserName)) return Unauthorized();
         var notification = new Notification
         {
@@ -125,7 +125,7 @@ public class NotificationController(ApplicationDbContext context, INotificationS
         var noti = await _context.Notifications.FindAsync(args.Id);
         if (noti is null) return BadRequest("Notification not found!");
         noti.ModifiedDate = DateTime.Now;
-        noti.ModifiedBy = User.GetUserName();
+        noti.ModifiedBy = _hcaService.GetUserName();
         noti.Title = args.Title;
         noti.Content = args.Content;
         _context.Notifications.Update(noti);
@@ -154,7 +154,7 @@ public class NotificationController(ApplicationDbContext context, INotificationS
     {
         var userNotification = await _context.UserNotifications.FindAsync(id);
         if (userNotification is null) return BadRequest("Notification not found!");
-        if (User.GetUserName() != userNotification.Recipient) return BadRequest("Can not read other user notification!");
+        if (_hcaService.GetUserName() != userNotification.Recipient) return BadRequest("Can not read other user notification!");
         userNotification.IsRead = true;
         _context.UserNotifications.Update(userNotification);
         await _context.SaveChangesAsync();
@@ -165,7 +165,7 @@ public class NotificationController(ApplicationDbContext context, INotificationS
     public async Task<IActionResult> GetAsync([FromRoute] Guid id) => Ok(new { data = await _notificationService.GetAsync(id) });
 
     [HttpGet("unread-count")]
-    public async Task<IActionResult> UnreadCountAsync() => Ok(new { data = await _notificationService.GetUnreadCountAsync(User.GetUserName()) });
+    public async Task<IActionResult> UnreadCountAsync() => Ok(new { data = await _notificationService.GetUnreadCountAsync(_hcaService.GetUserName()) });
 
     [HttpPost("create-private")]
     public async Task<IActionResult> CreatePrivateAsync([FromBody] CreatePrivateArgs args) => Ok(await _notificationService.CreatePrivateAsync(args));

@@ -46,7 +46,7 @@ public class Startup(IConfiguration configuration)
         services.AddDbContext<IdentityDbTHPContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
 
         services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-            .AddRoles<IdentityRole>()
+            .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<IdentityDbTHPContext>()
             .AddDefaultTokenProviders();
 

@@ -1,7 +1,6 @@
-﻿using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
@@ -11,7 +10,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
 
-public class PartnerController(IPartnerService partnerService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context) : BaseController(context)
+public class PartnerController(IPartnerService partnerService, UserManager<ApplicationUser> userManager, IHCAService _hcaService, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context) : BaseController(context)
 {
     private readonly IPartnerService _partnerService = partnerService;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
@@ -26,7 +25,7 @@ public class PartnerController(IPartnerService partnerService, UserManager<Appli
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync([FromBody] Partner partner)
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user != null)
         {
             partner.CreatedBy = user.Id;
@@ -44,7 +43,7 @@ public class PartnerController(IPartnerService partnerService, UserManager<Appli
         partner.Url = args.Url;
         partner.Logo = args.Logo;
         partner.Description = args.Description;
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user != null)
         {
             partner.ModifiedBy = user.Id;

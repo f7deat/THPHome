@@ -2,26 +2,25 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
 using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Args.Departments;
-using THPHome.Models.Filters;
 using THPHome.Models.Filters.Users;
 using THPIdentity.Constants;
 using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
 
-public class DepartmentController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, IDepartmentService _departmentService) : BaseController(context)
+public class DepartmentController(ApplicationDbContext context, IHCAService _hcaService, UserManager<ApplicationUser> _userManager, IDepartmentService _departmentService) : BaseController(context)
 {
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync([FromQuery] DepartmentFilterOptions filterOptions)
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return BadRequest("User not found!");
         var query = from a in _context.Departments
                     where a.Locale == filterOptions.Locale
@@ -65,7 +64,7 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
                 Name = args.Name,
                 Locale = args.Locale,
                 CreatedDate = DateTime.Now,
-                CreatedBy = User.GetId(),
+                CreatedBy = _hcaService.GetUserId(),
                 DepartmentTypeId = args.DepartmentTypeId
             };
             await _context.Departments.AddAsync(department);
@@ -106,7 +105,7 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
             department.Description = args.Description;
             department.Code = args.Code;
             department.ModifiedDate = DateTime.Now;
-            department.ModifiedBy = User.GetId();
+            department.ModifiedBy = _hcaService.GetUserId();
             department.DepartmentTypeId = args.DepartmentTypeId;
             if (!await _context.DepartmentTypes.AnyAsync(x => x.Id == args.DepartmentTypeId)) return BadRequest("Không tìm thấy loại đơn vị!");
             _context.Departments.Update(department);
@@ -160,7 +159,7 @@ public class DepartmentController(ApplicationDbContext context, UserManager<Appl
     {
         var detail = await _context.DepartmentDetails.FindAsync(args.Id);
         if (detail is null) return BadRequest("Data not found!");
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return BadRequest("User not found!");
         detail.Content = args.Content;
         detail.Type = args.Type;

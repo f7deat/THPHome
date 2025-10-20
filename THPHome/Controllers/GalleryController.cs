@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
@@ -17,7 +17,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
 
-public class GalleryController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, IGalleryService _galleryService, ILogService _logService) : BaseController(context)
+public class GalleryController(ApplicationDbContext context, IHCAService _hcaService, UserManager<ApplicationUser> _userManager, IGalleryService _galleryService, ILogService _logService) : BaseController(context)
 {
     [HttpGet("list"), AllowAnonymous]
     public async Task<IActionResult> GalleryListAsync([FromQuery] GalleryFilterOptions filterOptions) => Ok(await _galleryService.GalleryListAsync(filterOptions));
@@ -28,7 +28,7 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
         try
         {
             if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Vui lòng nhập tên album");
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
             if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
             {
@@ -62,7 +62,7 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
         {
             var gallery = await _context.Posts.FindAsync(args.Id);
             if (gallery is null) return BadRequest("Gallery not found!");
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
             if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
             {
@@ -71,7 +71,7 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
             gallery.Title = args.Title;
             gallery.Description = args.Description;
             gallery.ModifiedDate = DateTime.Now;
-            gallery.ModifiedBy = User.GetId();
+            gallery.ModifiedBy = _hcaService.GetUserId();
             gallery.Url = SeoHelper.ToSeoFriendly(args.Title);
             _context.Posts.Update(gallery);
             await _context.SaveChangesAsync(true);
@@ -102,7 +102,7 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
         {
             return BadRequest("Không thể xóa Gallery chứa hình ảnh!");
         }
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return BadRequest("User not found!");
         if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
         {
@@ -123,7 +123,7 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
                 var gallery = await _context.Posts.FindAsync(args.PostId);
                 if (gallery is null) return BadRequest("Gallery not found!");
             }
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user == null) return BadRequest("User not found!");
             await _context.Photos.AddAsync(new Photo
             {
@@ -132,7 +132,7 @@ public class GalleryController(ApplicationDbContext context, UserManager<Applica
                 PostId = args.PostId,
                 FileId = args.FileId,
                 CreatedDate = DateTime.Now,
-                CreatedBy = User.GetUserName()
+                CreatedBy = _hcaService.GetUserName()
             });
             await _context.SaveChangesAsync();
             return Ok();

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Curriculum;
@@ -15,7 +15,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
 
-public class TrainingController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager) : BaseController(context)
+public class TrainingController(ApplicationDbContext context, UserManager<ApplicationUser> _userManager, IHCAService _hcaService) : BaseController(context)
 {
     #region Training Group
     [HttpGet("group/list"), AllowAnonymous]
@@ -107,7 +107,7 @@ public class TrainingController(ApplicationDbContext context, UserManager<Applic
     {
         try
         {
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
             if (user.UserType == UserType.Student) return BadRequest("Permission denied!");
             var entity = await _context.Majors.FindAsync(major.Id);

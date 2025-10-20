@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
@@ -11,7 +11,7 @@ using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
 
-public class BannerController(IBannerService _bannerService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context) : BaseController(context)
+public class BannerController(IBannerService _bannerService, IHCAService _hcaService, UserManager<ApplicationUser> _userManager, IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context) : BaseController(context)
 {
     [HttpGet("list")]
     public async Task<IActionResult> GetListAsync(BannerFilterOptions filterOptions) => Ok(await _bannerService.GetListAsync(filterOptions));
@@ -35,7 +35,7 @@ public class BannerController(IBannerService _bannerService, UserManager<Applica
         data.Image = banner.Image;
         data.Url = banner.Url;
         data.Name = banner.Name;
-        data.ModifiedBy = User.GetId();
+        data.ModifiedBy = _hcaService.GetUserId();
         data.ModifiedDate = DateTime.Now;
         data.PostId = banner.PostId;
         data.Description = banner.Description;
@@ -78,7 +78,7 @@ public class BannerController(IBannerService _bannerService, UserManager<Applica
         if (banner == null) return BadRequest("Data not found!");
         banner.Active = !banner.Active;
         banner.ModifiedDate = DateTime.Now;
-        banner.ModifiedBy = User.GetId();
+        banner.ModifiedBy = _hcaService.GetUserId();
         _context.Banners.Update(banner);
         await _context.SaveChangesAsync();
         return Ok();

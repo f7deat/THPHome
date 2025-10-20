@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Entities.Utils;
 using THPHome.Foundations;
@@ -9,7 +9,7 @@ using THPIdentity.Constants;
 
 namespace THPHome.Controllers;
 
-public class ToolController(ApplicationDbContext context) : BaseController(context)
+public class ToolController(ApplicationDbContext context, IHCAService _hcaServce) : BaseController(context)
 {
     private readonly string _baseUrl = "https://dhhp.edu.vn/";
     // Generates a shortened URL and saves it to the database
@@ -26,7 +26,7 @@ public class ToolController(ApplicationDbContext context) : BaseController(conte
             OriginalUrl = args.OriginalUrl,
             ShortenedUrl = shortenedUrl,
             CreatedDate = DateTime.Now,
-            CreatedBy = User.GetUserName(),
+            CreatedBy = _hcaServce.GetUserName(),
             UTM = args.UTM
         };
 

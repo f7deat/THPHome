@@ -1,21 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities.Contacts;
 using THPHome.Foundations;
 using THPHome.Helpers.Validators;
 using THPHome.Interfaces.IService;
-using THPHome.Models.Filters;
 using THPHome.Models.Filters.Contacts;
 using THPIdentity.Constants;
 using WebUI.Interfaces.IService;
 
 namespace THPHome.Controllers;
 
-public class ContactController(ApplicationDbContext context, ITelegramService _telegramService, IContactService _contactService) : BaseController(context)
+public class ContactController(ApplicationDbContext context, ITelegramService _telegramService, IContactService _contactService, IHCAService _hcaService) : BaseController(context)
 {
     [HttpPost("get-quote"), AllowAnonymous]
     public async Task<IActionResult> GetQuoteAsync([FromBody] Contact args)
@@ -72,14 +71,15 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
     [HttpPost("update-status")]
     public async Task<IActionResult> UpdateStatusAsync([FromBody] Contact args)
     {
+        var userName = _hcaService.GetUserName();
         var contact = await _context.Contacts.FindAsync(args.Id);
         if (contact is null) return BadRequest("Không tìm thấy liên hệ!");
         if (!string.IsNullOrEmpty(contact.UserName))
         {
-            if (contact.UserName != User.GetUserName()) return BadRequest("Không thể cập nhật trạng thái của liên hệ người khác đang xử lý!");
+            if (contact.UserName != userName) return BadRequest("Không thể cập nhật trạng thái của liên hệ người khác đang xử lý!");
         }
         contact.ContactStatusId = args.ContactStatusId;
-        contact.UserName = User.GetUserName();
+        contact.UserName = userName;
         contact.ModifiedDate = DateTime.Now;
         _context.Contacts.Update(contact);
         await _context.SaveChangesAsync();
@@ -140,7 +140,7 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
     {
         var status = await _context.ContactStatuses.FindAsync(args.Id);
         if (status is null) return BadRequest("Status not found");
-        status.ModifiedBy = User.GetUserName();
+        status.ModifiedBy = _hcaService.GetUserName();
         status.Name = args.Name;
         status.Description = args.Description;
         status.ModifiedDate = DateTime.Now;
@@ -154,7 +154,7 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
     {
         if (await _context.ContactStatuses.AnyAsync(x => x.Name.ToLower() == args.Name.ToLower())) return BadRequest("Trạng thái đã tồn tại!");
         args.CreatedDate = DateTime.Now;
-        args.CreatedBy = User.GetUserName();
+        args.CreatedBy = _hcaService.GetUserName();
         await _context.ContactStatuses.AddAsync(args);
         await _context.SaveChangesAsync();
         return Ok();

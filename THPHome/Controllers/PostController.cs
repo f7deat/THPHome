@@ -10,7 +10,6 @@ using THPIdentity.Entities;
 using THPIdentity.Constants;
 using THPHome.Models.Args.Posts;
 using THPHome.Data;
-using THPCore.Extensions;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters;
@@ -71,7 +70,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
         try
         {
             if (args is null) return BadRequest("Dữ liệu không hợp lệ!");
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return Unauthorized();
             if (user.UserType == UserType.Student) return BadRequest("Tài khoản không có quyền truy cập!");
             var url = SeoHelper.ToSeoFriendly(args.Title);
@@ -106,7 +105,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
         {
             if (args is null) return BadRequest("Dữ liệu không hợp lệ!");
 
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
 
             var post = new Post
@@ -199,7 +198,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
         try
         {
             if (args is null) return BadRequest("Dữ liệu không hợp lệ.");
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return Unauthorized();
 
             var post = await _context.Posts.FindAsync(args.Id);
@@ -290,7 +289,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
     [HttpPost("active/{id}")]
     public async Task<IActionResult> SetActiveAsync([FromRoute] long id)
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return Unauthorized();
         if (User.IsInRole(RoleName.ADMIN) || User.IsInRole(RoleName.EDITOR) || user.UserType == UserType.Dean)
         {
@@ -330,7 +329,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
             }
             page.Thumbnail = args.Thumbnail;
             page.ModifiedDate = DateTime.Now;
-            page.ModifiedBy = User.GetId();
+            page.ModifiedBy = _hcaService.GetUserId();
             if (args.CategoryId != null)
             {
                 var category = await _context.Categories.FindAsync(args.CategoryId);
@@ -377,7 +376,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
 
         if (!User.IsInRole(RoleName.ADMIN) && !User.IsInRole(RoleName.EDITOR))
         {
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
             query = query.Where(x => x.DepartmentId == user.DepartmentId);
         }

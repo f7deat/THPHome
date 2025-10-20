@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
@@ -17,7 +17,7 @@ using WebUI.Options;
 
 namespace THPHome.Controllers;
 
-public class FileController(IWebHostEnvironment _webHostEnvironment, ApplicationDbContext context, ITelegramService _telegramService, UserManager<ApplicationUser> _userManager, IOptions<SettingOptions> _optionsAccessor) : BaseController(context)
+public class FileController(IWebHostEnvironment _webHostEnvironment, IHCAService _hcaService, ApplicationDbContext context, ITelegramService _telegramService, UserManager<ApplicationUser> _userManager, IOptions<SettingOptions> _optionsAccessor) : BaseController(context)
 {
     public SettingOptions Options { get; } = _optionsAccessor.Value;
 
@@ -70,7 +70,7 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
                 var host = Request.Host.Value;
                 var url = $"https://{host}/files/{file.FileName}";
 
-                var user = await _userManager.FindByIdAsync(User.GetId());
+                var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
                 var applicationFile = new ApplicationFile
                 {
                     ContentType = file.ContentType,
@@ -112,7 +112,7 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
         {
             if (args.File is null) return BadRequest("File not found!");
 
-            if (string.IsNullOrEmpty(User.GetUserName()))
+            if (string.IsNullOrEmpty(_hcaService.GetUserName()))
             {
                 if (string.IsNullOrWhiteSpace(apiKey)) return BadRequest("Unauthorized!");
                 if (apiKey != Options.OpenApiKey) return BadRequest("Unauthorized!");
@@ -139,7 +139,7 @@ public class FileController(IWebHostEnvironment _webHostEnvironment, Application
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now,
                 Url = url,
-                CreatedBy = User.GetUserName() ?? "tandc"
+                CreatedBy = _hcaService.GetUserName() ?? "tandc"
             };
             await _context.ApplicationFiles.AddAsync(applicationFile);
             await _context.SaveChangesAsync();

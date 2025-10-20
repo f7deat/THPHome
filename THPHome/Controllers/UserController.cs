@@ -13,7 +13,6 @@ using System.IdentityModel.Tokens.Jwt;
 using THPIdentity.Entities;
 using THPHome.Models.Roles;
 using THPHome.Data;
-using THPCore.Extensions;
 using THPHome.Models.Api.Admin.User;
 using THPHome.Models.Filters.Users;
 using THPIdentity.Constants;
@@ -34,6 +33,7 @@ using THPHome.Models.Users.TeachingExperience;
 using THPHome.Models.Users.ResearchProject;
 using THPHome.Models.Users.Journal;
 using THPHome.Models.Users.Book;
+using THPCore.Interfaces;
 
 namespace THPHome.Controllers;
 
@@ -51,7 +51,7 @@ public class UserController(
     IAchievementService _achievementService,
     IWorkingExperienceService _workingExperienceService,
     IForeignLanguageService _foreignLanguageService,
-    UserManager<ApplicationUser> _userManager, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
+    UserManager<ApplicationUser> _userManager, IHCAService _hcaService, IUserService _userService, SignInManager<ApplicationUser> _signInManager, IConfiguration _configuration, ApplicationDbContext context, ITHPAuthen thpAuthen) : BaseController(context)
 {
     private readonly ITHPAuthen _thpAuthen = thpAuthen;
 
@@ -60,7 +60,7 @@ public class UserController(
     {
         if (string.IsNullOrEmpty(id))
         {
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
             var result = new ApplicationUser
             {
@@ -74,15 +74,15 @@ public class UserController(
     }
 
     [HttpGet("post-count")]
-    public async Task<IActionResult> GetPostCountAsync() => Ok(await _context.Posts.CountAsync(x => x.CreatedBy == User.GetId()));
+    public async Task<IActionResult> GetPostCountAsync() => Ok(await _context.Posts.CountAsync(x => x.CreatedBy == _hcaService.GetUserId()));
 
     [HttpGet("view-count")]
-    public async Task<IActionResult> GetViewCountAsync() => Ok(await _context.Posts.Where(x => x.CreatedBy == User.GetId()).SumAsync(x => x.View));
+    public async Task<IActionResult> GetViewCountAsync() => Ok(await _context.Posts.Where(x => x.CreatedBy == _hcaService.GetUserId()).SumAsync(x => x.View));
 
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return Unauthorized();
         var roles = await _userManager.GetRolesAsync(user);
         if (user.UserType == UserType.Dean)
@@ -185,7 +185,7 @@ public class UserController(
     {
         try
         {
-            args.UserName = User.GetUserName();
+            args.UserName = _hcaService.GetUserName();
             args.CreatedDate = DateTime.Now;
             await _context.ForeignLanguageProficiencies.AddAsync(args);
             await _context.SaveChangesAsync();
@@ -231,7 +231,7 @@ public class UserController(
     public async Task<IActionResult> UploadEvidenceAsync([FromForm] UploadEvidenceCeritficateArgs args)
     {
         if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
         if (!Directory.Exists(folderPath))
         {
@@ -339,7 +339,7 @@ public class UserController(
     [HttpPost("delete-personal-data")]
     public async Task<IActionResult> DeletePersonalDataAsync([FromBody] string password)
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user == null)
         {
             return NotFound();
@@ -365,7 +365,7 @@ public class UserController(
     [HttpPost("disable-2fa")]
     public async Task<IActionResult> Disable2faAsync()
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user == null)
         {
             return NotFound();
@@ -378,7 +378,7 @@ public class UserController(
     public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordModel input)
     {
         if (string.IsNullOrWhiteSpace(input.CurrentPassword) || string.IsNullOrWhiteSpace(input.NewPassword)) return BadRequest("Vui lòng nhập mật khẩu!");
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user == null)
         {
             return NotFound();
@@ -395,7 +395,7 @@ public class UserController(
     [HttpPost("download-personal-data")]
     public async Task<IActionResult> DownloadPersonalDataAsync()
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user == null)
         {
             return NotFound();
@@ -453,7 +453,7 @@ public class UserController(
     {
         try
         {
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
             user.Name = args.Name;
             user.Address = args.Address;
@@ -641,7 +641,7 @@ public class UserController(
     [HttpGet("my-notifications")]
     public async Task<IActionResult> GetMyNotificationsAsync([FromQuery] NotificationFilterOptions filterOptions)
     {
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var query = from a in _context.Notifications
                     join b in _context.UserNotifications on a.Id equals b.NotificationId
                     where b.Recipient == userName
@@ -683,7 +683,7 @@ public class UserController(
         {
             if (file is null) return BadRequest("File not found!");
             if (!file.ContentType.Contains("image")) return BadRequest("Định dạng tệp tin không được hỗ trợ!");
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
             var rootPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", "user");
             var folder = user.UserName ?? "undefined";
@@ -720,7 +720,7 @@ public class UserController(
     [HttpPost("education-history/add")]
     public async Task<IActionResult> AddEducationHistoryAsync([FromBody] Entities.Users.EducationHistory args)
     {
-        args.UserName = User.GetUserName();
+        args.UserName = _hcaService.GetUserName();
         var result = await _educationHistoryService.AddAsync(args);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
@@ -746,7 +746,7 @@ public class UserController(
     public async Task<IActionResult> EducationHistoryUploadEvidenceAsync([FromForm] EducationHistoryUploadArgs args)
     {
         if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
         if (!Directory.Exists(folderPath))
         {
@@ -767,7 +767,7 @@ public class UserController(
     [HttpPost("teaching-experience/add")]
     public async Task<IActionResult> AddTeachingExperienceAsync([FromBody] Entities.Users.TeachingExperience args)
     {
-        args.UserName = User.GetUserName();
+        args.UserName = _hcaService.GetUserName();
         var result = await _teachingExperienceService.AddAsync(args);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
@@ -793,7 +793,7 @@ public class UserController(
     public async Task<IActionResult> TeachingExperienceUploadEvidenceAsync([FromForm] TeachingExperienceUploadEvidenceArgs args)
     {
         if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
         if (!Directory.Exists(folderPath))
         {
@@ -822,7 +822,7 @@ public class UserController(
     [HttpPost("research-project/add")]
     public async Task<IActionResult> AddResearchProjectAsync([FromBody] Entities.Users.ResearchProject args)
     {
-        args.UserName = User.GetUserName();
+        args.UserName = _hcaService.GetUserName();
         var result = await _researchProjectService.AddAsync(args);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
@@ -848,7 +848,7 @@ public class UserController(
     public async Task<IActionResult> ResearchProjectUploadEvidenceAsync([FromForm] ResearchProjectUploadEvidenceArgs args)
     {
         if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
         if (!Directory.Exists(folderPath))
         {
@@ -866,7 +866,7 @@ public class UserController(
     [HttpGet("my-department")]
     public async Task<IActionResult> MyDepartmentAsync()
     {
-        var user = await _userManager.FindByIdAsync(User.GetId());
+        var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return Unauthorized();
         if (user.DepartmentId is null) return Ok();
         return Ok(new { data = await _departmentService.GetByIdAsync(user.DepartmentId) });
@@ -882,7 +882,7 @@ public class UserController(
     [HttpPost("my-book/add")]
     public async Task<IActionResult> AddMyBookAsync([FromBody] Book args)
     {
-        args.UserName = User.GetUserName();
+        args.UserName = _hcaService.GetUserName();
         var result = await _bookService.AddAsync(args);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
@@ -908,7 +908,7 @@ public class UserController(
     public async Task<IActionResult> BookUploadEvidenceAsync([FromForm] BookUploadEvidenceArgs args)
     {
         if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
         if (!Directory.Exists(folderPath))
         {
@@ -933,7 +933,7 @@ public class UserController(
     [HttpPost("my-journal/add")]
     public async Task<IActionResult> AddMyJournalAsync([FromBody] Journal args)
     {
-        args.UserName = User.GetUserName();
+        args.UserName = _hcaService.GetUserName();
         var result = await _journalService.AddAsync(args);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
@@ -959,7 +959,7 @@ public class UserController(
     public async Task<IActionResult> JournalUploadEvidenceAsync([FromForm] JournalUploadEvidenceArgs args)
     {
         if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
         if (!Directory.Exists(folderPath))
         {
@@ -988,7 +988,7 @@ public class UserController(
     [HttpPost("my-achievement/add")]
     public async Task<IActionResult> AddMyAchievementAsync([FromBody] Achievement args)
     {
-        args.UserName = User.GetUserName();
+        args.UserName = _hcaService.GetUserName();
         var result = await _achievementService.AddAsync(args);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
@@ -1020,7 +1020,7 @@ public class UserController(
     [HttpPost("my-working-experience/add")]
     public async Task<IActionResult> AddMyWorkingExperienceAsync([FromBody] WorkingExperience args)
     {
-        args.UserName = User.GetUserName();
+        args.UserName = _hcaService.GetUserName();
         var result = await _workingExperienceService.AddAsync(args);
         if (!result.Succeeded) return BadRequest(result.Message);
         return Ok(result);
@@ -1046,7 +1046,7 @@ public class UserController(
     public async Task<IActionResult> WorkingExperienceUploadEvidenceAsync([FromForm] WorkingExperienceUploadEvidenceArgs args)
     {
         if (args.File is null) return BadRequest("Vui lòng chọn minh chứng!");
-        var userName = User.GetUserName();
+        var userName = _hcaService.GetUserName();
         var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", userName);
         if (!Directory.Exists(folderPath))
         {

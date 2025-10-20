@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using THPCore.Extensions;
+using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Enums;
@@ -16,7 +16,7 @@ using WebUI.Models.Blocks;
 
 namespace THPHome.Controllers;
 
-public class BlockController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) : BaseController(context)
+public class BlockController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHCAService _hcaService) : BaseController(context)
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
 
@@ -202,7 +202,7 @@ public class BlockController(ApplicationDbContext context, UserManager<Applicati
             var source = await _context.Posts.FindAsync(args.Id);
             if (source is null) return BadRequest("Source not found!");
             if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Please input title!");
-            var user = await _userManager.FindByIdAsync(User.GetId());
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
 
             var url = SeoHelper.ToSeoFriendly(args.Title);
             if (await _context.Posts.AnyAsync(x => x.Url == url)) return BadRequest("Title already exists!");

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using THPCore.Extensions;
 using THPCore.Helpers;
+using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
@@ -13,7 +13,7 @@ using WebUI.Interfaces.IService;
 
 namespace THPHome.Controllers;
 
-public class SettingController(ApplicationDbContext context, ISettingService _settingService) : BaseController(context)
+public class SettingController(ApplicationDbContext context, ISettingService _settingService, IHCAService _hcaService) : BaseController(context)
 {
     [HttpGet("list")]
     public async Task<IActionResult> ListAsync() => Ok(await _settingService.ListAsync());
@@ -85,7 +85,7 @@ public class SettingController(ApplicationDbContext context, ISettingService _se
                 Locale = locale,
                 Active = true,
                 Image = args.Image,
-                CreatedBy = User.GetUserName(),
+                CreatedBy = _hcaService.GetUserId(),
                 CreatedDate = DateTime.Now,
                 Status = BannerStatus.ACTIVE,
                 Url = "/",
@@ -96,7 +96,7 @@ public class SettingController(ApplicationDbContext context, ISettingService _se
             return Ok();
         }
         data.Image = args.Image;
-        data.ModifiedBy = User.GetUserName();
+        data.ModifiedBy = _hcaService.GetUserId();
         data.ModifiedDate = DateTime.Now;
         _context.Banners.Update(data);
         await _context.SaveChangesAsync();
