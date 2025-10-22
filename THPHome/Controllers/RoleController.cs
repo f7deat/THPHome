@@ -47,4 +47,7 @@ public class RoleController(RoleManager<ApplicationRole> _roleManager, Applicati
         if (existingRole is not null) return BadRequest("Quyền đã tồn tại!");
         return Ok(await _roleManager.CreateAsync(role));
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> DetailAsync([FromRoute] string id) => Ok(THPResult.Ok(await _roleManager.FindByIdAsync(id)));
 }

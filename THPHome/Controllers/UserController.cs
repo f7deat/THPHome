@@ -1090,7 +1090,7 @@ public class UserController(
     [HttpGet("staff-id-options")]
     public async Task<IActionResult> GetStaffIdOptionsAsync() => Ok(await _userManager.Users
         .Where(x => x.UserType != UserType.Student)
-        .Where(x => x.Status == UserStatus.Active)
+        .Where(x => x.Status != UserStatus.Inactive)
         .Select(x => new
         {
             label = $"{x.Name} - {x.UserName}",
