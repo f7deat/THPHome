@@ -11,7 +11,6 @@ import {
     EditOutlined,
     PictureOutlined,
     PlusOutlined,
-    UploadOutlined,
     InboxOutlined,
 } from "@ant-design/icons";
 import {

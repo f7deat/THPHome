@@ -48,6 +48,11 @@ const RoleCenter: React.FC = () => {
             dataIndex: 'phone',
         },
         {
+            title: 'Đơn vị',
+            dataIndex: 'departmentName',
+            search: false
+        },
+        {
             title: 'Tác vụ',
             valueType: 'option',
             render: (_, entity) => [
