@@ -6,25 +6,126 @@
 }
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
 @if (Model != null)
 {
-    <div class="sponsor container">
-        <div class="swiper swiper-@id">
-            <div class="swiper-wrapper">
-                @foreach (var item in Model.Items)
-                {
-                    <div class="swiper-slide">
-                        <a href="@item.Link" class="flex justify-center">
-                            <img src="@item.Logo" alt="LOGO" class="sponsor-logo" />
-                        </a>
+    <div class="flex flex-col md:flex-row gap-6">
+
+        <div class="w-full md:w-5/12">
+            <div class="title affiliate mb-1 uppercase">CÁC ĐƠN VỊ ĐÀO TẠO VÀ ĐỐI TÁC</div>
+            <div class="sponsor container">
+                <div class="swiper swiper-@id">
+                    <div class="swiper-wrapper">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="swiper-slide">
+                                <a href="@item.Link" class="flex justify-center items-center h-full">
+                                    <img src="@item.Logo" alt="LOGO" class="sponsor-logo" />
+                                </a>
+                            </div>
+                        }
                     </div>
-                }
+                </div>
             </div>
         </div>
+
+        <div class="w-full md:w-3/12">
+            <div class="other-sponsor mb-3">
+                <div class="title affiliate mb-1" style="text-transform: uppercase">
+                    LIÊN KẾT NGOÀI
+                </div>
+                <div class="swiper swiper-other-@id **py-5**">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <a href="https://haiphong.edu.vn/" class="flex justify-center items-center h-full">
+                                <img src="~/img/logo-app-hp.svg" alt="Sở GDĐT Hải Phòng" class="sponsor-logo logo-other" />
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://chinhphu.vn/thong-tin-bo-nganh?gmist=3149" class="flex justify-center items-center h-full">
+                                <img src="~/img/Logo-moet.png" alt="Bộ Giáo dục và Đào tạo" class="sponsor-logo logo-other" />
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://haiphong.gov.vn/" class="flex justify-center items-center h-full">
+                                <img src="~/img/Logo_thành_phố_Hải_Phòng.png" alt="Thành phố Hải Phòng" class="sponsor-logo logo-other" />
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://haiphong.edu.vn/" class="flex justify-center items-center h-full">
+                                <img src="~/img/logo-app-hp.svg" alt="Sở GDĐT Hải Phòng" class="sponsor-logo logo-other" />
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://chinhphu.vn/thong-tin-bo-nganh?gmist=3149" class="flex justify-center items-center h-full">
+                                <img src="~/img/Logo-moet.png" alt="Bộ Giáo dục và Đào tạo" class="sponsor-logo logo-other" />
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://haiphong.gov.vn/" class="flex justify-center items-center h-full">
+                                <img src="~/img/Logo_thành_phố_Hải_Phòng.png" alt="Thành phố Hải Phòng" class="sponsor-logo logo-other" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full md:w-4/12">
+            <div class="title affiliate mb-1 uppercase">ĐỐI TÁC</div>
+            <div class="swiper swiper-block3-@id **py-5**">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <a href="https://www.lgdisplay.com" class="flex justify-center items-center h-full">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/LG_logo_%282014%29.svg/2560px-LG_logo_%282014%29.svg.png" alt="Logo Khối 3 - 1" class="sponsor-logo logo-other" />
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="https://www.vietinbank.vn/" class="flex justify-center items-center h-full">
+                            <img src="https://upload.wikimedia.org/wikipedia/vi/9/9d/Logo_Vietinbank.png" alt="Logo Khối 3 - 2" class="sponsor-logo logo-other" />
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="https://vingroup.net/" class="flex justify-center items-center h-full">
+                            <img src="https://upload.wikimedia.org/wikipedia/vi/thumb/9/98/Vingroup_logo.svg/1200px-Vingroup_logo.svg.png" alt="Logo Khối 3 - 3" class="sponsor-logo logo-other" />
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="https://reginamiracleholdings.com/" class="flex justify-center items-center h-full">
+                            <img src="https://reginamiracleholdings.com/wp-content/uploads/2021/11/cropped-Logo.png" alt="Logo Khối 3 - 3" class="sponsor-logo logo-other" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <style>
+        /* CSS giữ nguyên */
+        .sponsor-logo {
+            max-height: 80px;
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+            .sponsor-logo.logo-other {
+                margin-top: 10px;
+                max-height: 70px;
+            }
+
+        .swiper-slide {
+            height: 100px !important;
+        }
+    </style>
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
-        var swiper = new Swiper(".swiper-@id", {
+        // JS CỘT 1 (Giữ nguyên)
+        new Swiper(".swiper-@id", {
             slidesPerView: 10,
             spaceBetween: 100,
             autoplay: {
@@ -34,18 +135,44 @@
             speed: @Model.Speed,
             loop: true,
             breakpoints: {
-                320: {
-                    slidesPerView: 2
-                },
-                480: {
-                    slidesPerView: 3
-                },
-                640: {
-                    slidesPerView: 4
-                },
-                1530: {
-                    slidesPerView: 8
-                }
+                320: { slidesPerView: 2, spaceBetween: 20 },
+                480: { slidesPerView: 3, spaceBetween: 30 },
+                640: { slidesPerView: 4, spaceBetween: 40 },
+                1530: { slidesPerView: 8, spaceBetween: 50 }
+            }
+        });
+
+        // JS CỘT 2: LIÊN KẾT NGOÀI (Cố định 3 logo trên desktop)
+        new Swiper(".swiper-other-@id", {
+            slidesPerView: 3, // Cố định 3 logo để vừa với cột 3/12
+            spaceBetween: 10, // Khoảng cách nhỏ để tối ưu không gian
+            autoplay: {
+                delay: 2000,
+                disableOnInteraction: false
+            },
+            speed: 2000,
+            loop: true,
+            breakpoints: {
+                320: { slidesPerView: 2 },
+                640: { slidesPerView: 3 },
+                1024: { slidesPerView: 3 } // Cố định 3 logo
+            }
+        });
+
+        // JS CỘT 3: KHỐI THỨ 3 (Cũng cố định 3 logo trên desktop)
+        new Swiper(".swiper-block3-@id", {
+            slidesPerView: 3, // Cố định 3 logo, mặc dù cột này rộng hơn (4/12)
+            spaceBetween: 10,
+            autoplay: {
+                delay: 2000,
+                disableOnInteraction: false
+            },
+            speed: 2000,
+            loop: true,
+            breakpoints: {
+                320: { slidesPerView: 2 },
+                640: { slidesPerView: 3 },
+                1024: { slidesPerView: 3 }
             }
         });
     </script>
