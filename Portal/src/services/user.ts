@@ -401,3 +401,9 @@ export async function apiAddUserToRole(data: any) {
     });
 }
 
+export async function apiUserChangePassword(data: any) {
+    return request(`https://identity.dhhp.edu.vn/user/change-password`, {
+        method: 'POST',
+        data
+    });
+}

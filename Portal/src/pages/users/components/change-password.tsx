@@ -1,6 +1,6 @@
-﻿import { RightOutlined } from "@ant-design/icons";
+﻿import { apiUserChangePassword } from "@/services/user";
+import { RightOutlined } from "@ant-design/icons";
 import { ModalForm } from "@ant-design/pro-components";
-import { request } from "@umijs/max";
 import { Form, Input, message } from "antd";
 import { useState } from "react";
 
@@ -12,19 +12,11 @@ const ChangePassword: React.FC = () => {
         if (values.newPassword !== values.confirmPassword) {
             return message.warning('Password not match')
         }
-        request(`user/change-password`, {
-            method: 'POST',
-            data: values
-        }).then(response => {
-            if (response.succeeded) {
-                message.success('succeeded')
-            } else {
-                response.errors.forEach((value: any) => {
-                    message.error(value.description)
-                })
-            }
-        })
+        await apiUserChangePassword(values);
+        message.success('Đổi mật khẩu thành công');
+        return true;
     };
+
     return (
         <div>
             <div className="py-2 border-b border-dashed hover:bg-gray-100 cursor-pointer" onClick={() => setOpen(true)}>
