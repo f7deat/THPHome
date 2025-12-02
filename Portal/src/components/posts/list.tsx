@@ -1,7 +1,7 @@
 import { PostType } from "@/enum/post-enum";
 import { ActionType, ProColumnType, ProTable } from "@ant-design/pro-components";
 import { useEffect, useRef, useState } from "react";
-import { FormattedMessage, request, useAccess, history, FormattedNumber } from "@umijs/max";
+import { request, useAccess, history, FormattedNumber } from "@umijs/max";
 import { apiPostDelete, apiShareZaloOA, queryPosts } from "@/services/post";
 import { Button, Dropdown, message, Popconfirm, Spin, Tag, Tooltip } from "antd";
 import { PostStatus } from "@/utils/enum";

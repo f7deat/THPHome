@@ -5,6 +5,7 @@ using THPCore.Models;
 using THPHome.Data;
 using THPHome.Enums;
 using THPHome.Foundations;
+using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Articles;
 
 namespace THPHome.Controllers;
@@ -57,12 +58,34 @@ public class ArticleController(ApplicationDbContext context) : BaseController(co
     public async Task<IActionResult> GetByUrlAsync([FromRoute] string url)
     {
         var article = await _context.Posts.FirstOrDefaultAsync(x => x.Url == url && x.Status == PostStatus.PUBLISH);
-        if (article != null)
+        if (article is null) return NotFound();
+        article.View++;
+        await _context.SaveChangesAsync();
+        var attachments = await _context.Attachments
+            .Where(x => x.PostId == article.Id)
+            .Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.Extension,
+                x.PostId
+            })
+            .ToListAsync();
+        return Ok(new
         {
-            article.View++;
-            await _context.SaveChangesAsync();
-            return Ok(article);
-        }
-        return Ok(article);
+            article.Id,
+            article.Url,
+            article.Title,
+            article.CategoryId,
+            article.Description,
+            article.Thumbnail,
+            article.Content,
+            article.CreatedDate,
+            article.ModifiedDate,
+            article.Locale,
+            article.DepartmentId,
+            article.View,
+            attachments
+        });
     }
 }

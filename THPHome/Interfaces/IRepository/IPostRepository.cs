@@ -6,6 +6,7 @@ using THPHome.Models.Categories;
 using THPHome.Models.Filters;
 using THPHome.Enums;
 using THPCore.Models;
+using THPHome.Models.Filters.Articles;
 
 namespace THPHome.Interfaces.IRepository
 {
@@ -42,5 +43,6 @@ namespace THPHome.Interfaces.IRepository
         Task<THPResult> DeleteAsync(long id);
         Task<int> GetCountInYearAsync(int year);
         Task<int> GetCountInMonthAsync(int month, int year);
+        Task<ListResult<object>> GetAdmissionsAsync(ArticleFilterOptions filterOptions);
     }
 }

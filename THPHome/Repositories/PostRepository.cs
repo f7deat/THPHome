@@ -14,6 +14,7 @@ using THPHome.Enums;
 using THPCore.Models;
 using THPHome.Models.Results.Posts;
 using THPCore.Interfaces;
+using THPHome.Models.Filters.Articles;
 
 namespace THPHome.Repositories;
 
@@ -453,4 +454,41 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
     public async Task<int> GetCountInYearAsync(int year) => await _context.Posts.CountAsync(x => x.CreatedDate.Year == year && !x.IsDeleted);
 
     public async Task<int> GetCountInMonthAsync(int month, int year) => await _context.Posts.CountAsync(x => x.CreatedDate.Month == month && x.CreatedDate.Year == year && !x.IsDeleted);
+
+    public async Task<ListResult<object>> GetAdmissionsAsync(ArticleFilterOptions filterOptions)
+    {
+        var query = from a in _context.Posts
+                    where a.Type == PostType.ADMISSION && !a.IsDeleted
+                    select new
+                    {
+                        a.Id,
+                        a.Title,
+                        a.View,
+                        a.ModifiedDate,
+                        a.Url,
+                        a.Status,
+                        a.Locale,
+                        a.CreatedDate,
+                        a.CreatedBy,
+                        a.Description,
+                        a.Thumbnail,
+                        a.IssuedDate,
+                        a.CategoryId,
+                        a.DepartmentId
+                    };
+        if (!string.IsNullOrWhiteSpace(filterOptions.Title))
+        {
+            query = query.Where(x => !string.IsNullOrEmpty(x.Title) && x.Title.ToLower().Contains(filterOptions.Title.ToLower()));
+        }
+        if (filterOptions.CategoryId != null)
+        {
+            query = query.Where(x => x.CategoryId == filterOptions.CategoryId);
+        }
+        if (!string.IsNullOrWhiteSpace(filterOptions.Locale))
+        {
+            query = query.Where(x => x.Locale == filterOptions.Locale);
+        }
+        query = query.OrderByDescending(x => x.CreatedDate);
+        return await ListResult<object>.Success(query, filterOptions);
+    }
 }

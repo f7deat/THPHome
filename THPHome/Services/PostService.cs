@@ -8,6 +8,7 @@ using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
+using THPHome.Models.Filters.Articles;
 
 namespace THPHome.Services;
 
@@ -154,4 +155,6 @@ public class PostService(IPostRepository _postRepository, ICategoryRepository _c
     public Task<int> GetCountInYearAsync(int year) => _postRepository.GetCountInYearAsync(year);
 
     public Task<int> GetCountInMonthAsync(int month, int year) => _postRepository.GetCountInMonthAsync(month, year);
+
+    public Task<ListResult<object>> GetAdmissionsAsync(ArticleFilterOptions filterOptions) => _postRepository.GetAdmissionsAsync(filterOptions);
 }

@@ -11,7 +11,7 @@ export default [
   },
   {
     icon: 'FormOutlined',
-    name: 'Nội dung',
+    name: 'post',
     path: '/post',
     routes: [
       {
@@ -36,6 +36,11 @@ export default [
         name: 'Thông báo',
         path: '/post/notification',
         component: './posts/notification',
+      },
+      {
+        name: 'admission',
+        path: '/post/admission',
+        component: './posts/admission'
       },
       {
         name: 'Trang',

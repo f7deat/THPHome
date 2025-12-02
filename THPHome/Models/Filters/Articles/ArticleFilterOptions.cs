@@ -9,4 +9,5 @@ public class ArticleFilterOptions : FilterOptions
     public PostType? Type { get; set; }
     public string? Title { get; set; }
     public int? DepartmentId { get; set; }
+    public PostStatus? Status { get; set; }
 }

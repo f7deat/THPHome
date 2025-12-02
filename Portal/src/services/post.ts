@@ -59,3 +59,13 @@ export async function apiPostPermanentDelete(id: number) {
 export async function apiPostStatistics() {
     return request(`post/statistics`);
 }
+
+export async function apiAdmissions(params: any) {
+    return request(`post/admissions`, { params });
+}
+
+export async function apiPostPublish(id: number) {
+    return request(`post/active/${id}`, {
+        method: 'POST',
+    });
+}

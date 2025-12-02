@@ -1,23 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ApplicationCore.Interfaces.IService;
+﻿using ApplicationCore.Entities;
 using ApplicationCore.Helpers;
-using ApplicationCore.Entities;
-using Microsoft.AspNetCore.Identity;
-using WebUI.Interfaces.IService;
+using ApplicationCore.Interfaces.IService;
 using Microsoft.AspNetCore.Authorization;
-using THPIdentity.Entities;
-using THPIdentity.Constants;
-using THPHome.Models.Args.Posts;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using THPCore.Interfaces;
+using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
-using THPHome.Interfaces.IService;
-using THPHome.Models.Filters;
 using THPHome.Enums;
 using THPHome.ExternalAPI.Interfaces;
-using THPCore.Interfaces;
 using THPHome.Foundations;
-using THPCore.Models;
+using THPHome.Interfaces.IService;
+using THPHome.Models.Args.Posts;
+using THPHome.Models.Filters;
+using THPHome.Models.Filters.Articles;
+using THPIdentity.Constants;
+using THPIdentity.Entities;
+using WebUI.Interfaces.IService;
 
 namespace THPHome.Controllers;
 
@@ -438,4 +439,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
             TotalPostsInMonth = totalPostsInMonth
         }));
     }
+
+    [HttpGet("admissions"), AllowAnonymous]
+    public async Task<IActionResult> GetAdmissionsAsync([FromQuery] ArticleFilterOptions filterOptions) => Ok(await _postService.GetAdmissionsAsync(filterOptions));
 }

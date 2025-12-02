@@ -67,4 +67,6 @@ export default {
   'menu.users.roleCenter': 'Role Center',
   'menu.users.center': 'User center',
   'menu.multimedia': 'Multimedia',
+  'menu.post': 'Content',
+  'menu.post.admission': 'Admission'
 };

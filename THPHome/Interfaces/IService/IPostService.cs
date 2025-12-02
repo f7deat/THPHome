@@ -5,6 +5,7 @@ using THPHome.Entities;
 using THPHome.Enums;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
+using THPHome.Models.Filters.Articles;
 
 namespace THPHome.Interfaces.IService;
 
@@ -47,4 +48,5 @@ public interface IPostService
     Task<THPResult> DeleteAsync(long id);
     Task<int> GetCountInYearAsync(int year);
     Task<int> GetCountInMonthAsync(int month, int year);
+    Task<ListResult<object>> GetAdmissionsAsync(ArticleFilterOptions filterOptions);
 }

@@ -74,5 +74,7 @@ export default {
     'menu.users.userCenter': 'Chi tiết người dùng',
     'menu.users.roleCenter': 'Chi tiết quyền',
     'menu.exam': 'Bài thi',
-    'menu.exam.history': 'Lịch sử'
+    'menu.exam.history': 'Lịch sử',
+    'menu.post': 'Nội dung',
+    'menu.post.admission': 'Tuyển sinh'
   };
