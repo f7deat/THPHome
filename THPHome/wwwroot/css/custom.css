@@ -649,6 +649,15 @@ li.dropdown:hover .dropdown-mega {
     align-items: center;
 }
 
+figure.image, figure.table table {
+    margin: 0.9rem auto;
+}
+
+figure.image img {
+    width: 100%;
+    height: auto;
+}
+
 @media (max-width: 768px) {
     .info-header {
         gap: 0px;
