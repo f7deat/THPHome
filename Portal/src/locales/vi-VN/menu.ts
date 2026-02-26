@@ -76,5 +76,6 @@ export default {
     'menu.exam': 'Bài thi',
     'menu.exam.history': 'Lịch sử',
     'menu.post': 'Nội dung',
-    'menu.post.admission': 'Tuyển sinh'
+    'menu.post.admission': 'Tuyển sinh',
+    'menu.post.VideoBulletin': 'Điểm tin hàng tháng',
   };

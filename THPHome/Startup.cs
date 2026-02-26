@@ -74,6 +74,8 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ILogService, LogService>();
         services.AddScoped<IContactService, ContactService>();
+        services.AddScoped<IVideoBulletinService, VideoBulletinService>();
+        services.AddScoped<IVideoBulletinRepository, VideoBulletinRepository>();
 
         services.AddLeaveService();
         services.AddUserService();
