@@ -111,6 +111,12 @@ export default [
         name: 'Menu',
         path: '/post/menus',
         component: './settings/menus'
+      },
+      {
+        name: 'VideoBulletin',
+        path: '/post/bulletin',
+        component: './videoBulletin',
+        access: 'canEditor'
       }
     ],
   },

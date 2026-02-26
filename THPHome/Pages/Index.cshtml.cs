@@ -22,6 +22,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
     public IEnumerable<Partner> Partners = [];
     public IEnumerable<PostView> ListNews = [];
     public IEnumerable<PostView> ListNotification = [];
+    public IEnumerable<VideoBulletin> VideoBulletins = [];
     public List<Banner> Slides = [];
     public List<BlockList> Blocks = [];
     public IEnumerable<PostView> PressTalks = [];
@@ -86,6 +87,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
                          };
 
         PressTalks = await pressTalks.Take(3).ToListAsync();
+        VideoBulletins = await _context.VideoBulletins.OrderByDescending(x => x.Volume).Take(5).ToListAsync();
 
         return Page();
     }

@@ -31,6 +31,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Menu> Menus { get; set; }
     public DbSet<Partner> Partners { get; set; }
     public DbSet<Video> Videos { get; set; }
+    public DbSet<VideoBulletin> VideoBulletins { get; set; }
     public DbSet<Attachment> Attachments { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<DepartmentDetail> DepartmentDetails { get; set; }

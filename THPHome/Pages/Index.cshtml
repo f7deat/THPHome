@@ -10,7 +10,20 @@
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" integrity="sha256-PZLhE6wwMbg4AB3d35ZdBF9HD/dI/y4RazA3iRDurss=" crossorigin="anonymous">
+<style>
+    .play-overlay-center i {
+        text-shadow: 0 0 15px rgba(0,0,0,0.5);
+        transition: all 0.3s ease;
+    }
 
+    .popup-youtube:hover .play-overlay-center i {
+        transform: scale(1.1);
+        color: #ff0000 !important;
+    }
+    .carousel-caption {
+        z-index: 10;
+    }
+</style>
 <div class="container">
     <div class="row">
         <div class="col-md-8 mb-4">
@@ -18,7 +31,7 @@
                 <div class="carousel-indicators">
                     @foreach (var item in Model.Slides)
                     {
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@j" class="@(j == 0 ? "active" : "")" aria-label="Slide @j")></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@j" class="@(j == 0 ? "active" : "")" aria-label="Slide @j" )></button>
                         j++;
                     }
                 </div>
@@ -92,63 +105,66 @@
         </div>
         <div class="col-md-4 mb-4">
             <div class="title mb-1" style="text-transform: uppercase">
-                Báo chí nói về chúng tôi
+                Điểm tin hàng tháng
             </div>
-            <div id="carouselPressTalks" class="carousel slide h-full">
-                <div class="carousel-indicators">
-                    @foreach (var item in Model.PressTalks)
-                    {
-                        <button type="button" data-bs-target="#carouselPressTalks" data-bs-slide-to="@f" class="@(f == 0 ? "active" : "")" aria-label="Slide @f")></button>
-                        f++;
-                    }
-                </div>
-                <div class="carousel-inner h-full">
-                    @foreach (var item in Model.PressTalks)
-                    {
-                        <div class="carousel-item @(e == 0 ? "active" : "")" style="height: calc(100% - 40px)">
-                            <div class="flex flex-col rounded border border-gray-100 h-full">
-                                <a href="@item.Url" title="@item.Title" class="bg-black">
-                                    <img src="@item.Thumbnail" class="w-full transition-opacity duration-700 ease-in-out hover:opacity-50 object-cover" alt="@item.Title" title="@item.Title" style="height: 180px" />
+
+            @if (Model.VideoBulletins != null && Model.VideoBulletins.Any())
+            {
+                <div id="carouselVideoBulletins" class="carousel slide border rounded shadow-sm overflow-hidden bg-white" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        @for (int k = 0; k < Model.VideoBulletins.Count(); k++)
+                        {
+                            <button type="button" data-bs-target="#carouselVideoBulletins" data-bs-slide-to="@k" class="@(k == 0 ? "active" : "")" aria-label="Slide @k"></button>
+                        }
+                    </div>
+
+                    <div class="carousel-inner">
+                        @{
+                            int countBullet = 0;
+                        }
+                        @foreach (var item in Model.VideoBulletins)
+                        {
+                            <div class="carousel-item @(countBullet == 0 ? "active" : "")">
+                                <a href="https://www.youtube.com/watch?v=@item.YoutubeId" class="popup-youtube position-relative d-block">
+                                    <div style="aspect-ratio: 16/9; overflow: hidden; background: #000;">
+                                        <img src="https://img.youtube.com/vi/@item.YoutubeId/maxresdefault.jpg"
+                                             class="d-block w-100"
+                                             alt="Số @item.Volume"
+                                             style="height: 100%; object-fit: cover;">
+
+                                        <div class="play-overlay-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                            <i class="fas fa-play-circle fa-4x text-white opacity-75"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="carousel-caption" style="background: linear-gradient(transparent, rgba(0,0,0,0.95) 80%); bottom: 0; left: 0; right: 0; padding: 40px 10px 25px 10px;">
+                                        <h6 class="mb-1 fw-bold text-uppercase" style="letter-spacing: 0.5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                                            Điểm tin HPUni - Số tháng @item.Volume
+                                        </h6>
+                                        <small class="text-uppercase" style="font-size: 0.75rem; opacity: 0.9;">
+                                            <i class="fas fa-calendar-alt"></i> @item.CreatedDate.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </div>
                                 </a>
-                                <div class="flex-1 p-2">
-                                    <a href="@item.Url" title="@item.Title" class="line-clamp-2 font-bold">@item.Title</a>
-                                    <div class="text-gray-500 line-clamp-3">
-                                        @item.Description
-                                    </div>
-                                </div>
-                                <div class="bg-gray-100 rounded-b text-gray-600 flex justify-between p-1 items-center">
-                                    <div class="post-info">
-                                        <small class="mr-2">
-                                            <i class="fas fa-clock"></i>
-                                            @item.IssuedDate
-                                        </small>
-                                        <small>
-                                            <i class="fa fa-eye"></i> @(item.View.ToString("N0"))
-                                        </small>
-                                    </div>
-                                    <div class="relative">
-                                        <button type="button" class="bg-white w-10 h-10 flex justify-center items-center rounded-full border hover:bg-gray-900 hover:text-white transtion duration-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-share-alt"></i></button>
-                                        <ul class="hidden absolute top-10 z-10 p-0 m-0">
-                                            <li class="w-10 h-10 flex bg-blue-300 text-white items-center justify-center rounded-full cursor-pointer hover:bg-blue-400"><a data-title="Twitter" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-twitter"></i></a></li>
-                                            <li class="w-10 h-10 flex bg-blue-500 text-white items-center justify-center rounded-full cursor-pointer hover:bg-blue-600"><a data-title="Facebook" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-facebook"></i></a></li>
-                                            <li class="w-10 h-10 flex bg-red-500 text-white items-center justify-center rounded-full cursor-pointer hover:bg-red-600"><a data-title="Pinterest" href="#" rel="nofollow" target="_blank" class="text-white hover:text-white"><i class="fab fa-pinterest"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
-                        e++;
-                    }
+                            countBullet++;
+                        }
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselVideoBulletins" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselVideoBulletins" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
+            }
+            else
+            {
+                <div class="border rounded p-4 text-center bg-light">
+                    <p class="text-muted">Chưa có dữ liệu điểm tin.</p>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -185,11 +201,64 @@
                 }
             </div>
         </div>
+        <div class="col-md-4 mb-4 flex flex-col">
+            <div class="mb-4">
+                <partial name="/Views/Shared/_RandomPost.cshtml" model="Model.ListNotification" />
+            </div>
 
-        <div class="col-md-4 mb-4">
-            <partial name="/Views/Shared/_RandomPost.cshtml" model="Model.ListNotification" />
+            <div class="title mb-1" style="text-transform: uppercase">
+                Báo chí nói về chúng tôi
+            </div>
+
+            <div id="carouselPressTalks" class="carousel slide h-full border rounded shadow-sm overflow-hidden bg-white">
+                <div class="carousel-indicators">
+                    @{
+                        f = 0;
+                    } @foreach (var item in Model.PressTalks)
+                    {
+                        <button type="button" data-bs-target="#carouselPressTalks" data-bs-slide-to="@f" class="@(f == 0 ? "active" : "")" aria-label="Slide @f"></button>
+                        f++;
+                    }
+                </div>
+
+                <div class="carousel-inner h-full">
+                    @{
+                        e = 0;
+                    } @foreach (var item in Model.PressTalks)
+                    {
+                        <div class="carousel-item h-full @(e == 0 ? "active" : "")">
+                            <div class="flex flex-col h-full">
+                                <a href="@item.Url" title="@item.Title" class="bg-black block">
+                                    <img src="@item.Thumbnail" class="w-full object-cover transition-opacity hover:opacity-75" alt="@item.Title" style="height: 180px;" />
+                                </a>
+
+                                <div class="p-3 flex-1">
+                                    <a href="@item.Url" title="@item.Title" class="line-clamp-2 font-bold text-dark mb-2" style="text-decoration:none; font-size: 1.1rem;">
+                                        @item.Title
+                                    </a>
+                                    <div class="text-muted line-clamp-3 text-sm">
+                                        @item.Description
+                                    </div>
+                                </div>
+
+                                <div class="bg-light p-2 mt-auto border-top flex justify-between items-center text-muted" style="font-size: 0.8rem;">
+                                    <span><i class="fas fa-clock mr-1"></i> @item.IssuedDate.ToString("dd/MM/yyyy")</span>
+                                    <span><i class="fa fa-eye mr-1"></i> @item.View.ToString("N0")</span>
+                                </div>
+                            </div>
+                        </div>
+                        e++;
+                    }
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            </div>
         </div>
-
     </div>
 
 </div>
@@ -346,5 +415,16 @@
 
             player.play();
         }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.popup-youtube').magnificPopup({
+                type: 'iframe',
+                mainClass: 'mfp-fade',
+                removalDelay: 160,
+                preloader: false,
+                fixedContentPos: false
+            });
+        });
     </script>
 }
