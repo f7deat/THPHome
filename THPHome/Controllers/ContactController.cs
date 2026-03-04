@@ -21,7 +21,6 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
     {
         if (string.IsNullOrWhiteSpace(args.FullName)) return BadRequest("Vui lòng nhập họ và tên!");
         if (!PhoneNumberValidator.ValidateVietnamPhoneNumber(args.PhoneNumber)) return BadRequest("Số điện thoại không hợp lệ!");
-        if (await _context.Contacts.AnyAsync(x => x.PhoneNumber == args.PhoneNumber)) return BadRequest("Số điện thoại đã tồn tại!");
         args.CreatedDate = DateTime.Now;
         args.ContactStatusId = 1;
         await _context.Contacts.AddAsync(args);

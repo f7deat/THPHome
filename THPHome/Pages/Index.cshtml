@@ -100,17 +100,70 @@
     <div class="row">
         <div class="col-md-8 mb-4">
             <a href="https://tuyensinh.dhhp.edu.vn/">
-                <img src="https://dhhp.edu.vn/admissions/admission-banner.jpg" alt="Banner" class="w-100" loading="lazy" style="height: 100%; object-fit: contain">
+                <img src="https://dhhp.edu.vn/admissions/admission-banner.jpg" alt="Banner" class="w-100" loading="lazy" style="object-fit: contain">
             </a>
         </div>
         <div class="col-md-4 mb-4">
+            <div class="title mb-1" style="text-transform: uppercase">
+                Báo chí nói về chúng tôi
+            </div>
+
+            <div id="carouselPressTalks" class="carousel slide border rounded overflow-hidden bg-white mb-2">
+                <div class="carousel-indicators">
+                    @{
+                        f = 0;
+                    } @foreach (var item in Model.PressTalks)
+                    {
+                        <button type="button" data-bs-target="#carouselPressTalks" data-bs-slide-to="@f" class="@(f == 0 ? "active" : "")" aria-label="Slide @f"></button>
+                        f++;
+                    }
+                </div>
+
+                <div class="carousel-inner h-full">
+                    @{
+                        e = 0;
+                    } @foreach (var item in Model.PressTalks)
+                    {
+                        <div class="carousel-item h-full @(e == 0 ? "active" : "")">
+                            <div class="flex flex-col h-full">
+                                <a href="@item.Url" title="@item.Title" class="bg-black block">
+                                    <img src="@item.Thumbnail" class="w-full object-cover transition-opacity hover:opacity-75" alt="@item.Title" style="height: 180px;" />
+                                </a>
+
+                                <div class="p-2 flex-1">
+                                    <a href="@item.Url" title="@item.Title" class="line-clamp-2 font-bold text-dark mb-2" style="text-decoration:none; font-size: 1.1rem;">
+                                        @item.Title
+                                    </a>
+                                    <div class="text-muted line-clamp-3 text-sm">
+                                        @item.Description
+                                    </div>
+                                </div>
+
+                                <div class="bg-light p-2 mt-auto border-top flex justify-between items-center text-muted" style="font-size: 0.8rem;">
+                                    <span><i class="fas fa-clock mr-1"></i> @item.IssuedDate.ToString("dd/MM/yyyy")</span>
+                                    <span><i class="fa fa-eye mr-1"></i> @item.View.ToString("N0")</span>
+                                </div>
+                            </div>
+                        </div>
+                        e++;
+                    }
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+
             <div class="title mb-1" style="text-transform: uppercase">
                 Điểm tin hàng tháng
             </div>
 
             @if (Model.VideoBulletins != null && Model.VideoBulletins.Any())
             {
-                <div id="carouselVideoBulletins" class="carousel slide border rounded shadow-sm overflow-hidden bg-white" data-bs-ride="carousel">
+                <div id="carouselVideoBulletins" class="carousel slide border rounded overflow-hidden" data-bs-ride="carousel">
                     <div class="carousel-indicators">
                         @for (int k = 0; k < Model.VideoBulletins.Count(); k++)
                         {
@@ -202,61 +255,14 @@
             </div>
         </div>
         <div class="col-md-4 mb-4 flex flex-col">
-            <div class="mb-4">
+            <div>
                 <partial name="/Views/Shared/_RandomPost.cshtml" model="Model.ListNotification" />
             </div>
 
-            <div class="title mb-1" style="text-transform: uppercase">
-                Báo chí nói về chúng tôi
-            </div>
-
-            <div id="carouselPressTalks" class="carousel slide h-full border rounded shadow-sm overflow-hidden bg-white">
-                <div class="carousel-indicators">
-                    @{
-                        f = 0;
-                    } @foreach (var item in Model.PressTalks)
-                    {
-                        <button type="button" data-bs-target="#carouselPressTalks" data-bs-slide-to="@f" class="@(f == 0 ? "active" : "")" aria-label="Slide @f"></button>
-                        f++;
-                    }
-                </div>
-
-                <div class="carousel-inner h-full">
-                    @{
-                        e = 0;
-                    } @foreach (var item in Model.PressTalks)
-                    {
-                        <div class="carousel-item h-full @(e == 0 ? "active" : "")">
-                            <div class="flex flex-col h-full">
-                                <a href="@item.Url" title="@item.Title" class="bg-black block">
-                                    <img src="@item.Thumbnail" class="w-full object-cover transition-opacity hover:opacity-75" alt="@item.Title" style="height: 180px;" />
-                                </a>
-
-                                <div class="p-3 flex-1">
-                                    <a href="@item.Url" title="@item.Title" class="line-clamp-2 font-bold text-dark mb-2" style="text-decoration:none; font-size: 1.1rem;">
-                                        @item.Title
-                                    </a>
-                                    <div class="text-muted line-clamp-3 text-sm">
-                                        @item.Description
-                                    </div>
-                                </div>
-
-                                <div class="bg-light p-2 mt-auto border-top flex justify-between items-center text-muted" style="font-size: 0.8rem;">
-                                    <span><i class="fas fa-clock mr-1"></i> @item.IssuedDate.ToString("dd/MM/yyyy")</span>
-                                    <span><i class="fa fa-eye mr-1"></i> @item.View.ToString("N0")</span>
-                                </div>
-                            </div>
-                        </div>
-                        e++;
-                    }
-                </div>
-
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselPressTalks" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                </button>
+            <div class="mb-4">
+                <a href="https://dtbdhp.com" target="_blank">
+                    <img src="https://dhhp.edu.vn/ads/dtbd.png" alt="DTBD" class="w-full" />    
+                </a>
             </div>
         </div>
     </div>

@@ -50,7 +50,7 @@ public class IndexModel(IPostService postService, IMenuService _menuService, IVi
         Slides = await banners.ToListAsync();
 
         // Thông báo
-        ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 10, PageData.Locale ?? "vi-VN");
+        ListNotification = await _postService.GetListByTypeAsync(PostType.NOTIFICATION, 1, 9, PageData.Locale ?? "vi-VN");
         // Tin tức nổi bật
         ListNews = await _postService.GetListByTypeAsync(PostType.NEWS, 1, 11, PageData.Locale ?? "vi-VN");
 
