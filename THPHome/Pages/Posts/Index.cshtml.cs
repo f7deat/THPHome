@@ -34,8 +34,11 @@ public class IndexModel(ApplicationDbContext context, ICategoryService categoryS
         if (Categories.Count > 0)
         {
             var categoryId = Categories.Select(c => c.Id).First();
+            var currentPost = await _context.Posts.FindAsync(PageData.Id);
+            if (currentPost is null) return NotFound();
             var relateds = from p in _context.Posts
-                           where p.CategoryId == categoryId && p.Status == PostStatus.PUBLISH && p.Id != PageData.Id && p.DepartmentId == null
+                           where p.Status == PostStatus.PUBLISH && p.Id != PageData.Id && p.DepartmentId == null
+                           where p.IssuedDate <= currentPost.IssuedDate
                            orderby p.IssuedDate descending
                            select new Post
                            {
