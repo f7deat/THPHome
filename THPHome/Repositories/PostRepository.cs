@@ -458,7 +458,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
     public async Task<ListResult<object>> GetAdmissionsAsync(ArticleFilterOptions filterOptions)
     {
         var query = from a in _context.Posts
-                    where a.Type == PostType.ADMISSION && !a.IsDeleted
+                    where a.Type == PostType.ADMISSION && !a.IsDeleted && a.Status == PostStatus.PUBLISH
                     select new
                     {
                         a.Id,
