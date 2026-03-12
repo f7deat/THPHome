@@ -4,7 +4,8 @@ export async function apiLecturerList(params: { current: number, departmentCode?
     return axios.get(`https://dhhp.edu.vn/api/user/lecturer/list`, { 
         params: {
             ...params,
-            pageSize: 12
+            pageSize: 12,
+            departmentId: params.departmentCode
         }
      });
 }
