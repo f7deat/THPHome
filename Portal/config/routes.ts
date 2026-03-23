@@ -38,11 +38,6 @@ export default [
         component: './posts/notification',
       },
       {
-        name: 'admission',
-        path: '/post/admission',
-        component: './posts/admission'
-      },
-      {
         name: 'Trang',
         path: '/post/page',
         component: './posts/pages/list',
@@ -84,12 +79,6 @@ export default [
         hideInMenu: true,
       },
       {
-        name: 'Câu hỏi thường gặp',
-        path: '/post/qa',
-        component: './posts/qa',
-        access: 'canEditor'
-      },
-      {
         name: 'Danh sách câu hỏi',
         path: '/post/qa/item/:id',
         component: './posts/qa/item',
@@ -119,6 +108,58 @@ export default [
         access: 'canEditor'
       }
     ],
+  },
+  {
+    icon: 'UserAddOutlined',
+    name: 'admission',
+    path: '/admission',
+    routes: [
+      {
+        name: 'article',
+        path: '/admission/article',
+        component: './posts/admission'
+      },
+      {
+        name: 'Ngành/Chuyên ngành',
+        path: '/admission/training-group',
+        component: './admission/training-group'
+      },
+      {
+        name: 'Chỉnh sửa ngành/chuyên ngành',
+        path: '/admission/training-group/major/setting/:id',
+        component: './posts/pages',
+        hideInMenu: true,
+      },
+      {
+        name: 'Liên hệ',
+        path: '/admission/contact',
+        component: './admission/contact'
+      },
+      {
+        name: 'Trạng thái',
+        path: '/admission/contact/status',
+        component: './admission/contact/status',
+        hideInMenu: true
+      },
+      {
+        name: 'Chi tiết ngành/chuyên ngành',
+        path: '/admission/training-group/center/:id',
+        component: './admission/training-group/center',
+        hideInMenu: true
+      },
+      {
+        name: 'Chương trình đào tạo',
+        path: '/admission/training-group/major/center/:id',
+        component: './admission/major/center',
+        hideInMenu: true
+      },
+      {
+        name: 'Câu hỏi thường gặp',
+        path: '/admission/qa',
+        component: './posts/qa'
+      },
+    ],
+    access: 'canEditor'
   },
   {
     icon: 'AppstoreAddOutlined',
@@ -225,48 +266,6 @@ export default [
     path: '/tool/notification',
     component: './tools/notification',
     hideInMenu: true
-  },
-  {
-    name: 'Tuyển sinh',
-    icon: 'UserAddOutlined',
-    path: '/admission',
-    access: 'canEditor',
-    routes: [
-      {
-        name: 'Ngành/Chuyên ngành',
-        path: '/admission/training-group',
-        component: './admission/training-group'
-      },
-      {
-        name: 'Chỉnh sửa ngành/chuyên ngành',
-        path: '/admission/training-group/major/setting/:id',
-        component: './posts/pages',
-        hideInMenu: true,
-      },
-      {
-        name: 'Liên hệ',
-        path: '/admission/contact',
-        component: './admission/contact'
-      },
-      {
-        name: 'Trạng thái',
-        path: '/admission/contact/status',
-        component: './admission/contact/status',
-        hideInMenu: true
-      },
-      {
-        name: 'Chi tiết ngành/chuyên ngành',
-        path: '/admission/training-group/center/:id',
-        component: './admission/training-group/center',
-        hideInMenu: true
-      },
-      {
-        name: 'Chương trình đào tạo',
-        path: '/admission/training-group/major/center/:id',
-        component: './admission/major/center',
-        hideInMenu: true
-      }
-    ]
   },
   {
     icon: 'SettingOutlined',

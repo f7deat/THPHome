@@ -2,13 +2,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
+using THPCore.Helpers;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
+using THPHome.Entities;
 using THPHome.Entities.Curriculum;
 using THPHome.Enums;
 using THPHome.Foundations;
-using THPHome.Models.Filters;
 using THPHome.Models.Filters.Curriculum;
 using THPHome.Models.Results.Curriculum;
 using THPIdentity.Entities;
@@ -230,5 +232,71 @@ public class TrainingController(ApplicationDbContext context, UserManager<Applic
     [HttpGet("academic-program/{id}")]
     public async Task<IActionResult> GetAcademicProgramAsync([FromRoute] int id) => Ok(new { data = await _context.AcademicPrograms.FindAsync(id) });
 
+    [HttpDelete("academic-program/{id}")]
+    public async Task<IActionResult> DeleteAcademicProgramAsync([FromRoute] int id)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+            if (user is null) return BadRequest("User not found!");
+            if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor)) return BadRequest("Permission denied!");
+            var entity = await _context.AcademicPrograms.FindAsync(id);
+            if (entity is null) return BadRequest("Data not found!");
+            _context.AcademicPrograms.Remove(entity);
+            var post = await _context.Posts.FindAsync(entity.PostId);
+            if (post is null) return BadRequest("Post not found!");
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+    }
+
+    [HttpPost("academic-program")]
+    public async Task<IActionResult> CreateAcademicProgramAsync([FromBody] CreateAcademicProgram args, [FromQuery] string locale)
+    {
+        try
+        {
+            var post = new Post
+            {
+                Title = args.Title,
+                IssuedDate = DateTime.Now,
+                Locale = locale,
+                CreatedDate = DateTime.Now,
+                CreatedBy = _hcaService.GetUserId(),
+                Description = args.Description,
+                Type = PostType.MAJOR,
+                Url = SeoHelper.ToSeoFriendly(args.Title),
+                Status = PostStatus.PUBLISH
+            };
+            await _context.Posts.AddAsync(post);
+            await _context.SaveChangesAsync();
+            await _context.AcademicPrograms.AddAsync(new AcademicProgram
+            {
+                PostId = post.Id,
+                MajorId = args.MajorId,
+                Code = args.Code,
+                SortOrder = args.SortOrder,
+                Description = args.Description
+            });
+            await _context.SaveChangesAsync();
+            return Ok(THPResult.Success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+    }
+
     #endregion
+}
+
+public class CreateAcademicProgram : Post
+{
+    public int MajorId { get; set; }
+    public string Code { get; set; } = default!;
+    public int SortOrder { get; set; }
 }

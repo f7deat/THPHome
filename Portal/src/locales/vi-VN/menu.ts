@@ -78,4 +78,6 @@ export default {
     'menu.post': 'Nội dung',
     'menu.post.admission': 'Tuyển sinh',
     'menu.post.VideoBulletin': 'Điểm tin hàng tháng',
+    'menu.admission': 'Tuyển sinh',
+    'menu.admission.article': 'Bài viết'
   };

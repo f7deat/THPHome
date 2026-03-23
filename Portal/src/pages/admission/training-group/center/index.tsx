@@ -125,8 +125,8 @@ const TrainingGroupCenter: React.FC = () => {
                                 ]
                             }}>
                                 <Button size="small" type="dashed" icon={<MoreOutlined />} />
-                            </Dropdown>,
-                            <Button type="primary" size="small" danger icon={<DeleteOutlined />} key="delete" disabled />
+                            </Dropdown>, 
+                            <Button type="primary" size="small" danger icon={<DeleteOutlined />} key="delete" />
                         ],
                         width: 60
                     }
