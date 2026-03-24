@@ -9,12 +9,12 @@ using THPHome.Interfaces.IRepository;
 using THPHome.Repositories.Base;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
-using THPIdentity.Constants;
 using THPHome.Enums;
 using THPCore.Models;
 using THPHome.Models.Results.Posts;
 using THPCore.Interfaces;
 using THPHome.Models.Filters.Articles;
+using THPCore.Constants;
 
 namespace THPHome.Repositories;
 
@@ -61,7 +61,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         if (userId is null) return default;
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null) return default;
-        var isEditor = _hcaService.IsUserInRole(RoleName.EDITOR);
+        var isEditor = _hcaService.IsUserInRole(RoleName.Editor);
         var query = from a in _context.Posts.Where(x => filterOptions.Type == null || x.Type == filterOptions.Type)
                     where a.Locale == filterOptions.Locale && !a.IsDeleted
                     select new
@@ -97,7 +97,7 @@ public class PostRepository(ApplicationDbContext _context, UserManager<Applicati
         {
             query = query.Where(x => x.DepartmentId == filterOptions.DepartmentId);
         }
-        if (!_hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR))
+        if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor))
         {
             query = query.Where(x => x.DepartmentId == user.DepartmentId);
         }

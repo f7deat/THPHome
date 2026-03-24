@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
@@ -10,7 +11,6 @@ using THPHome.Foundations;
 using THPHome.Interfaces.IService.IUsers;
 using THPHome.Models.Args.Departments;
 using THPHome.Models.Filters.Users;
-using THPIdentity.Constants;
 using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
@@ -39,7 +39,7 @@ public class DepartmentController(ApplicationDbContext context, IHCAService _hca
         {
             query = query.Where(x => x.DepartmentTypeId == filterOptions.DepartmentTypeId);
         }
-        if (!User.IsInRole(RoleName.ADMIN))
+        if (!User.IsInRole(RoleName.Admin))
         {
             query = query.Where(x => x.Id == user.DepartmentId);
         }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
@@ -16,7 +17,6 @@ using THPHome.Interfaces.IService;
 using THPHome.Models.Args.Posts;
 using THPHome.Models.Filters;
 using THPHome.Models.Filters.Articles;
-using THPIdentity.Constants;
 using THPIdentity.Entities;
 using WebUI.Interfaces.IService;
 
@@ -52,7 +52,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
     [HttpGet("get-list")]
     public async Task<IActionResult> GetListAsync([FromQuery] PostFilterOptions filterOptions)
     {
-        filterOptions.CanSeeAll = User.IsInRole(RoleName.EDITOR) || User.IsInRole(RoleName.ADMIN);
+        filterOptions.CanSeeAll = User.IsInRole(RoleName.Editor) || User.IsInRole(RoleName.Admin);
         return Ok(await _postService.GetListAsync(filterOptions));
     }
 
@@ -88,7 +88,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
                 Url = url,
                 Locale = locale,
                 IssuedDate = DateTime.Now,
-                DepartmentId = _hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR) ? null : user.DepartmentId,
+                DepartmentId = _hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor) ? null : user.DepartmentId,
             });
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(NewAsync), IdentityResult.Success);
@@ -292,7 +292,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
     {
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return Unauthorized();
-        if (User.IsInRole(RoleName.ADMIN) || User.IsInRole(RoleName.EDITOR) || user.UserType == UserType.Dean)
+        if (User.IsInRole(RoleName.Admin) || User.IsInRole(RoleName.Editor) || user.UserType == UserType.Dean)
         {
             var data = await _context.Posts.FindAsync(id);
             if (data is null) return BadRequest("Bài viết không tồn tại!");
@@ -375,7 +375,7 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
         var query = _context.Posts
             .Where(x => x.CreatedDate.Year == DateTime.Now.Year);
 
-        if (!User.IsInRole(RoleName.ADMIN) && !User.IsInRole(RoleName.EDITOR))
+        if (!User.IsInRole(RoleName.Admin) && !User.IsInRole(RoleName.Editor))
         {
             var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");

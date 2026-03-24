@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPHome.Data;
 using THPHome.Entities.Utils;
 using THPHome.Foundations;
 using THPHome.Models.Args.Utils;
-using THPIdentity.Constants;
 
 namespace THPHome.Controllers;
 
@@ -60,7 +60,7 @@ public class ToolController(ApplicationDbContext context, IHCAService _hcaServce
     [HttpPost("delete-short-link/{id}")]
     public async Task<IActionResult> DeleteShortLink([FromRoute] Guid id)
     {
-        if (!User.IsInRole(RoleName.ADMIN)) return Unauthorized();
+        if (!User.IsInRole(RoleName.Admin)) return Unauthorized();
         var urlShortener = await _context.UrlShorteners.FindAsync(id);
         if (urlShortener is null) return NotFound();
         _context.UrlShorteners.Remove(urlShortener);

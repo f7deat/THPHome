@@ -5,7 +5,6 @@ using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Interfaces.IService;
-using THPHome.Models.Filters;
 using THPHome.Models.Filters.Users;
 using THPHome.Models.Results.Users;
 using THPHome.Services.Users.Models;
@@ -67,10 +66,6 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             department = await _context.Departments.FirstOrDefaultAsync(x => x.Code == user.DepartmentId);
         }
         var city = string.Empty;
-        if (user.CityId != null)
-        {
-            city = (await _context.Cities.FirstOrDefaultAsync(x => x.Id == user.CityId))?.Name;
-        }
 
         var languages = await _context.ForeignLanguageProficiencies.Where(x => x.UserName == userName).AsNoTracking().Select(x => new
         {
@@ -161,7 +156,7 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             user.PhoneNumber,
             user.Avatar,
             user.DateOfBirth,
-            Gender = user.Gender != 0,
+            Gender = user.Gender,
             detail.Position,
             detail.CurrentResidence,
             detail.CurrentWorkplace,
@@ -287,7 +282,7 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
                 Email = item.Email,
                 PhoneNumber = item.PhoneNumber,
                 DateOfBirth = item.DateOfBirth,
-                Gender = item.Gender != 0,
+                Gender = item.Gender,
                 Avatar = item.Avatar,
             };
             var detail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == item.Id);
@@ -353,7 +348,7 @@ public class UserService(UserManager<ApplicationUser> _userManager, ApplicationD
             Name = x.Name,
             PhoneNumber = x.PhoneNumber,
             UserName = x.UserName,
-            Gender = x.Gender == 1,
+            Gender = x.Gender,
             Id = x.Id,
             Email = x.Email,
             Status = x.Status

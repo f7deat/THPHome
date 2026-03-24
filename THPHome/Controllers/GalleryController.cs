@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
@@ -12,7 +13,6 @@ using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Files;
 using THPHome.Models.Posts;
-using THPIdentity.Constants;
 using THPIdentity.Entities;
 
 namespace THPHome.Controllers;
@@ -30,7 +30,7 @@ public class GalleryController(ApplicationDbContext context, IHCAService _hcaSer
             if (string.IsNullOrWhiteSpace(args.Title)) return BadRequest("Vui lòng nhập tên album");
             var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
-            if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
+            if (!User.IsInRole(RoleName.Editor) && !User.IsInRole(RoleName.Admin))
             {
                 if (user.UserType != UserType.Dean) return BadRequest("Bạn không có quyền tạo album ảnh!");
             }
@@ -64,7 +64,7 @@ public class GalleryController(ApplicationDbContext context, IHCAService _hcaSer
             if (gallery is null) return BadRequest("Gallery not found!");
             var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
             if (user is null) return BadRequest("User not found!");
-            if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
+            if (!User.IsInRole(RoleName.Editor) && !User.IsInRole(RoleName.Admin))
             {
                 if (user.UserType != UserType.Dean) return BadRequest("Bạn không có quyền cập nhật album ảnh.");
             }
@@ -104,7 +104,7 @@ public class GalleryController(ApplicationDbContext context, IHCAService _hcaSer
         }
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return BadRequest("User not found!");
-        if (!User.IsInRole(RoleName.EDITOR) && !User.IsInRole(RoleName.ADMIN))
+        if (!User.IsInRole(RoleName.Editor) && !User.IsInRole(RoleName.Admin))
         {
             if (user.UserType != UserType.Dean) return BadRequest("Bạn không có quyền xóa album ảnh.");
         }

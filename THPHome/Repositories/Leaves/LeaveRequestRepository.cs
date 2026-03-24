@@ -109,7 +109,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
             };
             var lecturer = users.FirstOrDefault(x => x.UserName == item.UserName);
             if (lecturer is null) continue;
-            leaveItem.Gender = lecturer.Gender != null && (lecturer.Gender == 1);
+            leaveItem.Gender = lecturer.Gender;
             leaveItem.FullName = lecturer.Name;
             leaveItem.DateOfBirth = lecturer.DateOfBirth;
             leaveItem.CanApprove = item.Status == LeaveStatus.Pending;
@@ -222,7 +222,7 @@ public class LeaveRequestRepository(ApplicationDbContext context, UserManager<Ap
                 FullName = item.Name,
                 UserName = item.UserName,
                 DateOfBirth = item.DateOfBirth,
-                Gender = item.Gender != null ? item.Gender == 1 : null,
+                Gender = item.Gender,
                 Total = leaveRequests.Count(x => x.UserName == item.UserName)
             });
         }

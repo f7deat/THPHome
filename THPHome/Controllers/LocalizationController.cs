@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
 using THPHome.Entities;
 using THPHome.Foundations;
 using THPHome.Models.Filters.Settings;
-using THPIdentity.Constants;
 
 namespace THPHome.Controllers;
 
@@ -40,7 +40,7 @@ public class LocalizationController(ApplicationDbContext context, IHCAService _h
         return Ok();
     }
 
-    [HttpPost("delete/{id}"), Authorize(Roles = RoleName.ADMIN)]
+    [HttpPost("delete/{id}"), Authorize(Roles = RoleName.Admin)]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
         var locale = await _context.Localizations.FindAsync(id);

@@ -29,8 +29,8 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
-		<PackageReference Include="THPCore" Version="1.0.8" />
-		<PackageReference Include="THPIdentity" Version="1.0.3" />
+		<PackageReference Include="THPCore" Version="1.0.9" />
+		<PackageReference Include="THPIdentity" Version="1.0.4" />
 		<PackageReference Include="ZaloSDK" Version="1.0.1" />
 	</ItemGroup>
 

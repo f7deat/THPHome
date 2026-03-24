@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
@@ -10,7 +11,6 @@ using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
 using THPHome.Models.Filters;
-using THPIdentity.Constants;
 using THPIdentity.Entities;
 using WebUI.Models.Results;
 
@@ -50,7 +50,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
 
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return BadRequest("User not found!");
-        if (!_hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR))
+        if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor))
         {
             query = query.Where(x => x.DepartmentId == user.DepartmentId);
         }
@@ -177,7 +177,7 @@ public class CategoryController(ICategoryService _categoryService, ApplicationDb
         var query = _context.Categories.Where(x => x.Status == CategoryStatus.Active).Where(x => x.Locale == args.Locale);
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return BadRequest("User not found!");
-        if (_hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR))
+        if (_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor))
         {
             query = query.Where(x => x.DepartmentId == null);
         }

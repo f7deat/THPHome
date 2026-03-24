@@ -1,13 +1,13 @@
 ﻿using ApplicationCore.Helpers;
 using ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Entities;
 using THPHome.Interfaces.IRepository;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Categories;
-using THPIdentity.Constants;
 using THPIdentity.Entities;
 
 namespace THPHome.Services;
@@ -22,7 +22,7 @@ public class CategoryService(ICategoryRepository _categoryRepository, IPostRepos
         }
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return THPResult.Failed("Người dùng không tồn tại");
-        if (!_hcaService.IsUserInAnyRole(RoleName.EDITOR, RoleName.ADMIN))
+        if (!_hcaService.IsUserInAnyRole(RoleName.Editor, RoleName.Admin))
         {
             category.DepartmentId = user.DepartmentId;
         }
@@ -42,7 +42,7 @@ public class CategoryService(ICategoryRepository _categoryRepository, IPostRepos
         }
         var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
         if (user is null) return new { succeeded = false, message = "Người dùng không tồn tại" };
-        if (!_hcaService.IsUserInAnyRole(RoleName.ADMIN, RoleName.EDITOR))
+        if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor))
         {
             if (user.UserType != UserType.Dean) return new { succeeded = false, message = "Bạn không có quyền xóa danh mục" };
         }

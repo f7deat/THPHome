@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
@@ -9,7 +10,6 @@ using THPHome.Foundations;
 using THPHome.Helpers.Validators;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Filters.Contacts;
-using THPIdentity.Constants;
 using WebUI.Interfaces.IService;
 
 namespace THPHome.Controllers;
@@ -88,7 +88,7 @@ public class ContactController(ApplicationDbContext context, ITelegramService _t
     [HttpPost("delete/{id}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
-        if (!User.IsInRole(RoleName.ADMIN)) return BadRequest("Bạn không có quyền xóa!");
+        if (!User.IsInRole(RoleName.Admin)) return BadRequest("Bạn không có quyền xóa!");
         var contact = await _context.Contacts.FindAsync(id);
         if (contact is null) return BadRequest("Không tìm thấy liên hệ!");
         _context.Contacts.Remove(contact);

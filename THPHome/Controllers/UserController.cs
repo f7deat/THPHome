@@ -15,7 +15,6 @@ using THPHome.Models.Roles;
 using THPHome.Data;
 using THPHome.Models.Api.Admin.User;
 using THPHome.Models.Filters.Users;
-using THPIdentity.Constants;
 using THPHome.Helpers;
 using THPHome.Interfaces.IService;
 using THPHome.Interfaces.IService.IUsers;
@@ -34,6 +33,7 @@ using THPHome.Models.Users.ResearchProject;
 using THPHome.Models.Users.Journal;
 using THPHome.Models.Users.Book;
 using THPCore.Interfaces;
+using THPCore.Constants;
 
 namespace THPHome.Controllers;
 
@@ -91,7 +91,7 @@ public class UserController(
         }
         if (user.UserType == UserType.Administrator)
         {
-            roles.Add(RoleName.ADMIN);
+            roles.Add(RoleName.Admin);
         }
 
         return Ok(new
@@ -149,8 +149,8 @@ public class UserController(
                 user.LockoutEnd,
                 user.TwoFactorEnabled,
                 user.DateOfBirth,
-                user.CityId,
-                Gender = user.Gender != 0,
+                user.DistrictId,
+                Gender = user.Gender,
                 userDetail.YearOfPromotion,
                 userDetail.Position,
                 userDetail.CurrentResidence,
@@ -164,7 +164,6 @@ public class UserController(
                 userDetail.Website,
                 userDetail.Linkedin,
                 userDetail.Bio,
-                CountryId = user.CityId == null ? null : (await _context.Cities.Where(x => x.Id == user.CityId).FirstOrDefaultAsync())?.CountryId,
                 languages
             }
         });
@@ -287,7 +286,7 @@ public class UserController(
         return Ok(await ListResult<ApplicationUser>.Success(query, filterOptions));
     }
 
-    [HttpPost("add-to-role"), Authorize(Roles = RoleName.ADMIN)]
+    [HttpPost("add-to-role"), Authorize(Roles = RoleName.Admin)]
     public async Task<IActionResult> AddToRoleAsync([FromBody] AddToRole addToRole)
     {
         var user = await _userManager.FindByIdAsync(addToRole.UserId);
@@ -304,7 +303,7 @@ public class UserController(
     [Route("is-authenticated"), AllowAnonymous]
     public IActionResult IsAuthenticated() => Ok(User.Identity?.IsAuthenticated ?? false);
 
-    [HttpDelete("remove-from-role/{role}/{id}"), Authorize(Roles = RoleName.ADMIN)]
+    [HttpDelete("remove-from-role/{role}/{id}"), Authorize(Roles = RoleName.Admin)]
     public async Task<IActionResult> DeleteA([FromRoute] string role, [FromRoute] string id)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -312,7 +311,7 @@ public class UserController(
         return Ok(await _userManager.RemoveFromRoleAsync(user, role));
     }
 
-    [HttpPost("delete/{id}"), Authorize(Roles = RoleName.ADMIN)]
+    [HttpPost("delete/{id}"), Authorize(Roles = RoleName.Admin)]
     public async Task<IActionResult> DeleteAsync([FromRoute] string id)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -458,8 +457,7 @@ public class UserController(
             user.Name = args.Name;
             user.Address = args.Address;
             user.DateOfBirth = args.DateOfBirth;
-            user.CityId = args.CityId;
-            user.Gender = args.Gender == false ? 0 : 1;
+            user.Gender = args.Gender;
             user.Email = args.Email;
             user.PhoneNumber = args.PhoneNumber;
             var detail = await _context.UserDetails.FirstOrDefaultAsync(x => x.UserId == user.Id);
@@ -491,7 +489,7 @@ public class UserController(
     public async Task<IActionResult> CreateAsync([FromBody] ApplicationUser args)
     {
         if (string.IsNullOrWhiteSpace(args.PasswordHash)) return BadRequest("Vui lòng nhập mật khẩu");
-        if (!User.IsInRole(RoleName.ADMIN)) return BadRequest("Không có quyền thực hiện!");
+        if (!User.IsInRole(RoleName.Admin)) return BadRequest("Không có quyền thực hiện!");
         var user = new ApplicationUser
         {
             UserName = args.UserName,
@@ -503,7 +501,7 @@ public class UserController(
             UserType = args.UserType,
             PhoneNumber = args.PhoneNumber,
             Address = args.Address,
-            CityId = args.CityId,
+            DistrictId = args.DistrictId,
             Status = UserStatus.Active
         };
         return Ok(await _userManager.CreateAsync(user, args.PasswordHash));
@@ -565,22 +563,7 @@ public class UserController(
                 if (thpUser is null) return BadRequest("Tài khoản hoặc mật khẩu không đúng!");
                 if (thpUser.UserType == 0) return BadRequest("Bạn không có quyền truy cập vào hệ thống!");
                 var user = await _userManager.FindByNameAsync(login.UserName);
-                if (user is null)
-                {
-                    user = new ApplicationUser
-                    {
-                        UserName = login.UserName,
-                        Name = $"{thpUser.LastName} {thpUser.FirstName}",
-                        Email = thpUser.Email,
-                        PhoneNumber = thpUser.PhoneNumber,
-                        DepartmentId = thpUser.DepartmentId,
-                        UserType = thpUser.UserType,
-                        Address = thpUser.Address,
-                        Gender = thpUser.Gender,
-                        DateOfBirth = thpUser.DateOfBirth
-                    };
-                    await _userManager.CreateAsync(user);
-                }
+                if (user is null) return BadRequest($"User {login.UserName} not found!");
 
                 var authClaims = new List<Claim>
             {
@@ -1071,7 +1054,7 @@ public class UserController(
     [HttpGet("list-notification")]
     public async Task<IActionResult> ListNotificationAsync([FromQuery] FilterOptions filterOptions) => Ok(await _userService.ListNotificationAsync(filterOptions));
 
-    [HttpPost("deactivate/{id}"), Authorize(Roles = RoleName.ADMIN)]
+    [HttpPost("deactivate/{id}"), Authorize(Roles = RoleName.Admin)]
     public async Task<IActionResult> DeactiveAsync([FromRoute] string id)
     {
         var result = await _userService.DeactiveAsync(id);

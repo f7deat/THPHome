@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using THPCore.Constants;
 using THPCore.Interfaces;
 using THPCore.Models;
 using THPHome.Data;
@@ -11,7 +12,6 @@ using THPHome.Foundations;
 using THPHome.Interfaces.IService;
 using THPHome.Models.Args.Notifications;
 using THPHome.Services.Notifications.Models;
-using THPIdentity.Constants;
 using THPIdentity.Entities;
 using WebUI.Options;
 
@@ -49,7 +49,7 @@ public class NotificationController(ApplicationDbContext context, IHCAService _h
         });
     }
 
-    [HttpPost("add"), Authorize(Roles = RoleName.ADMIN)]
+    [HttpPost("add"), Authorize(Roles = RoleName.Admin)]
     public async Task<IActionResult> AddAsync([FromBody] Notification args)
     {
         args.CreatedDate = DateTime.Now;
@@ -90,7 +90,7 @@ public class NotificationController(ApplicationDbContext context, IHCAService _h
     [HttpPost("send")]
     public async Task<IActionResult> SendAsync([FromBody] SendNotificationArgs args)
     {
-        if (!User.IsInRole(RoleName.ADMIN)) return Unauthorized();
+        if (!User.IsInRole(RoleName.Admin)) return Unauthorized();
         var noti = await _context.Notifications.FindAsync(args.NotificationId);
         if (noti is null) return BadRequest("Không tìm thấy thông báo!");
         switch (args.SendTo)
@@ -121,7 +121,7 @@ public class NotificationController(ApplicationDbContext context, IHCAService _h
     [HttpPost("update")]
     public async Task<IActionResult> UpdateAsync([FromBody] Notification args)
     {
-        if (!User.IsInRole(RoleName.ADMIN)) return Unauthorized();
+        if (!User.IsInRole(RoleName.Admin)) return Unauthorized();
         var noti = await _context.Notifications.FindAsync(args.Id);
         if (noti is null) return BadRequest("Notification not found!");
         noti.ModifiedDate = DateTime.Now;
@@ -136,7 +136,7 @@ public class NotificationController(ApplicationDbContext context, IHCAService _h
     [HttpPost("delete/{id}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
-        if (!User.IsInRole(RoleName.ADMIN)) return Unauthorized();
+        if (!User.IsInRole(RoleName.Admin)) return Unauthorized();
         var noti = await _context.Notifications.FindAsync(id);
         if (noti is null) return BadRequest("Notification not found!");
         var userNotifications = await _context.UserNotifications.Where(x => x.NotificationId == id).ToListAsync();
