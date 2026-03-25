@@ -1,16 +1,23 @@
-import { apiAdmissions, apiPostPublish } from "@/services/post";
+import { apiPostDelete, apiPostPublish, queryPosts } from "@/services/post";
 import { ActionType, PageContainer, ProTable } from "@ant-design/pro-components"
 import NewPost from "../components/new-post";
 import { PostType } from "@/enum/post-enum";
 import { useRef } from "react";
-import { ArrowDownOutlined, ArrowUpOutlined, EditOutlined, MoreOutlined, SettingOutlined } from "@ant-design/icons";
-import { Button, Dropdown, message } from "antd";
-import { history } from "@umijs/max";
+import { ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, EditOutlined, MoreOutlined, SettingOutlined } from "@ant-design/icons";
+import { Button, Dropdown, message, Popconfirm } from "antd";
+import { history, useAccess } from "@umijs/max";
 import { PostStatus } from "@/utils/enum";
 
 const Index: React.FC = () => {
 
     const actionRef = useRef<ActionType>(null);
+    const access = useAccess();
+
+    async function remove(id: number) {
+        await apiPostDelete(id);
+        message.success('Xóa bài viết thành công!');
+        actionRef.current?.reload();
+    }
 
     return (
         <PageContainer>
@@ -19,7 +26,11 @@ const Index: React.FC = () => {
                 headerTitle={<NewPost type={PostType.ADMISSION} reload={() => {
                     actionRef.current?.reload();
                 }} />}
-                request={apiAdmissions}
+                request={queryPosts}
+                rowKey="id"
+                params={{
+                    type: PostType.ADMISSION
+                }}
                 columns={[
                     {
                         title: '#',
@@ -81,7 +92,16 @@ const Index: React.FC = () => {
                                 ]
                             }}>
                                 <Button type="dashed" icon={<MoreOutlined />} size="small" />
-                            </Dropdown>
+                            </Dropdown>,
+                            <Popconfirm
+                                key="delete"
+                                title="Bạn có chắc chắn muốn xóa?"
+                                onConfirm={() => remove(record.id || 0)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button type="primary" size="small" danger icon={<DeleteOutlined />} disabled={!record.canUpdate && !access.canAdmin}></Button>
+                            </Popconfirm>
                         ]
                     }
                 ]}
