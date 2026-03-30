@@ -9,7 +9,6 @@ import { HomeOutlined } from '@ant-design/icons';
 import { AvatarDropdown } from './components/right-content/avatar-dropdown';
 import { SelectLang } from '@umijs/max';
 import { Question } from './components/right-content';
-import './style.css';
 import { getLocale } from '@umijs/max';
 import MyNotification from './components/right-content/notification';
 const loginPath = '/accounts/login';
@@ -23,7 +22,7 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const response = await queryCurrentUser();
-      if (response.userType === 0) {
+      if (response.userType === 0 || response.userType === 6) {
         localStorage.removeItem('thp_token');
         return null;
       }

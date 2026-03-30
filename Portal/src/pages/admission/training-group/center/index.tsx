@@ -1,9 +1,9 @@
-import { apiGetListMajor, apiGetMajor, apiUpdateMajor } from "@/services/admission/major";
+import { apiCreateMajor, apiDeleteMajor, apiGetListMajor, apiGetMajor, apiUpdateMajor } from "@/services/admission/major";
 import { apiTrainingGroupDetail } from "@/services/admission/training-group";
 import { DeleteOutlined, EditOutlined, EyeOutlined, LeftOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
-import { ActionType, ModalForm, PageContainer, ProFormDigit, ProFormInstance, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components"
+import { ActionType, ModalForm, PageContainer, ProFormDigit, ProFormInstance, ProFormSelect, ProFormText, ProFormTextArea, ProTable } from "@ant-design/pro-components"
 import { history, useParams } from "@umijs/max"
-import { Button, Dropdown, message } from "antd";
+import { Button, Dropdown, message, Popconfirm } from "antd";
 import { useEffect, useRef, useState } from "react";
 
 const TrainingGroupCenter: React.FC = () => {
@@ -56,6 +56,11 @@ const TrainingGroupCenter: React.FC = () => {
         if (values.id) {
             // Update
             await apiUpdateMajor(values);
+        } else {
+            await apiCreateMajor({
+                ...values,
+                trainingGroupId: Number(id)
+            });
         }
         message.success('Thành công');
         actionRef.current?.reload();
@@ -125,8 +130,14 @@ const TrainingGroupCenter: React.FC = () => {
                                 ]
                             }}>
                                 <Button size="small" type="dashed" icon={<MoreOutlined />} />
-                            </Dropdown>, 
-                            <Button type="primary" size="small" danger icon={<DeleteOutlined />} key="delete" />
+                            </Dropdown>,
+                            <Popconfirm key="delete" title="Bạn có chắc chắn muốn xóa?" onConfirm={async () => {
+                                await apiDeleteMajor(record.id);
+                                message.success('Xóa thành công');
+                                actionRef.current?.reload();
+                            }}>
+                                <Button type="primary" size="small" danger icon={<DeleteOutlined />} key="delete" />
+                            </Popconfirm>
                         ],
                         width: 60
                     }
@@ -149,6 +160,20 @@ const TrainingGroupCenter: React.FC = () => {
                 ]} />
                 <ProFormTextArea name="description" label="Mô tả" />
                 <ProFormDigit name="sortOrder" label="Thứ tự" />
+                <ProFormSelect name={"active"} label="Trạng thái" options={[
+                    {
+                        label: 'Đang hoạt động',
+                        value: true
+                    },
+                    {
+                        label: 'Ngưng hoạt động',
+                        value: false
+                    }
+                ]} allowClear={false} rules={[
+                    {
+                        required: true
+                    }
+                ]} />
             </ModalForm>
         </PageContainer>
     )

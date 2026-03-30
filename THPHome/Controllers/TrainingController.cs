@@ -130,6 +130,66 @@ public class TrainingController(ApplicationDbContext context, UserManager<Applic
         }
     }
 
+    [HttpPost("major")]
+    public async Task<IActionResult> CreateMajorAsync([FromBody] Major major, [FromQuery] string locale)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+            if (user is null) return BadRequest("User not found!");
+            if (!_hcaService.IsUserInAnyRole(RoleName.Editor, RoleName.Admin)) return BadRequest("Permission denied!");
+            //var post = new Post
+            //{
+            //    CreatedBy = _hcaService.GetUserId(),
+            //    CreatedDate = DateTime.Now,
+            //    DepartmentId = null,
+            //    IssuedDate = DateTime.Now,
+            //    Locale = locale,
+            //    Title = major.Name,
+            //    Url = SeoHelper.ToSeoFriendly(major.Name),
+            //    Status = PostStatus.PUBLISH,
+            //    Type = PostType.MAJOR
+            //};
+            //await _context.Posts.AddAsync(post);
+            //await _context.SaveChangesAsync();
+            if (string.IsNullOrWhiteSpace(major.Name)) return BadRequest("Name is required!");
+            if (string.IsNullOrWhiteSpace(major.Code)) return BadRequest("Code is required!");
+            //major.PostId = post.Id;
+            await _context.Majors.AddAsync(major);
+            await _context.SaveChangesAsync();
+            return Ok(THPResult.Success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+    }
+
+    [HttpDelete("major/{id}")]
+    public async Task<IActionResult> DeleteMajorAsync([FromRoute] int id)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(_hcaService.GetUserId());
+            if (user is null) return BadRequest("User not found!");
+            if (!_hcaService.IsUserInAnyRole(RoleName.Admin, RoleName.Editor)) return BadRequest("Permission denied!");
+            var entity = await _context.Majors.FindAsync(id);
+            if (entity is null) return BadRequest("Data not found!");
+            _context.Majors.Remove(entity);
+            //var post = await _context.Posts.FindAsync(entity.PostId);
+            //if (post is not null)
+            //{
+            //    _context.Posts.Remove(post);
+            //}
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+    }
+
     [HttpGet("major/list-with-academic-program"), AllowAnonymous]
     public async Task<IActionResult> GetAllMajorAsync([FromQuery] int trainingGroupId)
     {

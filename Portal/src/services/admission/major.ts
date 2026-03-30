@@ -14,3 +14,16 @@ export async function apiUpdateMajor(data: any) {
         data
     });
 }
+
+export async function apiCreateMajor(data: any) {
+    return request(`training/major`, {
+        method: 'POST',
+        data
+    });
+}
+
+export async function apiDeleteMajor(id: number) {
+    return request(`training/major/${id}`, {
+        method: 'DELETE'
+    });
+}

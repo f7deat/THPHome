@@ -366,3 +366,4 @@ MigrationBackup/
 /WebUI/Migrations
 /THPHome/appsettings.Development.json
 THPHome/.config/dotnet-tools.json
+/Portal/package-lock.json
