@@ -1,5 +1,6 @@
 import { DividerBlock, MajorGeneralBlock, SloganBlock, SponsorBlock, TextBlock, TinyMCEBlock, VideoBlock } from "@/components/blocks";
 import HtmlBlock from "@/components/blocks/html";
+import PopupBlock from "@/components/blocks/popup";
 import SideGalleryBlock from "@/components/blocks/side-gallery";
 import { queryActiveBlock, queryBlock, queryBlockAdd, queryBlockOptions, queryBlockSave, queryBlockSaveInfo, queryBlocks, queryDeleteBlock, querySortOrderBlock } from "@/services/block";
 import { DeleteOutlined, EditOutlined, PlusOutlined, ToolOutlined } from "@ant-design/icons";
@@ -161,6 +162,7 @@ const PageBlock: React.FC = () => {
         if (block.normalizedName === 'MajorGeneralBlock') return <MajorGeneralBlock data={block.data} />
         if (block.normalizedName === 'SideGalleryBlock') return <SideGalleryBlock data={block.data} />
         if (block.normalizedName === 'SloganBlock') return <SloganBlock data={block.data} />
+        if (block.normalizedName === 'PopupBlock') return <PopupBlock data={block.data} />
         return <div />
     }
 
