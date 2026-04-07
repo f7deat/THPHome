@@ -408,14 +408,19 @@ public class PostController(IHCAService _hcaService, IAttachmentService _attachm
     [HttpGet("meta/{id}"), AllowAnonymous]
     public async Task<IActionResult> GetMetaAsync([FromRoute] string id)
     {
-        var post = await _context.Posts.FirstOrDefaultAsync(x => x.Url == id);
+        var post = await _context.Posts
+            .Where(x => x.Url == id)
+            .Select(x => new
+            {
+                x.Title,
+                x.Description,
+                x.Thumbnail
+            })
+            .FirstOrDefaultAsync();
+
         if (post is null) return BadRequest("Data not found!");
-        return Ok(new
-        {
-            post.Title,
-            post.Description,
-            post.Thumbnail
-        });
+
+        return Ok(new { data = post });
     }
 
     [HttpGet("trash")]
