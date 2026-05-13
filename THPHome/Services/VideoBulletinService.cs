@@ -41,7 +41,7 @@ public class VideoBulletinService(IVideoBulletinRepository _videoBulletinReposit
         return THPResult.Success;
     }
 
-    public async Task<THPResult> DeleteAsync(int id)
+    public async Task<THPResult> DeleteAsync(Guid id)
     {
         var videoBulletin = await _videoBulletinRepository.FindAsync(id);
         if (videoBulletin is null) return THPResult.Failed("Không tìm thấy thông tin đơn vị");

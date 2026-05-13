@@ -10,6 +10,6 @@ public interface IVideoBulletinService
     Task<ListResult<object>> ListAsync(VideoBulletinFilterOptions filterOptions);
     Task<THPResult> CreateAsync(VideoBulletinCreateArgs args);
     Task<THPResult> UpdateAsync(VideoBulletinUpdateArgs args);
-    Task<THPResult> DeleteAsync(int id);
+    Task<THPResult> DeleteAsync(Guid id);
 }
 

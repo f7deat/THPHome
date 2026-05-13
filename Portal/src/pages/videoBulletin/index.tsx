@@ -91,7 +91,7 @@ const VideoBulletinPage: React.FC = () => {
                                 />
                             </Tooltip>,
                             <Popconfirm key={`delete-confirm-${record.id}`} title="Bạn có chắc chắn muốn xoá?"
-                                description={`Tên: ${record.name}`} okText="Xoá"
+                                description={`Số: ${record.volume}`} okText="Xoá"
                                 onConfirm={() => handleDelete(record)} cancelText="Huỷ"
                             >
                                 <Tooltip title="Xoá">
