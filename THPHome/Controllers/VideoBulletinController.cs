@@ -30,7 +30,7 @@ public class VideoBulletinController(IVideoBulletinService _videoBulletinService
     }
 
     [HttpPost("delete/{id}")]
-    public async Task<IActionResult> DeleteAsync(int id)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
         var result = await _videoBulletinService.DeleteAsync(id);
         return result.Succeeded ? Ok() : BadRequest(result.Message);
